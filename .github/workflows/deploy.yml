@@ -6,11 +6,16 @@ name: Deploy
 # Pushes to `development` create pre versions (e.g. 1.2.0-dev.1).
 #
 # The version, tag format, and branch/prerelease rules are configured under
-# [tool.semantic_release] in pyproject.toml. hatch-vcs derives the package
-# version at build time from the git tag that the release job creates.
+# [tool.semantic_release] in pyproject.toml.
 #
-# When a release is cut, platform wheels (including ARM64) and an sdist are
-# built with cibuildwheel and published to PyPI and the GitHub Release.
+# Release gating: nothing is tagged, committed, or released until every
+# distribution builds successfully. The `version` job computes the next version
+# without side effects; the build jobs stamp that version into the artifacts via
+# hatch-vcs's pretend-version mechanism (no tag exists yet); and only after all
+# builds succeed does the `release` job actually bump the version, write the
+# changelog, push the tag, create the GitHub Release, and upload the built
+# wheels and sdist. If any build fails, the repository is left untouched (no
+# tag, no commit, no release).
 
 on:
   push:
@@ -24,31 +29,51 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  release:
+  version:
+    # Compute the next version without modifying the repository. Determines
+    # whether a release is warranted and the version/tag that would result.
     runs-on: ubuntu-latest
     permissions:
-      contents: write   # create tags and GitHub Releases
+      contents: read
     outputs:
-      released: ${{ steps.release.outputs.released }}
-      tag: ${{ steps.release.outputs.tag }}
-      version: ${{ steps.release.outputs.version }}
+      released: ${{ steps.compute.outputs.released }}
+      version: ${{ steps.compute.outputs.version }}
+      tag: ${{ steps.compute.outputs.tag }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           # Full history and tags are required for commit parsing and version
-          # derivation (hatch-vcs).
+          # derivation.
           fetch-depth: 0
 
-      - name: Python Semantic Release
-        id: release
-        uses: python-semantic-release/python-semantic-release@v10
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v5
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          python-version: "3.12"
+
+      - name: Compute next version
+        id: compute
+        run: |
+          set -euo pipefail
+          PSR="python-semantic-release>=10.5.3,<11"
+          NEXT="$(uvx --from "$PSR" semantic-release version --print)"
+          LAST="$(uvx --from "$PSR" semantic-release version --print-last-released)"
+          TAG="$(uvx --from "$PSR" semantic-release version --print-tag)"
+          echo "computed next=${NEXT} last=${LAST} tag=${TAG}"
+          # --print emits the current version when no release is warranted, so a
+          # value equal to the last released version means "nothing to release".
+          if [ -z "${NEXT}" ] || [ "${NEXT}" = "${LAST}" ]; then
+            echo "released=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "released=true" >> "$GITHUB_OUTPUT"
+          fi
+          echo "version=${NEXT}" >> "$GITHUB_OUTPUT"
+          echo "tag=${TAG}" >> "$GITHUB_OUTPUT"
 
   build_wheels:
-    needs: release
-    if: needs.release.outputs.released == 'true'
+    needs: version
+    if: needs.version.outputs.released == 'true'
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -59,12 +84,19 @@ jobs:
           - os: macos-13           # macOS x86_64 (Intel)
           - os: macos-14           # macOS arm64 (Apple Silicon)
           - os: windows-latest     # Windows x86_64
+    env:
+      # No git tag exists yet, so hatch-vcs (setuptools-scm) cannot derive the
+      # version from history. Supply it explicitly. The generic variable covers
+      # all builders; the package-specific variable takes precedence where
+      # honored.
+      SETUPTOOLS_SCM_PRETEND_VERSION: ${{ needs.version.outputs.version }}
+      SETUPTOOLS_SCM_PRETEND_VERSION_FOR_DICOM_DRE: ${{ needs.version.outputs.version }}
+      # Forward the pretend-version variables from the host into the manylinux
+      # build containers (Linux only; macOS/Windows build on the host runner).
+      CIBW_ENVIRONMENT_PASS_LINUX: SETUPTOOLS_SCM_PRETEND_VERSION SETUPTOOLS_SCM_PRETEND_VERSION_FOR_DICOM_DRE
     steps:
-      - name: Checkout release tag
+      - name: Checkout
         uses: actions/checkout@v4
-        with:
-          ref: ${{ needs.release.outputs.tag }}
-          fetch-depth: 0
 
       - name: Build wheels
         uses: pypa/cibuildwheel@v3.4.1
@@ -76,15 +108,15 @@ jobs:
           path: ./wheelhouse/*.whl
 
   build_sdist:
-    needs: release
-    if: needs.release.outputs.released == 'true'
+    needs: version
+    if: needs.version.outputs.released == 'true'
     runs-on: ubuntu-latest
+    env:
+      SETUPTOOLS_SCM_PRETEND_VERSION: ${{ needs.version.outputs.version }}
+      SETUPTOOLS_SCM_PRETEND_VERSION_FOR_DICOM_DRE: ${{ needs.version.outputs.version }}
     steps:
-      - name: Checkout release tag
+      - name: Checkout
         uses: actions/checkout@v4
-        with:
-          ref: ${{ needs.release.outputs.tag }}
-          fetch-depth: 0
 
       - name: Set up uv
         uses: astral-sh/setup-uv@v5
@@ -100,19 +132,35 @@ jobs:
           name: sdist
           path: ./dist/*.tar.gz
 
-  publish:
-    needs: [release, build_wheels, build_sdist]
-    if: needs.release.outputs.released == 'true'
+  release:
+    # First job that mutates the repository. Runs only after every distribution
+    # has built. Tags, commits the changelog, pushes, creates the GitHub
+    # Release, and uploads the built artifacts.
+    needs: [version, build_wheels, build_sdist]
+    if: needs.version.outputs.released == 'true'
     runs-on: ubuntu-latest
     permissions:
-      contents: write   # upload assets to the GitHub Release
+      contents: write   # create tags, commits, and GitHub Releases
       id-token: write   # PyPI trusted publishing (OIDC)
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # Full history and tags are required for commit parsing and version
+          # derivation.
+          fetch-depth: 0
+
       - name: Download all distributions
         uses: actions/download-artifact@v4
         with:
           path: dist
           merge-multiple: true
+
+      - name: Python Semantic Release
+        id: release
+        uses: python-semantic-release/python-semantic-release@v10
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Publish to PyPI
         # Temporarily disabled while debugging the GitHub workflows.
@@ -125,6 +173,7 @@ jobs:
           packages-dir: dist
 
       - name: Upload distributions to the GitHub Release
+        if: steps.release.outputs.released == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh release upload "${{ needs.release.outputs.tag }}" dist/* --clobber
+        run: gh release upload "${{ steps.release.outputs.tag }}" dist/* --clobber
