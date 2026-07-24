@@ -613,6 +613,53 @@ class TestTextRedactor:
         assert "embolism" in result.lower(), f"Expected medical term 'embolism' to be preserved, got {result!r}"
 
 
+class TestRedactPlainCache:
+    """Tests for the per-instance plain-string redaction cache."""
+
+    @pytest.fixture
+    def allowlist_redactor(self):
+        """Create a TextRedactor with a basic allowlist."""
+        return TextRedactor(allowlist={"mint", "lesion", "report"})
+
+    def test_cached_output_matches_uncached(self, allowlist_redactor):
+        """Cached plain redaction equals a direct uncached computation."""
+        for text in ["mint Rodriguez report", "CHEST CT 01/02/2024", "", "   ,,,   "]:
+            cached = allowlist_redactor.redact_text(text)
+            uncached = allowlist_redactor._compute_redaction(text, track_redacted=False)[0]
+            assert cached == uncached, f"cache mismatch for {text!r}: {cached!r} != {uncached!r}"
+
+    def test_repeated_input_hits_cache(self, allowlist_redactor):
+        """A repeated identical input is served from the cache on the second call."""
+        text = "mint Rodriguez report Johnson"
+        allowlist_redactor._cached_redact_plain.cache_clear()
+        allowlist_redactor.redact_text(text)
+        allowlist_redactor.redact_text(text)
+        info = allowlist_redactor._cached_redact_plain.cache_info()
+        assert info.misses == 1, f"Expected 1 miss, got {info.misses}"
+        assert info.hits == 1, f"Expected 1 hit, got {info.hits}"
+
+    def test_tracked_path_is_not_cached(self, allowlist_redactor):
+        """The track_redacted path does not populate the plain-string cache."""
+        allowlist_redactor._cached_redact_plain.cache_clear()
+        allowlist_redactor.redact_text("mint Rodriguez", track_redacted=True)
+        info = allowlist_redactor._cached_redact_plain.cache_info()
+        assert info.misses == 0 and info.hits == 0, f"Expected no cache use, got {info}"
+
+    def test_reloading_allowlist_clears_cache(self, allowlist_redactor, tmp_path):
+        """Reloading the allowlist invalidates cached redactions."""
+        text = "mint Rodriguez report"
+        before = allowlist_redactor.redact_text(text)
+        assert "Rodriguez" not in before
+
+        allowlist_file = tmp_path / "allow.csv"
+        allowlist_file.write_text("mint,report,rodriguez\n", encoding="utf-8")
+        allowlist_redactor.load_allowlist_from_csv(allowlist_file)
+
+        assert allowlist_redactor._cached_redact_plain.cache_info().currsize == 0
+        after = allowlist_redactor.redact_text(text)
+        assert "Rodriguez" in after, f"Expected 'Rodriguez' preserved after reload, got {after!r}"
+
+
 class TestPreserveDates:
     """Tests for preserve_dates mode (HIPAA limited datasets)."""
 

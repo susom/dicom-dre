@@ -405,6 +405,13 @@ class TextRedactor:
             f"(?<=[a-zA-Z])(?=\\d)|"  # Letters followed by digits
             f"(?<=\\d)(?=[a-zA-Z]))"  # Digits followed by letters
         )
+        # Compile the date pattern once; it is otherwise rebuilt on every
+        # redact_text call.
+        self._date_regex = self.create_date_regex()
+        # Per-instance memoization of the plain-string redaction path. Bounded to
+        # cap memory across many distinct inputs while capturing intra-series
+        # reuse of identical description values.
+        self._cached_redact_plain = functools.lru_cache(maxsize=1024)(self._redact_plain)
 
     def redact_text(
         self, text: str, track_redacted: bool = False, return_token_pairs: bool = False
@@ -421,8 +428,6 @@ class TextRedactor:
             If track_redacted is True, returns tuple of (redacted text, set of redacted tokens).
             If return_token_pairs is True, returns tuple of (redacted text, list of token pairs).
         """
-        date_regex = self.create_date_regex()
-
         if return_token_pairs:
             original_tokens = self.tokenization_pattern.split(text)
             original_tokens = [token for token in original_tokens if token]
@@ -431,12 +436,12 @@ class TextRedactor:
             token_pairs_list = []
 
             for token in original_tokens:
-                if date_regex.fullmatch(token):
+                if self._date_regex.fullmatch(token):
                     if self.preserve_dates:
                         result_tokens.append(token)
                         token_pairs_list.append((token, token))
                     else:
-                        redacted_token = date_regex.sub(lambda m: re.sub(r"[^/\-\.\s]", "X", m.group(0)), token)
+                        redacted_token = self._date_regex.sub(lambda m: re.sub(r"[^/\-\.\s]", "X", m.group(0)), token)
                         result_tokens.append(redacted_token)
                         token_pairs_list.append((token, redacted_token))
                     continue
@@ -472,10 +477,24 @@ class TextRedactor:
             result_text = "".join(result_tokens)
             return (result_text, token_pairs_list)
 
-        # Standard processing (non-token-pairs mode)
+        # Standard processing (non-token-pairs mode). The plain-string path is
+        # memoized per instance; the tracked path returns the redacted token set
+        # and is not cached.
+        if track_redacted:
+            result_text, redacted_tokens = self._compute_redaction(text, track_redacted=True)
+            return (result_text, redacted_tokens)  # type: ignore
+
+        return self._cached_redact_plain(text)
+
+    def _compute_redaction(self, text: str, track_redacted: bool) -> tuple[str, set[str] | None]:
+        """Run the standard (non token-pair) redaction pass.
+
+        Returns the redacted text and, when track_redacted is True, the set of
+        redacted source tokens.
+        """
         processed_text = text
         if not self.preserve_dates:
-            processed_text = date_regex.sub(lambda m: re.sub(r"[^/\-\.\s]", "X", m.group(0)), processed_text)
+            processed_text = self._date_regex.sub(lambda m: re.sub(r"[^/\-\.\s]", "X", m.group(0)), processed_text)
 
         masked_text = processed_text
         for pattern in self.compiled_deny_regex_patterns:
@@ -502,11 +521,16 @@ class TextRedactor:
                 if track_redacted and token.strip():
                     redacted_tokens.add(token)  # type: ignore
 
-        result_text = "".join(result)
-        if track_redacted:
-            return (result_text, redacted_tokens)  # type: ignore
-        else:
-            return result_text
+        return "".join(result), redacted_tokens
+
+    def _redact_plain(self, text: str) -> str:
+        """Return the redacted string for text without token tracking.
+
+        Memoized per instance via ``_cached_redact_plain`` so repeated identical
+        inputs (for example the same SeriesDescription across every instance in
+        a series) are redacted only once.
+        """
+        return self._compute_redaction(text, track_redacted=False)[0]
 
     def load_allowlist_from_csv(self, allowlist_file: str | Path) -> None:
         """Load allowlist words from a CSV file.
@@ -523,6 +547,8 @@ class TextRedactor:
                 self.allowlist = {word.strip().lower() for row in reader for word in row if word.strip()}
         except (OSError, csv.Error) as e:
             raise ValueError(f"Failed to load allowlist from {allowlist_file}: {e}") from e
+        # The allowlist changed, so any memoized redactions are stale.
+        self._cached_redact_plain.cache_clear()
 
 
 def process_csv_file(
