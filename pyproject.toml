@@ -44,7 +44,7 @@ dependencies = [
     "pylibjpeg-openjpeg>=2.5.0",
     "pylibjpeg-rle>=2.2.0",
     "pyjpegls>=1.5.1",
-    "python-gdcm==3.0.20",
+    "python-gdcm==3.2.6",
     "click",
     "readchar",
 ]
@@ -123,6 +123,12 @@ build = "cp312-*"
 # publish manylinux wheels but not musllinux, so the wheel test would compile
 # each from source under musl. Ship manylinux only; musl users build from sdist.
 skip = "*-musllinux*"
+# python-gdcm 3.2.6 publishes only manylinux_2_28 wheels (glibc >= 2.28); it no
+# longer ships manylinux2014 (glibc 2.17) builds. Build and test inside a
+# manylinux_2_28 container so the dependency's prebuilt wheel is installable
+# instead of falling back to a source build (which needs SWIG and fails).
+manylinux-x86_64-image = "manylinux_2_28"
+manylinux-aarch64-image = "manylinux_2_28"
 build-frontend = "build[uv]"
 # Smoke-test each built wheel by importing the compiled CFFI acceleration
 # extension directly. A wheel where the native module failed to compile would
