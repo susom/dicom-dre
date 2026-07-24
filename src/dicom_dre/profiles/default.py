@@ -4,8 +4,6 @@ Full PS3.15E de-identification with UID hashing, date jitter,
 and PHI removal.
 """
 
-from datetime import datetime
-
 from pydicom.tag import BaseTag
 from pydicom.tag import Tag
 
@@ -421,6 +419,39 @@ def description_action(value: str | None, allowlist_csv: str, preserve_dates: bo
     return redact_text(get_text_redactor(allowlist_csv, preserve_dates))
 
 
+def _build_constant_rules() -> dict[BaseTag, TagAction]:
+    """Build the patient-invariant rule mapping shared by every profile.
+
+    The action objects are stateless closures, so one instance is shared across
+    all tags in each category: ``dict.fromkeys`` assigns a single value to every
+    key, and ``remove_action`` is reused for the lone VerifyingObserverName rule.
+    """
+    remove_action = remove()
+    rules: dict[BaseTag, TagAction] = {}
+    rules.update(dict.fromkeys(PHI_REMOVE_TAGS, remove_action))
+    rules.update(dict.fromkeys(KEEP_TAGS, keep()))
+    rules.update(dict.fromkeys(EMPTY_TAGS, empty()))
+    # Mandatory evidence attributes with literal values
+    rules[Tag(0x0012, 0x0062)] = set_value("YES", create_if_missing=True)  # PatientIdentityRemoved
+    rules[Tag(0x0028, 0x0303)] = set_value(
+        "MODIFIED", create_if_missing=True
+    )  # LongitudinalTemporalInformationModified
+    rules[Tag(0x0010, 0x1010)] = cap_age(89, "090Y")  # PatientAge
+    rules[Tag(0x0040, 0xA075)] = remove_action  # VerifyingObserverName
+    # process() marks a sequence for recursion; DeidProfile applies its own
+    # rules to the sequence items, so derived profiles inherit the rule set.
+    rules[Tag(0x0054, 0x0016)] = process()  # RadiopharmaceuticalInformationSequence
+    return rules
+
+
+# Patient-invariant rules shared across every default_profile() result, built
+# once at import. Each call shallow-copies this mapping and overwrites only the
+# per-patient entries (UID hash, date jitter, identifiers, descriptions, and
+# DeIdentificationMethod). Safe to share because the action objects are
+# stateless and derived profiles copy the mapping before mutating it.
+_CONSTANT_RULES: dict[BaseTag, TagAction] = _build_constant_rules()
+
+
 def default_profile(
     patient_id: str,
     accession_number: str,
@@ -451,27 +482,13 @@ def default_profile(
     resolved_patient_name = patient_name if patient_name is not None else patient_id
     uid_action = hash_uid(uid_root, salt=study_id)
     shift = if_exists(jitter_date(jitter))
-    now = datetime.now()
-    deid_text = f"{deid_method}: {now.strftime('%Y%m%d')}:{now.strftime('%H%M%S')}"
 
-    rules: dict[BaseTag, TagAction] = {}
-
-    # Remove tags carrying PHI
-    rules.update({t: remove() for t in PHI_REMOVE_TAGS})
-
-    # Preserve tags unchanged
-    rules.update({t: keep() for t in KEEP_TAGS})
-
-    # Empty tags (set to zero-length value)
-    rules.update({t: empty() for t in EMPTY_TAGS})
-
-    # Hash UID tags
+    # Start from the shared patient-invariant rules and overwrite only the
+    # entries that depend on this patient's parameters.
+    rules: dict[BaseTag, TagAction] = dict(_CONSTANT_RULES)
     rules.update(dict.fromkeys(UID_TAGS, uid_action))
-
-    # Shift dates by the jitter amount when present
     rules.update(dict.fromkeys(DATE_TAGS, shift))
 
-    # Literal value substitution
     rules[Tag(0x0010, 0x0010)] = set_value(resolved_patient_name)  # PatientName
     rules[Tag(0x0010, 0x0020)] = set_value(patient_id)  # PatientID
     rules[Tag(0x0008, 0x0050)] = set_value(accession_number)  # AccessionNumber
@@ -485,29 +502,14 @@ def default_profile(
 
     # Mandatory evidence attributes -- created if missing and then set here
     rules[Tag(0x0012, 0x0020)] = set_value(study_id, create_if_missing=True)  # ClinicalTrialProtocolID
-    rules[Tag(0x0012, 0x0062)] = set_value("YES", create_if_missing=True)  # PatientIdentityRemoved
-    rules[Tag(0x0028, 0x0303)] = set_value(
-        "MODIFIED", create_if_missing=True
-    )  # LongitudinalTemporalInformationModified
-    rules[Tag(0x0012, 0x0063)] = append_value(deid_text, create_if_missing=True)  # DeIdentificationMethod
-
-    # If the PatientAge exceeds 89 years, cap it to 090Y
-    rules[Tag(0x0010, 0x1010)] = cap_age(89, "090Y")
-
-    # VerifyingObserverName: remove the element
-    rules[Tag(0x0040, 0xA075)] = remove()
-
-    # RadiopharmaceuticalInformationSequence -- processed sequence.
-    # process() is a marker; DeidProfile recurses its own rules into
-    # the sequence items, so derived profiles inherit the correct rule set.
-    rules[Tag(0x0054, 0x0016)] = process()
+    rules[Tag(0x0012, 0x0063)] = append_value(deid_method, create_if_missing=True)  # DeIdentificationMethod
 
     return DeidProfile(
         name="DICOM-PS3.15E-Basic",
         rules=rules,
         keep_groups=frozenset(),
         remove_private=True,
-        remove_curves=False,  # curve data is not removed by this profile
+        remove_curves=False,
         remove_overlays=True,
         modifies_dates=True,
         allowlist_csv=allowlist_csv,
