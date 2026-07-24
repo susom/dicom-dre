@@ -194,27 +194,25 @@ class TestJpegBaselinePath:
         # All 120 frames should still be present
         assert int(ds_out.NumberOfFrames) == 120
 
-    def test_fallback_on_value_error(self, uncompressed_mono2, tmp_path):
+    def test_fallback_on_value_error(self, jpeg_baseline_rgb, mocker):
         """Falls back to general path when scrub_jpeg_bytes raises ValueError."""
-        in_path, out_path = uncompressed_mono2
+        in_path, out_path = jpeg_baseline_rgb
 
-        # Create a fake JPEG Baseline DICOM with invalid JPEG data
-        ds = pydicom.dcmread(in_path)
-        ds.file_meta.TransferSyntaxUID = UID(JPEG_BASELINE_TS)
-        # Write non-JPEG data as pixel data in encapsulated format
-        from pydicom.encaps import encapsulate
+        # Force the DCT-domain scrubber to fail so blank_regions falls back to
+        # the general (pydicom + numpy) decode path on genuine JPEG data.
+        mocker.patch(
+            "dicom_dre.pixel_blanker.scrub_jpeg_bytes",
+            side_effect=ValueError("Not a JPEG file"),
+        )
 
-        ds.PixelData = encapsulate([ds.PixelData])
-        ds["PixelData"].is_undefined_length = True
-        fake_path = tmp_path / "fake_jpeg.dcm"
-        ds.save_as(fake_path)
-
-        result = blank_regions(fake_path, out_path, [ScrubRegion(0, 0, 10, 10)])
+        result = blank_regions(in_path, out_path, [ScrubRegion(0, 0, 10, 10)])
 
         # Should fall back to general path and produce output
-        assert result.was_scrubbed is True
+        assert result.was_scrubbed is True, "Fallback should still scrub"
         ds_out = pydicom.dcmread(out_path)
-        assert str(ds_out.file_meta.TransferSyntaxUID) == str(ExplicitVRLittleEndian)
+        assert str(ds_out.file_meta.TransferSyntaxUID) == str(ExplicitVRLittleEndian), (
+            "General fallback path rewrites as Explicit VR Little Endian"
+        )
 
 
 class TestGeneralPath:
