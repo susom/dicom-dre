@@ -1,0 +1,68 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "1040",
+        "ConversionType": "DF",
+        "ImageType": "DERIVED\\SECONDARY",
+        "Manufacturer": "eFilm Medical",
+        "Modality": "DX",
+        "Rows": "1270",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SeriesNumber": "1"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "1040",
+        "ConversionType": "DF",
+        "ImageType": "DERIVED\\SECONDARY",
+        "Manufacturer": "eFilm Medical",
+        "Modality": "DX",
+        "Rows": "1271",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SeriesNumber": "1"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "1238",
+        "ConversionType": "DF",
+        "ImageType": "DERIVED\\SECONDARY",
+        "Manufacturer": "eFilm Medical",
+        "Modality": "DX",
+        "Rows": "2333",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SeriesNumber": "1"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "1238",
+        "ConversionType": "DF",
+        "ImageType": "DERIVED\\SECONDARY",
+        "Manufacturer": "eFilm Medical",
+        "Modality": "DX",
+        "Rows": "2672",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SeriesNumber": "1"
+      }
+    }
+  ]
+}

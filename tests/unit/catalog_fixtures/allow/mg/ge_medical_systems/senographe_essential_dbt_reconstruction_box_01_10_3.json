@@ -1,0 +1,42 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "BREAST",
+        "BurnedInAnnotation": "NO",
+        "Columns": "1023",
+        "ImageType": "DERIVED\\PRIMARY\\VOLUME\\NONE",
+        "Manufacturer": "GE MEDICAL SYSTEMS",
+        "ManufacturerModelName": "Senographe Essential DBT Reconstruction Box_01.10.3",
+        "Modality": "MG",
+        "Rows": "2703",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.13.1.3",
+        "SeriesNumber": "17832",
+        "SoftwareVersions": "Reconstruction Package VERSION RECON_01.10.3"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "BREAST",
+        "BurnedInAnnotation": "NO",
+        "Columns": "1023",
+        "ImageType": "ORIGINAL\\PRIMARY\\VOLUME\\NONE",
+        "Manufacturer": "GE MEDICAL SYSTEMS",
+        "ManufacturerModelName": "Senographe Essential DBT Reconstruction Box_01.10.3",
+        "Modality": "MG",
+        "Rows": "2703",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.13.1.3",
+        "SeriesNumber": "17832",
+        "SoftwareVersions": "Reconstruction Package VERSION RECON_01.10.3"
+      }
+    }
+  ]
+}

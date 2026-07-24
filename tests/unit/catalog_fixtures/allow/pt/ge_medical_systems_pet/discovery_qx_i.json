@@ -1,0 +1,22 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "",
+        "Columns": "128",
+        "ImageType": "ORIGINAL\\PRIMARY",
+        "Manufacturer": "GE Medical Systems, PET",
+        "ManufacturerModelName": "Discovery QX/i",
+        "Modality": "PT",
+        "PixelSpacing": "3.906250\\3.906250",
+        "Rows": "128",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.128",
+        "SoftwareVersions": "05.10"
+      }
+    }
+  ]
+}

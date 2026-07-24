@@ -1,0 +1,25 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "BREAST",
+        "BurnedInAnnotation": "NO",
+        "Columns": "1024",
+        "CommentsOnRadiationDose": "",
+        "ImageType": "ORIGINAL\\PRIMARY",
+        "Manufacturer": "Bioptics Inc",
+        "ManufacturerModelName": "CoreVision",
+        "Modality": "MG",
+        "PixelSpacing": "3.3687e-002\\3.3687e-002",
+        "Rows": "2048",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.1.2",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "Bioptics Inc - Bioptics Vision Version 2.3.1"
+      }
+    }
+  ]
+}

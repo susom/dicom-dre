@@ -1,0 +1,43 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BurnedInAnnotation": "YES",
+        "Columns": "800",
+        "ConversionType": "WSD",
+        "ImageType": "DERIVED\\PRIMARY\\\\0001",
+        "Manufacturer": "GE Vingmed Ultrasound",
+        "ManufacturerModelName": "Vivid7",
+        "Modality": "US",
+        "Rows": "600",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "Vivid7",
+        "SeriesNumber": "0001",
+        "SoftwareVersions": "Vivid7:7.1.2"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "640",
+        "ConversionType": "WSD",
+        "ImageType": "DERIVED\\PRIMARY\\\\0015",
+        "Manufacturer": "GE Vingmed Ultrasound",
+        "ManufacturerModelName": "Vivid7",
+        "Modality": "US",
+        "Rows": "480",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "Vivid7",
+        "SeriesNumber": "0001",
+        "SoftwareVersions": "Vivid7:5.2.0"
+      }
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "entries": [
+    {
+      "description": "Ax T1 IR FSPGR",
+      "expected_filtered": false,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "OTHER",
+        "Columns": "512",
+        "ImageType": "DERIVED\\SECONDARY\\REFORMATTED\\AVERAGE",
+        "Manufacturer": "GE MEDICAL SYSTEMS",
+        "ManufacturerModelName": "SIGNA PET/MR",
+        "Modality": "MR",
+        "PixelSpacing": "0.52734375\\0.52734375",
+        "Rows": "512",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.4",
+        "SeriesDescription": "Ax T1 IR FSPGR",
+        "SeriesNumber": "701",
+        "SoftwareVersions": "30\\LX\\SIGNA_LX1.MR30.1_R02_2332.a"
+      }
+    }
+  ]
+}

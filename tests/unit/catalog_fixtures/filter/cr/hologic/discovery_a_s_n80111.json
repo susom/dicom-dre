@@ -1,0 +1,22 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "DXA BONE DENS...",
+        "Columns": "1200",
+        "ConversionType": "DV",
+        "Manufacturer": "HOLOGIC",
+        "ManufacturerModelName": "Discovery A (S/N80111)",
+        "Modality": "CR",
+        "Rows": "1200",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SeriesNumber": "2",
+        "SoftwareVersions": "12.7.3.2"
+      }
+    }
+  ]
+}

@@ -1,0 +1,291 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [
+        "0,0,1042,56"
+      ],
+      "expected_scrubbed": true,
+      "tags": {
+        "Columns": "1042",
+        "ImageType": "ORIGINAL",
+        "Manufacturer": "SuperSonic Imagine SA",
+        "ManufacturerModelName": "Aixplorer",
+        "Modality": "US",
+        "Rows": "782",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+        "SequenceOfUltrasoundRegions": "present",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "3.2.12008"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [
+        "0,0,1050,70"
+      ],
+      "expected_scrubbed": true,
+      "tags": {
+        "BurnedInAnnotation": "YES",
+        "Columns": "1050",
+        "ImageType": "ORIGINAL\\PRIMARY",
+        "Manufacturer": "SuperSonic Imagine SA",
+        "ManufacturerModelName": "Aixplorer",
+        "Modality": "US",
+        "Rows": "788",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+        "SequenceOfUltrasoundRegions": "present",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "6.2.23751"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [
+        "0,0,1080,64"
+      ],
+      "expected_scrubbed": true,
+      "tags": {
+        "Columns": "1192",
+        "ImageType": "ORIGINAL",
+        "Manufacturer": "SuperSonic Imagine SA",
+        "ManufacturerModelName": "Aixplorer",
+        "Modality": "US",
+        "Rows": "894",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+        "SequenceOfUltrasoundRegions": "present",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "3.2.12008"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [
+        "0,0,1080,64"
+      ],
+      "expected_scrubbed": true,
+      "tags": {
+        "Columns": "1200",
+        "ImageType": "ORIGINAL",
+        "Manufacturer": "SuperSonic Imagine SA",
+        "ManufacturerModelName": "Aixplorer",
+        "Modality": "US",
+        "Rows": "900",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+        "SequenceOfUltrasoundRegions": "present",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "3.2.12008"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [
+        "0,0,1080,70"
+      ],
+      "expected_scrubbed": true,
+      "tags": {
+        "BurnedInAnnotation": "YES",
+        "Columns": "1080",
+        "ImageType": "ORIGINAL\\PRIMARY",
+        "Manufacturer": "SuperSonic Imagine SA",
+        "ManufacturerModelName": "Aixplorer",
+        "Modality": "US",
+        "Rows": "810",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+        "SequenceOfUltrasoundRegions": "present",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "9.2.1.1792"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [
+        "0,0,1088,56"
+      ],
+      "expected_scrubbed": true,
+      "tags": {
+        "Columns": "1088",
+        "ImageType": "ORIGINAL",
+        "Manufacturer": "SuperSonic Imagine SA",
+        "ManufacturerModelName": "Aixplorer",
+        "Modality": "US",
+        "Rows": "816",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+        "SequenceOfUltrasoundRegions": "present",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "3.2.12008"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [
+        "0,0,1240,70"
+      ],
+      "expected_scrubbed": true,
+      "tags": {
+        "Columns": "1240",
+        "ImageType": "ORIGINAL",
+        "Manufacturer": "SuperSonic Imagine SA",
+        "ManufacturerModelName": "Aixplorer",
+        "Modality": "US",
+        "Rows": "930",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+        "SequenceOfUltrasoundRegions": "present",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "3.2.12008"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [
+        "0,0,1400,90"
+      ],
+      "expected_scrubbed": true,
+      "tags": {
+        "BurnedInAnnotation": "YES",
+        "Columns": "1400",
+        "ImageType": "ORIGINAL\\PRIMARY",
+        "Manufacturer": "SuperSonic Imagine SA",
+        "ManufacturerModelName": "Aixplorer",
+        "Modality": "US",
+        "Rows": "1050",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+        "SequenceOfUltrasoundRegions": "present",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "6.2.23751"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [
+        "0,0,1440,90"
+      ],
+      "expected_scrubbed": true,
+      "tags": {
+        "BodyPartExamined": "BREAST",
+        "BurnedInAnnotation": "YES",
+        "Columns": "1440",
+        "ImageType": "ORIGINAL\\PRIMARY",
+        "Manufacturer": "SuperSonic Imagine SA",
+        "ManufacturerModelName": "Aixplorer",
+        "Modality": "US",
+        "Rows": "1080",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+        "SequenceOfUltrasoundRegions": "present",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "9.3.1.2124"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [
+        "0,0,700,48"
+      ],
+      "expected_scrubbed": true,
+      "tags": {
+        "BurnedInAnnotation": "YES",
+        "Columns": "700",
+        "ImageType": "DERIVED\\PRIMARY",
+        "Manufacturer": "SuperSonic Imagine SA",
+        "ManufacturerModelName": "Aixplorer",
+        "Modality": "US",
+        "Rows": "525",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.3.1",
+        "SequenceOfUltrasoundRegions": "present",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "6.4.24940"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [
+        "0,0,851,48"
+      ],
+      "expected_scrubbed": true,
+      "tags": {
+        "BurnedInAnnotation": "YES",
+        "Columns": "851",
+        "ImageType": "ORIGINAL\\PRIMARY",
+        "Manufacturer": "SuperSonic Imagine SA",
+        "ManufacturerModelName": "Aixplorer",
+        "Modality": "US",
+        "Rows": "638",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+        "SequenceOfUltrasoundRegions": "present",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "4.3.19566"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [
+        "0,0,900,56"
+      ],
+      "expected_scrubbed": true,
+      "tags": {
+        "Columns": "1035",
+        "ImageType": "ORIGINAL",
+        "Manufacturer": "SuperSonic Imagine SA",
+        "ManufacturerModelName": "Aixplorer",
+        "Modality": "US",
+        "Rows": "776",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+        "SequenceOfUltrasoundRegions": "present",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "3.2.12008"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [
+        "0,0,980,56"
+      ],
+      "expected_scrubbed": true,
+      "tags": {
+        "Columns": "1082",
+        "ImageType": "ORIGINAL",
+        "Manufacturer": "SuperSonic Imagine SA",
+        "ManufacturerModelName": "Aixplorer",
+        "Modality": "US",
+        "Rows": "812",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+        "SequenceOfUltrasoundRegions": "present",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "3.2.12008"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [
+        "0,0,980,56"
+      ],
+      "expected_scrubbed": true,
+      "tags": {
+        "Columns": "1092",
+        "ImageType": "ORIGINAL",
+        "Manufacturer": "SuperSonic Imagine SA",
+        "ManufacturerModelName": "Aixplorer",
+        "Modality": "US",
+        "Rows": "819",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+        "SequenceOfUltrasoundRegions": "present",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "3.2.12008"
+      }
+    }
+  ]
+}

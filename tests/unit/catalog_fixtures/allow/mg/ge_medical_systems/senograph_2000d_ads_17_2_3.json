@@ -1,0 +1,25 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "BREAST",
+        "BurnedInAnnotation": "NO",
+        "Columns": "1914",
+        "CommentsOnRadiationDose": "16 %",
+        "ConversionType": "WSD",
+        "ImageType": "ORIGINAL\\PRIMARY\\",
+        "Manufacturer": "GE MEDICAL SYSTEMS",
+        "ManufacturerModelName": "Senograph 2000D ADS_17.2.3",
+        "Modality": "MG",
+        "Rows": "2294",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.1.2",
+        "SeriesNumber": "42827",
+        "SoftwareVersions": "Ads Application Package VERSION ADS_17.2.3"
+      }
+    }
+  ]
+}

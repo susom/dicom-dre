@@ -1,0 +1,21 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "640",
+        "ImageType": "ORIGINAL\\PRIMARY\\VASCULAR\\",
+        "Manufacturer": "SonoSite, Inc.",
+        "ManufacturerModelName": "Turbo",
+        "Modality": "SR/US/XA",
+        "Rows": "480",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "51.80.109.015"
+      }
+    }
+  ]
+}

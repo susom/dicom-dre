@@ -1,0 +1,24 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "512",
+        "CommentsOnRadiationDose": "Series #2 locator Average CTDIvol=8.3x1 DLP=8.3\r\nSeries #6 locator Average CTDIvol=2.5x1 DLP=2.5\r\nSeries #7 tracker Average CTDIvol=2.5x7 DLP=17.5\r\nSeries #8 CTA CHEST Average CTDIvol=7.0 DLP=463.6\r\nTotal DLP=491.8\r\n",
+        "ConversionType": "WSD",
+        "ImageType": "DERIVED\\SECONDARY\\MPR",
+        "Manufacturer": "Philips",
+        "ManufacturerModelName": "Brilliance 64",
+        "Modality": "CT",
+        "Rows": "512",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "Brilliance64",
+        "SeriesNumber": "30111",
+        "SoftwareVersions": "2.3.0"
+      }
+    }
+  ]
+}

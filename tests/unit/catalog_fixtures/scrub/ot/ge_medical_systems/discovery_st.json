@@ -1,0 +1,52 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [
+        "256,0,256,22",
+        "300,22,212,80",
+        "10,478,100,10"
+      ],
+      "expected_scrubbed": true,
+      "tags": {
+        "BurnedInAnnotation": "YES",
+        "Columns": "512",
+        "ConversionType": "WSD",
+        "ImageType": "DERIVED\\SECONDARY\\SCREEN SAVE",
+        "Manufacturer": "GE MEDICAL SYSTEMS",
+        "ManufacturerModelName": "Discovery ST",
+        "Modality": "OT",
+        "Rows": "512",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "Volume Viewer",
+        "SeriesNumber": "300",
+        "SoftwareVersions": "41.04"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [
+        "256,0,256,22",
+        "300,22,212,80",
+        "10,478,100,10"
+      ],
+      "expected_scrubbed": true,
+      "tags": {
+        "BurnedInAnnotation": "YES",
+        "Columns": "512",
+        "ConversionType": "WSD",
+        "ImageType": "DERIVED\\SECONDARY\\SCREEN SAVE",
+        "Manufacturer": "GE MEDICAL SYSTEMS",
+        "ManufacturerModelName": "Discovery ST",
+        "Modality": "OT",
+        "Rows": "512",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "Volume Viewer",
+        "SeriesNumber": "307",
+        "SoftwareVersions": "41.04"
+      }
+    }
+  ]
+}

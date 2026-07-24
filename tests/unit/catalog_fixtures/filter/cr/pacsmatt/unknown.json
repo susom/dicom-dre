@@ -1,0 +1,68 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "",
+        "Columns": "1266",
+        "ConversionType": "SI",
+        "Manufacturer": "PACSMATT",
+        "ManufacturerModelName": "",
+        "Modality": "CR",
+        "Rows": "1651",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SeriesNumber": "0"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "1272",
+        "ConversionType": "WSD",
+        "Manufacturer": "PACSMATT",
+        "Modality": "CR",
+        "Rows": "1649",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SeriesNumber": "0"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "",
+        "Columns": "1275",
+        "ConversionType": "SI",
+        "Manufacturer": "PACSMATT",
+        "ManufacturerModelName": "",
+        "Modality": "CR",
+        "Rows": "1650",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SeriesNumber": "99999"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "1275",
+        "ConversionType": "WSD",
+        "Manufacturer": "PACSMATT",
+        "Modality": "CR",
+        "Rows": "1650",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SeriesNumber": "99999"
+      }
+    }
+  ]
+}

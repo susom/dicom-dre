@@ -1,0 +1,157 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "2082",
+        "ConversionType": "DF",
+        "ImageType": "DERIVED\\SECONDARY",
+        "Manufacturer": "VIDAR",
+        "Modality": "CR",
+        "Rows": "2530",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "VIDAR",
+        "SeriesNumber": "1"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "2082",
+        "ConversionType": "DF",
+        "ImageType": "DERIVED\\SECONDARY",
+        "Manufacturer": "VIDAR",
+        "Modality": "CR",
+        "Rows": "2531",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "VIDAR",
+        "SeriesNumber": "1"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "2084",
+        "ConversionType": "DF",
+        "ImageType": "DERIVED\\SECONDARY",
+        "Manufacturer": "VIDAR",
+        "Modality": "CR",
+        "Rows": "2536",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "VIDAR",
+        "SeriesNumber": "1"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "2084",
+        "ConversionType": "DF",
+        "ImageType": "DERIVED\\SECONDARY",
+        "Manufacturer": "VIDAR",
+        "Modality": "CR",
+        "Rows": "2539",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "VIDAR",
+        "SeriesNumber": "1"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "2086",
+        "ConversionType": "DF",
+        "ImageType": "DERIVED\\SECONDARY",
+        "Manufacturer": "VIDAR",
+        "Modality": "CR",
+        "Rows": "2537",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "VIDAR",
+        "SeriesNumber": "1"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "2086",
+        "ConversionType": "DF",
+        "ImageType": "DERIVED\\SECONDARY",
+        "Manufacturer": "VIDAR",
+        "Modality": "CR",
+        "Rows": "2539",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "VIDAR",
+        "SeriesNumber": "1"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "2088",
+        "ConversionType": "DF",
+        "ImageType": "DERIVED\\SECONDARY",
+        "Manufacturer": "VIDAR",
+        "Modality": "CR",
+        "Rows": "2530",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "VIDAR",
+        "SeriesNumber": "1"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "2088",
+        "ConversionType": "DF",
+        "ImageType": "DERIVED\\SECONDARY",
+        "Manufacturer": "VIDAR",
+        "Modality": "CR",
+        "Rows": "2531",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "VIDAR",
+        "SeriesNumber": "1"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "2090",
+        "ConversionType": "DF",
+        "ImageType": "DERIVED\\SECONDARY",
+        "Manufacturer": "VIDAR",
+        "Modality": "CR",
+        "Rows": "2532",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "VIDAR",
+        "SeriesNumber": "1"
+      }
+    }
+  ]
+}

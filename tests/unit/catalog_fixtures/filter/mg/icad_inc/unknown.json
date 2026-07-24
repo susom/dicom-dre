@@ -1,0 +1,23 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "BREAST",
+        "BurnedInAnnotation": "NO",
+        "Columns": "2027",
+        "ImageType": "ORIGINAL\\PRIMARY\\",
+        "Manufacturer": "iCAD, Inc.",
+        "Modality": "MG",
+        "Rows": "2729",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.1.2",
+        "SeriesDescription": "",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "SL8.3A-04208A"
+      }
+    }
+  ]
+}

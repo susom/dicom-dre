@@ -1,0 +1,252 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "PELVIS",
+        "Columns": "1552",
+        "ConversionType": "WSD",
+        "ImageType": "ORIGINAL\\PRIMARY\\GYNECOLOGY\\0001",
+        "Manufacturer": "GE Healthcare",
+        "ManufacturerModelName": "LOGIQS8",
+        "Modality": "US",
+        "Rows": "970",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "LOGIQS8",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "LOGIQS8:R3.1.8"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "1024",
+        "ConversionType": "SI",
+        "ImageType": "ORIGINAL\\PRIMARY\\SMALL PARTS\\0001",
+        "Manufacturer": "GE Healthcare",
+        "ManufacturerModelName": "LOGIQS8",
+        "Modality": "US",
+        "Rows": "768",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "LOGIQS8",
+        "SeriesNumber": "0001",
+        "SoftwareVersions": "LOGIQS8:R1.5.9"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "1024",
+        "ConversionType": "SI",
+        "ImageType": "ORIGINAL\\PRIMARY\\SMALL PARTS\\0001",
+        "Manufacturer": "GE Healthcare",
+        "ManufacturerModelName": "LOGIQS8",
+        "Modality": "US",
+        "Rows": "768",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "LOGIQS8",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "LOGIQS8:R2.2.2"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "1024",
+        "ConversionType": "WSD",
+        "ImageType": "ORIGINAL\\PRIMARY\\ABDOMINAL\\0001",
+        "Manufacturer": "GE Healthcare",
+        "ManufacturerModelName": "LOGIQS8",
+        "Modality": "US",
+        "Rows": "768",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "LOGIQS8",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "LOGIQS8:R2.1.1"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "1024",
+        "ConversionType": "WSD",
+        "ImageType": "ORIGINAL\\PRIMARY\\SMALL PARTS\\0001",
+        "Manufacturer": "GE Healthcare",
+        "ManufacturerModelName": "LOGIQS8",
+        "Modality": "US",
+        "Rows": "768",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "LOGIQS8",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "LOGIQS8:R2.3.0"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "1024",
+        "ConversionType": "WSD",
+        "ImageType": "ORIGINAL\\PRIMARY\\VASCULAR\\0011",
+        "Manufacturer": "GE Healthcare",
+        "ManufacturerModelName": "LOGIQS8",
+        "Modality": "US",
+        "Rows": "768",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "LOGIQS8",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "LOGIQS8:R1.5.5"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "1092",
+        "ConversionType": "WSD",
+        "ImageType": "ORIGINAL\\PRIMARY\\ABDOMINAL\\0001",
+        "Manufacturer": "GE Healthcare",
+        "ManufacturerModelName": "LOGIQS8",
+        "Modality": "US",
+        "Rows": "819",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "LOGIQS8",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "LOGIQS8:R3.1.4"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "1164",
+        "ConversionType": "SI",
+        "ImageType": "ORIGINAL\\PRIMARY\\GYNECOLOGY\\0001",
+        "Manufacturer": "GE Healthcare",
+        "ManufacturerModelName": "LOGIQS8",
+        "Modality": "US",
+        "Rows": "873",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "LOGIQS8",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "LOGIQS8:R3.1.4"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "1280",
+        "ConversionType": "SI",
+        "ImageType": "ORIGINAL\\PRIMARY\\ABDOMINAL\\0001\\GEMSSINGLEFRAME\\GEMSMGCOUNT1",
+        "Manufacturer": "GE Healthcare",
+        "ManufacturerModelName": "LOGIQS8",
+        "Modality": "US",
+        "Rows": "720",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "LOGIQS8",
+        "SeriesNumber": "0001",
+        "SoftwareVersions": "LOGIQS8:R1.5.5"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "1280",
+        "ConversionType": "SI",
+        "ImageType": "ORIGINAL\\PRIMARY\\VASCULAR\\0001",
+        "Manufacturer": "GE Healthcare",
+        "ManufacturerModelName": "LOGIQS8",
+        "Modality": "US",
+        "Rows": "720",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "LOGIQS8",
+        "SeriesNumber": "0001",
+        "SoftwareVersions": "LOGIQS8:R1.5.7"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "1552",
+        "ConversionType": "SI",
+        "ImageType": "ORIGINAL\\PRIMARY\\VASCULAR\\0001\\GEMSSINGLEFRAME\\GEMSMGCOUNT1",
+        "Manufacturer": "GE Healthcare",
+        "ManufacturerModelName": "LOGIQS8",
+        "Modality": "US",
+        "Rows": "873",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "LOGIQS8",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "LOGIQS8:R3.1.2"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "960",
+        "ConversionType": "SI",
+        "ImageType": "ORIGINAL\\PRIMARY\\SMALL PARTS\\0001\\GEMSSINGLEFRAME\\GEMSMGCOUNT1",
+        "Manufacturer": "GE Healthcare",
+        "ManufacturerModelName": "LOGIQS8",
+        "Modality": "US",
+        "Rows": "720",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "LOGIQS8",
+        "SeriesNumber": "0001",
+        "SoftwareVersions": "LOGIQS8:R1.5.6"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "960",
+        "ConversionType": "WSD",
+        "ImageType": "ORIGINAL\\PRIMARY\\SMALL PARTS\\0001",
+        "Manufacturer": "GE Healthcare",
+        "ManufacturerModelName": "LOGIQS8",
+        "Modality": "US",
+        "Rows": "720",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "LOGIQS8",
+        "SeriesNumber": "0001",
+        "SoftwareVersions": "LOGIQS8:R1.5.4"
+      }
+    }
+  ]
+}

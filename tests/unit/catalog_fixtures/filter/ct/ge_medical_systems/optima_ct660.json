@@ -1,0 +1,58 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "512",
+        "CommentsOnRadiationDose": "TotalDLP=261.08\r\nEvent=1\r\nEvent=2\r\nEvent=3 DLP=261.08",
+        "ConversionType": "WSD",
+        "ImageType": "DERIVED\\SECONDARY\\SCREEN SAVE",
+        "Manufacturer": "GE MEDICAL SYSTEMS",
+        "ManufacturerModelName": "Optima CT660",
+        "Modality": "CT",
+        "Rows": "512",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SeriesNumber": "999"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "512",
+        "CommentsOnRadiationDose": "TotalDLP=645.04\r\nEvent=1\r\nEvent=2 DLP=645.04",
+        "ConversionType": "WSD",
+        "ImageType": "DERIVED\\SECONDARY\\SCREEN SAVE",
+        "Manufacturer": "GE MEDICAL SYSTEMS",
+        "ManufacturerModelName": "Optima CT660",
+        "Modality": "CT/SR",
+        "Rows": "512",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SeriesNumber": "999"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "512",
+        "CommentsOnRadiationDose": "TotalDLP=844.28\r\nEvent=1\r\nEvent=2\r\nEvent=3 DLP=844.28",
+        "ConversionType": "WSD",
+        "ImageType": "DERIVED\\SECONDARY\\SCREEN SAVE",
+        "Manufacturer": "GE MEDICAL SYSTEMS",
+        "ManufacturerModelName": "Optima CT660",
+        "Modality": "CT/PR",
+        "Rows": "512",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SeriesNumber": "999"
+      }
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": true,
+      "tags": {
+        "BodyPartExamined": "WHOLEBODY",
+        "BurnedInAnnotation": "YES",
+        "Columns": "512",
+        "ConversionType": "WSD",
+        "ImageType": "DERIVED\\SECONDARY\\SCREEN SAVE",
+        "Manufacturer": "GE MEDICAL SYSTEMS",
+        "ManufacturerModelName": "Discovery MI",
+        "Modality": "OT",
+        "Rows": "512",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "Volume Viewer",
+        "SeriesNumber": "1401",
+        "SoftwareVersions": "pet_columbia_digital.36"
+      }
+    }
+  ]
+}

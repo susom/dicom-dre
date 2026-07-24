@@ -1,0 +1,44 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BurnedInAnnotation": "YES",
+        "Columns": "632",
+        "ConversionType": "WSD",
+        "ImageType": "DERIVED\\SECONDARY\\INFO",
+        "Manufacturer": "Philips",
+        "ManufacturerModelName": "Precedence 16P",
+        "Modality": "CT",
+        "Rows": "632",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "EBW",
+        "SeriesNumber": "202",
+        "SoftwareVersions": "2.0.0"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BurnedInAnnotation": "YES",
+        "Columns": "632",
+        "ConversionType": "WSD",
+        "ImageType": "DERIVED\\SECONDARY\\INFO",
+        "Manufacturer": "Philips",
+        "ManufacturerModelName": "Precedence 16P",
+        "Modality": "CT",
+        "Rows": "632",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "EBW",
+        "SeriesNumber": "375797",
+        "SoftwareVersions": "2.0.0"
+      }
+    }
+  ]
+}

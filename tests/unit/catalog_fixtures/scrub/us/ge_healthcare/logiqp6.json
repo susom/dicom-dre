@@ -1,0 +1,24 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [
+        "0,0,566,60"
+      ],
+      "expected_scrubbed": true,
+      "tags": {
+        "Columns": "816",
+        "ImageType": "ORIGINAL\\PRIMARY\\SMALL PARTS\\0001\\GEMSSINGLEFRAME\\GEMSMGCOUNT1",
+        "Manufacturer": "GE Healthcare",
+        "ManufacturerModelName": "LOGIQP6",
+        "Modality": "US",
+        "Rows": "614",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+        "SequenceOfUltrasoundRegions": "present",
+        "SeriesNumber": "0002",
+        "SoftwareVersions": ":R3.0.5"
+      }
+    }
+  ]
+}

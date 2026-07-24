@@ -1,0 +1,25 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [
+        "0,0,888,48"
+      ],
+      "expected_scrubbed": true,
+      "tags": {
+        "BodyPartExamined": "",
+        "Columns": "888",
+        "ConversionType": "",
+        "ImageType": "Derived\\Secondary\\Decompressed 6:1",
+        "Manufacturer": "SIEMENS Ultrasound",
+        "ManufacturerModelName": "ELEGRA",
+        "Modality": "US",
+        "PixelSpacing": "0.301697\\0.301697",
+        "Rows": "666",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+        "SeriesNumber": "1"
+      }
+    }
+  ]
+}

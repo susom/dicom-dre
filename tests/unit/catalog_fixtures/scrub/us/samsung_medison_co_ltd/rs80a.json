@@ -1,0 +1,44 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [
+        "0,0,1152,72"
+      ],
+      "expected_scrubbed": true,
+      "tags": {
+        "Columns": "1152",
+        "ImageType": "ORIGINAL\\PRIMARY",
+        "Manufacturer": "SAMSUNG MEDISON CO.,LTD.",
+        "ManufacturerModelName": "RS80A",
+        "Modality": "US",
+        "Rows": "872",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+        "SequenceOfUltrasoundRegions": "present",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "1.00.06.1219_Region1"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [
+        "0,0,1280,72"
+      ],
+      "expected_scrubbed": true,
+      "tags": {
+        "Columns": "1280",
+        "ImageType": "ORIGINAL\\PRIMARY",
+        "Manufacturer": "SAMSUNG MEDISON CO.,LTD.",
+        "ManufacturerModelName": "RS80A",
+        "Modality": "US",
+        "Rows": "872",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+        "SequenceOfUltrasoundRegions": "present",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "2.00.05.1201_Region1"
+      }
+    }
+  ]
+}

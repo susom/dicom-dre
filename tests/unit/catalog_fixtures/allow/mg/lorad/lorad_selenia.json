@@ -1,0 +1,24 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "BREAST",
+        "BurnedInAnnotation": "NO",
+        "Columns": "3328",
+        "ImageType": "DERIVED\\SECONDARY",
+        "Manufacturer": "LORAD",
+        "ManufacturerModelName": "Lorad Selenia",
+        "Modality": "MG",
+        "PixelSpacing": "0.0700\\0.0700",
+        "Rows": "4096",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.1.2",
+        "SeriesNumber": "2",
+        "SoftwareVersions": "AWS:MAMMODROC_3_4_2_9\\PXCM:1.4.1.0\\ARR:1.7.4.7\\IP:4.13.3"
+      }
+    }
+  ]
+}

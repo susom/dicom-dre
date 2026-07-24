@@ -1,0 +1,101 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "BREAST",
+        "BurnedInAnnotation": "NO",
+        "Columns": "1140",
+        "ImageType": "DERIVED\\PRIMARY\\TOMO\\LEFT",
+        "Manufacturer": "SIEMENS",
+        "ManufacturerModelName": "Mammomat Inspiration",
+        "Modality": "MG",
+        "PixelSpacing": "0.085\\0.085",
+        "Rows": "2200",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.2",
+        "SeriesNumber": "8",
+        "SoftwareVersions": "VB60G\\VX20C SL06P06 syngo VH22B SL19P26\\Aws SW versions\\Aws\\ device\\ versions"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "BREAST",
+        "BurnedInAnnotation": "NO",
+        "Columns": "1200",
+        "ImageType": "DERIVED\\PRIMARY\\TOMOSYNTHESIS\\LEFT",
+        "Manufacturer": "SIEMENS",
+        "ManufacturerModelName": "Mammomat Inspiration",
+        "Modality": "MG",
+        "Rows": "2680",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.13.1.3",
+        "SeriesNumber": "4",
+        "SoftwareVersions": "VB60D\\VX20A  SL21P21 syngo VH22B SL19P26\\Aws SW versions\\Aws\\device\\versions"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "BREAST",
+        "BurnedInAnnotation": "NO",
+        "Columns": "1302",
+        "ImageType": "DERIVED\\PRIMARY\\TOMO\\RIGHT",
+        "Manufacturer": "SIEMENS",
+        "ManufacturerModelName": "Mammomat Inspiration",
+        "Modality": "MG",
+        "PixelSpacing": "0.085\\0.085",
+        "Rows": "2750",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.2",
+        "SeriesNumber": "12",
+        "SoftwareVersions": "VB61A\\VC30A  SL43P44 syngo VI10A SL46P60 (VZ10A)\\Aws SW versions\\Aws\\device\\versions"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "BREAST",
+        "BurnedInAnnotation": "NO",
+        "Columns": "1372",
+        "ImageType": "DERIVED\\PRIMARY\\TOMOSYNTHESIS\\RIGHT",
+        "Manufacturer": "SIEMENS",
+        "ManufacturerModelName": "Mammomat Inspiration",
+        "Modality": "MG",
+        "Rows": "3480",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.13.1.3",
+        "SeriesNumber": "10",
+        "SoftwareVersions": "VB60D\\VX20A  SL21P21 syngo VH22B SL19P26\\Aws SW versions\\Aws\\device\\versions"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "BREAST",
+        "BurnedInAnnotation": "NO",
+        "Columns": "2812",
+        "ImageType": "DERIVED\\PRIMARY\\\\RIGHT",
+        "Manufacturer": "SIEMENS",
+        "ManufacturerModelName": "Mammomat Inspiration",
+        "Modality": "MG",
+        "Rows": "3528",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.1.2",
+        "SeriesNumber": "2",
+        "SoftwareVersions": "VB60D"
+      }
+    }
+  ]
+}

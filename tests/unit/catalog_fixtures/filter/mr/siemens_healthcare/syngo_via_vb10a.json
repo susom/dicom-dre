@@ -1,0 +1,38 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "1600",
+        "ConversionType": "SYN",
+        "ImageType": "DERIVED\\SECONDARY\\\\SWI\\NORM\\DIS2D",
+        "Manufacturer": "Siemens Healthcare",
+        "ManufacturerModelName": "syngo.via.VB10A",
+        "Modality": "MR",
+        "Rows": "1121",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SeriesNumber": "1008"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "927",
+        "ConversionType": "SYN",
+        "ImageType": "DERIVED\\SECONDARY\\\\SWI\\NORM\\DIS2D",
+        "Manufacturer": "Siemens Healthcare",
+        "ManufacturerModelName": "syngo.via.VB10A",
+        "Modality": "MR",
+        "Rows": "952",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SeriesNumber": "1008"
+      }
+    }
+  ]
+}

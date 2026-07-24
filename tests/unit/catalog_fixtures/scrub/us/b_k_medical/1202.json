@@ -1,0 +1,26 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [
+        "0,0,1024,147",
+        "911,518,99,95"
+      ],
+      "expected_scrubbed": true,
+      "tags": {
+        "BurnedInAnnotation": "YES",
+        "Columns": "1024",
+        "ImageType": "",
+        "Manufacturer": "B-K Medical",
+        "ManufacturerModelName": "1202",
+        "Modality": "US",
+        "Rows": "1072",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+        "SequenceOfUltrasoundRegions": "present",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "4.64.11165.12"
+      }
+    }
+  ]
+}

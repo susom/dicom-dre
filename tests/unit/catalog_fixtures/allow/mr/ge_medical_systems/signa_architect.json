@@ -1,0 +1,24 @@
+{
+  "entries": [
+    {
+      "description": "Ax T1 IR FSPGR",
+      "expected_filtered": false,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "BRAIN",
+        "Columns": "512",
+        "ImageType": "DERIVED\\SECONDARY\\REFORMATTED\\AVERAGE",
+        "Manufacturer": "GE MEDICAL SYSTEMS",
+        "ManufacturerModelName": "SIGNA Architect",
+        "Modality": "MR",
+        "PixelSpacing": "0.48828125\\0.48828125",
+        "Rows": "512",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.4",
+        "SeriesDescription": "Ax T1 IR FSPGR",
+        "SeriesNumber": "201",
+        "SoftwareVersions": "29\\LX\\DV29.1_R01_2111.a"
+      }
+    }
+  ]
+}

@@ -1,0 +1,84 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "CHEST",
+        "Columns": "2368",
+        "ConversionType": "WSD",
+        "ImageType": "ORIGINAL\\SECONDARY",
+        "Manufacturer": "Lexmark",
+        "ManufacturerModelName": "",
+        "Modality": "CR",
+        "Rows": "2992",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "PACSSCAN",
+        "SeriesNumber": "2",
+        "SoftwareVersions": "V1.0"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "CHEST",
+        "Columns": "2548",
+        "ConversionType": "WSD",
+        "ImageType": "ORIGINAL\\SECONDARY",
+        "Manufacturer": "Lexmark",
+        "ManufacturerModelName": "",
+        "Modality": "CR",
+        "Rows": "3300",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "PACSSCAN",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "V1.0"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "",
+        "Columns": "1272",
+        "ConversionType": "WSD",
+        "ImageType": "ORIGINAL\\SECONDARY",
+        "Manufacturer": "Lexmark",
+        "ManufacturerModelName": "",
+        "Modality": "CR",
+        "Rows": "1648",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "PACSSCAN",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "V1.0"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "",
+        "Columns": "844",
+        "ConversionType": "WSD",
+        "ImageType": "ORIGINAL\\SECONDARY",
+        "Manufacturer": "Lexmark",
+        "ManufacturerModelName": "",
+        "Modality": "CR",
+        "Rows": "1068",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "PACSSCAN",
+        "SeriesNumber": "9999",
+        "SoftwareVersions": "V1.0"
+      }
+    }
+  ]
+}

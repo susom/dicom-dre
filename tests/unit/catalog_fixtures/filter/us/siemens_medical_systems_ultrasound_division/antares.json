@@ -1,0 +1,22 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BurnedInAnnotation": "NO",
+        "Columns": "1024",
+        "ImageType": "ORIGINAL\\PRIMARY\\ADULT ECHO\\0000",
+        "Manufacturer": "Siemens Medical Systems - Ultrasound Division",
+        "ManufacturerModelName": "Antares",
+        "Modality": "US",
+        "Rows": "768",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "200.0.089A (VE31F  SL04P09)"
+      }
+    }
+  ]
+}

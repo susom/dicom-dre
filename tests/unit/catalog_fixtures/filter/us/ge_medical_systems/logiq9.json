@@ -1,0 +1,177 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "1015",
+        "ConversionType": "SYN",
+        "ImageType": "DERIVED\\SECONDARY",
+        "Manufacturer": "GE Medical Systems",
+        "ManufacturerModelName": "LOGIQ9",
+        "Modality": "US",
+        "PixelSpacing": "0.0588792\\0.0588792",
+        "Rows": "718",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "Report Snapshot",
+        "SeriesNumber": "1000"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "1024",
+        "ConversionType": "WSD",
+        "ImageType": "DERIVED\\PRIMARY\\ABDOMINAL\\0001",
+        "Manufacturer": "GE Medical Systems",
+        "ManufacturerModelName": "LOGIQ9",
+        "Modality": "US",
+        "Rows": "768",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "LOGIQ9",
+        "SeriesNumber": "0001",
+        "SoftwareVersions": "LOGIQ9:R7.0.2"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "1024",
+        "ConversionType": "WSD",
+        "ImageType": "ORIGINAL\\PRIMARY\\OBSTETRICAL\\0001",
+        "Manufacturer": "GE Medical Systems",
+        "ManufacturerModelName": "LOGIQ9",
+        "Modality": "US",
+        "Rows": "989",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "LOGIQ9",
+        "SeriesNumber": "0001",
+        "SoftwareVersions": "LOGIQ9:R7.0.5"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "",
+        "Columns": "1024",
+        "ConversionType": "WSD",
+        "ImageType": "ORIGINAL\\PRIMARY\\SMALL PARTS\\0011",
+        "Manufacturer": "GE Medical Systems",
+        "ManufacturerModelName": "LOGIQ9",
+        "Modality": "US",
+        "Rows": "768",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "LOGIQ9",
+        "SeriesDescription": "",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "LOGIQ9:R7.0.4"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "1024",
+        "ConversionType": "WSD",
+        "ImageType": "ORIGINAL\\PRIMARY\\VASCULAR\\0000",
+        "Manufacturer": "GE Medical Systems",
+        "ManufacturerModelName": "LOGIQ9",
+        "Modality": "US",
+        "Rows": "768",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "LOGIQ9",
+        "SeriesNumber": "0001",
+        "SoftwareVersions": "LOGIQ9:R7.0.5"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "640",
+        "ConversionType": "WSD",
+        "ImageType": "ORIGINAL\\PRIMARY\\SMALL PARTS\\0000",
+        "Manufacturer": "GE Medical Systems",
+        "ManufacturerModelName": "LOGIQ9",
+        "Modality": "US",
+        "Rows": "480",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "LOGIQ9",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "LOGIQ9:R3.0.11"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "640",
+        "ConversionType": "WSD",
+        "ImageType": "ORIGINAL\\PRIMARY\\SMALL PARTS\\0001",
+        "Manufacturer": "GE Medical Systems",
+        "ManufacturerModelName": "LOGIQ9",
+        "Modality": "US",
+        "Rows": "480",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "LOGIQ9",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "LOGIQ9:R3.0.11"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "640",
+        "ConversionType": "WSD",
+        "ImageType": "ORIGINAL\\PRIMARY\\SMALL PARTS\\0011",
+        "Manufacturer": "GE Medical Systems",
+        "ManufacturerModelName": "LOGIQ9",
+        "Modality": "US",
+        "Rows": "480",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "LOGIQ9",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "LOGIQ9:R3.0.11"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "800",
+        "ConversionType": "WSD",
+        "ImageType": "ORIGINAL\\PRIMARY\\SMALL PARTS\\0001",
+        "Manufacturer": "GE Medical Systems",
+        "ManufacturerModelName": "LOGIQ9",
+        "Modality": "US",
+        "Rows": "600",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "LOGIQ9",
+        "SeriesNumber": "0001",
+        "SoftwareVersions": "LOGIQ9:R2.4.0"
+      }
+    }
+  ]
+}

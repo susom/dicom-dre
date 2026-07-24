@@ -1,0 +1,41 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "",
+        "Columns": "1024",
+        "Manufacturer": "NAI Tech Products, Inc.",
+        "ManufacturerModelName": "the DiCOM box",
+        "Modality": "CR",
+        "Rows": "940",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.1",
+        "SeriesDescription": "",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "6.14"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "",
+        "Columns": "490",
+        "ConversionType": "DV",
+        "Manufacturer": "NAI Tech Products, Inc.",
+        "ManufacturerModelName": "the DiCOM box",
+        "Modality": "CR",
+        "Rows": "468",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SeriesDescription": "",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "6.14"
+      }
+    }
+  ]
+}

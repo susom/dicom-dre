@@ -1,0 +1,22 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "512",
+        "CommentsOnRadiationDose": "TotalDLP=1780.25\r\nEvent=1\r\nEvent=2\r\nEvent=3 DLP=152.16\r\nEvent=4 DLP=160.25\r\nEvent=5 DLP=160.29\r\nEvent=6 DLP=159.89\r\nEvent=7 DLP=1.10\r\nEvent=8 DLP=1.10\r\nEvent=9 DLP=1.10\r\nEvent=10 DLP=1.10\r\nEvent=11 DLP=1.10\r\nEvent=12 DLP=1.10\r\nEvent=13 DLP=1.10\r\nEvent=14 DLP=1.10\r\nEvent=15 DLP=1.10\r\nEvent=16 DLP=1.10\r\nEvent=17 DLP=1.10\r\nEvent=18 DLP=1.10\r\nEvent=19 DLP=1.30",
+        "ConversionType": "WSD",
+        "ImageType": "DERIVED\\SECONDARY\\SCREEN SAVE",
+        "Manufacturer": "GE MEDICAL SYSTEMS",
+        "ManufacturerModelName": "Optima CT580",
+        "Modality": "CT",
+        "Rows": "512",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SeriesNumber": "999"
+      }
+    }
+  ]
+}

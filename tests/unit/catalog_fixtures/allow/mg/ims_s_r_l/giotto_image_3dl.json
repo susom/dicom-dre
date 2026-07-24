@@ -1,0 +1,23 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "BREAST",
+        "BurnedInAnnotation": "NO",
+        "Columns": "2727",
+        "ImageType": "DERIVED\\PRIMARY\\",
+        "Manufacturer": "IMS s.r.l.",
+        "ManufacturerModelName": "GIOTTO IMAGE 3DL",
+        "Modality": "MG",
+        "Rows": "3488",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.1.2",
+        "SeriesNumber": "2",
+        "SoftwareVersions": "Raffaello 1.5.4.2 - IMSProc 2.3.1.10"
+      }
+    }
+  ]
+}

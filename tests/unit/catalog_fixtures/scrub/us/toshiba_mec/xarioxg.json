@@ -1,0 +1,45 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [
+        "0,0,716,40"
+      ],
+      "expected_scrubbed": true,
+      "tags": {
+        "Columns": "716",
+        "ImageType": "ORIGINAL\\PRIMARY\\US IMAGE\\0001",
+        "Manufacturer": "TOSHIBA_MEC",
+        "ManufacturerModelName": "XarioXG",
+        "Modality": "US",
+        "Rows": "537",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+        "SequenceOfUltrasoundRegions": "present",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "V10.00"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [
+        "0,0,800,40"
+      ],
+      "expected_scrubbed": true,
+      "tags": {
+        "Columns": "800",
+        "ImageType": "ORIGINAL\\PRIMARY\\US IMAGE\\0011",
+        "Manufacturer": "TOSHIBA_MEC",
+        "ManufacturerModelName": "XarioXG",
+        "Modality": "US",
+        "PixelSpacing": "0.10526316\\0.10526316",
+        "Rows": "600",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+        "SequenceOfUltrasoundRegions": "present",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "V10.00"
+      }
+    }
+  ]
+}

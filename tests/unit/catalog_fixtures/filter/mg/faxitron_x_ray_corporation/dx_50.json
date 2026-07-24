@@ -1,0 +1,24 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "BREAST",
+        "BurnedInAnnotation": "NO",
+        "Columns": "2368",
+        "ImageType": "ORIGINAL",
+        "Manufacturer": "Faxitron X-Ray Corporation",
+        "ManufacturerModelName": "DX-50",
+        "Modality": "MG",
+        "PixelSpacing": "0.05\\0.05",
+        "Rows": "2340",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.1.2",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "Faxitron SR v1.3.2, EPROM v2.1"
+      }
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "1536",
+        "ImageType": "ORIGINAL/PRIMARY",
+        "Manufacturer": "KUBTEC",
+        "ManufacturerModelName": "XPERT",
+        "Modality": "MG",
+        "PixelSpacing": "7.5e-002\\7.5e-002",
+        "Rows": "1944",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.1.2",
+        "SeriesNumber": "1"
+      }
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "",
+        "Columns": "1153",
+        "ConversionType": "WSD",
+        "ImageType": "ORIGINAL\\PRIMARY\\GYNECOLOGY\\0040",
+        "Manufacturer": "GE Medical Systems",
+        "ManufacturerModelName": "LOGIQworks",
+        "Modality": "US",
+        "Rows": "938",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "LOGIQworks",
+        "SeriesDescription": "",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "LOGIQworks:LWR3.0.4.95"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "",
+        "Columns": "1189",
+        "ConversionType": "WSD",
+        "ImageType": "ORIGINAL\\PRIMARY\\GYNECOLOGY\\0040",
+        "Manufacturer": "GE Medical Systems",
+        "ManufacturerModelName": "LOGIQworks",
+        "Modality": "US",
+        "Rows": "976",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "LOGIQworks",
+        "SeriesDescription": "",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "LOGIQworks:LWR3.0.4.95"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "922",
+        "ConversionType": "WSD",
+        "ImageType": "ORIGINAL\\PRIMARY\\SMALL PARTS\\0000",
+        "Manufacturer": "GE Medical Systems",
+        "ManufacturerModelName": "LOGIQworks",
+        "Modality": "US",
+        "Rows": "851",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "LOGIQworks",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "LOGIQworks:LWR3.0.9.151"
+      }
+    }
+  ]
+}

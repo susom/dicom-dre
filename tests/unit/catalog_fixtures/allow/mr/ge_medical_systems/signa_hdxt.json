@@ -1,0 +1,148 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "256",
+        "ImageType": "ORIGINAL\\PRIMARY\\OTHER",
+        "Manufacturer": "GE MEDICAL SYSTEMS",
+        "ManufacturerModelName": "Signa HDxt",
+        "Modality": "MR",
+        "PixelSpacing": "0.8594\\0.8594",
+        "Rows": "256",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.4",
+        "SeriesNumber": "7",
+        "SoftwareVersions": "15\\LX\\MR Software release:15.0_M4A_0947.a"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "256",
+        "ImageType": "ORIGINAL\\PRIMARY\\OTHER",
+        "Manufacturer": "GE MEDICAL SYSTEMS",
+        "ManufacturerModelName": "Signa HDxt",
+        "Modality": "MR",
+        "PixelSpacing": "0.9375\\0.9375",
+        "Rows": "256",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.4",
+        "SeriesNumber": "4",
+        "SoftwareVersions": "15\\LX\\MR Software release:15.0_M4A_0947.a"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "256",
+        "ImageType": "ORIGINAL\\PRIMARY\\OTHER",
+        "Manufacturer": "GE MEDICAL SYSTEMS",
+        "ManufacturerModelName": "Signa HDxt",
+        "Modality": "MR",
+        "PixelSpacing": "1.0156\\1.0156",
+        "Rows": "256",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.4",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "15\\LX\\MR Software release:15.0_M4A_0947.a"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "512",
+        "ImageType": "ORIGINAL\\PRIMARY\\OTHER",
+        "Manufacturer": "GE MEDICAL SYSTEMS",
+        "ManufacturerModelName": "Signa HDxt",
+        "Modality": "MR",
+        "PixelSpacing": "0.2734\\0.2734",
+        "Rows": "512",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.4",
+        "SeriesNumber": "4",
+        "SoftwareVersions": "23\\LX\\MR Software release:HD23.0_V03_1614.b"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "512",
+        "ImageType": "ORIGINAL\\PRIMARY\\OTHER",
+        "Manufacturer": "GE MEDICAL SYSTEMS",
+        "ManufacturerModelName": "Signa HDxt",
+        "Modality": "MR",
+        "PixelSpacing": "0.4297\\0.4297",
+        "Rows": "512",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.4",
+        "SeriesNumber": "3",
+        "SoftwareVersions": "15\\LX\\MR Software release:15.0_M4A_0947.a"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "512",
+        "ImageType": "ORIGINAL\\PRIMARY\\OTHER",
+        "Manufacturer": "GE MEDICAL SYSTEMS",
+        "ManufacturerModelName": "Signa HDxt",
+        "Modality": "MR",
+        "PixelSpacing": "0.4688\\0.4688",
+        "Rows": "512",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.4",
+        "SeriesNumber": "5",
+        "SoftwareVersions": "15\\LX\\MR Software release:15.0_M4A_0947.a"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "512",
+        "ImageType": "ORIGINAL\\PRIMARY\\OTHER",
+        "Manufacturer": "GE MEDICAL SYSTEMS",
+        "ManufacturerModelName": "Signa HDxt",
+        "Modality": "MR",
+        "PixelSpacing": "0.4688\\0.4688",
+        "Rows": "512",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.4",
+        "SeriesNumber": "6",
+        "SoftwareVersions": "15\\LX\\MR Software release:15.0_M4A_0947.a"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "64",
+        "ImageType": "ORIGINAL\\PRIMARY\\OTHER",
+        "Manufacturer": "GE MEDICAL SYSTEMS",
+        "ManufacturerModelName": "Signa HDxt",
+        "Modality": "MR",
+        "PixelSpacing": "4.6875\\4.6875",
+        "Rows": "64",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.4",
+        "SeriesNumber": "2",
+        "SoftwareVersions": "15\\LX\\MR Software release:15.0_M4A_0947.a"
+      }
+    }
+  ]
+}

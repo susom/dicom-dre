@@ -1,0 +1,22 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "512",
+        "CommentsOnRadiationDose": "TotalDLP=1621.85\r\nEvent=1\r\nEvent=2\r\nEvent=3 DLP=239.01\r\nEvent=4 DLP=157.93\r\nEvent=5 DLP=1125.23\r\nEvent=6 DLP=99.68",
+        "ConversionType": "WSD",
+        "ImageType": "DERIVED\\SECONDARY\\SCREEN SAVE",
+        "Manufacturer": "GE MEDICAL SYSTEMS",
+        "ManufacturerModelName": "Discovery 690",
+        "Modality": "CT",
+        "Rows": "512",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SeriesNumber": "999"
+      }
+    }
+  ]
+}

@@ -1,0 +1,92 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [
+        "0,0,453,100"
+      ],
+      "expected_scrubbed": true,
+      "tags": {
+        "BurnedInAnnotation": "NO",
+        "Columns": "453",
+        "ConversionType": "WSD",
+        "ImageType": "DERIVED\\PRIMARY",
+        "Manufacturer": "Philips Medical Systems",
+        "ManufacturerModelName": "Guardian Body(C)",
+        "Modality": "PT",
+        "Rows": "918",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "EBW 3.0",
+        "SeriesNumber": "22710453",
+        "SoftwareVersions": "9.3.1\\PMSPT1.44\\PMS5.2 MIT PIIMDictionary"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [
+        "0,0,546,100"
+      ],
+      "expected_scrubbed": true,
+      "tags": {
+        "BurnedInAnnotation": "NO",
+        "Columns": "546",
+        "ConversionType": "WSD",
+        "ImageType": "DERIVED\\PRIMARY",
+        "Manufacturer": "Philips Medical Systems",
+        "ManufacturerModelName": "Guardian Body(C)",
+        "Modality": "PT",
+        "Rows": "918",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "EBW 3.0",
+        "SeriesNumber": "2271031",
+        "SoftwareVersions": "9.3.1\\PMSPT1.44\\PMS5.2 MIT PIIMDictionary"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [
+        "0,0,638,110"
+      ],
+      "expected_scrubbed": true,
+      "tags": {
+        "BurnedInAnnotation": "NO",
+        "Columns": "638",
+        "ConversionType": "WSD",
+        "ImageType": "DERIVED\\PRIMARY",
+        "Manufacturer": "Philips Medical Systems",
+        "ManufacturerModelName": "Guardian Body(C)",
+        "Modality": "PT",
+        "Rows": "907",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "EBW 3.0",
+        "SeriesNumber": "22710343",
+        "SoftwareVersions": "9.3.1\\PMSPT1.44\\PMS5.2 MIT PIIMDictionary"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [
+        "0,0,638,80"
+      ],
+      "expected_scrubbed": true,
+      "tags": {
+        "BurnedInAnnotation": "NO",
+        "Columns": "638",
+        "ConversionType": "WSD",
+        "ImageType": "DERIVED\\PRIMARY",
+        "Manufacturer": "Philips Medical Systems",
+        "ManufacturerModelName": "Guardian Body(C)",
+        "Modality": "PT",
+        "Rows": "839",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "EBW 3.0",
+        "SeriesNumber": "2271062",
+        "SoftwareVersions": "9.3.1\\PMSPT1.44\\PMS5.2 MIT PIIMDictionary"
+      }
+    }
+  ]
+}

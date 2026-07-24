@@ -1,0 +1,21 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "128",
+        "ImageType": "ORIGINAL\\PRIMARY",
+        "Manufacturer": "GEMS",
+        "ManufacturerModelName": "Advance",
+        "Modality": "PT",
+        "PixelSpacing": "4.296875\\4.296875",
+        "Rows": "128",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.128",
+        "SoftwareVersions": "06.00"
+      }
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  // File Management
+  "files.exclude": {
+    "**/__pycache__": true,
+    "**/.ipynb_checkpoints": true,
+    "**/.venv": true,
+    "**/.ruff_cache": true,
+    "**/.coverage": true,
+    "**/.cache": true,
+    "**/.pytest_cache": true,
+    "**/*.so": true
+  },
+  "files.insertFinalNewline": true,
+  "files.trimTrailingWhitespace": true,
+
+  // Editor Settings
+  "editor.formatOnSave": false, // DO NOT TURN THIS ON HERE, USE THE LANGUAGE SPECIFIC SETTINGS
+
+  // Language-Specific Formatting
+  "[python]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "charliermarsh.ruff",
+    "editor.codeActionsOnSave": {
+      "source.fixAll.ruff": "explicit",
+      "source.organizeImports.ruff": "explicit",
+      "source.format.ruff": "explicit"
+    }
+  },
+
+  // Type checking (Pyrefly). The Pyrefly editor extension and the pyrefly CLI
+  // (used in CI) share the same engine and read the same [tool.pyrefly] config
+  // in pyproject.toml, so project-includes/project-excludes/python-version live
+  // there (single source of truth). Pylance's own type checking is turned off
+  // so Pyrefly is the single source of type diagnostics (Pylance still provides
+  // completions, hover, and navigation).
+  "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
+  "python.analysis.typeCheckingMode": "off",
+
+  // Testing
+  "python.testing.pytestArgs": ["tests/unit"],
+  "python.testing.unittestEnabled": false,
+  "python.testing.pytestEnabled": true,
+
+  // Git Settings
+  "git.openRepositoryInParentFolders": "always"
+}

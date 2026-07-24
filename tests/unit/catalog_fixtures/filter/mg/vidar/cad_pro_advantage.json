@@ -1,0 +1,27 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "BREAST",
+        "BurnedInAnnotation": "NO",
+        "Columns": "2100",
+        "ConversionType": "WSD",
+        "ImageType": "ORIGINAL\\SECONDARY",
+        "Manufacturer": "Vidar",
+        "ManufacturerModelName": "CAD Pro Advantage",
+        "Modality": "MG",
+        "PixelSpacing": "0.084667\\0.084667",
+        "Rows": "2816",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.1.2",
+        "SecondaryCaptureDeviceManufacturerModelName": "PACSSCAN",
+        "SeriesDescription": "",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "V1.0"
+      }
+    }
+  ]
+}

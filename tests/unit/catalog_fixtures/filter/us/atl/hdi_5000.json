@@ -1,0 +1,79 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BurnedInAnnotation": "NO",
+        "Columns": "640",
+        "ImageType": "DERIVED\\PRIMARY",
+        "Manufacturer": "ATL",
+        "ManufacturerModelName": "HDI 5000",
+        "Modality": "US",
+        "Rows": "476",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+        "SequenceOfUltrasoundRegions": "present",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "4252-0977-07 200.23"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BurnedInAnnotation": "NO",
+        "Columns": "640",
+        "ImageType": "ORIGINAL\\PRIMARY",
+        "Manufacturer": "ATL",
+        "ManufacturerModelName": "HDI 5000",
+        "Modality": "US",
+        "Rows": "476",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+        "SequenceOfUltrasoundRegions": "present",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "4252-0946-28 195.31"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BurnedInAnnotation": "NO",
+        "Columns": "640",
+        "ImageType": "ORIGINAL\\PRIMARY\\\\0001",
+        "Manufacturer": "ATL",
+        "ManufacturerModelName": "HDI 5000",
+        "Modality": "US",
+        "Rows": "476",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.6",
+        "SequenceOfUltrasoundRegions": "present",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "4252-0867-12 127.13"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "640",
+        "ImageType": "ORIGINAL\\PRIMARY\\\\",
+        "Manufacturer": "ATL",
+        "ManufacturerModelName": "HDI 5000",
+        "Modality": "US",
+        "Rows": "476",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+        "SequenceOfUltrasoundRegions": "present",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "4252-0996-07 210.14"
+      }
+    }
+  ]
+}

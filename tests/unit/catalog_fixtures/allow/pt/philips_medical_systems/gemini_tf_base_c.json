@@ -1,0 +1,22 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "144",
+        "ImageType": "ORIGINAL\\PRIMARY",
+        "Manufacturer": "Philips Medical Systems",
+        "ManufacturerModelName": "Gemini TF Base(C)",
+        "Modality": "PT",
+        "PixelSpacing": "4\\4",
+        "Rows": "144",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.128",
+        "SeriesNumber": "729910",
+        "SoftwareVersions": "9.4\\PMSPT1.44"
+      }
+    }
+  ]
+}

@@ -1,0 +1,67 @@
+name: ci
+
+on:
+  push:
+    branches: [main, development]
+  pull_request:
+    branches: [main, development]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # hatch-vcs needs full history/tags to derive the version
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+
+      - name: Sync dependencies
+        run: uv sync --frozen
+
+      - name: Compile JPEG-DCT acceleration extension
+        run: |
+          (cd src && uv run python -m dicom_dre._jpeg_dct_accel_build)
+          rm -f src/dicom_dre/_jpeg_dct_accel.c src/dicom_dre/_jpeg_dct_accel.o
+
+      - name: Ruff lint
+        run: uv run ruff check .
+
+      - name: Ruff format check
+        run: uv run ruff format --check .
+
+      - name: Type check (pyrefly)
+        run: uv run pyrefly check
+
+      - name: Tests
+        run: uv run pytest
+
+  # Verify the engine still imports and passes without the compiled CFFI
+  # extension (the pure-Python entropy-codec fallback).
+  fallback:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+
+      - name: Sync dependencies
+        run: uv sync --frozen
+
+      - name: Tests without compiled extension
+        run: uv run pytest

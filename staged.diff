@@ -1,0 +1,203 @@
+diff --git a/docs/device-catalog.md b/docs/device-catalog.md
+index 2ac5975..df2247f 100644
+--- a/docs/device-catalog.md
++++ b/docs/device-catalog.md
+@@ -131,7 +131,6 @@ fields match. When a field is given a list, the list uses OR semantics.
+ | `modality` | `Modality` (0008,0060) | `CT`, `CR`, `DX`, `MR`, `US`, etc. |
+ | `manufacturer_model_name` | `ManufacturerModelName` (0008,1090) | Device model |
+ | `software_versions` | `SoftwareVersions` (0018,1020) | Firmware/software revision |
+-| `station_name` | `StationName` (0008,1010) | Acquisition station |
+ | `image_type` | `ImageType` (0008,0008) | All listed components must appear |
+ | `image_type_any` | `ImageType` (0008,0008) | At least one component must appear |
+ | `image_type_exclude` | `ImageType` (0008,0008) | None of the components may appear |
+diff --git a/src/starr_imaging/core/anonymizer/catalog.py b/src/starr_imaging/core/anonymizer/catalog.py
+index 94ed45d..4436727 100644
+--- a/src/starr_imaging/core/anonymizer/catalog.py
++++ b/src/starr_imaging/core/anonymizer/catalog.py
+@@ -213,7 +213,6 @@ class DicomTags:
+             "ManufacturerModelName",
+             "Modality",
+             "SoftwareVersions",
+-            "StationName",
+             "ImageType",
+             "Rows",
+             "Columns",
+@@ -226,8 +225,6 @@ class DicomTags:
+             "BodyPartExamined",
+             "PixelSpacing",
+             "SecondaryCaptureDeviceManufacturerModelName",
+-            "DerivationDescription",
+-            "WindowWidth",
+             "CodeMeaning",
+             "CommentsOnRadiationDose",
+             "SequenceOfUltrasoundRegions",
+@@ -290,7 +287,6 @@ class DeviceRule:
+     modality: str | list[str] | None = None
+     manufacturer_model_name: str | list[str] | None = None
+     software_versions: str | list[str] | None = None
+-    station_name: str | list[str] | None = None
+     image_type: str | list[str] | None = None
+     image_type_any: str | list[str] | None = None
+     image_type_exclude: str | list[str] | None = None
+@@ -319,7 +315,6 @@ def device(
+     modality: str | list[str] | None = None,
+     manufacturer_model_name: str | list[str] | None = None,
+     software_versions: str | list[str] | None = None,
+-    station_name: str | list[str] | None = None,
+     image_type: str | list[str] | None = None,
+     image_type_any: str | list[str] | None = None,
+     image_type_exclude: str | list[str] | None = None,
+@@ -349,7 +344,6 @@ def device(
+         modality: Modality pattern(s).
+         manufacturer_model_name: Model name pattern(s).
+         software_versions: Software version pattern(s).
+-        station_name: Station name pattern(s).
+         image_type: Required Image Type component(s) — all must appear.
+         image_type_any: Image Type component(s) — at least one must appear.
+         image_type_exclude: Image Type component(s) — none may appear.
+@@ -387,7 +381,6 @@ def device(
+         modality=modality,
+         manufacturer_model_name=manufacturer_model_name,
+         software_versions=software_versions,
+-        station_name=station_name,
+         image_type=image_type,
+         image_type_any=image_type_any,
+         image_type_exclude=image_type_exclude,
+@@ -591,8 +584,6 @@ def _match_device(rule: DeviceRule, tags: DicomTags) -> bool:
+         return False
+     if not _match_field(rule.software_versions, tags.get("SoftwareVersions")):
+         return False
+-    if not _match_field(rule.station_name, tags.get("StationName")):
+-        return False
+     if not _match_field(rule.burned_in_annotation, tags.get("BurnedInAnnotation")):
+         return False
+     if not _match_field(rule.sop_class_uid, tags.get("SOPClassUID")):
+diff --git a/src/starr_imaging/flows/regression/fixtures.py b/src/starr_imaging/flows/regression/fixtures.py
+index 6a918e6..4628051 100644
+--- a/src/starr_imaging/flows/regression/fixtures.py
++++ b/src/starr_imaging/flows/regression/fixtures.py
+@@ -54,13 +54,6 @@ _REQUIRED_YAML_FIELDS: tuple[str, ...] = (
+     "sop_instance_uid",
+ )
+ 
+-# Tags omitted from fixtures entirely. WindowWidth and DerivationDescription are
+-# never read by the catalog (and DerivationDescription can carry free-text PHI).
+-# StationName is a supported match field but is not used by any default rule; its
+-# values are site-specific device identifiers with no regression value. Keep in
+-# sync with catalog.evaluate and the default catalog rules.
+-_TAGS_EXCLUDED_FROM_FIXTURES: frozenset[str] = frozenset({"WindowWidth", "DerivationDescription", "StationName"})
+-
+ # Free-text tags retained only when they actually drive a case's catalog
+ # decision. Their values can contain residual free text, so for every other case
+ # they are omitted entirely. Coverage for these tags therefore exists only for
+@@ -193,11 +186,7 @@ def _index_dicom_tags(dicom_root: Path, needed: set[str]) -> dict[str, dict[str,
+     catalog = get_default_catalog()
+     for sop_uid, ds in _iter_dicom_datasets(dicom_root, needed):
+         if sop_uid not in index:
+-            tags = {
+-                keyword: value
+-                for keyword, value in DicomTags.from_dataset(ds).as_dict().items()
+-                if keyword not in _TAGS_EXCLUDED_FROM_FIXTURES
+-            }
++            tags = DicomTags.from_dataset(ds).as_dict()
+             index[sop_uid] = _strip_nondecisive_free_text(tags, catalog)
+             if len(index) == len(needed):
+                 break
+diff --git a/tests/unit/starr_imaging/core/anonymizer/test_catalog_ctp_crossref.py b/tests/unit/starr_imaging/core/anonymizer/test_catalog_ctp_crossref.py
+index df2c286..94e7867 100644
+--- a/tests/unit/starr_imaging/core/anonymizer/test_catalog_ctp_crossref.py
++++ b/tests/unit/starr_imaging/core/anonymizer/test_catalog_ctp_crossref.py
+@@ -12,6 +12,7 @@ import re
+ from pathlib import Path
+ 
+ import pydicom.datadict
++import pydicom.tag
+ 
+ from starr_imaging.core.anonymizer.default_catalog import default_devices
+ 
+@@ -27,7 +28,6 @@ FIELD_TO_KEYWORD: dict[str, str] = {
+     "modality": "Modality",
+     "manufacturer_model_name": "ManufacturerModelName",
+     "software_versions": "SoftwareVersions",
+-    "station_name": "StationName",
+     "burned_in_annotation": "BurnedInAnnotation",
+     "sop_class_uid": "SOPClassUID",
+     "secondary_capture_device_manufacturer_model_name": "SecondaryCaptureDeviceManufacturerModelName",
+@@ -70,7 +70,6 @@ DICOM_TAGS_KEYWORDS: set[str] = {
+     "ManufacturerModelName",
+     "Modality",
+     "SoftwareVersions",
+-    "StationName",
+     "ImageType",
+     "Rows",
+     "Columns",
+@@ -83,8 +82,6 @@ DICOM_TAGS_KEYWORDS: set[str] = {
+     "BodyPartExamined",
+     "PixelSpacing",
+     "SecondaryCaptureDeviceManufacturerModelName",
+-    "DerivationDescription",
+-    "WindowWidth",
+     "CodeMeaning",
+     "CommentsOnRadiationDose",
+ }
+@@ -120,24 +117,6 @@ def _extract_keyword_tags(text: str) -> set[str]:
+ class TestCatalogFieldMappings:
+     """Verify that DeviceRule fields map to the correct DICOM keywords."""
+ 
+-    def test_no_device_uses_station_field(self):
+-        """No device should use the ``station`` field.
+-
+-        The CTP scripts never reference StationName ([0008,1010]).  All
+-        ``[0018,1018]`` references are SecondaryCaptureDeviceManufacturerModelName
+-        and belong in the ``secondary_capture_device_manufacturer_model_name`` field.
+-        """
+-        violations = []
+-        for d in default_devices:
+-            if d.station_name is not None:
+-                violations.append(
+-                    f"Device '{d.name}' uses station={d.station_name!r} "
+-                    f"(maps to StationName). Use "
+-                    f"secondary_capture_device_manufacturer_model_name=... instead."
+-                )
+-        if violations:
+-            raise AssertionError("Devices incorrectly using 'station' field:\n" + "\n".join(violations))
+-
+     def test_match_field_keywords_are_extractable(self):
+         """Every DeviceRule match field must map to a DicomTags-extractable keyword.
+ 
+@@ -174,8 +153,9 @@ class TestCTPScriptTagCoverage:
+     """Verify that CTP script tag references are accounted for in the catalog mapping."""
+ 
+     def test_filter_script_has_no_station_name_references(self):
+-        """Confirm filter.script never references StationName, validating
+-        that station= should not appear in catalog devices.
++        """filter.script must not reference StationName.
++
++        Validates that a station-based match should not appear in catalog devices.
+         """
+         text = _load_script("filter.script")
+         numeric_tags = _extract_numeric_tags(text)
+@@ -223,9 +203,7 @@ class TestCTPScriptTagCoverage:
+             )
+ 
+     def test_0018_1018_maps_to_secondary_capture(self):
+-        """The frequently-used [0018,1018] must map to
+-        SecondaryCaptureDeviceManufacturerModelName, not StationName.
+-        """
++        """[0018,1018] must map to SecondaryCaptureDeviceManufacturerModelName, not StationName."""
+         tag_int = pydicom.datadict.tag_for_keyword("SecondaryCaptureDeviceManufacturerModelName")
+         assert tag_int is not None, (
+             "Expected SecondaryCaptureDeviceManufacturerModelName to resolve to a DICOM tag, got None"
+@@ -275,9 +253,9 @@ class TestCTPFilterScriptDeviceBlockCrossRef:
+         )
+ 
+     def test_catalog_devices_with_secondary_capture_use_dedicated_field(self):
+-        """Every device using [0018,1018] should populate the
+-        ``secondary_capture_device_manufacturer_model_name`` field with a
+-        reasonable value.
++        """Every device using [0018,1018] populates a reasonable secondary-capture field.
++
++        The ``secondary_capture_device_manufacturer_model_name`` value must be non-trivial.
+         """
+         violations = []
+         for d in default_devices:

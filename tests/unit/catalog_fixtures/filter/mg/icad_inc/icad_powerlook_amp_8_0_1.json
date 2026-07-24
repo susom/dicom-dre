@@ -1,0 +1,25 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "BREAST",
+        "BurnedInAnnotation": "YES",
+        "Columns": "800",
+        "ConversionType": "WSD",
+        "ImageType": "DERIVED\\SECONDARY",
+        "Manufacturer": "iCAD, Inc.",
+        "ManufacturerModelName": "iCAD PowerLook AMP 8.0.1",
+        "Modality": "MG",
+        "Rows": "550",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "iReveal",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "2.2.0.1.64\\SL8.0M-02616A"
+      }
+    }
+  ]
+}

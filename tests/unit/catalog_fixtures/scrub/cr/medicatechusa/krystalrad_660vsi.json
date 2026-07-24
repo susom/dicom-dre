@@ -1,0 +1,303 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [
+        "0,0,10000,70"
+      ],
+      "expected_scrubbed": true,
+      "tags": {
+        "BodyPartExamined": "KNEE",
+        "BurnedInAnnotation": "YES",
+        "Columns": "1020",
+        "ImageType": "DERIVED\\PRIMARY",
+        "Manufacturer": "Medicatechusa",
+        "ManufacturerModelName": "KrystalRad 660VSI",
+        "Modality": "CR",
+        "PixelSpacing": "0.14000000059605\\0.14000000059605",
+        "Rows": "888",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.1",
+        "SeriesDescription": "",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "1.0.0.81R2"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [
+        "0,0,10000,70"
+      ],
+      "expected_scrubbed": true,
+      "tags": {
+        "BodyPartExamined": "KNEE",
+        "BurnedInAnnotation": "YES",
+        "Columns": "1056",
+        "ImageType": "DERIVED\\PRIMARY",
+        "Manufacturer": "Medicatechusa",
+        "ManufacturerModelName": "KrystalRad 660VSI",
+        "Modality": "CR",
+        "PixelSpacing": "0.14000000059605\\0.14000000059605",
+        "Rows": "894",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.1",
+        "SeriesDescription": "",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "1.0.0.81R2"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [
+        "0,0,10000,70"
+      ],
+      "expected_scrubbed": true,
+      "tags": {
+        "BodyPartExamined": "KNEE",
+        "BurnedInAnnotation": "YES",
+        "Columns": "1380",
+        "ImageType": "DERIVED\\PRIMARY",
+        "Manufacturer": "Medicatechusa",
+        "ManufacturerModelName": "KrystalRad 660VSI",
+        "Modality": "CR",
+        "PixelSpacing": "0.14000000059605\\0.14000000059605",
+        "Rows": "2181",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.1",
+        "SeriesDescription": "",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "1.0.0.81R2"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [
+        "0,0,10000,70"
+      ],
+      "expected_scrubbed": true,
+      "tags": {
+        "BodyPartExamined": "KNEE",
+        "BurnedInAnnotation": "YES",
+        "Columns": "1412",
+        "ImageType": "DERIVED\\PRIMARY",
+        "Manufacturer": "Medicatechusa",
+        "ManufacturerModelName": "KrystalRad 660VSI",
+        "Modality": "CR",
+        "PixelSpacing": "0.14000000059605\\0.14000000059605",
+        "Rows": "2174",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.1",
+        "SeriesDescription": "",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "1.0.0.81R2"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [
+        "0,0,10000,70"
+      ],
+      "expected_scrubbed": true,
+      "tags": {
+        "BodyPartExamined": "KNEE",
+        "BurnedInAnnotation": "YES",
+        "Columns": "1660",
+        "ImageType": "DERIVED\\PRIMARY",
+        "Manufacturer": "Medicatechusa",
+        "ManufacturerModelName": "KrystalRad 660VSI",
+        "Modality": "CR",
+        "PixelSpacing": "0.14000000059605\\0.14000000059605",
+        "Rows": "2387",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.1",
+        "SeriesDescription": "",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "1.0.0.81R2"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [
+        "0,0,10000,70"
+      ],
+      "expected_scrubbed": true,
+      "tags": {
+        "BodyPartExamined": "KNEE",
+        "BurnedInAnnotation": "YES",
+        "Columns": "1664",
+        "ImageType": "DERIVED\\PRIMARY",
+        "Manufacturer": "Medicatechusa",
+        "ManufacturerModelName": "KrystalRad 660VSI",
+        "Modality": "CR",
+        "PixelSpacing": "0.14000000059605\\0.14000000059605",
+        "Rows": "2401",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.1",
+        "SeriesDescription": "",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "1.0.0.81R2"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [
+        "0,0,10000,70"
+      ],
+      "expected_scrubbed": true,
+      "tags": {
+        "BodyPartExamined": "KNEE",
+        "BurnedInAnnotation": "YES",
+        "Columns": "2696",
+        "ImageType": "DERIVED\\PRIMARY",
+        "Manufacturer": "Medicatechusa",
+        "ManufacturerModelName": "KrystalRad 660VSI",
+        "Modality": "CR",
+        "PixelSpacing": "0.14000000059605\\0.14000000059605",
+        "Rows": "900",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.1",
+        "SeriesDescription": "",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "1.0.0.81R2"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [
+        "0,0,10000,70"
+      ],
+      "expected_scrubbed": true,
+      "tags": {
+        "BodyPartExamined": "KNEE",
+        "BurnedInAnnotation": "YES",
+        "Columns": "2824",
+        "ImageType": "DERIVED\\PRIMARY",
+        "Manufacturer": "Medicatechusa",
+        "ManufacturerModelName": "KrystalRad 660VSI",
+        "Modality": "CR",
+        "PixelSpacing": "0.14000000059605\\0.14000000059605",
+        "Rows": "1788",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.1",
+        "SeriesDescription": "",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "1.0.0.81R2"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [
+        "0,0,10000,70"
+      ],
+      "expected_scrubbed": true,
+      "tags": {
+        "BodyPartExamined": "KNEE",
+        "BurnedInAnnotation": "YES",
+        "Columns": "2864",
+        "ImageType": "DERIVED\\PRIMARY",
+        "Manufacturer": "Medicatechusa",
+        "ManufacturerModelName": "KrystalRad 660VSI",
+        "Modality": "CR",
+        "PixelSpacing": "0.14000000059605\\0.14000000059605",
+        "Rows": "1999",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.1",
+        "SeriesDescription": "",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "1.0.0.81R2"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [
+        "0,0,10000,70"
+      ],
+      "expected_scrubbed": true,
+      "tags": {
+        "BodyPartExamined": "KNEE",
+        "BurnedInAnnotation": "YES",
+        "Columns": "2956",
+        "ImageType": "DERIVED\\PRIMARY",
+        "Manufacturer": "Medicatechusa",
+        "ManufacturerModelName": "KrystalRad 660VSI",
+        "Modality": "CR",
+        "PixelSpacing": "0.14000000059605\\0.14000000059605",
+        "Rows": "2466",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.1",
+        "SeriesDescription": "",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "1.0.0.81R2"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [
+        "0,0,10000,70"
+      ],
+      "expected_scrubbed": true,
+      "tags": {
+        "BodyPartExamined": "SHOULDER",
+        "BurnedInAnnotation": "YES",
+        "Columns": "1760",
+        "ImageType": "DERIVED\\PRIMARY",
+        "Manufacturer": "Medicatechusa",
+        "ManufacturerModelName": "KrystalRad 660VSI",
+        "Modality": "CR",
+        "PixelSpacing": "0.14000000059605\\0.14000000059605",
+        "Rows": "2329",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.1",
+        "SeriesDescription": "",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "1.0.0.81R2"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [
+        "0,0,10000,70"
+      ],
+      "expected_scrubbed": true,
+      "tags": {
+        "BodyPartExamined": "SHOULDER",
+        "BurnedInAnnotation": "YES",
+        "Columns": "2108",
+        "ImageType": "DERIVED\\PRIMARY",
+        "Manufacturer": "Medicatechusa",
+        "ManufacturerModelName": "KrystalRad 660VSI",
+        "Modality": "CR",
+        "PixelSpacing": "0.14000000059605\\0.14000000059605",
+        "Rows": "1681",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.1",
+        "SeriesDescription": "",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "1.0.0.81R2"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [
+        "0,0,10000,70"
+      ],
+      "expected_scrubbed": true,
+      "tags": {
+        "BodyPartExamined": "SHOULDER",
+        "BurnedInAnnotation": "YES",
+        "Columns": "2148",
+        "ImageType": "DERIVED\\PRIMARY",
+        "Manufacturer": "Medicatechusa",
+        "ManufacturerModelName": "KrystalRad 660VSI",
+        "Modality": "CR",
+        "PixelSpacing": "0.14000000059605\\0.14000000059605",
+        "Rows": "1673",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.1",
+        "SeriesDescription": "",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "1.0.0.81R2"
+      }
+    }
+  ]
+}

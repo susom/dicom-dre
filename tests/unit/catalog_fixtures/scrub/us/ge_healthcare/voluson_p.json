@@ -1,0 +1,25 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [
+        "0,0,800,56"
+      ],
+      "expected_scrubbed": true,
+      "tags": {
+        "Columns": "800",
+        "ImageType": "ORIGINAL\\PRIMARY\\GYNECOLOGY\\",
+        "Manufacturer": "GE Healthcare",
+        "ManufacturerModelName": "Voluson P",
+        "Modality": "US",
+        "PixelSpacing": "0.220732\\0.220732",
+        "Rows": "600",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+        "SequenceOfUltrasoundRegions": "present",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "13.x.x VP"
+      }
+    }
+  ]
+}

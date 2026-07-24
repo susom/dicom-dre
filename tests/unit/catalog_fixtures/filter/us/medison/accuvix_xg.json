@@ -1,0 +1,21 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "1280",
+        "ImageType": "ORIGINAL\\PRIMARY",
+        "Manufacturer": "MEDISON",
+        "ManufacturerModelName": "Accuvix XG",
+        "Modality": "US",
+        "Rows": "1024",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "1.01.00.0207"
+      }
+    }
+  ]
+}

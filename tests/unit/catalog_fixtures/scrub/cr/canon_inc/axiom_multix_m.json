@@ -1,0 +1,61 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [
+        "0,0,10000,115"
+      ],
+      "expected_scrubbed": true,
+      "tags": {
+        "BodyPartExamined": "KNEE",
+        "Columns": "2544",
+        "Manufacturer": "Canon Inc.",
+        "ManufacturerModelName": "AXIOM-Multix M",
+        "Modality": "CR",
+        "Rows": "1592",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.1",
+        "SeriesNumber": "2",
+        "SoftwareVersions": "V6.34.00"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [
+        "0,0,10000,115"
+      ],
+      "expected_scrubbed": true,
+      "tags": {
+        "BodyPartExamined": "LSPINE",
+        "Columns": "1376",
+        "Manufacturer": "Canon Inc.",
+        "ManufacturerModelName": "AXIOM-Multix M",
+        "Modality": "CR",
+        "Rows": "2688",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.1",
+        "SeriesNumber": "4",
+        "SoftwareVersions": "V6.34.00"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [
+        "0,0,10000,115"
+      ],
+      "expected_scrubbed": true,
+      "tags": {
+        "BodyPartExamined": "SHOULDER",
+        "Columns": "1936",
+        "Manufacturer": "Canon Inc.",
+        "ManufacturerModelName": "AXIOM-Multix M",
+        "Modality": "CR",
+        "Rows": "1608",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.1",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "V6.34.00"
+      }
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "BREAST",
+        "BurnedInAnnotation": "NO",
+        "Columns": "2096",
+        "ConversionType": "WSD",
+        "ImageType": "ORIGINAL\\SECONDARY",
+        "Manufacturer": "VIDAR",
+        "ManufacturerModelName": "CADPRO",
+        "Modality": "MG",
+        "PixelSpacing": "0.084667\\0.084667",
+        "Rows": "2832",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.1.2",
+        "SecondaryCaptureDeviceManufacturerModelName": "PACSSCAN",
+        "SeriesNumber": "10000",
+        "SoftwareVersions": "3.2.0.5"
+      }
+    }
+  ]
+}

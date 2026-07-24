@@ -1,0 +1,24 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "BREAST",
+        "BurnedInAnnotation": "NO",
+        "Columns": "3540",
+        "ImageType": "ORIGINAL\\PRIMARY\\\\\\\\\\\\\\50000",
+        "Manufacturer": "FUJIFILM Corporation",
+        "ManufacturerModelName": "FDR-1000AWS",
+        "Modality": "MG",
+        "PixelSpacing": "0.05\\0.05",
+        "Rows": "4740",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.1.2",
+        "SeriesNumber": "1002",
+        "SoftwareVersions": "FDR-1000AWS Mainsoft V5.1.3213"
+      }
+    }
+  ]
+}

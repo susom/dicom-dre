@@ -1,0 +1,80 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "BREAST",
+        "Columns": "1015",
+        "ConversionType": "SYN",
+        "ImageType": "DERIVED\\SECONDARY",
+        "Manufacturer": "ACUSON",
+        "ManufacturerModelName": "SEQUOIA",
+        "Modality": "US",
+        "PixelSpacing": "0.081473\\0.081473",
+        "Rows": "702",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "Report Snapshot",
+        "SeriesNumber": "1000"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "HEADNECK",
+        "Columns": "1626",
+        "ConversionType": "SYN",
+        "ImageType": "DERIVED\\SECONDARY",
+        "Manufacturer": "ACUSON",
+        "ManufacturerModelName": "SEQUOIA",
+        "Modality": "US",
+        "PixelSpacing": "0.0915181\\0.0915181",
+        "Rows": "1750",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "Report Snapshot",
+        "SeriesNumber": "1000"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "640",
+        "ImageType": "DERIVED\\SECONDARY\\\\0000",
+        "Manufacturer": "ACUSON",
+        "ManufacturerModelName": "SEQUOIA",
+        "Modality": "US",
+        "Rows": "480",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+        "SequenceOfUltrasoundRegions": "present",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "8.5"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "640",
+        "ImageType": "ORIGINAL\\PRIMARY\\\\0000",
+        "Manufacturer": "ACUSON",
+        "ManufacturerModelName": "SEQUOIA",
+        "Modality": "US",
+        "Rows": "480",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+        "SequenceOfUltrasoundRegions": "present",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "12.06"
+      }
+    }
+  ]
+}

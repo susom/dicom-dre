@@ -1,0 +1,21 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "144",
+        "ImageType": "DERIVED\\PRIMARY\\AXIAL",
+        "Manufacturer": "Philips Medical Systems / MIMvista",
+        "ManufacturerModelName": "Allegro Body(C)",
+        "Modality": "PT",
+        "PixelSpacing": "4.16711\\4.16711",
+        "Rows": "144",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.128",
+        "SeriesNumber": "50467"
+      }
+    }
+  ]
+}

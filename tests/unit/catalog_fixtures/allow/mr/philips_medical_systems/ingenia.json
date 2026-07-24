@@ -1,0 +1,24 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "PELVIS",
+        "CodeMeaning": "",
+        "Columns": "672",
+        "ImageType": "ORIGINAL\\PRIMARY\\M_FFE\\M\\FFE",
+        "Manufacturer": "Philips Medical Systems",
+        "ManufacturerModelName": "Ingenia",
+        "Modality": "MR",
+        "PixelSpacing": "0.63988095521926\\0.63988095521926",
+        "Rows": "672",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.4",
+        "SeriesNumber": "1009",
+        "SoftwareVersions": "4.1.3"
+      }
+    }
+  ]
+}

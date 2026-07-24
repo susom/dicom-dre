@@ -1,0 +1,24 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "BREAST",
+        "Columns": "1889",
+        "ConversionType": "WSD",
+        "ImageType": "DERIVED\\SECONDARY",
+        "Manufacturer": "HOLOGIC, Inc.",
+        "ManufacturerModelName": "SecurView",
+        "Modality": "MG",
+        "PixelSpacing": "0.0884007\\0.0884007",
+        "Rows": "2456",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SeriesNumber": "74100000",
+        "SoftwareVersions": "DWS-HLX-9.0.1.224"
+      }
+    }
+  ]
+}

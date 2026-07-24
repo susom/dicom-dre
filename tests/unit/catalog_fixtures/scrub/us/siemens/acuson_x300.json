@@ -1,0 +1,46 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [
+        "0,0,800,40"
+      ],
+      "expected_scrubbed": true,
+      "tags": {
+        "Columns": "800",
+        "ImageType": "ORIGINAL\\PRIMARY\\TTE\\0001",
+        "Manufacturer": "SIEMENS",
+        "ManufacturerModelName": "Acuson X300",
+        "Modality": "US",
+        "PixelSpacing": "0.4202\\0.4202",
+        "Rows": "600",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+        "SequenceOfUltrasoundRegions": "present",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "3.14.017"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [
+        "0,0,800,40"
+      ],
+      "expected_scrubbed": true,
+      "tags": {
+        "Columns": "800",
+        "ImageType": "ORIGINAL\\PRIMARY\\VASCULAR\\0001",
+        "Manufacturer": "SIEMENS",
+        "ManufacturerModelName": "Acuson X300",
+        "Modality": "US",
+        "PixelSpacing": "0.1000\\0.1000",
+        "Rows": "600",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.3.1",
+        "SequenceOfUltrasoundRegions": "present",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "3.14.014"
+      }
+    }
+  ]
+}

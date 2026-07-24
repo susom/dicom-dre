@@ -1,0 +1,308 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "BILEDUCT",
+        "Columns": "2400",
+        "ConversionType": "DF",
+        "Manufacturer": "GE Healthcare IT Radiology",
+        "ManufacturerModelName": "Centricity Radiology RA 600",
+        "Modality": "CR",
+        "Rows": "2583",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "Vidar Film Digitizer",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "8.0"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "",
+        "Columns": "1040",
+        "ConversionType": "DF",
+        "Manufacturer": "GE Healthcare IT Radiology",
+        "ManufacturerModelName": "Centricity Radiology RA 600",
+        "Modality": "CR",
+        "Rows": "1265",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "Vidar Film Digitizer",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "7.0"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "",
+        "Columns": "1042",
+        "ConversionType": "DF",
+        "Manufacturer": "GE Healthcare IT Radiology",
+        "ManufacturerModelName": "Centricity Radiology RA 600",
+        "Modality": "CR",
+        "Rows": "1265",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "Vidar Film Digitizer",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "7.0"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "",
+        "Columns": "1050",
+        "ConversionType": "DF",
+        "Manufacturer": "GE Healthcare IT Radiology",
+        "ManufacturerModelName": "Centricity Radiology RA 600",
+        "Modality": "CR",
+        "Rows": "946",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "Vidar Film Digitizer",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "7.0"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "",
+        "Columns": "1050",
+        "ConversionType": "DF",
+        "Manufacturer": "GE Healthcare IT Radiology",
+        "ManufacturerModelName": "Centricity Radiology RA 600",
+        "Modality": "CR",
+        "Rows": "947",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "Vidar Film Digitizer",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "7.0"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "",
+        "Columns": "1265",
+        "ConversionType": "DF",
+        "Manufacturer": "GE Healthcare IT Radiology",
+        "ManufacturerModelName": "Centricity Radiology RA 600",
+        "Modality": "CR",
+        "Rows": "1042",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "Vidar Film Digitizer",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "7.0"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "",
+        "Columns": "616",
+        "ConversionType": "DF",
+        "Manufacturer": "GE Healthcare IT Radiology",
+        "ManufacturerModelName": "Centricity Radiology RA 600",
+        "Modality": "CR",
+        "Rows": "600",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "Vidar Film Digitizer",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "7.0"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "",
+        "Columns": "618",
+        "ConversionType": "DF",
+        "Manufacturer": "GE Healthcare IT Radiology",
+        "ManufacturerModelName": "Centricity Radiology RA 600",
+        "Modality": "CR",
+        "Rows": "602",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "Vidar Film Digitizer",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "7.0"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "",
+        "Columns": "626",
+        "ConversionType": "DF",
+        "Manufacturer": "GE Healthcare IT Radiology",
+        "ManufacturerModelName": "Centricity Radiology RA 600",
+        "Modality": "CR",
+        "Rows": "600",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "Vidar Film Digitizer",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "7.0"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "",
+        "Columns": "630",
+        "ConversionType": "DF",
+        "Manufacturer": "GE Healthcare IT Radiology",
+        "ManufacturerModelName": "Centricity Radiology RA 600",
+        "Modality": "CR",
+        "Rows": "601",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "Vidar Film Digitizer",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "7.0"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "",
+        "Columns": "702",
+        "ConversionType": "DF",
+        "Manufacturer": "GE Healthcare IT Radiology",
+        "ManufacturerModelName": "Centricity Radiology RA 600",
+        "Modality": "CR",
+        "Rows": "875",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "Vidar Film Digitizer",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "7.0"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "",
+        "Columns": "740",
+        "ConversionType": "DF",
+        "Manufacturer": "GE Healthcare IT Radiology",
+        "ManufacturerModelName": "Centricity Radiology RA 600",
+        "Modality": "CR",
+        "Rows": "898",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "Vidar Film Digitizer",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "7.0"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "",
+        "Columns": "742",
+        "ConversionType": "DF",
+        "Manufacturer": "GE Healthcare IT Radiology",
+        "ManufacturerModelName": "Centricity Radiology RA 600",
+        "Modality": "CR",
+        "Rows": "893",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "Vidar Film Digitizer",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "7.0"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "",
+        "Columns": "746",
+        "ConversionType": "DF",
+        "Manufacturer": "GE Healthcare IT Radiology",
+        "ManufacturerModelName": "Centricity Radiology RA 600",
+        "Modality": "CR",
+        "Rows": "662",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "Vidar Film Digitizer",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "8.0"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "",
+        "Columns": "892",
+        "ConversionType": "DF",
+        "Manufacturer": "GE Healthcare IT Radiology",
+        "ManufacturerModelName": "Centricity Radiology RA 600",
+        "Modality": "CR",
+        "Rows": "743",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "Vidar Film Digitizer",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "7.0"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "",
+        "Columns": "894",
+        "ConversionType": "DF",
+        "Manufacturer": "GE Healthcare IT Radiology",
+        "ManufacturerModelName": "Centricity Radiology RA 600",
+        "Modality": "CR",
+        "Rows": "743",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "Vidar Film Digitizer",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "7.0"
+      }
+    }
+  ]
+}

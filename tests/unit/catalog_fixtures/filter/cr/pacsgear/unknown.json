@@ -1,0 +1,426 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "ABD",
+        "Columns": "848",
+        "ConversionType": "WSD",
+        "ImageType": "ORIGINAL\\SECONDARY",
+        "Manufacturer": "PACSGEAR",
+        "ManufacturerModelName": "",
+        "Modality": "CR",
+        "Rows": "1100",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "PACSSCAN",
+        "SeriesDescription": "",
+        "SeriesNumber": "99999",
+        "SoftwareVersions": ""
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "C SPINE",
+        "Columns": "2372",
+        "ConversionType": "WSD",
+        "ImageType": "ORIGINAL\\SECONDARY",
+        "Manufacturer": "PACSGEAR",
+        "ManufacturerModelName": "",
+        "Modality": "CR",
+        "Rows": "2968",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "PACSSCAN",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "V1.0"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "C SPINE",
+        "Columns": "2376",
+        "ConversionType": "WSD",
+        "ImageType": "ORIGINAL\\SECONDARY",
+        "Manufacturer": "PACSGEAR",
+        "ManufacturerModelName": "",
+        "Modality": "CR",
+        "Rows": "2968",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "PACSSCAN",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "V1.0"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "C SPINE",
+        "Columns": "2380",
+        "ConversionType": "WSD",
+        "ImageType": "ORIGINAL\\SECONDARY",
+        "Manufacturer": "PACSGEAR",
+        "ManufacturerModelName": "",
+        "Modality": "CR",
+        "Rows": "2968",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "PACSSCAN",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "V1.0"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "C SPINE",
+        "Columns": "2384",
+        "ConversionType": "WSD",
+        "ImageType": "ORIGINAL\\SECONDARY",
+        "Manufacturer": "PACSGEAR",
+        "ManufacturerModelName": "",
+        "Modality": "CR",
+        "Rows": "2968",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "PACSSCAN",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "V1.0"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "C SPINE",
+        "Columns": "2388",
+        "ConversionType": "WSD",
+        "ImageType": "ORIGINAL\\SECONDARY",
+        "Manufacturer": "PACSGEAR",
+        "ManufacturerModelName": "",
+        "Modality": "CR",
+        "Rows": "2968",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "PACSSCAN",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "V1.0"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "C SPINE",
+        "Columns": "2960",
+        "ConversionType": "WSD",
+        "ImageType": "ORIGINAL\\SECONDARY",
+        "Manufacturer": "PACSGEAR",
+        "ManufacturerModelName": "",
+        "Modality": "CR",
+        "Rows": "3564",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "PACSSCAN",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "V1.0"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "CHEST",
+        "Columns": "4164",
+        "ConversionType": "WSD",
+        "ImageType": "ORIGINAL\\SECONDARY",
+        "Manufacturer": "PACSGEAR",
+        "ManufacturerModelName": "",
+        "Modality": "CR",
+        "Rows": "5100",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "PACSSCAN",
+        "SeriesNumber": "99999",
+        "SoftwareVersions": "3.0.5"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "CHEST",
+        "Columns": "5100",
+        "ConversionType": "WSD",
+        "ImageType": "ORIGINAL\\SECONDARY",
+        "Manufacturer": "PACSGEAR",
+        "ManufacturerModelName": "",
+        "Modality": "CR",
+        "Rows": "4164",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "PACSSCAN",
+        "SeriesNumber": "99999",
+        "SoftwareVersions": "3.0.5"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "CHEST",
+        "Columns": "824",
+        "ConversionType": "WSD",
+        "ImageType": "ORIGINAL\\SECONDARY",
+        "Manufacturer": "PACSGEAR",
+        "ManufacturerModelName": "",
+        "Modality": "CR",
+        "Rows": "1100",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "PACSSCAN",
+        "SeriesDescription": "",
+        "SeriesNumber": "9999",
+        "SoftwareVersions": ""
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "CXR",
+        "Columns": "5100",
+        "ConversionType": "WSD",
+        "ImageType": "ORIGINAL\\SECONDARY",
+        "Manufacturer": "PACSGEAR",
+        "ManufacturerModelName": "",
+        "Modality": "CR",
+        "Rows": "4180",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "PACSSCAN",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "3.1"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "",
+        "Columns": "1700",
+        "ConversionType": "WSD",
+        "ImageType": "ORIGINAL\\SECONDARY",
+        "Manufacturer": "PACSGear",
+        "ManufacturerModelName": "",
+        "Modality": "CR",
+        "Rows": "2200",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "PACSSCAN FILM",
+        "SeriesNumber": "9999",
+        "SoftwareVersions": "V1.0"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "",
+        "Columns": "2548",
+        "ConversionType": "WSD",
+        "ImageType": "ORIGINAL\\SECONDARY",
+        "Manufacturer": "PACSGEAR",
+        "ManufacturerModelName": "",
+        "Modality": "CR",
+        "Rows": "3300",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "PACSSCAN",
+        "SeriesNumber": "999999",
+        "SoftwareVersions": "V1.0"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "",
+        "Columns": "2800",
+        "ConversionType": "WSD",
+        "ImageType": "ORIGINAL\\SECONDARY",
+        "Manufacturer": "PACSGEAR",
+        "ManufacturerModelName": "",
+        "Modality": "CR",
+        "Rows": "3504",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "PACSSCAN",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "3.0.2"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "",
+        "Columns": "2820",
+        "ConversionType": "WSD",
+        "ImageType": "ORIGINAL\\SECONDARY",
+        "Manufacturer": "PACSGEAR",
+        "ManufacturerModelName": "",
+        "Modality": "CR",
+        "Rows": "3516",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "PACSSCAN",
+        "SeriesNumber": "999999",
+        "SoftwareVersions": ""
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "",
+        "Columns": "3512",
+        "ConversionType": "WSD",
+        "ImageType": "ORIGINAL\\SECONDARY",
+        "Manufacturer": "PACSGEAR",
+        "ManufacturerModelName": "",
+        "Modality": "CR",
+        "Rows": "2812",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "PACSSCAN",
+        "SeriesNumber": "999999",
+        "SoftwareVersions": ""
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "",
+        "Columns": "4184",
+        "ConversionType": "WSD",
+        "ImageType": "ORIGINAL\\SECONDARY",
+        "Manufacturer": "PACSGEAR",
+        "ManufacturerModelName": "",
+        "Modality": "CR",
+        "Rows": "3280",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "PACSSCAN",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "3.0.5"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "",
+        "Columns": "824",
+        "ConversionType": "WSD",
+        "ImageType": "ORIGINAL\\SECONDARY",
+        "Manufacturer": "PACSGEAR",
+        "ManufacturerModelName": "",
+        "Modality": "CR",
+        "Rows": "1100",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "PACSSCAN",
+        "SeriesNumber": "999999",
+        "SoftwareVersions": ""
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "",
+        "Columns": "848",
+        "ConversionType": "WSD",
+        "ImageType": "ORIGINAL\\SECONDARY",
+        "Manufacturer": "PACSGEAR",
+        "ManufacturerModelName": "",
+        "Modality": "CR",
+        "Rows": "1100",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "PACSSCAN",
+        "SeriesNumber": "999",
+        "SoftwareVersions": "3.2.3.1"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "",
+        "Columns": "848",
+        "ConversionType": "WSD",
+        "ImageType": "ORIGINAL\\SECONDARY",
+        "Manufacturer": "PACSGEAR",
+        "ManufacturerModelName": "",
+        "Modality": "CR",
+        "Rows": "1100",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "PACSSCAN",
+        "SeriesDescription": "",
+        "SoftwareVersions": ""
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "",
+        "Columns": "852",
+        "ConversionType": "WSD",
+        "ImageType": "ORIGINAL\\SECONDARY",
+        "Manufacturer": "PACSGEAR",
+        "ManufacturerModelName": "",
+        "Modality": "CR",
+        "Rows": "1100",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "PACSSCAN",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "3.0.4"
+      }
+    }
+  ]
+}

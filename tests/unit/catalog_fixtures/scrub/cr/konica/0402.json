@@ -1,0 +1,49 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [
+        "0,0,2446,115"
+      ],
+      "expected_scrubbed": true,
+      "tags": {
+        "BodyPartExamined": "CHEST",
+        "BurnedInAnnotation": "YES",
+        "Columns": "2446",
+        "ImageType": "ORIGINAL\\PRIMARY",
+        "Manufacturer": "KONICA",
+        "ManufacturerModelName": "0402",
+        "Modality": "CR",
+        "PixelSpacing": "0.175\\0.175",
+        "Rows": "2010",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.1",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "2.00R3T1\\P"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [
+        "0,2308,2446,137"
+      ],
+      "expected_scrubbed": true,
+      "tags": {
+        "BodyPartExamined": "CSPINE",
+        "BurnedInAnnotation": "YES",
+        "Columns": "2446",
+        "ImageType": "ORIGINAL\\PRIMARY",
+        "Manufacturer": "KONICA",
+        "ManufacturerModelName": "0402",
+        "Modality": "CR",
+        "PixelSpacing": "0.175\\0.175",
+        "Rows": "2446",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.1",
+        "SeriesDescription": "",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "6.03"
+      }
+    }
+  ]
+}

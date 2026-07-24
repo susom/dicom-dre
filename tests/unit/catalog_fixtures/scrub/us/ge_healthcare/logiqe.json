@@ -1,0 +1,64 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [
+        "0,0,568,55"
+      ],
+      "expected_scrubbed": true,
+      "tags": {
+        "Columns": "820",
+        "ImageType": "ORIGINAL\\PRIMARY\\VASCULAR\\0001\\GEMSSINGLEFRAME\\GEMSMGCOUNT1",
+        "Manufacturer": "GE Healthcare",
+        "ManufacturerModelName": "LOGIQe",
+        "Modality": "US",
+        "Rows": "614",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+        "SequenceOfUltrasoundRegions": "present",
+        "SeriesNumber": "0001",
+        "SoftwareVersions": "LOGIQe:LOGIQ e R7.0.4"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [
+        "0,0,570,55"
+      ],
+      "expected_scrubbed": true,
+      "tags": {
+        "Columns": "819",
+        "ImageType": "ORIGINAL\\PRIMARY\\VASCULAR\\0019\\GEMSSINGLEFRAME\\GEMSMGCOUNT1",
+        "Manufacturer": "GE Healthcare",
+        "ManufacturerModelName": "LOGIQe",
+        "Modality": "US",
+        "Rows": "590",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+        "SequenceOfUltrasoundRegions": "present",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "LOGIQe:LOGIQ e R9.0.3"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [
+        "0,0,570,55"
+      ],
+      "expected_scrubbed": true,
+      "tags": {
+        "Columns": "820",
+        "ImageType": "ORIGINAL\\PRIMARY\\SMALL PARTS\\0001\\GEMSMULTIFRAME\\GEMSMGCOUNT1",
+        "Manufacturer": "GE Healthcare",
+        "ManufacturerModelName": "LOGIQe",
+        "Modality": "US",
+        "Rows": "614",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+        "SequenceOfUltrasoundRegions": "present",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "LOGIQe:LOGIQ e R5.0.1"
+      }
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "",
+        "Columns": "848",
+        "ConversionType": "WSD",
+        "ImageType": "ORIGINAL\\SECONDARY",
+        "Manufacturer": "Canon",
+        "ManufacturerModelName": "2050C",
+        "Modality": "MR",
+        "Rows": "1100",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "PACSSCAN",
+        "SeriesDescription": "",
+        "SeriesNumber": "9999",
+        "SoftwareVersions": ""
+      }
+    }
+  ]
+}

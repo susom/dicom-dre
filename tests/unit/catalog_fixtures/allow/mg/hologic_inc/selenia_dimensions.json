@@ -1,0 +1,119 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "BREAST",
+        "BurnedInAnnotation": "NO",
+        "Columns": "1890",
+        "ImageType": "DERIVED\\PRIMARY\\TOMOSYNTHESIS\\NONE",
+        "Manufacturer": "HOLOGIC, Inc.",
+        "ManufacturerModelName": "Selenia Dimensions",
+        "Modality": "MG",
+        "Rows": "2457",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.13.1.3",
+        "SeriesNumber": "73200000",
+        "SoftwareVersions": "AWS:1.11.0.388\\ROS:2.11.4800.CBSDRT.5\\M35:1.8.0.74\\GIP2D:3.19.0-4.18.4\\Filter:1.0.7.2\\BP:1.0.2.1\\CView:2.1.1.1\\CadScience:2.0.0.25\\GCal:1.2.0.0\\Enhance:1.0.2.3\\CEDMSub:1.6.0.0\\CEDMGetk:1.0.3.1\\SNRCNR:1.0.0.0-1.0.1.0\\PMC:1.9.0.94\\DET:1.12.0.13\\DTC:2.1.0.60\\GCB:1.11.0.54\\GEN:1.11.0.26\\VTA:1.11.0.35\\CRM:1.11.0.1\\THD:1.11.0.26\\CDI:1.11.0.27\\AIO:1.9.0.35\\BKY:1.11.0.21"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "BREAST",
+        "BurnedInAnnotation": "NO",
+        "Columns": "1890",
+        "ImageType": "DERIVED\\PRIMARY\\TOMOSYNTHESIS\\NONE",
+        "Manufacturer": "HOLOGIC, Inc.",
+        "ManufacturerModelName": "Selenia Dimensions",
+        "Modality": "MG",
+        "Rows": "2457",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.13.1.3",
+        "SeriesNumber": "73200000",
+        "SoftwareVersions": "AWS:1.11.1.75\\ROS:2.11.4800.CBSDRT.5\\M35:1.8.0.90\\GIP2D:3.19.0-4.18.5\\Filter:1.0.7.3\\BP:1.0.2.2\\CView:2.1.1.2\\CadScience:2.0.0.26\\GCal:1.2.0.0\\Enhance:1.0.2.4\\CEDMSub:1.6.0.1\\CEDMGetk:1.0.3.2\\SNRCNR:1.0.0.0-1.0.1.0\\PMC:1.9.0.94\\DET:1.12.1.3\\DTC:2.1.0.60\\GCB:1.11.0.54\\GEN:1.11.0.26\\VTA:1.12.0.55\\CRM:1.11.0.1\\THD:1.11.0.26\\CDI:1.12.0.50\\AIO:1.9.0.35\\BKY:1.11.0.21"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "BREAST",
+        "BurnedInAnnotation": "NO",
+        "Columns": "1996",
+        "ImageType": "DERIVED\\PRIMARY\\TOMOSYNTHESIS\\NONE",
+        "Manufacturer": "HOLOGIC, Inc.",
+        "ManufacturerModelName": "Selenia Dimensions",
+        "Modality": "MG",
+        "Rows": "2457",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.13.1.3",
+        "SeriesNumber": "73200000",
+        "SoftwareVersions": "AWS:1.11.1.75\\ROS:2.11.4800.CBSDRT.5\\M35:1.8.0.90\\GIP2D:3.19.0-4.18.5\\Filter:1.0.7.3\\BP:1.0.2.2\\CView:2.1.1.2\\CadScience:2.0.0.26\\GCal:1.2.0.0\\Enhance:1.0.2.4\\CEDMSub:1.6.0.1\\CEDMGetk:1.0.3.2\\SNRCNR:1.0.0.0-1.0.1.0\\PMC:1.9.0.94\\DET:1.12.1.3\\DTC:2.1.0.60\\GCB:1.11.0.54\\GEN:1.11.0.26\\VTA:1.12.0.55\\CRM:1.11.0.1\\THD:1.11.0.26\\CDI:1.12.0.50\\AIO:1.9.0.35\\BKY:1.11.0.21"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "BREAST",
+        "BurnedInAnnotation": "NO",
+        "Columns": "1996",
+        "ImageType": "DERIVED\\PRIMARY\\VOLUME\\NONE",
+        "Manufacturer": "HOLOGIC, Inc.",
+        "ManufacturerModelName": "Selenia Dimensions",
+        "Modality": "MG",
+        "Rows": "2457",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.13.1.3",
+        "SeriesNumber": "73200000",
+        "SoftwareVersions": "AWS:1.8.3.63\\ROS:1.8.1500.22\\M35:1.6.14.5\\GIP2D:3.15.0-4.15.0\\Filter:1.0.4.3\\BP:1.0.1.6\\CView:2.0.1.1\\GCal:1.1.1.1\\Enhance:1.0.0.3\\SNRCNR:1.0.0.0-1.0.1.0\\PMC:1.8.3.4\\DET:1.9.0.22\\DTC:2.0.8.0\\GCB:1.8.3.28\\GEN:1.8.3.5\\VTA:1.8.3.1\\CRM:1.8.3.11\\THD:1.8.2.11\\CDI:1.8.3.4\\AIO:1.8.2.3\\BKY:1.8.2.9"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "BREAST",
+        "BurnedInAnnotation": "NO",
+        "Columns": "266",
+        "ConversionType": "WSD",
+        "ImageType": "DERIVED\\PRIMARY",
+        "Manufacturer": "HOLOGIC, Inc.",
+        "ManufacturerModelName": "Selenia Dimensions",
+        "Modality": "MG",
+        "Rows": "425",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SeriesNumber": "72100000",
+        "SoftwareVersions": "AWS:1.8.3.63\\ROS:2.9.4800.LRT9_P3G\\M35:1.6.14.5\\GIP2D:3.15.0-4.15.0\\Filter:1.0.4.3\\BP:1.0.1.6\\CView:2.0.1.1\\GCal:1.1.1.1\\Enhance:1.0.0.3\\SNRCNR:1.0.0.0-1.0.1.0\\PMC:1.8.3.4\\DET:1.9.0.22\\DTC:2.0.8.0\\GCB:1.8.3.28\\GEN:1.8.3.5\\VTA:1.8.3.1\\CRM:1.8.3.11\\THD:1.8.2.11\\CDI:1.8.3.4\\AIO:1.8.2.3\\BKY:1.8.2.9"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "BREAST",
+        "BurnedInAnnotation": "NO",
+        "Columns": "3328",
+        "ImageType": "DERIVED\\PRIMARY\\TOMOSYNTHESIS\\MEAN",
+        "Manufacturer": "HOLOGIC, Inc.",
+        "ManufacturerModelName": "Selenia Dimensions",
+        "Modality": "MG",
+        "Rows": "4096",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.13.1.3",
+        "SeriesNumber": "73500000",
+        "SoftwareVersions": "AWS:1.11.1.75\\ROS:2.11.4800.CBSDRT.5\\M35:1.8.0.90\\GIP2D:3.19.0-4.18.5\\Filter:1.0.7.3\\BP:1.0.2.2\\CView:2.1.1.2\\CadScience:2.0.0.26\\GCal:1.2.0.0\\Enhance:1.0.2.4\\CEDMSub:1.6.0.1\\CEDMGetk:1.0.3.2\\SNRCNR:1.0.0.0-1.0.1.0\\PMC:1.9.0.94\\DET:1.12.1.3\\DTC:2.1.0.60\\GCB:1.11.0.54\\GEN:1.11.0.26\\VTA:1.12.0.55\\CRM:1.11.0.1\\THD:1.11.0.26\\CDI:1.12.0.50\\AIO:1.9.0.35\\BKY:1.11.0.21\\GS1:1.10.0.21\\GS2:1.10.0.21"
+      }
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "1020",
+        "ConversionType": "WSD",
+        "Manufacturer": "Merge Healthcare",
+        "ManufacturerModelName": "CADstream 5.2.9.711",
+        "Modality": "MR",
+        "Rows": "1320",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "CADstream 5.2.9.711",
+        "SeriesNumber": "5000",
+        "SoftwareVersions": "5.2.9.711"
+      }
+    }
+  ]
+}

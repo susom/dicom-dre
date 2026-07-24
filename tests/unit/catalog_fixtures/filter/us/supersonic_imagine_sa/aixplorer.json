@@ -1,0 +1,24 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "BREAST",
+        "BurnedInAnnotation": "YES",
+        "Columns": "1440",
+        "ImageType": "ORIGINAL\\PRIMARY",
+        "Manufacturer": "SuperSonic Imagine SA",
+        "ManufacturerModelName": "Aixplorer",
+        "Modality": "US",
+        "Rows": "1080",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+        "SeriesDescription": "",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "9.3.1.2124"
+      }
+    }
+  ]
+}

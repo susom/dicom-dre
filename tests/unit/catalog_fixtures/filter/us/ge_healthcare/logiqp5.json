@@ -1,0 +1,23 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "816",
+        "ConversionType": "WSD",
+        "ImageType": "DERIVED\\PRIMARY\\SMALL PARTS\\0001\\GEMSSINGLEFRAME\\GEMSMGCOUNT1",
+        "Manufacturer": "GE Healthcare",
+        "ManufacturerModelName": "LOGIQP5",
+        "Modality": "US",
+        "Rows": "614",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "LOGIQP5",
+        "SeriesNumber": "2",
+        "SoftwareVersions": ":R3.0.3"
+      }
+    }
+  ]
+}

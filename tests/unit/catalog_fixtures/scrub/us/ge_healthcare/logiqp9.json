@@ -1,0 +1,25 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [
+        "0,0,794,68"
+      ],
+      "expected_scrubbed": true,
+      "tags": {
+        "Columns": "1142",
+        "ImageType": "ORIGINAL\\PRIMARY\\SMALL PARTS\\0001\\GEMSSINGLEFRAME\\GEMSMGCOUNT1",
+        "Manufacturer": "GE Healthcare",
+        "ManufacturerModelName": "LOGIQP9",
+        "Modality": "US",
+        "Rows": "856",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+        "SequenceOfUltrasoundRegions": "present",
+        "SeriesDescription": "",
+        "SeriesNumber": "3",
+        "SoftwareVersions": "LOGIQP9:R1.0.1"
+      }
+    }
+  ]
+}

@@ -1,0 +1,272 @@
+{
+  "entries": [
+    {
+      "description": "Static 3D MAC",
+      "expected_filtered": false,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "BRAIN",
+        "Columns": "192",
+        "ImageType": "DERIVED\\SECONDARY",
+        "Manufacturer": "GE MEDICAL SYSTEMS",
+        "ManufacturerModelName": "SIGNA PET/MR",
+        "Modality": "PT",
+        "PixelSpacing": "1.5625\\1.5625",
+        "Rows": "192",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.128",
+        "SeriesDescription": "Static 3D MAC",
+        "SeriesNumber": "3",
+        "SoftwareVersions": "61.00",
+        "StudyDescription": "PET/MR BRAIN METABOLISM"
+      }
+    },
+    {
+      "description": "Static 3D Q.Clear",
+      "expected_filtered": false,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "BRAIN",
+        "Columns": "192",
+        "ImageType": "ORIGINAL\\PRIMARY",
+        "Manufacturer": "GE MEDICAL SYSTEMS",
+        "ManufacturerModelName": "SIGNA PET/MR",
+        "Modality": "PT",
+        "PixelSpacing": "1.5625\\1.5625",
+        "Rows": "192",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.128",
+        "SeriesNumber": "11",
+        "SoftwareVersions": "SIGNA_LX1.MP1.3_R03_138"
+      }
+    },
+    {
+      "description": "Static 3D NAC",
+      "expected_filtered": false,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "BRAIN",
+        "Columns": "192",
+        "ImageType": "ORIGINAL\\PRIMARY",
+        "Manufacturer": "GE MEDICAL SYSTEMS",
+        "ManufacturerModelName": "SIGNA PET/MR",
+        "Modality": "PT",
+        "PixelSpacing": "1.5625\\1.5625",
+        "Rows": "192",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.128",
+        "SeriesNumber": "2",
+        "SoftwareVersions": "SIGNA_LX1.MP1.3_R03_138"
+      }
+    },
+    {
+      "description": "Static 3D MAC",
+      "expected_filtered": false,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "BRAIN",
+        "Columns": "192",
+        "ImageType": "ORIGINAL\\PRIMARY",
+        "Manufacturer": "GE MEDICAL SYSTEMS",
+        "ManufacturerModelName": "SIGNA PET/MR",
+        "Modality": "PT",
+        "PixelSpacing": "1.5625\\1.5625",
+        "Rows": "192",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.128",
+        "SeriesNumber": "3",
+        "SoftwareVersions": "SIGNA_LX1.MP1.3_R03_138"
+      }
+    },
+    {
+      "description": "Static 3D MAC",
+      "expected_filtered": false,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "BRAIN",
+        "Columns": "192",
+        "ImageType": "ORIGINAL\\PRIMARY",
+        "Manufacturer": "GE MEDICAL SYSTEMS",
+        "ManufacturerModelName": "SIGNA PET/MR",
+        "Modality": "PT",
+        "PixelSpacing": "1.5625\\1.5625",
+        "Rows": "192",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.128",
+        "SeriesNumber": "4",
+        "SoftwareVersions": "SIGNA_LX1.MP1.3_R03_138"
+      }
+    },
+    {
+      "description": "Static 3D Q.Clear",
+      "expected_filtered": false,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "BRAIN",
+        "Columns": "192",
+        "ImageType": "ORIGINAL\\PRIMARY",
+        "Manufacturer": "GE MEDICAL SYSTEMS",
+        "ManufacturerModelName": "SIGNA PET/MR",
+        "Modality": "PT",
+        "PixelSpacing": "1.5625\\1.5625",
+        "Rows": "192",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.128",
+        "SeriesNumber": "6",
+        "SoftwareVersions": "SIGNA_LX1.MP1.3_R03_138"
+      }
+    },
+    {
+      "description": "Static 3D Q.Clear",
+      "expected_filtered": false,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "BRAIN",
+        "Columns": "256",
+        "ImageType": "ORIGINAL\\PRIMARY",
+        "Manufacturer": "GE MEDICAL SYSTEMS",
+        "ManufacturerModelName": "SIGNA PET/MR",
+        "Modality": "PT",
+        "PixelSpacing": "1.171875\\1.171875",
+        "Rows": "256",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.128",
+        "SeriesNumber": "15",
+        "SoftwareVersions": "61.00"
+      }
+    },
+    {
+      "description": "Static 3D NAC",
+      "expected_filtered": false,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "BRAIN",
+        "Columns": "256",
+        "ImageType": "ORIGINAL\\PRIMARY",
+        "Manufacturer": "GE MEDICAL SYSTEMS",
+        "ManufacturerModelName": "SIGNA PET/MR",
+        "Modality": "PT",
+        "PixelSpacing": "1.171875\\1.171875",
+        "Rows": "256",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.128",
+        "SeriesNumber": "2",
+        "SoftwareVersions": "SIGNA_LX1.MP1.3_R03_138"
+      }
+    },
+    {
+      "description": "Static 3D MAC",
+      "expected_filtered": false,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "BRAIN",
+        "Columns": "256",
+        "ImageType": "ORIGINAL\\PRIMARY",
+        "Manufacturer": "GE MEDICAL SYSTEMS",
+        "ManufacturerModelName": "SIGNA PET/MR",
+        "Modality": "PT",
+        "PixelSpacing": "1.171875\\1.171875",
+        "Rows": "256",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.128",
+        "SeriesNumber": "3",
+        "SoftwareVersions": "SIGNA_LX1.MP1.3_R03_138"
+      }
+    },
+    {
+      "description": "Static 3D NAC",
+      "expected_filtered": false,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "BRAIN",
+        "Columns": "256",
+        "ImageType": "ORIGINAL\\PRIMARY",
+        "Manufacturer": "GE MEDICAL SYSTEMS",
+        "ManufacturerModelName": "SIGNA PET/MR",
+        "Modality": "PT",
+        "PixelSpacing": "1.171875\\1.171875",
+        "Rows": "256",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.128",
+        "SeriesNumber": "4",
+        "SoftwareVersions": "61.00"
+      }
+    },
+    {
+      "description": "Static 3D Q.Clear",
+      "expected_filtered": false,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "BRAIN",
+        "Columns": "256",
+        "ImageType": "ORIGINAL\\PRIMARY",
+        "Manufacturer": "GE MEDICAL SYSTEMS",
+        "ManufacturerModelName": "SIGNA PET/MR",
+        "Modality": "PT",
+        "PixelSpacing": "1.171875\\1.171875",
+        "Rows": "256",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.128",
+        "SeriesNumber": "4",
+        "SoftwareVersions": "SIGNA_LX1.MP1.3_R03_138"
+      }
+    },
+    {
+      "description": "Static 3D MAC",
+      "expected_filtered": false,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "BRAIN",
+        "Columns": "256",
+        "ImageType": "ORIGINAL\\PRIMARY",
+        "Manufacturer": "GE MEDICAL SYSTEMS",
+        "ManufacturerModelName": "SIGNA PET/MR",
+        "Modality": "PT",
+        "PixelSpacing": "1.171875\\1.171875",
+        "Rows": "256",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.128",
+        "SeriesNumber": "5",
+        "SoftwareVersions": "61.00"
+      }
+    },
+    {
+      "description": "Static 3D Q.Clear",
+      "expected_filtered": false,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "BRAIN",
+        "Columns": "256",
+        "ImageType": "ORIGINAL\\PRIMARY",
+        "Manufacturer": "GE MEDICAL SYSTEMS",
+        "ManufacturerModelName": "SIGNA PET/MR",
+        "Modality": "PT",
+        "PixelSpacing": "1.171875\\1.171875",
+        "Rows": "256",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.128",
+        "SeriesNumber": "6",
+        "SoftwareVersions": "61.00"
+      }
+    },
+    {
+      "description": "Static 3D MAC",
+      "expected_filtered": false,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "WHOLEBODY",
+        "Columns": "256",
+        "ImageType": "ORIGINAL\\PRIMARY",
+        "Manufacturer": "GE MEDICAL SYSTEMS",
+        "ManufacturerModelName": "SIGNA PET/MR",
+        "Modality": "PT",
+        "PixelSpacing": "1.171875\\1.171875",
+        "Rows": "256",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.128",
+        "SeriesNumber": "10",
+        "SoftwareVersions": "SIGNA_LX1.MP1.3_R03_138"
+      }
+    }
+  ]
+}

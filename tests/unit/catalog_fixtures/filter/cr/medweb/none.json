@@ -1,0 +1,56 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "CHEST",
+        "Columns": "1275",
+        "ConversionType": "DV",
+        "Manufacturer": "Medweb",
+        "ManufacturerModelName": "None",
+        "Modality": "CR",
+        "Rows": "1650",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "",
+        "SeriesNumber": "0"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "1669",
+        "ConversionType": "DV",
+        "Manufacturer": "Medweb",
+        "ManufacturerModelName": "None",
+        "Modality": "CR",
+        "Rows": "2200",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "",
+        "SeriesNumber": "1"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "2560",
+        "ConversionType": "DV",
+        "Manufacturer": "Medweb",
+        "ManufacturerModelName": "None",
+        "Modality": "CR",
+        "Rows": "3300",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "",
+        "SeriesNumber": "1"
+      }
+    }
+  ]
+}

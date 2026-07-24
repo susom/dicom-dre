@@ -1,0 +1,45 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [
+        "0,0,640,40"
+      ],
+      "expected_scrubbed": true,
+      "tags": {
+        "BurnedInAnnotation": "YES",
+        "Columns": "640",
+        "ImageType": "ORIGINAL\\PRIMARY\\VASCULAR\\0019",
+        "Manufacturer": "ZONARE",
+        "ManufacturerModelName": "Z_ONE",
+        "Modality": "US",
+        "Rows": "480",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "4.3.118I"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [
+        "0,0,800,40"
+      ],
+      "expected_scrubbed": true,
+      "tags": {
+        "BurnedInAnnotation": "YES",
+        "Columns": "800",
+        "ImageType": "ORIGINAL\\PRIMARY\\VASCULAR\\0001",
+        "Manufacturer": "ZONARE",
+        "ManufacturerModelName": "Z_ONE",
+        "Modality": "US",
+        "Rows": "600",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+        "SequenceOfUltrasoundRegions": "present",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "4.7.323K"
+      }
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BurnedInAnnotation": "YES",
+        "Columns": "256",
+        "ConversionType": "WSD",
+        "Manufacturer": "CircleCVI",
+        "ManufacturerModelName": "",
+        "Modality": "MR",
+        "Rows": "256",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SeriesNumber": "505",
+        "SoftwareVersions": "cvi42 5.5.1"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BurnedInAnnotation": "YES",
+        "Columns": "512",
+        "ConversionType": "WSD",
+        "Manufacturer": "CircleCVI",
+        "Modality": "MR",
+        "PixelSpacing": "0.97327570673\\0.94993332794",
+        "Rows": "512",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SeriesNumber": "613",
+        "SoftwareVersions": "cvi42 5.0.3"
+      }
+    }
+  ]
+}

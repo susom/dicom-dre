@@ -1,0 +1,24 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "",
+        "Columns": "704",
+        "ConversionType": "DF",
+        "Manufacturer": "GE Healthcare IT Radiology",
+        "ManufacturerModelName": "Centricity Radiology RA 600",
+        "Modality": "MG",
+        "Rows": "876",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "Vidar Film Digitizer",
+        "SeriesDescription": "",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "7.0"
+      }
+    }
+  ]
+}

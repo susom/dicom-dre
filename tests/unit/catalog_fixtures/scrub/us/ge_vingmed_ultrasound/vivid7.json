@@ -1,0 +1,47 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [
+        "0,0,280,24"
+      ],
+      "expected_scrubbed": true,
+      "tags": {
+        "BodyPartExamined": "ABDOMEN",
+        "BurnedInAnnotation": "YES",
+        "Columns": "636",
+        "ImageType": "DERIVED\\PRIMARY\\\\0001\\GEMSMULTIFRAME\\GEMSMGCOUNT1\\\\\\\\PATINFO",
+        "Manufacturer": "GE Vingmed Ultrasound",
+        "ManufacturerModelName": "Vivid7",
+        "Modality": "US",
+        "Rows": "434",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+        "SequenceOfUltrasoundRegions": "present",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "Vivid7:7.0.0"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [
+        "0,0,584,48"
+      ],
+      "expected_scrubbed": true,
+      "tags": {
+        "BurnedInAnnotation": "YES",
+        "Columns": "636",
+        "ImageType": "DERIVED\\PRIMARY\\\\0001",
+        "Manufacturer": "GE Vingmed Ultrasound",
+        "ManufacturerModelName": "Vivid7",
+        "Modality": "US",
+        "Rows": "484",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.3.1",
+        "SequenceOfUltrasoundRegions": "present",
+        "SeriesNumber": "0001",
+        "SoftwareVersions": "Vivid7:7.1.2"
+      }
+    }
+  ]
+}

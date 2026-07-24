@@ -1,0 +1,32 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Manufacturer": "SIEMENS",
+        "ManufacturerModelName": "SOMATOM Definition AS",
+        "Modality": "SR",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.88.67",
+        "SeriesNumber": "502",
+        "SoftwareVersions": "syngo MI.PET/CT 2012A"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Manufacturer": "SIEMENS",
+        "ManufacturerModelName": "SOMATOM Definition AS+",
+        "Modality": "SR",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.88.67",
+        "SeriesNumber": "502",
+        "SoftwareVersions": "syngo CT 2011A"
+      }
+    }
+  ]
+}

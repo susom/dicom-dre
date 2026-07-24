@@ -1,0 +1,24 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BurnedInAnnotation": "YES",
+        "Columns": "512",
+        "ConversionType": "WSD",
+        "ImageType": "DERIVED\\SECONDARY\\DOSE_INFO",
+        "Manufacturer": "Philips",
+        "ManufacturerModelName": "GEMINI TF Big Bore",
+        "Modality": "CT",
+        "Rows": "512",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "EBW4",
+        "SeriesNumber": "80193",
+        "SoftwareVersions": "2.3.0"
+      }
+    }
+  ]
+}

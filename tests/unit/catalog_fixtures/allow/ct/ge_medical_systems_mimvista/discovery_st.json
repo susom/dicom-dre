@@ -1,0 +1,21 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "512",
+        "ImageType": "DERIVED\\PRIMARY\\AXIAL",
+        "Manufacturer": "GE MEDICAL SYSTEMS / MIMvista",
+        "ManufacturerModelName": "Discovery ST",
+        "Modality": "CT",
+        "PixelSpacing": "0.977000\\0.977000",
+        "Rows": "512",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.2",
+        "SeriesNumber": "44634"
+      }
+    }
+  ]
+}

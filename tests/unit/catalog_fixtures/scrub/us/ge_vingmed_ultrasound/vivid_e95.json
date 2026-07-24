@@ -1,0 +1,25 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [
+        "0,0,400,56"
+      ],
+      "expected_scrubbed": true,
+      "tags": {
+        "BurnedInAnnotation": "YES",
+        "Columns": "1016",
+        "ImageType": "DERIVED\\PRIMARY\\\\0011\\GEMSMULTIFRAME\\GEMSMGCOUNT1\\\\\\\\PATINFO\\I36",
+        "Manufacturer": "GE Vingmed Ultrasound",
+        "ManufacturerModelName": "Vivid E95",
+        "Modality": "US",
+        "Rows": "708",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.3.1",
+        "SequenceOfUltrasoundRegions": "present",
+        "SeriesNumber": "0000",
+        "SoftwareVersions": "Vivid E95:201.32.3"
+      }
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "BREAST",
+        "BurnedInAnnotation": "NO",
+        "Columns": "1792",
+        "ImageType": "DERIVED\\PRIMARY",
+        "Manufacturer": "HOLOGIC, Inc.",
+        "ManufacturerModelName": "Trident",
+        "Modality": "MG",
+        "PixelSpacing": "0.035354\\0.035354",
+        "Rows": "2048",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.1.2",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "AWS:1.1.1.3\\M35:1.2.3.6\\TridentIP2D:1.0.1.0\\DET:1.6.1.7\\DTC:1.0.0.9\\TCB:1.0.0.14"
+      }
+    }
+  ]
+}

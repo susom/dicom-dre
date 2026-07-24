@@ -1,0 +1,66 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "BREAST",
+        "BurnedInAnnotation": "YES",
+        "Columns": "2368",
+        "ImageType": "DERIVED\\PRIMARY\\",
+        "Manufacturer": "Faxitron X-Ray LLC",
+        "ManufacturerModelName": "DX-50",
+        "Modality": "DX",
+        "PixelSpacing": "0.05\\0.05",
+        "Rows": "2448",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.1.1",
+        "SeriesDescription": "",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "Faxitron SR v1.6.3.18986\\DX-50 EPROM v2.2\\C1.07;D1.10.0.0;L2.20"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "UNSPECIFIED",
+        "BurnedInAnnotation": "YES",
+        "Columns": "2368",
+        "ImageType": "DERIVED\\PRIMARY\\",
+        "Manufacturer": "Faxitron X-Ray LLC",
+        "ManufacturerModelName": "DX-50",
+        "Modality": "DX",
+        "PixelSpacing": "0.05\\0.05",
+        "Rows": "2448",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.1.1",
+        "SeriesDescription": "",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "Faxitron SR v1.6.3.18986\\DX-50 EPROM v2.2\\C1.07;D1.10.0.0;L2.20"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BurnedInAnnotation": "YES",
+        "Columns": "1032",
+        "ImageType": "DERIVED\\PRIMARY\\",
+        "Manufacturer": "Faxitron X-Ray LLC",
+        "ManufacturerModelName": "DX-50",
+        "Modality": "DX",
+        "PixelSpacing": "0.05\\0.05",
+        "Rows": "1086",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.1.1",
+        "SeriesDescription": "",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "Faxitron hiQ (Final Release build 2.0.0.34665)\\DX-50 EPROM v2.2\\C1.18;D1.14.0.0;L2.20"
+      }
+    }
+  ]
+}

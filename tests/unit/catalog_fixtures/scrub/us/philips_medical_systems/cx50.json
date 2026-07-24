@@ -1,0 +1,24 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [
+        "0,0,800,56"
+      ],
+      "expected_scrubbed": true,
+      "tags": {
+        "Columns": "800",
+        "ImageType": "ORIGINAL\\PRIMARY\\VASCULAR",
+        "Manufacturer": "Philips Medical Systems",
+        "ManufacturerModelName": "CX50",
+        "Modality": "US",
+        "Rows": "600",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+        "SequenceOfUltrasoundRegions": "present",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "CX50_200\\453561406461__2.0.0__Ultrasound_Application__[2009/5/26]-11:15\\453561397311__DRIVERS.23__DRIVERS__[2009/3/19]-18:28\\453561389811__OS.08__Operating System__[2009/2/09]-19:34"
+      }
+    }
+  ]
+}

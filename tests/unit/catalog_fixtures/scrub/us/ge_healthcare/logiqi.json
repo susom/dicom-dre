@@ -1,0 +1,25 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [
+        "0,0,554,57"
+      ],
+      "expected_scrubbed": true,
+      "tags": {
+        "BodyPartExamined": "VR",
+        "Columns": "800",
+        "ImageType": "DERIVED\\PRIMARY\\VASCULAR\\0011",
+        "Manufacturer": "GE Healthcare",
+        "ManufacturerModelName": "LOGIQi",
+        "Modality": "US",
+        "Rows": "600",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+        "SequenceOfUltrasoundRegions": "present",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "LOGIQi:LOGIQ i R5.1.1"
+      }
+    }
+  ]
+}

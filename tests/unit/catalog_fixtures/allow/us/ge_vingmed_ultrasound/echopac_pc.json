@@ -1,0 +1,40 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "1081",
+        "ImageType": "DERIVED\\PRIMARY\\\\0001",
+        "Manufacturer": "GE Vingmed Ultrasound",
+        "ManufacturerModelName": "EchoPAC PC",
+        "Modality": "US",
+        "Rows": "850",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+        "SequenceOfUltrasoundRegions": "present",
+        "SeriesNumber": "0001",
+        "SoftwareVersions": "Vivid7:7.0.0"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "636",
+        "ImageType": "DERIVED\\PRIMARY\\\\0011",
+        "Manufacturer": "GE Vingmed Ultrasound",
+        "ManufacturerModelName": "EchoPAC PC",
+        "Modality": "US",
+        "Rows": "434",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.3.1",
+        "SequenceOfUltrasoundRegions": "present",
+        "SeriesNumber": "0002",
+        "SoftwareVersions": "Vivid7:6.1.3"
+      }
+    }
+  ]
+}

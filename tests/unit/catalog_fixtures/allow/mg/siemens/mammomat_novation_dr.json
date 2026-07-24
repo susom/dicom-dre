@@ -1,0 +1,23 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "BREAST",
+        "BurnedInAnnotation": "NO",
+        "Columns": "3328",
+        "ImageType": "DERIVED\\PRIMARY\\\\LEFT",
+        "Manufacturer": "SIEMENS",
+        "ManufacturerModelName": "Mammomat Novation DR",
+        "Modality": "MG",
+        "Rows": "4084",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.1.2",
+        "SeriesNumber": "2",
+        "SoftwareVersions": "VA11C (68P74)\\VD20O  SL140P351 VA11C68 PACK P74 - US Version"
+      }
+    }
+  ]
+}

@@ -1,0 +1,200 @@
+[build-system]
+requires = ["hatchling", "hatch-vcs", "cffi>=1.16", "setuptools"]
+build-backend = "hatchling.build"
+
+[tool.hatch.version]
+source = "vcs"
+fallback-version = "0.0.0.dev0"
+
+[tool.hatch.build.hooks.vcs]
+version-file = "src/dicom_dre/_version.py"
+
+# Custom build hook compiles the CFFI JPEG-DCT acceleration extension.
+# It no-ops (pure-Python fallback) until the build script is copied in Phase 1.
+[tool.hatch.build.hooks.custom]
+path = "hatch_build.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/dicom_dre"]
+artifacts = [
+    "src/dicom_dre/resources/allow_lists/*.csv",
+    "src/dicom_dre/_jpeg_dct_accel*.so",
+]
+
+[project]
+name = "dicom-dre"
+dynamic = ["version"]
+description = "DICOM De-identification & Redaction Engine"
+readme = "README.md"
+requires-python = ">=3.12, <3.13"
+license = "Apache-2.0"
+authors = [
+    {name = "Stanford", email = "people@stanford.edu"},
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Programming Language :: Python :: 3.12",
+]
+dependencies = [
+    "pydicom>=3.0",
+    "numpy>=2.4.1",
+    "cffi>=1.16",
+    "pylibjpeg>=2.1.0",
+    "pylibjpeg-libjpeg>=2.1.0",
+    "pylibjpeg-openjpeg>=2.5.0",
+    "pylibjpeg-rle>=2.2.0",
+    "pyjpegls>=1.5.1",
+    "python-gdcm==3.0.20",
+    "click",
+    "readchar",
+]
+
+[project.scripts]
+dicom-dre = "dicom_dre.cli:cli"
+
+[project.urls]
+repository = "https://github.com/susom/dicom-dre"
+
+[dependency-groups]
+dev = [
+    "build",
+    "cffi>=1.16",
+    "coverage[toml]",
+    "hatch-vcs",
+    "hatchling",
+    "pyrefly",
+    "pillow",
+    "ruff",
+    "pytest>=8.3.5",
+    "pytest-cov",
+    "pytest-mock",
+    "python-semantic-release>=10.5.3",
+    "setuptools",
+    "types-cffi>=2.0.0.20260518",
+    "pytest-timeout>=2.4.0",
+]
+docs = [
+    "sphinx>=9.1",
+    "furo>=2025.12.19",
+    "myst-parser>=5.1",
+    "sphinx-autobuild>=2024.10.3",
+]
+
+[tool.semantic_release]
+commit_parser = "conventional"
+commit_message = "chore(release): {version} [skip ci]"
+major_on_zero = false
+tag_format = "v{version}"
+version_source = "tag"
+
+[tool.semantic_release.changelog]
+mode = "update"
+default_templates = { changelog_file = "CHANGELOG.md" }
+exclude_commit_patterns = [
+  '''chore(?:\([^)]*?\))?: .+''',
+  '''ci(?:\([^)]*?\))?: .+''',
+  '''refactor(?:\([^)]*?\))?: .+''',
+  '''style(?:\([^)]*?\))?: .+''',
+  '''test(?:\([^)]*?\))?: .+''',
+  '''build\((?!deps\): .+)''',
+  '''Merged? .*''',
+]
+
+[tool.semantic_release.branches.main]
+match = "main"
+prerelease = false
+
+[tool.semantic_release.branches.development]
+match = "development"
+prerelease = true
+
+[tool.semantic_release.commit_parser_options]
+allowed_tags = ["build", "chore", "ci", "docs", "feat", "fix", "perf", "refactor", "style", "test"]
+minor_tags = ["feat"]
+patch_tags = ["fix", "perf"]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 120
+# Scratch reference material under temp/, and the hatch-vcs-generated version
+# file (skipped via .gitignore once the repo is initialized, excluded here so
+# lint is clean beforehand too).
+extend-exclude = ["temp", "src/dicom_dre/_version.py"]
+
+[tool.ruff.lint]
+select = ["B", "C4", "D", "E", "F", "I", "N", "S", "TID", "W"]
+ignore = [
+    "E203",   # whitespace before ':'
+    "E501",   # line too long (handled by line-length)
+    "C901",   # too complex
+    "S608",   # possible SQL injection
+    "S311",   # random generators for cryptographic purposes
+    "N802",   # function name should be lowercase
+    "TID251", # banned-api
+    "TID253", # banned-module-level-imports
+    "D301",   # use r""" if any backslashes in docstring
+]
+
+[tool.ruff.lint.per-file-ignores]
+"test_*.py" = ["S101", "N806", "S106"]
+"tests/*" = ["S101", "N806", "S106"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.isort]
+force-single-line = true
+lines-after-imports = 2
+
+[tool.pyrefly]
+# Single source of truth for type checking, shared by the Pyrefly editor
+# extension and the pyrefly CLI used in CI, so both report identically.
+project-includes = ["src", "tests"]
+project-excludes = [
+    "temp",
+    "**/.venv",
+    "**/__pycache__",
+    "**/node_modules",
+    "src/dicom_dre/_version.py",
+]
+python-interpreter-path = ".venv/bin/python3"
+python-version = "3.12"
+# The JPEG-DCT acceleration extension is a CFFI-compiled native module
+# (`_jpeg_dct_accel.*.so`) built at install time and imported behind a
+# `try/except ImportError` fallback. Pyrefly does not resolve native extension
+# modules, so treat it as `Any` when it cannot be found (parity with how the
+# pure-Python fallback path is typed).
+ignore-missing-imports = ["dicom_dre._jpeg_dct_accel"]
+
+[tool.coverage.run]
+branch = true
+source = ["src/"]
+omit = [
+    ".venv/*",
+    "*/test*",
+    "*/conftest.py",
+    "*/__init__.py",
+]
+
+[tool.coverage.report]
+show_missing = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests/unit"]
+addopts = """
+    --cov-fail-under=20
+"""
+timeout = 90
+tmp_path_retention_policy = "none"
+python_files = ["test_*.py"]
+python_functions = ["test_*"]
+filterwarnings = [
+    "ignore:builtin type .* has no __module__ attribute:DeprecationWarning",
+]
+norecursedirs = [
+    "*.egg-info",
+    ".git",
+    ".mypy_cache",
+    ".pytest_cache",
+    ".vscode",
+]

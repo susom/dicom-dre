@@ -1,0 +1,57 @@
+dicom-dre
+Copyright (c) The dicom-dre authors.
+
+This product is licensed under the Apache License, Version 2.0 (see LICENSE).
+
+------------------------------------------------------------------------------
+Third-party components
+------------------------------------------------------------------------------
+
+PixelMed Java JPEG Selective Block Redaction Codec
+https://www.pixelmed.com/jpeg.html
+
+The JPEG DCT-domain block-selective redaction implementation in
+src/dicom_dre/jpeg_dct_scrubber.py and the C entropy codec built from
+src/dicom_dre/_jpeg_dct_accel_build.py (compiled as
+src/dicom_dre/_jpeg_dct_accel) are ported from the PixelMed Java JPEG
+Selective Block Redaction Codec by David A. Clunie. The method is described in:
+
+    Clunie DA, Gebow D. "Block selective redaction for minimizing loss during
+    de-identification of burned in text in irreversibly compressed JPEG medical
+    images." J Med Imaging (Bellingham). 2015;2(1):016501.
+    doi:10.1117/1.JMI.2.1.016501. PMCID: PMC4478853.
+
+The PixelMed codec is distributed under the following BSD license:
+
+    Copyright (c) 2001-2025, David A. Clunie DBA PixelMed Publishing.
+    All rights reserved.
+
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions are met:
+
+    1. Redistributions of source code must retain the above copyright notice,
+       this list of conditions and the following disclaimers.
+
+    2. Redistributions in binary form must reproduce the above copyright notice,
+       this list of conditions and the following disclaimers in the
+       documentation and/or other materials provided with the distribution.
+
+    3. Neither the name of PixelMed Publishing nor the names of its contributors
+       may be used to endorse or promote products derived from this software.
+
+    This software is provided by the copyright holders and contributors "as is"
+    and any express or implied warranties, including, but not limited to, the
+    implied warranties of merchantability and fitness for a particular purpose
+    are disclaimed. In no event shall the copyright owner or contributors be
+    liable for any direct, indirect, incidental, special, exemplary, or
+    consequential damages (including, but not limited to, procurement of
+    substitute goods or services; loss of use, data or profits; or business
+    interruption) however caused and on any theory of liability, whether in
+    contract, strict liability, or tort (including negligence or otherwise)
+    arising in any way out of the use of this software, even if advised of the
+    possibility of such damage.
+
+    This software has neither been tested nor approved for clinical use or for
+    incorporation in a medical device. It is the redistributor's or user's
+    responsibility to comply with any applicable local, state, national or
+    international regulations.

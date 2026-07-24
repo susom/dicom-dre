@@ -1,0 +1,43 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "BREAST",
+        "BurnedInAnnotation": "YES",
+        "Columns": "2134",
+        "ConversionType": "SYN",
+        "ImageType": "DERIVED\\SECONDARY",
+        "Manufacturer": "Philips Medical Systems",
+        "ManufacturerModelName": "iU22",
+        "Modality": "US",
+        "PixelSpacing": "0.033064\\0.033064",
+        "Rows": "1788",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "Report Snapshot",
+        "SeriesNumber": "1000"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BurnedInAnnotation": "YES",
+        "Columns": "1024",
+        "ImageType": "ORIGINAL\\PRIMARY\\INVALID",
+        "Manufacturer": "Philips Medical Systems",
+        "ManufacturerModelName": "iU22",
+        "Modality": "US",
+        "Rows": "768",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "PMS5.1 Ultrasound iU22_4.0.2.13"
+      }
+    }
+  ]
+}

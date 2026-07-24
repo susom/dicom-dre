@@ -1,0 +1,27 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [
+        "0,0,1936,50"
+      ],
+      "expected_scrubbed": true,
+      "tags": {
+        "BodyPartExamined": "HIP",
+        "BurnedInAnnotation": "YES",
+        "Columns": "1936",
+        "ImageType": "DERIVED\\PRIMARY",
+        "Manufacturer": "Medlink Imaging",
+        "ManufacturerModelName": "AltoDR",
+        "Modality": "DX",
+        "PixelSpacing": "0.14\\0.14",
+        "Rows": "2922",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.1.1",
+        "SeriesDescription": "",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "1.0.0.86b19"
+      }
+    }
+  ]
+}

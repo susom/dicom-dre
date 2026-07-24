@@ -1,0 +1,24 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "",
+        "Columns": "512",
+        "ConversionType": "WSD",
+        "ImageType": "DERIVED\\SECONDARY",
+        "Manufacturer": "MIMvista Corp",
+        "ManufacturerModelName": "",
+        "Modality": "CT",
+        "Rows": "512",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "",
+        "SeriesNumber": "2827",
+        "SoftwareVersions": ""
+      }
+    }
+  ]
+}

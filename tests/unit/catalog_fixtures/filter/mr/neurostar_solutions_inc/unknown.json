@@ -1,0 +1,38 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "",
+        "Columns": "1276",
+        "Manufacturer": "Neurostar Solutions, Inc.",
+        "Modality": "MR",
+        "PixelSpacing": "0.0\\0.0",
+        "Rows": "1650",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SeriesDescription": "",
+        "SeriesNumber": "7"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "",
+        "Columns": "2560",
+        "ImageType": "DERIVED\\SECONDARY",
+        "Manufacturer": "Neurostar Solutions, Inc.",
+        "Modality": "MR",
+        "PixelSpacing": "0.0\\0.0",
+        "Rows": "3300",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SeriesNumber": "100"
+      }
+    }
+  ]
+}

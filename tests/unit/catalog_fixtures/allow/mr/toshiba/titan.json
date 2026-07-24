@@ -1,0 +1,42 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "FEMALE PELVIS",
+        "Columns": "888",
+        "ImageType": "ORIGINAL\\PRIMARY\\GDC",
+        "Manufacturer": "TOSHIBA",
+        "ManufacturerModelName": "Titan",
+        "Modality": "MR",
+        "PixelSpacing": "0.5625\\0.5625",
+        "Rows": "800",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.4",
+        "SeriesNumber": "901",
+        "SoftwareVersions": "V2.31*R006"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "TSPINE",
+        "Columns": "480",
+        "ImageType": "ORIGINAL\\PRIMARY\\GDC",
+        "Manufacturer": "TOSHIBA",
+        "ManufacturerModelName": "Titan",
+        "Modality": "MR",
+        "PixelSpacing": "0.7500\\0.7500",
+        "Rows": "640",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.4",
+        "SeriesNumber": "201",
+        "SoftwareVersions": "V2.31*R006"
+      }
+    }
+  ]
+}

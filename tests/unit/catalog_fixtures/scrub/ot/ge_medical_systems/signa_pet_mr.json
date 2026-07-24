@@ -1,0 +1,46 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": true,
+      "tags": {
+        "BodyPartExamined": "BRAIN",
+        "BurnedInAnnotation": "YES",
+        "Columns": "456",
+        "ConversionType": "WSD",
+        "ImageType": "DERIVED\\SECONDARY\\SCREEN SAVE",
+        "Manufacturer": "GE MEDICAL SYSTEMS",
+        "ManufacturerModelName": "SIGNA PET/MR",
+        "Modality": "OT",
+        "Rows": "456",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "Volume Viewer",
+        "SeriesNumber": "550",
+        "SoftwareVersions": "SIGNA_LX1.MP1.3_R03_138"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": true,
+      "tags": {
+        "BodyPartExamined": "BRAIN",
+        "BurnedInAnnotation": "YES",
+        "Columns": "568",
+        "ConversionType": "WSD",
+        "ImageType": "DERIVED\\SECONDARY\\SCREEN SAVE",
+        "Manufacturer": "GE MEDICAL SYSTEMS",
+        "ManufacturerModelName": "SIGNA PET/MR",
+        "Modality": "OT",
+        "Rows": "568",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "Volume Viewer",
+        "SeriesNumber": "802",
+        "SoftwareVersions": "30\\LX\\SIGNA_LX1.MR30.1_R02_2332.a"
+      }
+    }
+  ]
+}

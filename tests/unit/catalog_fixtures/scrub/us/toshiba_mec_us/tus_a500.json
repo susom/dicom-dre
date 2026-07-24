@@ -1,0 +1,28 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [
+        "0,0,960,60"
+      ],
+      "expected_scrubbed": true,
+      "tags": {
+        "BodyPartExamined": "",
+        "BurnedInAnnotation": "YES",
+        "Columns": "960",
+        "ImageType": "ORIGINAL\\PRIMARY\\BREAST\\0001",
+        "Manufacturer": "TOSHIBA_MEC_US",
+        "ManufacturerModelName": "TUS-A500",
+        "Modality": "US",
+        "PixelSpacing": "0.1108870934695\\0.1108870934695",
+        "Rows": "720",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+        "SequenceOfUltrasoundRegions": "present",
+        "SeriesDescription": "",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "AB_V6.60*R102"
+      }
+    }
+  ]
+}

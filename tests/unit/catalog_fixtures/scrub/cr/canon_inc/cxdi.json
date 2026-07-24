@@ -1,0 +1,44 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [
+        "0,0,10000,104"
+      ],
+      "expected_scrubbed": true,
+      "tags": {
+        "BodyPartExamined": "CHEST",
+        "Columns": "2200",
+        "Manufacturer": "Canon Inc.",
+        "ManufacturerModelName": "CXDI",
+        "Modality": "CR",
+        "Rows": "2672",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.1",
+        "SeriesDescription": "",
+        "SeriesNumber": "2",
+        "SoftwareVersions": "V4.04.01"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [
+        "0,0,10000,104"
+      ],
+      "expected_scrubbed": true,
+      "tags": {
+        "BodyPartExamined": "CHEST",
+        "Columns": "2448",
+        "Manufacturer": "Canon Inc.",
+        "ManufacturerModelName": "CXDI",
+        "Modality": "CR",
+        "Rows": "2288",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.1",
+        "SeriesDescription": "",
+        "SeriesNumber": "2",
+        "SoftwareVersions": "V6.24.01"
+      }
+    }
+  ]
+}

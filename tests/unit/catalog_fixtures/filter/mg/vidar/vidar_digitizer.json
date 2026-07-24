@@ -1,0 +1,24 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "BREAST",
+        "BurnedInAnnotation": "NO",
+        "Columns": "1410",
+        "ImageType": "DERIVED\\SECONDARY",
+        "Manufacturer": "VIDAR",
+        "ManufacturerModelName": "Vidar Digitizer",
+        "Modality": "MG",
+        "Rows": "1757",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.1.2",
+        "SeriesDescription": "",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "ClinicalExpress V6.1 Mammo Build 5, 0"
+      }
+    }
+  ]
+}

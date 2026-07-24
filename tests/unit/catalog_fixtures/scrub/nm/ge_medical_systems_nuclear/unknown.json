@@ -1,0 +1,50 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [
+        "0,0,550,50"
+      ],
+      "expected_scrubbed": true,
+      "tags": {
+        "BodyPartExamined": "WHOLEBODY",
+        "BurnedInAnnotation": "NO",
+        "Columns": "328",
+        "ConversionType": "WSD",
+        "ImageType": "DERIVED\\SECONDARY",
+        "Manufacturer": "GE MEDICAL SYSTEMS, NUCLEAR",
+        "ManufacturerModelName": "",
+        "Modality": "NM",
+        "Rows": "541",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7.2",
+        "SecondaryCaptureDeviceManufacturerModelName": "Xeleris 4.1600",
+        "SeriesNumber": "1000",
+        "SoftwareVersions": ""
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [
+        "0,0,550,50"
+      ],
+      "expected_scrubbed": true,
+      "tags": {
+        "BodyPartExamined": "WHOLEBODY",
+        "BurnedInAnnotation": "NO",
+        "Columns": "547",
+        "ConversionType": "WSD",
+        "ImageType": "DERIVED\\SECONDARY",
+        "Manufacturer": "GE MEDICAL SYSTEMS, NUCLEAR",
+        "ManufacturerModelName": "",
+        "Modality": "NM",
+        "Rows": "552",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7.4",
+        "SecondaryCaptureDeviceManufacturerModelName": "Xeleris 4.1600",
+        "SeriesNumber": "1001",
+        "SoftwareVersions": ""
+      }
+    }
+  ]
+}

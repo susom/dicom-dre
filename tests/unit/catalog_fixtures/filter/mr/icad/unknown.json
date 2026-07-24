@@ -1,0 +1,36 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "",
+        "Columns": "1632",
+        "ConversionType": "WSD",
+        "Manufacturer": "iCAD",
+        "Modality": "MR",
+        "Rows": "2112",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SeriesNumber": "20000"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "",
+        "Columns": "311",
+        "ConversionType": "SI",
+        "Manufacturer": "iCAD",
+        "Modality": "MR",
+        "Rows": "419",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SeriesNumber": "20000"
+      }
+    }
+  ]
+}

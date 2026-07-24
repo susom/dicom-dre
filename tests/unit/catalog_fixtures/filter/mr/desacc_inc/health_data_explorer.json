@@ -1,0 +1,23 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "",
+        "BurnedInAnnotation": "YES",
+        "Columns": "1696",
+        "ConversionType": "SD",
+        "Manufacturer": "DesAcc, Inc.",
+        "ManufacturerModelName": "Health Data Explorer",
+        "Modality": "MR",
+        "Rows": "2200",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SeriesNumber": "999999",
+        "SoftwareVersions": "3.0.0.530"
+      }
+    }
+  ]
+}

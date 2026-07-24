@@ -1,0 +1,25 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [
+        "2500,0,572,400"
+      ],
+      "expected_scrubbed": true,
+      "tags": {
+        "BurnedInAnnotation": "NO",
+        "Columns": "3072",
+        "ImageType": "ORIGINAL\\PRIMARY",
+        "Manufacturer": "Cuattro, LLC",
+        "ManufacturerModelName": "CloudDR Medical",
+        "Modality": "DX",
+        "PixelSpacing": "0.151\\0.151",
+        "Rows": "3072",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.1.1",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "3.2.136.0"
+      }
+    }
+  ]
+}

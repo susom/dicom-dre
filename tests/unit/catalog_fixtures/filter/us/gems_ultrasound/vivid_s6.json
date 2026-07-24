@@ -1,0 +1,39 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BurnedInAnnotation": "YES",
+        "Columns": "800",
+        "ConversionType": "WSD",
+        "ImageType": "DERIVED\\PRIMARY\\\\0001",
+        "Manufacturer": "GEMS Ultrasound",
+        "ManufacturerModelName": "Vivid S6",
+        "Modality": "US",
+        "Rows": "600",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "Vivid S6",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "Vivid S6:10.2.0 build 110"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "512",
+        "Manufacturer": "GEMS Ultrasound",
+        "ManufacturerModelName": "Vivid S6",
+        "Modality": "US",
+        "Rows": "512",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SeriesNumber": "5"
+      }
+    }
+  ]
+}

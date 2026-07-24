@@ -1,0 +1,24 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "Wrist",
+        "Columns": "1700",
+        "ConversionType": "WSD",
+        "ImageType": "ORIGINAL\\SECONDARY",
+        "Manufacturer": "PACS",
+        "ManufacturerModelName": "DR-C125",
+        "Modality": "CR",
+        "Rows": "2220",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "PACSSCAN",
+        "SeriesNumber": "1002",
+        "SoftwareVersions": "V1.0"
+      }
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [
+        "0,0,220,25"
+      ],
+      "expected_scrubbed": true,
+      "tags": {
+        "BurnedInAnnotation": "YES",
+        "Columns": "636",
+        "ImageType": "DERIVED\\PRIMARY\\\\0001",
+        "Manufacturer": "GEMS Ultrasound",
+        "ManufacturerModelName": "Vivid q",
+        "Modality": "US",
+        "Rows": "422",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+        "SequenceOfUltrasoundRegions": "present",
+        "SeriesNumber": "0002",
+        "SoftwareVersions": "Vivid q:11.2.1 build 45"
+      }
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "PELVIS",
+        "CodeMeaning": "",
+        "Columns": "320",
+        "ImageType": "ORIGINAL\\PRIMARY\\M_PCA\\M\\PCA",
+        "Manufacturer": "Philips Medical Systems",
+        "ManufacturerModelName": "Intera",
+        "Modality": "MR",
+        "PixelSpacing": "1\\1",
+        "Rows": "320",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.4",
+        "SeriesNumber": "501",
+        "SoftwareVersions": "2.6.3\\2.6.3.5"
+      }
+    }
+  ]
+}

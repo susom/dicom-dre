@@ -1,0 +1,24 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "BREAST",
+        "BurnedInAnnotation": "NO",
+        "Columns": "4915",
+        "ImageType": "ORIGINAL\\PRIMARY\\",
+        "Manufacturer": "Philips Digital Mammography Sweden AB",
+        "ManufacturerModelName": "L30",
+        "Modality": "MG",
+        "Rows": "5355",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.1.2",
+        "SeriesDescription": "",
+        "SeriesNumber": "4",
+        "SoftwareVersions": "8.4 P1\\1.9 (304)\\3.11 (5713)\\CCS Version 3.10 (4377)"
+      }
+    }
+  ]
+}

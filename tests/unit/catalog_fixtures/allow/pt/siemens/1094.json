@@ -1,0 +1,40 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "168",
+        "ImageType": "ORIGINAL\\PRIMARY",
+        "Manufacturer": "SIEMENS",
+        "ManufacturerModelName": "1094",
+        "Modality": "PT",
+        "PixelSpacing": "4.07283\\4.07283",
+        "Rows": "168",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.128",
+        "SeriesNumber": "4",
+        "SoftwareVersions": "PET/CT 2008A"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "168",
+        "ImageType": "ORIGINAL\\PRIMARY",
+        "Manufacturer": "SIEMENS",
+        "ManufacturerModelName": "1094",
+        "Modality": "PT",
+        "PixelSpacing": "4.07283\\4.07283",
+        "Rows": "168",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.128",
+        "SeriesNumber": "5",
+        "SoftwareVersions": "PET/CT 2008A"
+      }
+    }
+  ]
+}

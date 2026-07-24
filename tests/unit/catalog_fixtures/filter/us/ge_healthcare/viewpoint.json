@@ -1,0 +1,85 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "ABDOMEN",
+        "Columns": "375",
+        "ConversionType": "WSD",
+        "Manufacturer": "GE Healthcare",
+        "ManufacturerModelName": "ViewPoint",
+        "Modality": "US",
+        "Rows": "649",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SeriesNumber": "3"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "1200",
+        "ConversionType": "WSD",
+        "Manufacturer": "GE Healthcare",
+        "ManufacturerModelName": "ViewPoint",
+        "Modality": "US",
+        "Rows": "596",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SeriesNumber": "3"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "1679",
+        "ConversionType": "WSD",
+        "Manufacturer": "GE Healthcare",
+        "ManufacturerModelName": "ViewPoint",
+        "Modality": "US",
+        "Rows": "1500",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SeriesNumber": "3"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "342",
+        "ConversionType": "WSD",
+        "Manufacturer": "GE Healthcare",
+        "ManufacturerModelName": "ViewPoint",
+        "Modality": "US",
+        "Rows": "439",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SeriesNumber": "5"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "849",
+        "ConversionType": "WSD",
+        "Manufacturer": "GE Healthcare",
+        "ManufacturerModelName": "ViewPoint",
+        "Modality": "US",
+        "Rows": "864",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SeriesNumber": "2"
+      }
+    }
+  ]
+}

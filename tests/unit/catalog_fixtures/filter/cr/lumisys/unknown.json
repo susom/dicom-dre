@@ -1,0 +1,242 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "2048",
+        "ConversionType": "DF",
+        "ImageType": "DERIVED\\SECONDARY",
+        "Manufacturer": "LUMISYS",
+        "Modality": "CR",
+        "Rows": "2497",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "LS75",
+        "SeriesNumber": "1"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "2048",
+        "ConversionType": "DF",
+        "ImageType": "DERIVED\\SECONDARY",
+        "Manufacturer": "LUMISYS",
+        "Modality": "CR",
+        "Rows": "2504",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "LS75",
+        "SeriesNumber": "2"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "2048",
+        "ConversionType": "DF",
+        "ImageType": "DERIVED\\SECONDARY",
+        "Manufacturer": "LUMISYS",
+        "Modality": "CR",
+        "Rows": "2530",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "LS75",
+        "SeriesNumber": "2"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "2048",
+        "ConversionType": "DF",
+        "ImageType": "DERIVED\\SECONDARY",
+        "Manufacturer": "LUMISYS",
+        "Modality": "CR",
+        "Rows": "2531",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "LS75",
+        "SeriesNumber": "4"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "2048",
+        "ConversionType": "DF",
+        "ImageType": "DERIVED\\SECONDARY",
+        "Manufacturer": "LUMISYS",
+        "Modality": "CR",
+        "Rows": "2533",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "LS75",
+        "SeriesNumber": "4"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "2048",
+        "ConversionType": "DF",
+        "ImageType": "DERIVED\\SECONDARY",
+        "Manufacturer": "LUMISYS",
+        "Modality": "CR",
+        "Rows": "2534",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "LS75",
+        "SeriesNumber": "4"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "2048",
+        "ConversionType": "DF",
+        "ImageType": "DERIVED\\SECONDARY",
+        "Manufacturer": "LUMISYS",
+        "Modality": "CR",
+        "Rows": "2546",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "LS75",
+        "SeriesNumber": "3"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "2482",
+        "ConversionType": "DF",
+        "ImageType": "DERIVED\\SECONDARY",
+        "Manufacturer": "LUMISYS",
+        "Modality": "CR",
+        "Rows": "2048",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "LS75",
+        "SeriesNumber": "1"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "2496",
+        "ConversionType": "DF",
+        "ImageType": "DERIVED\\SECONDARY",
+        "Manufacturer": "LUMISYS",
+        "Modality": "CR",
+        "Rows": "2048",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "LS75",
+        "SeriesNumber": "1"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "2503",
+        "ConversionType": "DF",
+        "ImageType": "DERIVED\\SECONDARY",
+        "Manufacturer": "LUMISYS",
+        "Modality": "CR",
+        "Rows": "2048",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "LS75",
+        "SeriesNumber": "2"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "2505",
+        "ConversionType": "DF",
+        "ImageType": "DERIVED\\SECONDARY",
+        "Manufacturer": "LUMISYS",
+        "Modality": "CR",
+        "Rows": "2048",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "LS75",
+        "SeriesNumber": "1"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "2531",
+        "ConversionType": "DF",
+        "ImageType": "DERIVED\\SECONDARY",
+        "Manufacturer": "LUMISYS",
+        "Modality": "CR",
+        "Rows": "2048",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "LS75",
+        "SeriesNumber": "2"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "750",
+        "ConversionType": "DF",
+        "ImageType": "DERIVED\\SECONDARY",
+        "Manufacturer": "LUMISYS",
+        "Modality": "CR",
+        "Rows": "1570",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "LS75",
+        "SeriesNumber": "1"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "781",
+        "ConversionType": "DF",
+        "ImageType": "DERIVED\\SECONDARY",
+        "Manufacturer": "LUMISYS",
+        "Modality": "CR",
+        "Rows": "944",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "LS75",
+        "SeriesNumber": "4"
+      }
+    }
+  ]
+}

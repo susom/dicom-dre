@@ -1,0 +1,25 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [
+        "0,0,1136,64"
+      ],
+      "expected_scrubbed": true,
+      "tags": {
+        "Columns": "1136",
+        "ImageType": "ORIGINAL\\PRIMARY\\OBSTETRICAL\\",
+        "Manufacturer": "GE Healthcare Austria GmbH & Co OG",
+        "ManufacturerModelName": "Voluson E8",
+        "Modality": "US",
+        "PixelSpacing": "0.294363\\0.294363",
+        "Rows": "852",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+        "SequenceOfUltrasoundRegions": "present",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "17.x.x VE"
+      }
+    }
+  ]
+}

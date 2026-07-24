@@ -1,0 +1,167 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "CHEST",
+        "Columns": "1048",
+        "ConversionType": "WSD",
+        "Manufacturer": "Siemens Health Services",
+        "Modality": "CR",
+        "Rows": "1250",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "CHEST",
+        "Columns": "5069",
+        "ConversionType": "WSD",
+        "Manufacturer": "Siemens Health Services",
+        "ManufacturerModelName": "",
+        "Modality": "CR",
+        "Rows": "4170",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SeriesNumber": "1"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "",
+        "Columns": "2368",
+        "ConversionType": "WSD",
+        "Manufacturer": "Siemens Health Services",
+        "ManufacturerModelName": "",
+        "Modality": "CR",
+        "Rows": "3003",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SeriesNumber": "1"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "",
+        "Columns": "2396",
+        "ConversionType": "WSD",
+        "Manufacturer": "Siemens Health Services",
+        "ManufacturerModelName": "",
+        "Modality": "CR",
+        "Rows": "2993",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SeriesNumber": "1"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "",
+        "Columns": "2435",
+        "ConversionType": "WSD",
+        "Manufacturer": "Siemens Health Services",
+        "ManufacturerModelName": "",
+        "Modality": "CR",
+        "Rows": "2478",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "",
+        "Columns": "2448",
+        "ConversionType": "WSD",
+        "Manufacturer": "Siemens Health Services",
+        "ManufacturerModelName": "",
+        "Modality": "CR",
+        "Rows": "2508",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "",
+        "Columns": "2454",
+        "ConversionType": "WSD",
+        "Manufacturer": "Siemens Health Services",
+        "ManufacturerModelName": "",
+        "Modality": "CR",
+        "Rows": "2442",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "",
+        "Columns": "2460",
+        "ConversionType": "WSD",
+        "Manufacturer": "Siemens Health Services",
+        "ManufacturerModelName": "",
+        "Modality": "CR",
+        "Rows": "2532",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "",
+        "Columns": "2466",
+        "ConversionType": "WSD",
+        "Manufacturer": "Siemens Health Services",
+        "ManufacturerModelName": "",
+        "Modality": "CR",
+        "Rows": "2532",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "",
+        "Columns": "2466",
+        "ConversionType": "WSD",
+        "Manufacturer": "Siemens Health Services",
+        "ManufacturerModelName": "",
+        "Modality": "CR",
+        "Rows": "2604",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SeriesNumber": "1"
+      }
+    }
+  ]
+}

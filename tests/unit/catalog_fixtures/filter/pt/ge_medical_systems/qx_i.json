@@ -1,0 +1,24 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BurnedInAnnotation": "YES",
+        "Columns": "512",
+        "ConversionType": "WSD",
+        "ImageType": "DERIVED\\SECONDARY\\SCREEN SAVE\\HD MIP",
+        "Manufacturer": "GE MEDICAL SYSTEMS",
+        "ManufacturerModelName": "QX/i",
+        "Modality": "PT",
+        "Rows": "512",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "Volume Viewer",
+        "SeriesNumber": "252",
+        "SoftwareVersions": "36.14"
+      }
+    }
+  ]
+}

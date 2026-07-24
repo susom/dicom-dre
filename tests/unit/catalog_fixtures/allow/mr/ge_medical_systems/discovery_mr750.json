@@ -1,0 +1,80 @@
+{
+  "entries": [
+    {
+      "description": "Ax T1 IR FSPGR",
+      "expected_filtered": false,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "BRAIN",
+        "Columns": "512",
+        "ImageType": "DERIVED\\SECONDARY\\REFORMATTED\\AVERAGE",
+        "Manufacturer": "GE MEDICAL SYSTEMS",
+        "ManufacturerModelName": "DISCOVERY MR750",
+        "Modality": "MR",
+        "PixelSpacing": "0.52734375\\0.52734375",
+        "Rows": "512",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.4",
+        "SeriesDescription": "Ax T1 IR FSPGR",
+        "SeriesNumber": "201",
+        "SoftwareVersions": "29\\LX\\DV29.1_R02_2131.a"
+      }
+    },
+    {
+      "description": "Ax T1 IR FSPGR",
+      "expected_filtered": false,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "BRAIN",
+        "Columns": "512",
+        "ImageType": "DERIVED\\SECONDARY\\REFORMATTED\\AVERAGE",
+        "Manufacturer": "GE MEDICAL SYSTEMS",
+        "ManufacturerModelName": "Discovery MR750",
+        "Modality": "MR",
+        "PixelSpacing": "0.52734375\\0.52734375",
+        "Rows": "512",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.4",
+        "SeriesDescription": "Ax T1 IR FSPGR",
+        "SeriesNumber": "301",
+        "SoftwareVersions": "30\\LX\\SIGNA_LX1.MR30.1_R01_2322.c"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "256",
+        "ImageType": "ORIGINAL\\PRIMARY\\OTHER",
+        "Manufacturer": "GE MEDICAL SYSTEMS",
+        "ManufacturerModelName": "DISCOVERY MR750",
+        "Modality": "MR",
+        "PixelSpacing": "1.875\\1.875",
+        "Rows": "256",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.4",
+        "SeriesNumber": "401",
+        "SoftwareVersions": "27\\LX\\MR Software release:DV26.0_R01_1725.a\\Orchestra SDK"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "512",
+        "ImageType": "DERIVED\\PRIMARY\\DIXON\\WATER",
+        "Manufacturer": "GE MEDICAL SYSTEMS",
+        "ManufacturerModelName": "DISCOVERY MR750",
+        "Modality": "MR",
+        "PixelSpacing": "0.6328\\0.6328",
+        "Rows": "512",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.4",
+        "SeriesNumber": "6",
+        "SoftwareVersions": "24\\LX\\MR Software release:DV24.0_R01_1344.a"
+      }
+    }
+  ]
+}

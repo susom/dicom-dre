@@ -1,0 +1,28 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [
+        "0,0,1280,72"
+      ],
+      "expected_scrubbed": true,
+      "tags": {
+        "BodyPartExamined": "",
+        "BurnedInAnnotation": "YES",
+        "Columns": "1280",
+        "ImageType": "DERIVED\\SECONDARY\\BREAST\\0011",
+        "Manufacturer": "TOSHIBA_MEC_US",
+        "ManufacturerModelName": "TUS-AI700",
+        "Modality": "US",
+        "PixelSpacing": "0.057971\\0.057971",
+        "Rows": "960",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+        "SequenceOfUltrasoundRegions": "present",
+        "SeriesDescription": "",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "V2.1 SP0005*"
+      }
+    }
+  ]
+}

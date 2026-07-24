@@ -1,0 +1,23 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "796",
+        "ConversionType": "WSD",
+        "ImageType": "DERIVED\\SECONDARY\\LOCALIZER",
+        "Manufacturer": "Agfa",
+        "ManufacturerModelName": "ClinApps",
+        "Modality": "MR",
+        "PixelSpacing": "0.5021729\\0.5021729",
+        "Rows": "545",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SeriesNumber": "1500",
+        "SoftwareVersions": "3.3.19"
+      }
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "CHEST",
+        "BurnedInAnnotation": "NO",
+        "Columns": "3480",
+        "ImageType": "ORIGINAL\\PRIMARY",
+        "Manufacturer": "Agfa",
+        "ManufacturerModelName": "DX-G",
+        "Modality": "DX",
+        "PixelSpacing": "1.00000001E-001\\1.00000001E-001",
+        "Rows": "4248",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.1.1",
+        "SeriesNumber": "4",
+        "SoftwareVersions": "NIM_2407"
+      }
+    }
+  ]
+}

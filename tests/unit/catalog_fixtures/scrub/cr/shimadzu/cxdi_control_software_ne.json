@@ -1,0 +1,24 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [
+        "0,0,10000,90"
+      ],
+      "expected_scrubbed": true,
+      "tags": {
+        "BodyPartExamined": "CHEST",
+        "Columns": "3408",
+        "Manufacturer": "Shimadzu",
+        "ManufacturerModelName": "CXDI Control Software NE",
+        "Modality": "CR",
+        "PixelSpacing": "0.125\\0.125",
+        "Rows": "2800",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.1",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "2.12.0.11"
+      }
+    }
+  ]
+}

@@ -1,0 +1,111 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "552",
+        "ImageType": "DERIVED\\PRIMARY\\GYNECOLOGY\\0001\\GEMSMULTIFRAME\\GEMSMGCOUNT1",
+        "Manufacturer": "GE Healthcare",
+        "ManufacturerModelName": "LOGIQE9",
+        "Modality": "US",
+        "Rows": "421",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.3.1",
+        "SequenceOfUltrasoundRegions": "present",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "LOGIQE9:R4.2.1"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "552",
+        "ImageType": "ORIGINAL\\PRIMARY\\\\0001",
+        "Manufacturer": "GE Healthcare",
+        "ManufacturerModelName": "LOGIQE9",
+        "Modality": "US",
+        "Rows": "421",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.3.1",
+        "SequenceOfUltrasoundRegions": "present",
+        "SeriesNumber": "0001",
+        "SoftwareVersions": "LOGIQE9:R3.1.0"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "680",
+        "ImageType": "DERIVED\\PRIMARY\\\\0001",
+        "Manufacturer": "GE Healthcare",
+        "ManufacturerModelName": "LOGIQE9",
+        "Modality": "US",
+        "Rows": "519",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.3.1",
+        "SequenceOfUltrasoundRegions": "present",
+        "SeriesNumber": "0001",
+        "SoftwareVersions": "LOGIQE9:R3.1.3"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "760",
+        "ImageType": "ORIGINAL\\PRIMARY\\\\0001",
+        "Manufacturer": "GE Healthcare",
+        "ManufacturerModelName": "LOGIQE9",
+        "Modality": "US",
+        "Rows": "421",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.3.1",
+        "SequenceOfUltrasoundRegions": "present",
+        "SeriesNumber": "0001",
+        "SoftwareVersions": "LOGIQE9:R2.0.3"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "914",
+        "ImageType": "DERIVED\\PRIMARY\\GYNECOLOGY\\0000\\GEMSSINGLEFRAME\\GEMSMGCOUNT1",
+        "Manufacturer": "GE Healthcare",
+        "ManufacturerModelName": "LOGIQE9",
+        "Modality": "US",
+        "Rows": "697",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "LOGIQE9:R5.1.2"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "936",
+        "ImageType": "DERIVED\\PRIMARY\\\\0011",
+        "Manufacturer": "GE Healthcare",
+        "ManufacturerModelName": "LOGIQE9",
+        "Modality": "US",
+        "Rows": "519",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.3.1",
+        "SequenceOfUltrasoundRegions": "present",
+        "SeriesNumber": "0001",
+        "SoftwareVersions": "LOGIQE9:R3.1.2"
+      }
+    }
+  ]
+}

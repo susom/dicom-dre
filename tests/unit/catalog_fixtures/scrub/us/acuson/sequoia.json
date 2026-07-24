@@ -1,0 +1,89 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [
+        "0,0,1024,40"
+      ],
+      "expected_scrubbed": true,
+      "tags": {
+        "BurnedInAnnotation": "YES",
+        "Columns": "1024",
+        "ImageType": "DERIVED\\PRIMARY\\INTRACARDIAC\\0001",
+        "Manufacturer": "ACUSON",
+        "ManufacturerModelName": "SEQUOIA",
+        "Modality": "US",
+        "PixelSpacing": "1.42807411e-1\\1.4280742e-1",
+        "Rows": "768",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.3.1",
+        "SequenceOfUltrasoundRegions": "present",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "VA35D"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [
+        "0,0,576,31",
+        "493,31,83,17"
+      ],
+      "expected_scrubbed": true,
+      "tags": {
+        "Columns": "576",
+        "ImageType": "ORIGINAL\\PRIMARY\\\\0001",
+        "Manufacturer": "ACUSON",
+        "ManufacturerModelName": "SEQUOIA",
+        "Modality": "US",
+        "Rows": "456",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+        "SequenceOfUltrasoundRegions": "present",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "12.22"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [
+        "0,0,640,30",
+        "553,30,87,16"
+      ],
+      "expected_scrubbed": true,
+      "tags": {
+        "Columns": "640",
+        "ImageType": "ORIGINAL\\PRIMARY\\\\0001",
+        "Manufacturer": "ACUSON",
+        "ManufacturerModelName": "SEQUOIA",
+        "Modality": "US",
+        "Rows": "480",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.3.1",
+        "SequenceOfUltrasoundRegions": "present",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "8.004"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [
+        "0,0,768,40",
+        "672,40,96,16"
+      ],
+      "expected_scrubbed": true,
+      "tags": {
+        "Columns": "768",
+        "ImageType": "ORIGINAL\\PRIMARY\\\\0001",
+        "Manufacturer": "ACUSON",
+        "ManufacturerModelName": "SEQUOIA",
+        "Modality": "US",
+        "Rows": "576",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+        "SequenceOfUltrasoundRegions": "present",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "12.221"
+      }
+    }
+  ]
+}

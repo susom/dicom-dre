@@ -1,0 +1,104 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [
+        "0,0,1134,56"
+      ],
+      "expected_scrubbed": true,
+      "tags": {
+        "Columns": "1134",
+        "ImageType": "ORIGINAL\\PRIMARY\\\\",
+        "Manufacturer": "GE Medical Systems Kretztechnik GmbH & Co OHG",
+        "ManufacturerModelName": "V830",
+        "Modality": "US",
+        "Rows": "682",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+        "SequenceOfUltrasoundRegions": "present",
+        "SeriesNumber": "1"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [
+        "0,0,640,48",
+        "0,0,392,32"
+      ],
+      "expected_scrubbed": true,
+      "tags": {
+        "Columns": "640",
+        "ImageType": "ORIGINAL\\PRIMARY\\OBSTETRICAL\\",
+        "Manufacturer": "GE Medical Systems Kretztechnik GmbH & Co OHG",
+        "ManufacturerModelName": "V830",
+        "Modality": "US",
+        "Rows": "480",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+        "SequenceOfUltrasoundRegions": "present",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "9.x.x VE"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [
+        "0,0,800,56"
+      ],
+      "expected_scrubbed": true,
+      "tags": {
+        "Columns": "800",
+        "ImageType": "ORIGINAL\\PRIMARY\\OBSTETRICAL\\",
+        "Manufacturer": "GE Medical Systems Kretztechnik GmbH & Co OHG",
+        "ManufacturerModelName": "V830",
+        "Modality": "US",
+        "Rows": "600",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+        "SequenceOfUltrasoundRegions": "present",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "10.x.x VE"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [
+        "0,0,868,48"
+      ],
+      "expected_scrubbed": true,
+      "tags": {
+        "Columns": "868",
+        "ImageType": "ORIGINAL\\PRIMARY\\OBSTETRICAL\\",
+        "Manufacturer": "GE Medical Systems Kretztechnik GmbH & Co OHG",
+        "ManufacturerModelName": "V830",
+        "Modality": "US",
+        "Rows": "650",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+        "SequenceOfUltrasoundRegions": "present",
+        "SeriesNumber": "1"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [
+        "0,0,930,64"
+      ],
+      "expected_scrubbed": true,
+      "tags": {
+        "Columns": "930",
+        "ImageType": "DERIVED\\PRIMARY\\PEDIATRIC",
+        "Manufacturer": "GE Medical Systems Kretztechnik GmbH & Co OHG",
+        "ManufacturerModelName": "V830",
+        "Modality": "US",
+        "PixelSpacing": "0.161258\\0.161258",
+        "Rows": "662",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+        "SequenceOfUltrasoundRegions": "present",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "7.x.x VE"
+      }
+    }
+  ]
+}

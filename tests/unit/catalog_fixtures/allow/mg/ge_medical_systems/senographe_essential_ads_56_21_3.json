@@ -1,0 +1,44 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "BREAST",
+        "BurnedInAnnotation": "NO",
+        "Columns": "1914",
+        "CommentsOnRadiationDose": "15 %",
+        "ImageType": "ORIGINAL\\PRIMARY\\",
+        "Manufacturer": "GE MEDICAL SYSTEMS",
+        "ManufacturerModelName": "Senographe Essential ADS_56.21.3",
+        "Modality": "MG",
+        "Rows": "2294",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.1.2",
+        "SeriesNumber": "111883",
+        "SoftwareVersions": "Ads Application Package VERSION ADS_56.21.3"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "BREAST",
+        "BurnedInAnnotation": "NO",
+        "Columns": "1914",
+        "CommentsOnRadiationDose": "24 %",
+        "ImageType": "ORIGINAL\\PRIMARY\\",
+        "Manufacturer": "GE MEDICAL SYSTEMS",
+        "ManufacturerModelName": "Senographe Essential ADS_56.21.3",
+        "Modality": "MG",
+        "Rows": "2294",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.1.2",
+        "SeriesNumber": "111883",
+        "SoftwareVersions": "Ads Application Package VERSION ADS_56.21.3"
+      }
+    }
+  ]
+}

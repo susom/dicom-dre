@@ -1,0 +1,26 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [
+        "0,0,10000,104"
+      ],
+      "expected_scrubbed": true,
+      "tags": {
+        "BodyPartExamined": "ANKLE",
+        "BurnedInAnnotation": "YES",
+        "Columns": "1032",
+        "ImageType": "DERIVED",
+        "Manufacturer": "Canon Inc.",
+        "ManufacturerModelName": "CXDI",
+        "Modality": "DX",
+        "Rows": "1408",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.1.1",
+        "SeriesDescription": "",
+        "SeriesNumber": "5",
+        "SoftwareVersions": "V6.44.03"
+      }
+    }
+  ]
+}

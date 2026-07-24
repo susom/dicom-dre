@@ -1,0 +1,24 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [
+        "0,0,1024,56"
+      ],
+      "expected_scrubbed": true,
+      "tags": {
+        "Columns": "1024",
+        "ImageType": "ORIGINAL\\PRIMARY",
+        "Manufacturer": "MEDISON",
+        "ManufacturerModelName": "Accuvix XG",
+        "Modality": "US",
+        "Rows": "768",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+        "SequenceOfUltrasoundRegions": "present",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "1.01.00.0207"
+      }
+    }
+  ]
+}

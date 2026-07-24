@@ -1,0 +1,20 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "1691",
+        "ConversionType": "WSD",
+        "ImageType": "ORIGINAL\\PRIMARY\\OTHER",
+        "Manufacturer": "IMAGE Information Systems",
+        "Modality": "MR",
+        "Rows": "2183",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SeriesNumber": "0002"
+      }
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "BREAST",
+        "BurnedInAnnotation": "YES",
+        "Columns": "800",
+        "ConversionType": "WSD",
+        "ImageType": "DERIVED\\SECONDARY",
+        "Manufacturer": "iCAD, Inc.",
+        "ManufacturerModelName": "7.2-H",
+        "Modality": "MG",
+        "Rows": "550",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "7.2-H",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "7.2-H\\SL7.2C-29612B\\SL8.0M-16914A"
+      }
+    }
+  ]
+}

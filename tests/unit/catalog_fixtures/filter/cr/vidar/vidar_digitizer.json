@@ -1,0 +1,149 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "CHEST",
+        "Columns": "2074",
+        "ConversionType": "DF",
+        "ImageType": "DERIVED\\SECONDARY",
+        "Manufacturer": "VIDAR",
+        "ManufacturerModelName": "Vidar Digitizer",
+        "Modality": "CR",
+        "PixelSpacing": "0.169333\\0.169333",
+        "Rows": "2533",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SeriesDescription": "",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "ClinicalExpress V5.0 General Radiography Build  62"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "CHEST",
+        "Columns": "2094",
+        "ConversionType": "DF",
+        "ImageType": "DERIVED\\SECONDARY",
+        "Manufacturer": "VIDAR",
+        "ManufacturerModelName": "Vidar Digitizer",
+        "Modality": "CR",
+        "PixelSpacing": "0.169333\\0.169333",
+        "Rows": "2538",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "ClinicalExpress V4.0 General Radiography Build  58"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "CHEST",
+        "Columns": "2094",
+        "ConversionType": "DF",
+        "ImageType": "DERIVED\\SECONDARY",
+        "Manufacturer": "VIDAR",
+        "ManufacturerModelName": "Vidar Digitizer",
+        "Modality": "CR",
+        "PixelSpacing": "0.169333\\0.169333",
+        "Rows": "2539",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "ClinicalExpress V4.0 General Radiography Build  58"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "ELBOW",
+        "Columns": "1193",
+        "ConversionType": "DF",
+        "ImageType": "DERIVED\\SECONDARY",
+        "Manufacturer": "VIDAR",
+        "ManufacturerModelName": "Vidar Digitizer",
+        "Modality": "CR",
+        "PixelSpacing": "0.169333\\0.169333",
+        "Rows": "1487",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SeriesDescription": "",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "ClinicalExpress V2.6.1 Build  98"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "",
+        "Columns": "1246",
+        "ConversionType": "DF",
+        "ImageType": "DERIVED\\SECONDARY",
+        "Manufacturer": "VIDAR",
+        "ManufacturerModelName": "Vidar Digitizer",
+        "Modality": "CR",
+        "PixelSpacing": "0.169333\\0.169333",
+        "Rows": "1205",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SeriesDescription": "",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "ClinicalExpress V2.6.1 Build  98"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "",
+        "Columns": "1273",
+        "ConversionType": "DF",
+        "ImageType": "DERIVED\\SECONDARY",
+        "Manufacturer": "VIDAR",
+        "ManufacturerModelName": "Vidar Digitizer",
+        "Modality": "CR",
+        "PixelSpacing": "0.169333\\0.169333",
+        "Rows": "1754",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SeriesDescription": "",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "ClinicalExpress V6.1 General Radiography Build 4, 0"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "",
+        "Columns": "1390",
+        "ConversionType": "DF",
+        "ImageType": "DERIVED\\SECONDARY",
+        "Manufacturer": "VIDAR",
+        "ManufacturerModelName": "Vidar Digitizer",
+        "Modality": "CR",
+        "PixelSpacing": "0.169333\\0.169333",
+        "Rows": "1759",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SeriesDescription": "",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "ClinicalExpress V5.0 General Radiography Build  62"
+      }
+    }
+  ]
+}

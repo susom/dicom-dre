@@ -1,0 +1,23 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BurnedInAnnotation": "YES",
+        "Columns": "1020",
+        "ConversionType": "SYN",
+        "ImageType": "DERIVED\\SECONDARY\\\\LEFT",
+        "Manufacturer": "Siemens Healthcare",
+        "ManufacturerModelName": "syngo.via.VA30A",
+        "Modality": "MG",
+        "PixelSpacing": "0.18164215095249\\0.18164215095249",
+        "Rows": "1276",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SeriesNumber": "71100007"
+      }
+    }
+  ]
+}

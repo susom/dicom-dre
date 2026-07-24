@@ -1,0 +1,34 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "1270",
+        "ConversionType": "WSD",
+        "Manufacturer": "Primordial",
+        "Modality": "MR",
+        "Rows": "1661",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SeriesNumber": "999"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "1295",
+        "ConversionType": "WSD",
+        "Manufacturer": "Primordial",
+        "Modality": "MR",
+        "Rows": "1659",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SeriesNumber": "999"
+      }
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "SKULL",
+        "Columns": "384",
+        "ImageType": "ORIGINAL\\PRIMARY\\OTHER",
+        "Manufacturer": "TOSHIBA_MEC",
+        "ManufacturerModelName": "MRT200PP3",
+        "Modality": "MR",
+        "PixelSpacing": "0.5990\\0.5990",
+        "Rows": "384",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.4",
+        "SeriesNumber": "9",
+        "SoftwareVersions": "V9.51*R249"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "TLSPINE",
+        "Columns": "288",
+        "ImageType": "ORIGINAL\\PRIMARY\\OTHER",
+        "Manufacturer": "TOSHIBA_MEC",
+        "ManufacturerModelName": "MRT200PP3",
+        "Modality": "MR",
+        "PixelSpacing": "0.8229\\0.8229",
+        "Rows": "288",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.4",
+        "SeriesNumber": "4",
+        "SoftwareVersions": "V9.60*R241"
+      }
+    }
+  ]
+}

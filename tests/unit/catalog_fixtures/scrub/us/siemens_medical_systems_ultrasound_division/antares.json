@@ -1,0 +1,67 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [
+        "0,0,1024,56"
+      ],
+      "expected_scrubbed": true,
+      "tags": {
+        "Columns": "1024",
+        "ImageType": "DERIVED\\PRIMARY\\CV\\0019\\JPEG LOSSY 9:1",
+        "Manufacturer": "Siemens Medical Systems - Ultrasound Division",
+        "ManufacturerModelName": "Antares",
+        "Modality": "US",
+        "Rows": "768",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+        "SequenceOfUltrasoundRegions": "present",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "100.0.030 (VE25A  SL08P13)"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [
+        "0,0,1024,56"
+      ],
+      "expected_scrubbed": true,
+      "tags": {
+        "Columns": "1024",
+        "ImageType": "ORIGINAL\\PRIMARY\\ABDOMINAL\\0001",
+        "Manufacturer": "Siemens Medical Systems - Ultrasound Division",
+        "ManufacturerModelName": "Antares",
+        "Modality": "US",
+        "PixelSpacing": "0.20761799067259\\0.20761799067259",
+        "Rows": "768",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+        "SequenceOfUltrasoundRegions": "present",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "200.0.079A (VE31F  SL04P09)"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [
+        "0,0,800,19",
+        "0,19,160,55"
+      ],
+      "expected_scrubbed": true,
+      "tags": {
+        "Columns": "800",
+        "ImageType": "ORIGINAL\\PRIMARY\\TESTIS\\0001",
+        "Manufacturer": "Siemens Medical Systems - Ultrasound Division",
+        "ManufacturerModelName": "Antares",
+        "Modality": "US",
+        "PixelSpacing": "0.072916667\\0.072916667",
+        "Rows": "600",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+        "SequenceOfUltrasoundRegions": "present",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "2.0"
+      }
+    }
+  ]
+}

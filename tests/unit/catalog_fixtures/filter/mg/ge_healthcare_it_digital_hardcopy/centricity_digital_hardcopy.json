@@ -1,0 +1,23 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "",
+        "Columns": "1419",
+        "ConversionType": "DF",
+        "Manufacturer": "GE Healthcare IT Digital Hardcopy",
+        "ManufacturerModelName": "Centricity Digital Hardcopy",
+        "Modality": "MG",
+        "Rows": "1756",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "Vidar Film Digitizer",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "7.0"
+      }
+    }
+  ]
+}

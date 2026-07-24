@@ -1,0 +1,40 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "128",
+        "ImageType": "ORIGINAL\\PRIMARY\\OTHER",
+        "Manufacturer": "BammerGroup, Stanford",
+        "ManufacturerModelName": "RAPID 2.0",
+        "Modality": "MR",
+        "PixelSpacing": "1.875000\\1.875000",
+        "Rows": "164",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SeriesNumber": "1131",
+        "SoftwareVersions": "24\\LX\\MR Software release:DV24.0_R01_1344.a"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "896",
+        "ImageType": "ORIGINAL\\PRIMARY\\OTHER",
+        "Manufacturer": "BammerGroup, Stanford",
+        "ManufacturerModelName": "RAPID 2.0",
+        "Modality": "MR",
+        "PixelSpacing": "1.875000\\1.875000",
+        "Rows": "1861",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SeriesNumber": "1766",
+        "SoftwareVersions": "23\\LX\\MR Software release:DV23.0_V01_1142.a"
+      }
+    }
+  ]
+}

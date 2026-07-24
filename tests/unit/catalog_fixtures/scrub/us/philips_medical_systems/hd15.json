@@ -1,0 +1,24 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [
+        "0,0,800,56"
+      ],
+      "expected_scrubbed": true,
+      "tags": {
+        "Columns": "800",
+        "ImageType": "DERIVED\\PRIMARY\\THYROID",
+        "Manufacturer": "Philips Medical Systems",
+        "ManufacturerModelName": "HD15",
+        "Modality": "US",
+        "Rows": "600",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+        "SequenceOfUltrasoundRegions": "present",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "HD15_302\\453561713391__3.0.2.302__Ultrasound_Applicat--[2013/05/15]-05:05\\453561709941__DRIVERS.47.61__DRIVERS__[2013/04/26]-06:00\\453561617041__OS.10.438__OS__[2011/08/30]-05:56"
+      }
+    }
+  ]
+}

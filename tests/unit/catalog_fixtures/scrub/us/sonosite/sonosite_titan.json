@@ -1,0 +1,23 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [
+        "0,0,640,24"
+      ],
+      "expected_scrubbed": true,
+      "tags": {
+        "Columns": "640",
+        "ImageType": "ORIGINAL\\PRIMARY\\\\0001",
+        "Manufacturer": "SonoSite",
+        "ManufacturerModelName": "SonoSite Titan",
+        "Modality": "US",
+        "Rows": "480",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "21.80.203.019"
+      }
+    }
+  ]
+}

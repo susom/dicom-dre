@@ -1,0 +1,25 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": false,
+      "expected_scrub_regions": [
+        "0,0,1024,56"
+      ],
+      "expected_scrubbed": true,
+      "tags": {
+        "Columns": "1024",
+        "ImageType": "ORIGINAL\\PRIMARY\\BIOPSY\\0001",
+        "Manufacturer": "SIEMENS",
+        "ManufacturerModelName": "S1000",
+        "Modality": "CT",
+        "PixelSpacing": "0.138354\\0.138354",
+        "Rows": "768",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+        "SequenceOfUltrasoundRegions": "present",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "VD10A"
+      }
+    }
+  ]
+}
