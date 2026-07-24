@@ -33,7 +33,6 @@
   // there (single source of truth). Pylance's own type checking is turned off
   // so Pyrefly is the single source of type diagnostics (Pylance still provides
   // completions, hover, and navigation).
-  "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
   "python.analysis.typeCheckingMode": "off",
 
   // Testing
@@ -42,5 +41,5 @@
   "python.testing.pytestEnabled": true,
 
   // Git Settings
-  "git.openRepositoryInParentFolders": "always"
+  "git.openRepositoryInParentFolders": "always",
 }
