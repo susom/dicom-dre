@@ -168,11 +168,9 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Publish to PyPI
-        # Temporarily disabled while debugging the GitHub workflows.
-        # Re-enable once the build/release jobs are verified. Uses PyPI Trusted
-        # Publishing (OIDC); configure a trusted publisher for this
-        # repository/workflow on PyPI (no API token secret required).
-        if: false
+        # Uses PyPI Trusted Publishing (OIDC); configure a trusted publisher for
+        # this repository/workflow on PyPI (no API token secret required).
+        if: steps.release.outputs.released == 'true'
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           packages-dir: dist
