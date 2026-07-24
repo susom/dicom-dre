@@ -119,10 +119,12 @@ patch_tags = ["fix", "perf"]
 # only cp312 wheels are produced. Native arch per runner is built automatically
 # (x86_64 on Intel runners, aarch64/arm64 on ARM64 runners).
 build = "cp312-*"
-# Skip musllinux. The runtime dependencies (python-gdcm, pylibjpeg-*, pyjpegls)
-# publish manylinux wheels but not musllinux, so the wheel test would compile
-# each from source under musl. Ship manylinux only; musl users build from sdist.
-skip = "*-musllinux*"
+# Skip musllinux and Windows 32-bit. The runtime dependencies (python-gdcm,
+# pylibjpeg-*, pyjpegls) publish manylinux and win_amd64 wheels but not
+# musllinux or win32, so the wheel test would compile each from source on those
+# targets (and python-gdcm's CMake/SWIG build fails). Ship 64-bit manylinux and
+# win_amd64 only; other targets build from sdist.
+skip = "*-musllinux* *-win32"
 # python-gdcm 3.2.6 publishes only manylinux_2_28 wheels (glibc >= 2.28); it no
 # longer ships manylinux2014 (glibc 2.17) builds. Build and test inside a
 # manylinux_2_28 container so the dependency's prebuilt wheel is installable
