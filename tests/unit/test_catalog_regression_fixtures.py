@@ -45,7 +45,7 @@ def _region_covered(expected: str, produced: list[str]) -> bool:
                 x_edges.add(edge)
     ordered_x = sorted(x_edges)
 
-    for left, right in zip(ordered_x, ordered_x[1:]):
+    for left, right in zip(ordered_x, ordered_x[1:], strict=False):
         intervals = sorted(
             (max(ry0, ey0), min(ry1, ey1))
             for rx0, ry0, rx1, ry1 in rects
