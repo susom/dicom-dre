@@ -23,15 +23,12 @@ on:
       - main
       - development
 
-# Prevent overlapping deploys on the same branch.
 concurrency:
   group: deploy-${{ github.ref_name }}
   cancel-in-progress: false
 
 jobs:
   version:
-    # Compute the next version without modifying the repository. Determines
-    # whether a release is warranted and the version/tag that would result.
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -138,9 +135,6 @@ jobs:
           path: ./dist/*.tar.gz
 
   release:
-    # First job that mutates the repository. Runs only after every distribution
-    # has built. Tags, commits the changelog, pushes, creates the GitHub
-    # Release, and uploads the built artifacts.
     needs: [version, build_wheels, build_sdist]
     if: needs.version.outputs.released == 'true'
     runs-on: ubuntu-latest
