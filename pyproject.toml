@@ -107,11 +107,34 @@ prerelease = false
 [tool.semantic_release.branches.development]
 match = "development"
 prerelease = true
+prerelease_token = "dev"
 
 [tool.semantic_release.commit_parser_options]
 allowed_tags = ["build", "chore", "ci", "docs", "feat", "fix", "perf", "refactor", "style", "test"]
 minor_tags = ["feat"]
 patch_tags = ["fix", "perf"]
+
+[tool.cibuildwheel]
+# The project supports a single CPython minor version (see requires-python), so
+# only cp312 wheels are produced. Native arch per runner is built automatically
+# (x86_64 on Intel runners, aarch64/arm64 on ARM64 runners).
+build = "cp312-*"
+build-frontend = "build[uv]"
+# Smoke-test each built wheel by importing the compiled CFFI acceleration
+# extension directly. A wheel where the native module failed to compile would
+# import the pure-Python fallback silently; importing the extension module by
+# name fails loudly instead, so a broken native build cannot ship.
+test-command = 'python -c "import dicom_dre._jpeg_dct_accel"'
+
+[tool.cibuildwheel.linux]
+# hatch-vcs derives the package version from the git tag. Linux wheels build
+# inside a manylinux container where the copied source tree is owned by a
+# different UID than the container root, tripping git's dubious-ownership guard.
+# Without this, hatch-vcs silently falls back to fallback-version (0.0.0.dev0)
+# and produces mislabeled wheels. Mark the tree as safe so version derivation
+# succeeds in the container. Scoped to Linux to avoid shell-quoting differences
+# on the natively-built macOS and Windows runners.
+before-all = "git config --global --add safe.directory '*'"
 
 [tool.ruff]
 target-version = "py312"

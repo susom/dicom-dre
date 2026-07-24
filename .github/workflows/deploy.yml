@@ -1,0 +1,130 @@
+name: Deploy
+
+# Automated versioning and distribution driven by python-semantic-release.
+#
+# Pushes to `main` create release versions (e.g. 1.2.0).
+# Pushes to `development` create pre versions (e.g. 1.2.0-dev.1).
+#
+# The version, tag format, and branch/prerelease rules are configured under
+# [tool.semantic_release] in pyproject.toml. hatch-vcs derives the package
+# version at build time from the git tag that the release job creates.
+#
+# When a release is cut, platform wheels (including ARM64) and an sdist are
+# built with cibuildwheel and published to PyPI and the GitHub Release.
+
+on:
+  push:
+    branches:
+      - main
+      - development
+
+# Prevent overlapping deploys on the same branch.
+concurrency:
+  group: deploy-${{ github.ref_name }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write   # create tags and GitHub Releases
+    outputs:
+      released: ${{ steps.release.outputs.released }}
+      tag: ${{ steps.release.outputs.tag }}
+      version: ${{ steps.release.outputs.version }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # Full history and tags are required for commit parsing and version
+          # derivation (hatch-vcs).
+          fetch-depth: 0
+
+      - name: Python Semantic Release
+        id: release
+        uses: python-semantic-release/python-semantic-release@v10
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+  build_wheels:
+    needs: release
+    if: needs.release.outputs.released == 'true'
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest      # Linux x86_64
+          - os: ubuntu-24.04-arm   # Linux aarch64 (ARM64)
+          - os: macos-13           # macOS x86_64 (Intel)
+          - os: macos-14           # macOS arm64 (Apple Silicon)
+          - os: windows-latest     # Windows x86_64
+    steps:
+      - name: Checkout release tag
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.release.outputs.tag }}
+          fetch-depth: 0
+
+      - name: Build wheels
+        uses: pypa/cibuildwheel@v3
+
+      - name: Upload wheel artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: wheels-${{ matrix.os }}
+          path: ./wheelhouse/*.whl
+
+  build_sdist:
+    needs: release
+    if: needs.release.outputs.released == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout release tag
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.release.outputs.tag }}
+          fetch-depth: 0
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          python-version: "3.12"
+
+      - name: Build sdist
+        run: uv build --sdist
+
+      - name: Upload sdist artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: sdist
+          path: ./dist/*.tar.gz
+
+  publish:
+    needs: [release, build_wheels, build_sdist]
+    if: needs.release.outputs.released == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write   # upload assets to the GitHub Release
+      id-token: write   # PyPI trusted publishing (OIDC)
+    steps:
+      - name: Download all distributions
+        uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+
+      - name: Publish to PyPI
+        # Temporarily disabled while debugging the GitHub workflows.
+        # Re-enable once the build/release jobs are verified. Uses PyPI Trusted
+        # Publishing (OIDC); configure a trusted publisher for this
+        # repository/workflow on PyPI (no API token secret required).
+        if: false
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: dist
+
+      - name: Upload distributions to the GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release upload "${{ needs.release.outputs.tag }}" dist/* --clobber
