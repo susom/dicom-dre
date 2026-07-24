@@ -32,6 +32,9 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+    env:
+      # Exclude the docs group (a default group locally) from CI installs.
+      UV_NO_GROUP: docs
     steps:
       - name: Checkout
         uses: actions/checkout@v4

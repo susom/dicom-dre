@@ -82,7 +82,14 @@ docs = [
     "furo>=2025.12.19",
     "myst-parser>=5.1",
     "sphinx-autobuild>=2024.10.3",
+    "sphinxcontrib-mermaid>=1.0",
 ]
+
+[tool.uv]
+# Install dev and docs groups by default so local `uv sync`/`uv run` do not
+# repeatedly add and remove the docs toolchain. CI opts out of docs via the
+# UV_NO_GROUP environment variable (see .github/workflows/deploy.yml).
+default-groups = ["dev", "docs"]
 
 [tool.semantic_release]
 commit_parser = "conventional"
