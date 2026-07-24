@@ -43,6 +43,9 @@
     "ghcr.io/jsburckhardt/devcontainer-features/uv:1": {},
     "ghcr.io/devcontainers/features/github-cli:1": {}
   },
+  "mounts": [
+    "source=dicom-dre-home,target=/home/${localEnv:USER}${localEnv:USERNAME},type=volume"
+  ],
   "postCreateCommand": "bash ./.devcontainer/post-create.sh",
   "waitFor": "postCreateCommand"
 }
