@@ -98,6 +98,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Set up uv
+        # The build[uv] frontend needs uv on PATH. cibuildwheel provisions it
+        # inside the Linux build containers automatically, but on the macOS and
+        # Windows host runners it must be installed explicitly.
+        uses: astral-sh/setup-uv@v5
+
       - name: Build wheels
         uses: pypa/cibuildwheel@v3.4.1
 

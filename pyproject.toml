@@ -119,6 +119,10 @@ patch_tags = ["fix", "perf"]
 # only cp312 wheels are produced. Native arch per runner is built automatically
 # (x86_64 on Intel runners, aarch64/arm64 on ARM64 runners).
 build = "cp312-*"
+# Skip musllinux. The runtime dependencies (python-gdcm, pylibjpeg-*, pyjpegls)
+# publish manylinux wheels but not musllinux, so the wheel test would compile
+# each from source under musl. Ship manylinux only; musl users build from sdist.
+skip = "*-musllinux*"
 build-frontend = "build[uv]"
 # Smoke-test each built wheel by importing the compiled CFFI acceleration
 # extension directly. A wheel where the native module failed to compile would
