@@ -68,15 +68,19 @@ def _deidentify(input_file: Path, output: Path, parameters: dict[str, str]) -> D
     """Run deidentify_file with the default profile and return the output dataset."""
     import pydicom
 
+    from dicom_dre import DeidParameters
     from dicom_dre import Outcome
     from dicom_dre import build_profile
     from dicom_dre import deidentify_file
+    from dicom_dre.profiles.builder import BUILD_CONFIG_KEYS
 
-    profile = build_profile("default", parameters)
+    config = {key: value for key, value in parameters.items() if key in BUILD_CONFIG_KEYS}
+    profile = build_profile("default", config)
     result = deidentify_file(
         input_file=input_file,
         output_file=output,
         profile=profile,
+        parameters=DeidParameters.from_mapping(parameters),
         rename_to_sop_uid=False,
     )
     if result.outcome is not Outcome.DEIDENTIFIED:

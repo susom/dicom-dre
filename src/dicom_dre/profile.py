@@ -17,6 +17,7 @@ if TYPE_CHECKING:
 
     from dicom_dre.actions import TagAction
     from dicom_dre.catalog import PrivateTagSpec
+    from dicom_dre.parameters import DeidParameters
 
 # File Meta Information group is always preserved.
 _PRESERVED_GROUPS: frozenset[int] = frozenset({0x0002})
@@ -52,21 +53,39 @@ class DeidProfile:
     date_override_tags: frozenset[BaseTag] = field(default_factory=frozenset)
     preserved_private_specs: frozenset[PrivateTagSpec] = field(default_factory=frozenset)
 
-    def apply(self, ds: Dataset) -> None:
+    def apply(self, ds: Dataset, params: DeidParameters) -> None:
         """Apply all de-identification rules to a pydicom Dataset in place.
 
+        Per-patient values are read from ``params`` at apply time.
+
+        Phase 0: Validate the jitter against this profile's date policy.
         Phase 1: Insert a default SpecificCharacterSet when absent.
         Phase 2: Apply element-level rules.
         Phase 3: Apply global removal rules (private, curves, overlays, unspecified).
         Phase 4: Remove retired Group Length tags from all datasets.
         Phase 5: Correct VRs for elements read as OB/UN inside sequences.
         """
+        self._validate_jitter(params)
         self._ensure_specific_character_set(ds)
-        self._apply_element_rules(ds)
+        self._apply_element_rules(ds, params)
         self._apply_global_rules(ds)
         self._emit_deid_method_code_sequence(ds)
         _remove_group_length_tags(ds)
         _correct_implicit_vr_elements(ds)
+
+    def _validate_jitter(self, params: DeidParameters) -> None:
+        """Reject a jitter inconsistent with this profile's date policy.
+
+        A date-shifting profile (``modifies_dates=True``) must never emit an
+        unshifted (zero-day) result, so an explicit ``jitter == 0`` is rejected;
+        an unset jitter resolves to :data:`DEFAULT_JITTER`. Non-shifting profiles
+        ignore jitter entirely -- their date rules never run -- so any value
+        (including ``0``) is accepted and inert.
+        """
+        if not self.modifies_dates:
+            return
+        if params.jitter == 0:
+            raise ValueError("jitter must be non-zero for a date-shifting profile")
 
     def _ensure_specific_character_set(self, ds: Dataset) -> None:
         """Insert a default SpecificCharacterSet when absent or empty.
@@ -101,7 +120,7 @@ class DeidProfile:
                 return True
         return False
 
-    def _apply_element_rules(self, ds: Dataset) -> None:
+    def _apply_element_rules(self, ds: Dataset, params: DeidParameters) -> None:
         """Apply per-tag rules to the dataset, then recurse into processed sequence items.
 
         The top-level dataset receives every rule (a set_value/append_value rule
@@ -113,10 +132,10 @@ class DeidProfile:
         for tag, action in self.rules.items():
             if self._should_skip_for_date_preservation(ds, tag):
                 continue
-            action(ds, tag)
-        self._apply_element_rules_to_process_items(ds)
+            action(ds, tag, params)
+        self._apply_element_rules_to_process_items(ds, params)
 
-    def _apply_element_rules_to_process_items(self, ds: Dataset) -> None:
+    def _apply_element_rules_to_process_items(self, ds: Dataset, params: DeidParameters) -> None:
         """Recurse element rules into the item datasets of processed sequences.
 
         The full rule set is applied to each item dataset, but only to elements
@@ -140,8 +159,8 @@ class DeidProfile:
                         continue
                     if self._should_skip_for_date_preservation(item, item_tag):
                         continue
-                    item_action(item, item_tag)
-                self._apply_element_rules_to_process_items(item)
+                    item_action(item, item_tag, params)
+                self._apply_element_rules_to_process_items(item, params)
 
     def _apply_global_rules(self, ds: Dataset) -> None:
         """Remove private groups, curves, overlays, and unspecified elements.

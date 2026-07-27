@@ -18,6 +18,7 @@ import pydicom
 from pydicom.dataset import FileMetaDataset
 
 import dicom_dre.pydicom_config  # noqa: F401  applies process-wide pydicom config
+from dicom_dre.attributes import IndexAttributes
 from dicom_dre.catalog import DicomTags
 from dicom_dre.default_catalog import get_default_catalog
 from dicom_dre.pixel_blanker import blank_regions
@@ -29,6 +30,7 @@ if TYPE_CHECKING:
     from pathlib import Path
 
     from dicom_dre.catalog import DeviceCatalog
+    from dicom_dre.parameters import DeidParameters
     from dicom_dre.profile import DeidProfile
 
 
@@ -67,6 +69,7 @@ def deidentify_file(
     output_file: Path,
     *,
     profile: DeidProfile,
+    parameters: DeidParameters,
     catalog: DeviceCatalog | None = None,
     decompress: bool = False,
     rename_to_sop_uid: bool = True,
@@ -83,6 +86,7 @@ def deidentify_file(
         output_file: Path to write the de-identified DICOM file.
         profile: The bound de-identification profile to apply. Build one with
             :func:`dicom_dre.build_profile` or the exported profile factories.
+        parameters: Per-patient values applied to the dataset at apply time.
         catalog: Device catalog for filtering and pixel-scrub decisions.
             Defaults to :func:`dicom_dre.get_default_catalog`.
         decompress: Whether to decompress encapsulated pixel data on output.
@@ -99,12 +103,26 @@ def deidentify_file(
     if catalog is None:
         catalog = get_default_catalog()
 
+    input_attributes: IndexAttributes | None = None
     try:
-        tags = DicomTags.from_dataset(dataset) if dataset is not None else DicomTags.from_file(input_file)
+        # Read the input once (or reuse the supplied dataset) and build both the
+        # catalog tags and the input attribute snapshot from it, so the deny path
+        # stays at a single read and no snapshot triggers an extra dcmread.
+        if dataset is not None:
+            input_ds = dataset
+        else:
+            input_ds = pydicom.dcmread(str(input_file), stop_before_pixels=True)
+        tags = DicomTags.from_dataset(input_ds)
+        input_attributes = IndexAttributes.from_dataset(input_ds)
         decision = catalog.evaluate(tags)
 
         if decision.action == "deny":
-            return DeidentifyResult.filtered(reason=decision.reason)
+            return DeidentifyResult.filtered(
+                reason=decision.reason,
+                input_file=input_file,
+                parameters=parameters,
+                input_attributes=input_attributes,
+            )
 
         was_scrubbed = False
         scrub_decompressed = False
@@ -143,8 +161,11 @@ def deidentify_file(
                 anon_profile,
                 preserved_private_specs=frozenset(decision.preserved_private_tags),
             )
-        anon_profile.apply(ds)
+        anon_profile.apply(ds, parameters)
         _regenerate_file_meta(ds)
+        # Snapshot the final in-memory dataset before writing so transfer_syntax_uid
+        # reads from the regenerated file_meta; this is an in-memory read only.
+        output_attributes = IndexAttributes.from_dataset(ds)
         ds.save_as(output_file, enforce_file_format=True)
 
         if rename_to_sop_uid:
@@ -158,7 +179,16 @@ def deidentify_file(
             output_file=output_file,
             was_decompressed=was_decompressed,
             scrub_regions=scrub_regions,
+            input_file=input_file,
+            parameters=parameters,
+            input_attributes=input_attributes,
+            output_attributes=output_attributes,
         )
     except Exception as exc:
         logger.exception("Error during Python de-identification of %s: %s", input_file, exc)
-        return DeidentifyResult.quarantined(error=str(exc))
+        return DeidentifyResult.quarantined(
+            error=str(exc),
+            input_file=input_file,
+            parameters=parameters,
+            input_attributes=input_attributes,
+        )

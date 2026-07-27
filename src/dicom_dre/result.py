@@ -16,6 +16,8 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from pathlib import Path
 
+    from dicom_dre.attributes import IndexAttributes
+    from dicom_dre.parameters import DeidParameters
     from dicom_dre.scrub_region import ScrubRegion
 
 
@@ -38,6 +40,12 @@ class DeidentifyResult:
         scrub_regions: The pixel regions blanked during processing.
         filter_reason: Why the file was rejected; set only when FILTERED.
         error: The processing error; set only when QUARANTINED.
+        input_file: Path to the source DICOM file processed, when known.
+        parameters: The per-patient de-identification parameters applied; None
+            when not supplied.
+        input_attributes: Attribute snapshot of the input, when available.
+        output_attributes: Attribute snapshot of the de-identified output; set
+            only when DEIDENTIFIED.
     """
 
     outcome: Outcome
@@ -46,6 +54,10 @@ class DeidentifyResult:
     scrub_regions: frozenset[ScrubRegion] = field(default_factory=frozenset)
     filter_reason: str | None = None
     error: str | None = None
+    input_file: Path | None = None
+    parameters: DeidParameters | None = None
+    input_attributes: IndexAttributes | None = None
+    output_attributes: IndexAttributes | None = None
 
     @classmethod
     def deidentified(
@@ -54,6 +66,10 @@ class DeidentifyResult:
         *,
         was_decompressed: bool,
         scrub_regions: frozenset[ScrubRegion],
+        input_file: Path | None = None,
+        parameters: DeidParameters | None = None,
+        input_attributes: IndexAttributes | None = None,
+        output_attributes: IndexAttributes | None = None,
     ) -> DeidentifyResult:
         """Build a successful (DEIDENTIFIED) result."""
         return cls(
@@ -61,17 +77,47 @@ class DeidentifyResult:
             output_file=output_file,
             was_decompressed=was_decompressed,
             scrub_regions=scrub_regions,
+            input_file=input_file,
+            parameters=parameters,
+            input_attributes=input_attributes,
+            output_attributes=output_attributes,
         )
 
     @classmethod
-    def filtered(cls, reason: str | None) -> DeidentifyResult:
+    def filtered(
+        cls,
+        reason: str | None,
+        *,
+        input_file: Path | None = None,
+        parameters: DeidParameters | None = None,
+        input_attributes: IndexAttributes | None = None,
+    ) -> DeidentifyResult:
         """Build a rejected (FILTERED) result."""
-        return cls(outcome=Outcome.FILTERED, filter_reason=reason)
+        return cls(
+            outcome=Outcome.FILTERED,
+            filter_reason=reason,
+            input_file=input_file,
+            parameters=parameters,
+            input_attributes=input_attributes,
+        )
 
     @classmethod
-    def quarantined(cls, error: str | None) -> DeidentifyResult:
+    def quarantined(
+        cls,
+        error: str | None,
+        *,
+        input_file: Path | None = None,
+        parameters: DeidParameters | None = None,
+        input_attributes: IndexAttributes | None = None,
+    ) -> DeidentifyResult:
         """Build a failed (QUARANTINED) result."""
-        return cls(outcome=Outcome.QUARANTINED, error=error)
+        return cls(
+            outcome=Outcome.QUARANTINED,
+            error=error,
+            input_file=input_file,
+            parameters=parameters,
+            input_attributes=input_attributes,
+        )
 
     @property
     def was_deidentified(self) -> bool:

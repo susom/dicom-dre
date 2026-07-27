@@ -19,6 +19,8 @@ from dicom_dre import __version__
 from dicom_dre import deidentify_paths
 from dicom_dre.batch import OutputPathCollisionError
 from dicom_dre.batch import ProfileSpec
+from dicom_dre.parameters import DeidParameters
+from dicom_dre.profiles.builder import BUILD_CONFIG_KEYS
 from dicom_dre.profiles.builder import list_profiles
 from dicom_dre.result import Outcome
 from dicom_dre.text_redactor import TextRedactor
@@ -174,12 +176,18 @@ def deidentify(
     a normal outcome and do not affect the exit code.
     """
     parameters = _parse_parameters(params)
-    profile_spec = ProfileSpec(name=profile_name, parameters=parameters)
+    config = {key: value for key, value in parameters.items() if key in BUILD_CONFIG_KEYS}
+    profile_spec = ProfileSpec(name=profile_name, config=config)
+    try:
+        deid_parameters = DeidParameters.from_mapping(parameters)
+    except ValueError as error:
+        raise click.BadParameter(str(error), param_hint="--param") from error
 
     counts = {Outcome.DEIDENTIFIED: 0, Outcome.FILTERED: 0, Outcome.QUARANTINED: 0}
     items = deidentify_paths(
         sources=list(sources),
         output_dir=output_dir,
+        parameters=deid_parameters,
         recursive=recursive,
         patterns=globs,
         decompress=decompress,

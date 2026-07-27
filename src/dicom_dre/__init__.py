@@ -11,6 +11,7 @@ the supporting value types.
 
 from __future__ import annotations
 
+from dicom_dre.attributes import IndexAttributes
 from dicom_dre.batch import OutputPathCollisionError
 from dicom_dre.batch import ProfileSpec
 from dicom_dre.batch import deidentify_paths
@@ -19,6 +20,7 @@ from dicom_dre.catalog import DeviceCatalog
 from dicom_dre.catalog import DicomTags
 from dicom_dre.catalog import Variant
 from dicom_dre.default_catalog import get_default_catalog
+from dicom_dre.parameters import DeidParameters
 from dicom_dre.pipeline import deidentify_file
 from dicom_dre.profile import DeidProfile
 from dicom_dre.profiles import default_profile
@@ -43,10 +45,12 @@ except ImportError:  # pragma: no cover - version file generated at build time
 __all__ = [
     "BatchItemResult",
     "CatalogDecision",
+    "DeidParameters",
     "DeidProfile",
     "DeidentifyResult",
     "DeviceCatalog",
     "DicomTags",
+    "IndexAttributes",
     "Outcome",
     "OutputPathCollisionError",
     "ProfileSpec",

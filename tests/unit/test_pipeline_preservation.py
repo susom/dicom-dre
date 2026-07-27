@@ -53,17 +53,21 @@ def _deidentify(
     """Run the pipeline for a profile and return the output dataset."""
     import pydicom
 
+    from dicom_dre import DeidParameters
     from dicom_dre import Outcome
     from dicom_dre import build_profile
     from dicom_dre import deidentify_file
+    from dicom_dre.profiles.builder import BUILD_CONFIG_KEYS
 
     output = tmp_path / f"out_{profile_name}.dcm"
     parameters = dict(deid_parameters) if deid_parameters is not None else dict(DEID_PARAMETERS)
-    profile = build_profile(profile_name, parameters)
+    config = {key: value for key, value in parameters.items() if key in BUILD_CONFIG_KEYS}
+    profile = build_profile(profile_name, config)
     result = deidentify_file(
         input_file=signa_premier_file,
         output_file=output,
         profile=profile,
+        parameters=DeidParameters.from_mapping(parameters),
         rename_to_sop_uid=False,
     )
     if result.outcome is not Outcome.DEIDENTIFIED:
@@ -198,3 +202,63 @@ class TestPatientNameMapping:
         assert str(ds[tag].value) == parameters["PATIENT_ID"], (
             f"PatientName did not fall back to PATIENT_ID under profile {profile_name}: got {ds[tag].value!r}"
         )
+
+
+class TestProfileReuseAcrossPatients:
+    """One built profile de-identifies multiple patients via distinct parameters."""
+
+    def test_one_profile_two_patients_distinct_output(self, signa_premier_file, tmp_path):
+        """A single profile object yields per-patient identifiers and date shifts."""
+        import pydicom
+        from pydicom.tag import Tag
+
+        from dicom_dre import DeidParameters
+        from dicom_dre import Outcome
+        from dicom_dre import build_profile
+        from dicom_dre import deidentify_file
+
+        profile = build_profile("default", {"UIDROOT": "1.2.3"})
+
+        params_a = DeidParameters(patient_id="AAA", accession_number="ACC_A", study_id="STUDY_A", jitter=3)
+        params_b = DeidParameters(patient_id="BBB", accession_number="ACC_B", study_id="STUDY_B", jitter=7)
+
+        out_a = tmp_path / "a.dcm"
+        out_b = tmp_path / "b.dcm"
+        result_a = deidentify_file(
+            input_file=signa_premier_file,
+            output_file=out_a,
+            profile=profile,
+            parameters=params_a,
+            rename_to_sop_uid=False,
+        )
+        result_b = deidentify_file(
+            input_file=signa_premier_file,
+            output_file=out_b,
+            profile=profile,
+            parameters=params_b,
+            rename_to_sop_uid=False,
+        )
+
+        assert result_a.outcome is Outcome.DEIDENTIFIED, "patient A should de-identify"
+        assert result_b.outcome is Outcome.DEIDENTIFIED, "patient B should de-identify"
+        assert result_a.parameters is params_a, "result A should carry the supplied parameters"
+        assert result_b.parameters is params_b, "result B should carry the supplied parameters"
+
+        ds_a = pydicom.dcmread(out_a, force=True)
+        ds_b = pydicom.dcmread(out_b, force=True)
+        patient_id_tag = Tag(0x0010, 0x0020)
+        accession_tag = Tag(0x0008, 0x0050)
+        study_uid_tag = Tag(0x0020, 0x000D)
+        study_date_tag = Tag(0x0008, 0x0020)
+
+        assert str(ds_a[patient_id_tag].value) == "AAA", "patient A PatientID"
+        assert str(ds_b[patient_id_tag].value) == "BBB", "patient B PatientID"
+        assert str(ds_a[accession_tag].value) == "ACC_A", "patient A AccessionNumber"
+        assert str(ds_b[accession_tag].value) == "ACC_B", "patient B AccessionNumber"
+        assert ds_a[study_uid_tag].value != ds_b[study_uid_tag].value, (
+            "different study salts should hash StudyInstanceUID differently"
+        )
+        if study_date_tag in ds_a and study_date_tag in ds_b:
+            assert ds_a[study_date_tag].value != ds_b[study_date_tag].value, (
+                "different jitter values should shift the study date differently"
+            )

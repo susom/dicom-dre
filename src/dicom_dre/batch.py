@@ -25,6 +25,7 @@ from fnmatch import fnmatch
 from pathlib import Path
 from typing import TYPE_CHECKING
 
+from dicom_dre.parameters import DeidParameters
 from dicom_dre.pipeline import deidentify_file
 from dicom_dre.profiles.builder import build_profile
 from dicom_dre.result import BatchItemResult
@@ -50,16 +51,18 @@ class ProfileSpec:
 
     A bound :class:`~dicom_dre.profile.DeidProfile` cannot cross a process
     boundary because its tag rules are closures. This spec carries the profile
-    name and runtime parameters instead, so each worker process can rebuild the
-    profile with :func:`dicom_dre.build_profile`.
+    name and build-time configuration instead, so each worker process can
+    rebuild the profile with :func:`dicom_dre.build_profile`. Per-patient
+    identity values are not part of the spec; they travel on a
+    :class:`~dicom_dre.parameters.DeidParameters`.
 
     Attributes:
         name: Profile name accepted by :func:`dicom_dre.build_profile`.
-        parameters: Runtime parameter mapping consumed as-is.
+        config: Build-time configuration mapping (UIDROOT, ALLOWLIST_CSV).
     """
 
     name: str
-    parameters: dict[str, str] = field(default_factory=dict)
+    config: dict[str, str] = field(default_factory=dict)
 
 
 @dataclass(frozen=True)
@@ -165,6 +168,7 @@ def deidentify_paths(
     output_dir: Path,
     *,
     profile: DeidProfile | None = None,
+    parameters: DeidParameters | None = None,
     catalog: DeviceCatalog | None = None,
     recursive: bool = False,
     patterns: Sequence[str] = DEFAULT_PATTERNS,
@@ -207,6 +211,9 @@ def deidentify_paths(
         profile: The bound de-identification profile to apply. Optional; for a
             sequential run it is built from ``profile_spec`` when omitted, and it
             is ignored entirely for parallel runs.
+        parameters: Per-patient values applied to every discovered file.
+            Defaults to a :class:`~dicom_dre.parameters.DeidParameters` with all
+            placeholders when omitted.
         catalog: Device catalog for filtering and pixel-scrub decisions.
             Defaults to :func:`dicom_dre.get_default_catalog`.
         recursive: Whether to descend into subdirectories of directory sources.
@@ -233,6 +240,9 @@ def deidentify_paths(
     if workers < 1:
         raise ValueError("workers must be >= 1")
 
+    if parameters is None:
+        parameters = DeidParameters()
+
     discovered: Iterable[tuple[Path, Path]] = _discover_inputs(
         sources,
         recursive=recursive,
@@ -252,8 +262,10 @@ def deidentify_paths(
         if profile is None:
             if profile_spec is None:
                 raise ValueError("deidentify_paths requires either profile or profile_spec")
-            profile = build_profile(profile_spec.name, profile_spec.parameters)
-        yield from _run_sequential(discovered, output_dir, profile=profile, catalog=catalog, options=options)
+            profile = build_profile(profile_spec.name, profile_spec.config)
+        yield from _run_sequential(
+            discovered, output_dir, profile=profile, parameters=parameters, catalog=catalog, options=options
+        )
         return
 
     if profile_spec is None:
@@ -263,6 +275,7 @@ def deidentify_paths(
         discovered,
         output_dir,
         profile_spec=profile_spec,
+        parameters=parameters,
         catalog=catalog,
         workers=workers,
         options=options,
@@ -274,6 +287,7 @@ def _run_sequential(
     output_dir: Path,
     *,
     profile: DeidProfile,
+    parameters: DeidParameters,
     catalog: DeviceCatalog | None,
     options: _BatchOptions,
 ) -> Iterator[BatchItemResult]:
@@ -285,7 +299,11 @@ def _run_sequential(
         except OSError as error:
             yield BatchItemResult(
                 input_file=input_file,
-                result=DeidentifyResult.quarantined(error=str(error)),
+                result=DeidentifyResult.quarantined(
+                    error=str(error),
+                    input_file=input_file,
+                    parameters=parameters,
+                ),
             )
             continue
 
@@ -293,6 +311,7 @@ def _run_sequential(
             input_file=input_file,
             output_file=output_file,
             profile=profile,
+            parameters=parameters,
             catalog=catalog,
             decompress=options.decompress,
             rename_to_sop_uid=options.rename_to_sop_uid,
@@ -310,6 +329,7 @@ def _run_parallel(
     output_dir: Path,
     *,
     profile_spec: ProfileSpec,
+    parameters: DeidParameters,
     catalog: DeviceCatalog | None,
     workers: int,
     options: _BatchOptions,
@@ -324,7 +344,7 @@ def _run_parallel(
     with ProcessPoolExecutor(
         max_workers=workers,
         initializer=_init_worker,
-        initargs=(profile_spec, catalog, options),
+        initargs=(profile_spec, parameters, catalog, options),
     ) as executor:
         futures: dict[Future[DeidentifyResult], tuple[Path, Path]] = {}
         for input_file, relative_subpath in discovered:
@@ -334,7 +354,11 @@ def _run_parallel(
             except OSError as error:
                 yield BatchItemResult(
                     input_file=input_file,
-                    result=DeidentifyResult.quarantined(error=str(error)),
+                    result=DeidentifyResult.quarantined(
+                        error=str(error),
+                        input_file=input_file,
+                        parameters=parameters,
+                    ),
                 )
                 continue
             future = executor.submit(_process_one, input_file, output_file)
@@ -345,7 +369,11 @@ def _run_parallel(
             try:
                 result = future.result()
             except Exception as error:  # noqa: BLE001  worker crash is a process boundary
-                result = DeidentifyResult.quarantined(error=str(error))
+                result = DeidentifyResult.quarantined(
+                    error=str(error),
+                    input_file=input_file,
+                    parameters=parameters,
+                )
 
             if result.outcome is not Outcome.DEIDENTIFIED:
                 _remove_empty_dir(output_file.parent, output_dir)
@@ -354,35 +382,39 @@ def _run_parallel(
 
 
 _WORKER_PROFILE: DeidProfile | None = None
+_WORKER_PARAMETERS: DeidParameters | None = None
 _WORKER_CATALOG: DeviceCatalog | None = None
 _WORKER_OPTIONS: _BatchOptions | None = None
 
 
 def _init_worker(
     profile_spec: ProfileSpec,
+    parameters: DeidParameters,
     catalog: DeviceCatalog | None,
     options: _BatchOptions,
 ) -> None:
     """Initialize per-process worker state for a parallel batch run.
 
     Rebuilds the bound profile from ``profile_spec`` once per worker (a bound
-    profile is not picklable) and stashes the catalog and options in module
-    globals so :func:`_process_one` can reuse them across tasks.
+    profile is not picklable) and stashes the parameters, catalog, and options in
+    module globals so :func:`_process_one` can reuse them across tasks.
     """
-    global _WORKER_PROFILE, _WORKER_CATALOG, _WORKER_OPTIONS
-    _WORKER_PROFILE = build_profile(profile_spec.name, profile_spec.parameters)
+    global _WORKER_PROFILE, _WORKER_PARAMETERS, _WORKER_CATALOG, _WORKER_OPTIONS
+    _WORKER_PROFILE = build_profile(profile_spec.name, profile_spec.config)
+    _WORKER_PARAMETERS = parameters
     _WORKER_CATALOG = catalog
     _WORKER_OPTIONS = options
 
 
 def _process_one(input_file: Path, output_file: Path) -> DeidentifyResult:
     """De-identify one input in a worker process using initialized state."""
-    if _WORKER_PROFILE is None or _WORKER_OPTIONS is None:
+    if _WORKER_PROFILE is None or _WORKER_PARAMETERS is None or _WORKER_OPTIONS is None:
         raise RuntimeError("worker state was not initialized")
     return deidentify_file(
         input_file=input_file,
         output_file=output_file,
         profile=_WORKER_PROFILE,
+        parameters=_WORKER_PARAMETERS,
         catalog=_WORKER_CATALOG,
         decompress=_WORKER_OPTIONS.decompress,
         rename_to_sop_uid=_WORKER_OPTIONS.rename_to_sop_uid,

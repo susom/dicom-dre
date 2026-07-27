@@ -15,29 +15,15 @@ from dicom_dre.profiles.default import default_profile
 
 
 def lds_profile(
-    patient_id: str,
-    accession_number: str,
-    study_id: str,
+    *,
     uid_root: str = UIDROOT,
-    series_description: str | None = None,
-    study_description: str | None = None,
-    protocol_name: str | None = None,
     deid_method: str = "DICOM-PS3.15E-Basic-LDS",
-    patient_name: str | None = None,
     allowlist_csv: str = "default.csv",
 ) -> DeidProfile:
     """Construct an LDS profile. All dates are preserved via VR inspection."""
     base = default_profile(
-        patient_id=patient_id,
-        accession_number=accession_number,
-        study_id=study_id,
-        jitter=0,
         uid_root=uid_root,
-        series_description=series_description,
-        study_description=study_description,
-        protocol_name=protocol_name,
         deid_method=deid_method,
-        patient_name=patient_name,
         allowlist_csv=allowlist_csv,
         preserve_dates=True,
     )

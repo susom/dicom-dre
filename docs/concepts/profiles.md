@@ -16,11 +16,17 @@ live list.
 | `lds-no-dob` | Yes, except birth date | Limited data set without patient date of birth |
 | `pixels-only` | No (dates removed) | Pixel data only, minimal retained metadata |
 
-{py:func}`dicom_dre.profiles.builder.build_profile` constructs a profile from a
-profile name and a runtime parameter dict. It consumes the parameter dict as-is:
-the library performs no hashing, no settings lookups, and no free-text lookups.
-Callers supply already-hashed and already-redacted values.
-See [Reproducibility](reproducibility.md).
+{py:func}`dicom_dre.profiles.builder.build_profile` constructs a
+patient-invariant profile from a profile name and an optional build-configuration
+mapping (`UIDROOT`, `ALLOWLIST_CSV`). Per-patient identity values (PatientID,
+AccessionNumber, StudyID, PatientName, the free-text description overrides, and
+the date jitter) are supplied at apply time via
+{py:class}`dicom_dre.parameters.DeidParameters`, not to `build_profile`. A single
+profile is reusable across any number of patients. The engine writes the
+replacement identifiers verbatim and re-derives UIDs by deterministic hashing
+(the UID root and the study-ID salt); it performs no identifier-mapping lookups,
+no settings lookups, and no network calls, so the same profile and parameters
+always produce the same output. See [Reproducibility](reproducibility.md).
 
 ## Default (full de-identification)
 

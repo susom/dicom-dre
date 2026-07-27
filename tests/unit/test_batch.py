@@ -245,7 +245,7 @@ class TestOutputCollisions:
 
 def _spec() -> ProfileSpec:
     """Build the picklable profile spec matching the sequential test profile."""
-    return ProfileSpec(name="default", parameters=dict(_BATCH_PARAMS))
+    return ProfileSpec(name="default", config={"UIDROOT": "1.2.3"})
 
 
 class TestParallelDeidentifyPaths:
@@ -423,3 +423,62 @@ class TestProfileSpec:
         """A sequential run needs either a profile or a spec to build one."""
         with pytest.raises(ValueError, match="either profile or profile_spec"):
             list(deidentify_paths([signa_premier_file], tmp_path / "out"))
+
+
+class TestDeidParametersInBatch:
+    """DeidParameters travel with the batch and reach worker processes."""
+
+    def test_deid_parameters_hashable_and_picklable(self) -> None:
+        """DeidParameters can be hashed and pickled for cross-process transport."""
+        import pickle
+
+        from dicom_dre import DeidParameters
+
+        params = DeidParameters(patient_id="P", accession_number="A", study_id="S", jitter=4)
+        assert hash(params) == hash(params), "DeidParameters should be hashable"
+        restored = pickle.loads(pickle.dumps(params))  # noqa: S301  round-trip of trusted local data
+        assert restored == params, "DeidParameters should survive a pickle round-trip"
+
+    def test_from_mapping_reads_identity_keys_and_parses_jitter(self) -> None:
+        """from_mapping reads identity keys, parses JITTER, and ignores build knobs."""
+        from dicom_dre import DeidParameters
+
+        params = DeidParameters.from_mapping({"PATIENT_ID": "P", "JITTER": "12", "UIDROOT": "1.2.3"})
+        assert params.patient_id == "P", "PATIENT_ID should be read"
+        assert params.jitter == 12, "JITTER should be parsed to an int"
+
+    def test_from_mapping_rejects_non_integer_jitter(self) -> None:
+        """from_mapping raises when JITTER is not an integer."""
+        from dicom_dre import DeidParameters
+
+        with pytest.raises(ValueError, match="JITTER"):
+            DeidParameters.from_mapping({"JITTER": "soon"})
+
+    def test_parallel_applies_parameters(self, signa_premier_file: Path, tmp_path: Path) -> None:
+        """A parallel run applies the supplied parameters in worker processes."""
+        import pydicom
+        from pydicom.tag import Tag
+
+        from dicom_dre import DeidParameters
+
+        source = tmp_path / "src"
+        source.mkdir()
+        shutil.copy2(signa_premier_file, source / "one.dcm")
+        out = tmp_path / "out"
+
+        params = DeidParameters(patient_id="WORKER_ID", accession_number="WORKER_ACC")
+        results = list(
+            deidentify_paths(
+                [source],
+                out,
+                parameters=params,
+                profile_spec=_spec(),
+                workers=2,
+                rename_to_sop_uid=False,
+            )
+        )
+
+        assert len(results) == 1, "The single input should be processed"
+        assert results[0].result.parameters == params, "The result should carry the supplied parameters"
+        ds = pydicom.dcmread(out / "one.dcm", force=True)
+        assert str(ds[Tag(0x0010, 0x0020)].value) == "WORKER_ID", "worker should apply the supplied PatientID"

@@ -1,13 +1,15 @@
 """Canonical profile builder.
 
-Provides profile-name dispatch, JITTER parsing, and the per-profile parameter
-defaults. Given a profile name and a runtime parameter dict,
-:func:`build_profile` returns a fully-bound :class:`DeidProfile` ready
-for ``apply()``.
+Given a profile name and an optional build-configuration mapping,
+:func:`build_profile` returns a patient-invariant :class:`DeidProfile` policy
+object. The configuration carries only build-time knobs (``UIDROOT``,
+``ALLOWLIST_CSV``); per-patient identity values are supplied at ``apply()`` time
+via :class:`dicom_dre.parameters.DeidParameters`, not to ``build_profile``.
 
-The parameter dict is consumed as-is: the library performs no hashing, no
-settings lookups, and no free-text redaction. Callers supply already-hashed and
-already-redacted values.
+Free-text description elements (``SeriesDescription``, ``StudyDescription``,
+``ProtocolName``) follow a precedence-or-redact contract at apply time: a
+per-patient value is written verbatim, and when it is absent the element is
+redacted using the allowlist.
 """
 
 from __future__ import annotations
@@ -21,108 +23,51 @@ from dicom_dre.profiles.pixels_only import pixels_only_profile
 
 
 if TYPE_CHECKING:
+    from collections.abc import Mapping
+
     from dicom_dre.profile import DeidProfile
 
 
-# Fallback values for de-identification parameters not supplied at runtime.
-# These fill placeholder identifiers and the UID-hash salt so the engine
-# produces deterministic output when optional parameters are absent.
-_DEFAULT_PLACEHOLDER = "######"  # PATIENT_ID/ACCESSION_NUMBER placeholder when absent
-_DEFAULT_STUDY_ID = "UNKNOWN"  # STUDY_ID (UID-hash salt via ClinicalTrialProtocolID) when absent
 _DEFAULT_UID_ROOT = "1.2.840.4267.32."
 _DEFAULT_ALLOWLIST_CSV = "default.csv"  # free-text redaction allowlist when absent
 
-
-def _build_default(parameters: dict[str, str]) -> DeidProfile:
-    jitter_value = parameters.get("JITTER", "10")
-    try:
-        jitter = int(jitter_value)
-    except (TypeError, ValueError) as exc:
-        raise ValueError(f"JITTER parameter must be an integer, got {jitter_value!r}") from exc
-
-    return default_profile(
-        patient_id=parameters.get("PATIENT_ID", _DEFAULT_PLACEHOLDER),
-        accession_number=parameters.get("ACCESSION_NUMBER", _DEFAULT_PLACEHOLDER),
-        study_id=parameters.get("STUDY_ID", _DEFAULT_STUDY_ID),
-        jitter=jitter,
-        uid_root=parameters.get("UIDROOT", _DEFAULT_UID_ROOT),
-        series_description=parameters.get("SERIES_DESCRIPTION"),
-        study_description=parameters.get("STUDY_DESCRIPTION"),
-        protocol_name=parameters.get("PROTOCOL_NAME"),
-        patient_name=parameters.get("PATIENT_NAME"),
-        allowlist_csv=parameters.get("ALLOWLIST_CSV", _DEFAULT_ALLOWLIST_CSV),
-    )
-
-
-def _build_lds(parameters: dict[str, str]) -> DeidProfile:
-    return lds_profile(
-        patient_id=parameters.get("PATIENT_ID", _DEFAULT_PLACEHOLDER),
-        accession_number=parameters.get("ACCESSION_NUMBER", _DEFAULT_PLACEHOLDER),
-        study_id=parameters.get("STUDY_ID", _DEFAULT_STUDY_ID),
-        uid_root=parameters.get("UIDROOT", _DEFAULT_UID_ROOT),
-        series_description=parameters.get("SERIES_DESCRIPTION"),
-        study_description=parameters.get("STUDY_DESCRIPTION"),
-        protocol_name=parameters.get("PROTOCOL_NAME"),
-        patient_name=parameters.get("PATIENT_NAME"),
-        allowlist_csv=parameters.get("ALLOWLIST_CSV", _DEFAULT_ALLOWLIST_CSV),
-    )
-
-
-def _build_lds_no_dob(parameters: dict[str, str]) -> DeidProfile:
-    return lds_no_dob_profile(
-        patient_id=parameters.get("PATIENT_ID", _DEFAULT_PLACEHOLDER),
-        accession_number=parameters.get("ACCESSION_NUMBER", _DEFAULT_PLACEHOLDER),
-        study_id=parameters.get("STUDY_ID", _DEFAULT_STUDY_ID),
-        uid_root=parameters.get("UIDROOT", _DEFAULT_UID_ROOT),
-        series_description=parameters.get("SERIES_DESCRIPTION"),
-        study_description=parameters.get("STUDY_DESCRIPTION"),
-        protocol_name=parameters.get("PROTOCOL_NAME"),
-        patient_name=parameters.get("PATIENT_NAME"),
-        allowlist_csv=parameters.get("ALLOWLIST_CSV", _DEFAULT_ALLOWLIST_CSV),
-    )
-
-
-def _build_pixels_only(parameters: dict[str, str]) -> DeidProfile:
-    return pixels_only_profile(
-        patient_id=parameters.get("PATIENT_ID", _DEFAULT_PLACEHOLDER),
-        accession_number=parameters.get("ACCESSION_NUMBER", _DEFAULT_PLACEHOLDER),
-        uid_root=parameters.get("UIDROOT", _DEFAULT_UID_ROOT),
-        series_description=parameters.get("SERIES_DESCRIPTION"),
-        study_description=parameters.get("STUDY_DESCRIPTION"),
-        protocol_name=parameters.get("PROTOCOL_NAME"),
-        patient_name=parameters.get("PATIENT_NAME"),
-        allowlist_csv=parameters.get("ALLOWLIST_CSV", _DEFAULT_ALLOWLIST_CSV),
-    )
+# Parsed ``--param`` keys that configure profile construction rather than a
+# patient's identity. The CLI filters with this so identity values never enter
+# a ``ProfileSpec`` shipped to worker processes.
+BUILD_CONFIG_KEYS = frozenset({"UIDROOT", "ALLOWLIST_CSV"})
 
 
 _BUILDERS = {
-    "default": _build_default,
-    "lds": _build_lds,
-    "lds-no-dob": _build_lds_no_dob,
-    "pixels-only": _build_pixels_only,
+    "default": default_profile,
+    "lds": lds_profile,
+    "lds-no-dob": lds_no_dob_profile,
+    "pixels-only": pixels_only_profile,
 }
 
 
-def build_profile(name: str, parameters: dict[str, str]) -> DeidProfile:
-    """Construct a bound :class:`DeidProfile` for a named profile.
+def build_profile(name: str, config: Mapping[str, str] | None = None) -> DeidProfile:
+    """Construct a patient-invariant :class:`DeidProfile` for a named profile.
 
     Args:
         name: Profile name, one of ``"default"``, ``"lds"``, ``"lds-no-dob"``,
             or ``"pixels-only"``.
-        parameters: Runtime parameter dict (PATIENT_ID, ACCESSION_NUMBER,
-            STUDY_ID, JITTER, UIDROOT, description fields, etc.), consumed
-            as-is with no hashing or redaction.
+        config: Optional build-time configuration mapping. Only ``UIDROOT`` and
+            ``ALLOWLIST_CSV`` are read; other keys are ignored.
 
     Returns:
-        A fully-bound profile ready for ``apply()``.
+        A profile ready for ``apply(ds, params)``.
 
     Raises:
-        ValueError: If the name is unknown or JITTER is not an integer.
+        ValueError: If the name is unknown.
     """
-    builder = _BUILDERS.get(name)
-    if builder is None:
+    factory = _BUILDERS.get(name)
+    if factory is None:
         raise ValueError(f"Unknown de-identification profile: {name!r}")
-    return builder(parameters)
+    config = config or {}
+    return factory(
+        uid_root=config.get("UIDROOT", _DEFAULT_UID_ROOT),
+        allowlist_csv=config.get("ALLOWLIST_CSV", _DEFAULT_ALLOWLIST_CSV),
+    )
 
 
 def list_profiles() -> list[str]:

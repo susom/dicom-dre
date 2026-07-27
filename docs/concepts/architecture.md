@@ -67,13 +67,17 @@ See [JPEG DCT Scrubbing](jpeg-dct.md).
 ### Metadata
 
 The bound {py:class}`~dicom_dre.profile.DeidProfile` runs its tag rules on the
-dataset with `DeidProfile.apply(ds)`. Rules are small closures defined in
+dataset with `DeidProfile.apply(ds, params)`, where `params` is a
+{py:class}`~dicom_dre.parameters.DeidParameters` carrying the per-patient values.
+Rules are small closures defined in
 {py:mod}`dicom_dre.actions` (for example `remove`, `empty`, `hash_uid`,
 `jitter_date`, `keep`). The profile factories in {py:mod}`dicom_dre.profiles`
 compose the tag sets each profile applies them to.
 
-Each factory in `actions.py` closes over its arguments at profile-construction
-time and returns a `(Dataset, BaseTag) -> None` callable. The available actions:
+Each factory in `actions.py` closes over its build-time arguments at
+profile-construction time and returns a
+`(Dataset, BaseTag, DeidParameters) -> None` callable that reads per-patient
+values from the supplied parameters. The available actions:
 
 | Action | Effect |
 |--------|--------|
@@ -81,9 +85,9 @@ time and returns a `(Dataset, BaseTag) -> None` callable. The available actions:
 | `remove()` | Delete the element from the dataset. |
 | `empty()` | Replace the value with a zero-length value (empty list for `SQ`). |
 | `set_value(value, create_if_missing=False)` | Replace the value with a literal string, optionally creating the element when absent. |
-| `redact_text(redactor)` | Redact a free-text element token-by-token against an allowlist. |
-| `hash_uid(root, salt="")` | Re-derive a UID as an MD5 hash under `root`, optionally salted. |
-| `jitter_date(days)` | Shift the `DA`/`DT` date component forward by `days`, preserving any time/timezone remainder. |
+| `set_param(field, default=None, fallback_field=None, create_if_missing=False)` | Write a per-patient value read from `DeidParameters`, with fallbacks. |
+| `hash_uid(root, use_study_salt=False)` | Re-derive a UID as an MD5 hash under `root`, optionally salted with the study identifier. |
+| `jitter_date()` | Shift the `DA`/`DT` date component forward by `params.jitter` days, preserving any time/timezone remainder. |
 | `append_value(text, create_if_missing=False)` | Append `text` to a multi-valued element using `\` as separator. |
 | `cap_age(threshold, replacement)` | Replace an `AS` age when its numeric part exceeds `threshold`. |
 | `if_exists(inner)` | Apply `inner` only when the element is present. |
@@ -97,7 +101,7 @@ By default the engine removes every private data element that has no explicit
 tag rule. A device rule may name a small, reviewer-approved set of private
 elements to retain verbatim through its `preserved_private_tags` field (a tuple
 of `PrivateTagSpec`). When the catalog decision carries specs, the pipeline
-attaches them to the `DeidProfile`. At apply time, `DeidProfile.apply(ds)`
+attaches them to the `DeidProfile`. At apply time, `DeidProfile.apply(ds, params)`
 resolves each spec's private-creator block (the block is runtime-assigned, not
 fixed) and keeps both the resolved data elements and their creator element. The
 engine removes all other private elements as usual. When preservation is active,

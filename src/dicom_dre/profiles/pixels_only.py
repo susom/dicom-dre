@@ -18,7 +18,9 @@ from dicom_dre.actions import TagAction
 from dicom_dre.actions import hash_uid
 from dicom_dre.actions import keep
 from dicom_dre.actions import remove
+from dicom_dre.actions import set_param
 from dicom_dre.actions import set_value
+from dicom_dre.parameters import IDENTIFIER_PLACEHOLDER
 from dicom_dre.profile import DeidProfile
 from dicom_dre.profiles.default import description_action
 
@@ -364,25 +366,20 @@ PIXELS_ONLY_REMOVE_TAGS: frozenset[BaseTag] = frozenset(
 
 
 def pixels_only_profile(
-    patient_id: str,
-    accession_number: str,
+    *,
     uid_root: str = UIDROOT,
-    series_description: str | None = None,
-    study_description: str | None = None,
-    protocol_name: str | None = None,
-    patient_name: str | None = None,
     allowlist_csv: str = "default.csv",
 ) -> DeidProfile:
     """Construct a pixels-only profile.
 
     No salt, no jitter, minimal metadata. Removes all unspecified elements.
-    PatientName defaults to patient_id when patient_name is None.
+    Per-patient identity values are supplied at apply time via
+    :class:`DeidParameters`; absent PatientName falls back to PatientID.
 
-    The free-text description fields take a caller value verbatim; when left as
-    ``None`` they are redacted from the dataset using the ``allowlist_csv``
+    The free-text description fields take a per-patient value verbatim; when it
+    is ``None`` they are redacted from the dataset using the ``allowlist_csv``
     allowlist at apply time.
     """
-    resolved_patient_name = patient_name if patient_name is not None else patient_id
     uid_action = hash_uid(uid_root)  # no salt
 
     rules: dict[BaseTag, TagAction] = {}
@@ -397,12 +394,14 @@ def pixels_only_profile(
     rules.update({t: remove() for t in PIXELS_ONLY_REMOVE_TAGS})
 
     # Literal value substitution
-    rules[Tag(0x0010, 0x0010)] = set_value(resolved_patient_name)  # PatientName
-    rules[Tag(0x0010, 0x0020)] = set_value(patient_id)  # PatientID
-    rules[Tag(0x0008, 0x0050)] = set_value(accession_number)  # AccessionNumber
-    rules[Tag(0x0008, 0x103E)] = description_action(series_description, allowlist_csv, False)  # SeriesDescription
-    rules[Tag(0x0008, 0x1030)] = description_action(study_description, allowlist_csv, False)  # StudyDescription
-    rules[Tag(0x0018, 0x1030)] = description_action(protocol_name, allowlist_csv, False)  # ProtocolName
+    rules[Tag(0x0010, 0x0010)] = set_param(
+        "patient_name", fallback_field="patient_id", default=IDENTIFIER_PLACEHOLDER
+    )  # PatientName
+    rules[Tag(0x0010, 0x0020)] = set_param("patient_id", default=IDENTIFIER_PLACEHOLDER)  # PatientID
+    rules[Tag(0x0008, 0x0050)] = set_param("accession_number", default=IDENTIFIER_PLACEHOLDER)  # AccessionNumber
+    rules[Tag(0x0008, 0x103E)] = description_action("series_description", allowlist_csv, False)  # SeriesDescription
+    rules[Tag(0x0008, 0x1030)] = description_action("study_description", allowlist_csv, False)  # StudyDescription
+    rules[Tag(0x0018, 0x1030)] = description_action("protocol_name", allowlist_csv, False)  # ProtocolName
 
     # PatientIdentityRemoved -- created if missing and set to YES
     rules[Tag(0x0012, 0x0062)] = set_value("YES", create_if_missing=True)

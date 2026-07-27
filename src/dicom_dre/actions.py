@@ -1,28 +1,33 @@
 """Tag action factories for DICOM metadata de-identification.
 
-Each factory returns a callable with signature (Dataset, BaseTag) -> None.
-Factories close over their arguments at profile construction time.
+Each factory returns a callable with signature
+``(Dataset, BaseTag, DeidParameters) -> None``. Factories close over their
+build-time arguments at profile construction time; per-patient values are read
+from the :class:`DeidParameters` supplied at apply time.
 """
+
+from __future__ import annotations
 
 import re
 from collections.abc import Callable
 from datetime import datetime
 from datetime import timedelta
 from typing import TYPE_CHECKING
-from typing import cast
 
 from pydicom.datadict import dictionary_VR
 from pydicom.dataset import Dataset
 from pydicom.tag import BaseTag
 
+from dicom_dre.parameters import DEFAULT_JITTER
+from dicom_dre.parameters import DEFAULT_STUDY_ID
 from dicom_dre.uid_utils import hashuid
 
 
 if TYPE_CHECKING:
-    from dicom_dre.text_redactor import TextRedactor
+    from dicom_dre.parameters import DeidParameters
 
 
-TagAction = Callable[[Dataset, BaseTag], None]
+TagAction = Callable[[Dataset, BaseTag, "DeidParameters"], None]
 
 
 def _create_element(ds: Dataset, tag: BaseTag, value: str) -> None:
@@ -41,7 +46,7 @@ def _create_element(ds: Dataset, tag: BaseTag, value: str) -> None:
 def keep() -> "TagAction":
     """Preserve element unchanged."""
 
-    def action(ds: Dataset, tag: BaseTag) -> None:
+    def action(ds: Dataset, tag: BaseTag, params: "DeidParameters") -> None:
         pass
 
     return action
@@ -50,7 +55,7 @@ def keep() -> "TagAction":
 def remove() -> "TagAction":
     """Delete element from dataset."""
 
-    def action(ds: Dataset, tag: BaseTag) -> None:
+    def action(ds: Dataset, tag: BaseTag, params: "DeidParameters") -> None:
         if tag in ds:
             del ds[tag]
 
@@ -65,7 +70,7 @@ def empty() -> "TagAction":
     raises an error in pydicom 3.x.
     """
 
-    def action(ds: Dataset, tag: BaseTag) -> None:
+    def action(ds: Dataset, tag: BaseTag, params: "DeidParameters") -> None:
         if tag in ds:
             if ds[tag].VR == "SQ":
                 ds[tag].value = []
@@ -84,7 +89,7 @@ def set_value(value: str, create_if_missing: bool = False) -> "TagAction":
     in the output -- used for mandatory de-identification evidence attributes.
     """
 
-    def action(ds: Dataset, tag: BaseTag) -> None:
+    def action(ds: Dataset, tag: BaseTag, params: "DeidParameters") -> None:
         if tag in ds:
             ds[tag].value = value
         elif create_if_missing:
@@ -93,58 +98,74 @@ def set_value(value: str, create_if_missing: bool = False) -> "TagAction":
     return action
 
 
-def redact_text(redactor: "TextRedactor") -> "TagAction":
-    """Redact free text in an element using an allowlist redactor.
+def set_param(
+    field_name: str,
+    *,
+    default: str | None = None,
+    fallback_field: str | None = None,
+    create_if_missing: bool = False,
+) -> "TagAction":
+    """Write a per-patient value read from :class:`DeidParameters`.
 
-    Reads the element's current value, redacts tokens not present in the
-    allowlist, and writes the result back. Missing elements are left
-    untouched; present but empty elements are set to an empty string,
-    following the "empty/missing source redacts to empty" convention for
-    free-text description fields.
+    Reads ``getattr(params, field_name)`` at apply time, falling back to
+    ``getattr(params, fallback_field)`` when the primary is ``None`` and then to
+    ``default``. The resolved value is written with :func:`set_value` semantics:
+    present elements are overwritten, and absent elements are created only when
+    ``create_if_missing`` is True.
     """
 
-    def action(ds: Dataset, tag: BaseTag) -> None:
-        if tag not in ds:
+    def action(ds: Dataset, tag: BaseTag, params: "DeidParameters") -> None:
+        value = getattr(params, field_name)
+        if value is None and fallback_field is not None:
+            value = getattr(params, fallback_field)
+        if value is None:
+            value = default
+        if value is None:
             return
-        value = ds[tag].value
-        if value:
-            ds[tag].value = cast(str, redactor.redact_text(text=str(value), track_redacted=False))
-        else:
-            ds[tag].value = ""
+        if tag in ds:
+            ds[tag].value = value
+        elif create_if_missing:
+            _create_element(ds, tag, value)
 
     return action
 
 
-def hash_uid(root: str, salt: str = "") -> "TagAction":
-    """Hash UID using MD5 with optional salt.
+def hash_uid(root: str, *, use_study_salt: bool = False) -> "TagAction":
+    """Hash UID using MD5, optionally salted with the study identifier.
 
-    Reuses uid_utils.hashuid(). When salt is provided, the original UID
-    value is concatenated with the salt before hashing, so UIDs are hashed
-    per study (the salt is typically the study identifier).
+    Reuses uid_utils.hashuid(). When ``use_study_salt`` is True the original UID
+    value is concatenated with ``params.study_id`` (or :data:`DEFAULT_STUDY_ID`
+    when absent) before hashing, so UIDs are hashed per study. When False the
+    value is hashed with no salt.
     """
 
-    def action(ds: Dataset, tag: BaseTag) -> None:
+    def action(ds: Dataset, tag: BaseTag, params: "DeidParameters") -> None:
         if tag in ds and ds[tag].value:
             original = str(ds[tag].value)
-            combined = original + salt if salt else original
+            if use_study_salt:
+                salt = params.study_id if params.study_id is not None else DEFAULT_STUDY_ID
+                combined = original + salt
+            else:
+                combined = original
             ds[tag].value = hashuid(root, combined)
 
     return action
 
 
-def jitter_date(days: int) -> "TagAction":
-    """Shift a DICOM date forward by N days.
+def jitter_date() -> "TagAction":
+    """Shift a DICOM date forward by the per-patient jitter amount.
 
-    Handles both VR=DA (YYYYMMDD, 8 chars) and VR=DT (YYYYMMDDHHMMSS.FFFFFF
-    &ZZXX, up to 26 chars). The time portion and any trailing timezone offset
-    of DT values are preserved; only the date component (first 8 characters)
-    is shifted.
+    The shift is read from ``params.jitter`` (or :data:`DEFAULT_JITTER` when
+    absent). Handles both VR=DA (YYYYMMDD, 8 chars) and VR=DT
+    (YYYYMMDDHHMMSS.FFFFFF&ZZXX, up to 26 chars). The time portion and any
+    trailing timezone offset of DT values are preserved; only the date component
+    (first 8 characters) is shifted.
 
     Malformed dates in common non-DICOM formats (MM/DD/YY, MM/DD/YYYY,
     YYYY/MM/DD, DD.MM.YYYY) are normalized to YYYYMMDD before shifting.
     """
 
-    def action(ds: Dataset, tag: BaseTag) -> None:
+    def action(ds: Dataset, tag: BaseTag, params: "DeidParameters") -> None:
         if tag in ds and ds[tag].value:
             val = str(ds[tag].value)
             if len(val) < 6:
@@ -153,6 +174,7 @@ def jitter_date(days: int) -> "TagAction":
             dt = _parse_dicom_date(date_part)
             if dt is None:
                 return
+            days = params.jitter if params.jitter is not None else DEFAULT_JITTER
             shifted = dt + timedelta(days=days)
             ds[tag].value = shifted.strftime("%Y%m%d") + remainder
 
@@ -216,7 +238,7 @@ def append_value(text: str, create_if_missing: bool = False) -> "TagAction":
     otherwise an absent element is left untouched.
     """
 
-    def action(ds: Dataset, tag: BaseTag) -> None:
+    def action(ds: Dataset, tag: BaseTag, params: "DeidParameters") -> None:
         if tag in ds and ds[tag].value:
             current = str(ds[tag].value)
             ds[tag].value = current + "\\" + text
@@ -236,7 +258,7 @@ def cap_age(threshold: int, replacement: str) -> "TagAction":
     as an integer.
     """
 
-    def action(ds: Dataset, tag: BaseTag) -> None:
+    def action(ds: Dataset, tag: BaseTag, params: "DeidParameters") -> None:
         if tag in ds and ds[tag].value:
             val = str(ds[tag].value)
             digits = re.sub(r"[^0-9]", "", val)
@@ -249,9 +271,9 @@ def cap_age(threshold: int, replacement: str) -> "TagAction":
 def if_exists(inner: "TagAction") -> "TagAction":
     """Apply inner action only when element is present."""
 
-    def action(ds: Dataset, tag: BaseTag) -> None:
+    def action(ds: Dataset, tag: BaseTag, params: "DeidParameters") -> None:
         if tag in ds:
-            inner(ds, tag)
+            inner(ds, tag, params)
 
     return action
 
@@ -269,7 +291,7 @@ def process() -> "TagAction":
     rebinding: the profile always recurses with its own final rule set.
     """
 
-    def action(ds: Dataset, tag: BaseTag) -> None:
+    def action(ds: Dataset, tag: BaseTag, params: "DeidParameters") -> None:
         # Recursion into the sequence items is handled by DeidProfile
         # using its own rule set; nothing to do here.
         pass

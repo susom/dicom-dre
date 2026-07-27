@@ -4,6 +4,9 @@ Full PS3.15E de-identification with UID hashing, date jitter,
 and PHI removal.
 """
 
+from typing import cast
+
+from pydicom.dataset import Dataset
 from pydicom.tag import BaseTag
 from pydicom.tag import Tag
 
@@ -16,9 +19,12 @@ from dicom_dre.actions import if_exists
 from dicom_dre.actions import jitter_date
 from dicom_dre.actions import keep
 from dicom_dre.actions import process
-from dicom_dre.actions import redact_text
 from dicom_dre.actions import remove
+from dicom_dre.actions import set_param
 from dicom_dre.actions import set_value
+from dicom_dre.parameters import DEFAULT_STUDY_ID
+from dicom_dre.parameters import IDENTIFIER_PLACEHOLDER
+from dicom_dre.parameters import DeidParameters
 from dicom_dre.profile import DeidProfile
 from dicom_dre.text_redactor import get_text_redactor
 
@@ -405,18 +411,32 @@ EMPTY_TAGS: frozenset[BaseTag] = frozenset(
 )
 
 
-def description_action(value: str | None, allowlist_csv: str, preserve_dates: bool) -> TagAction:
+def description_action(field_name: str, allowlist_csv: str, preserve_dates: bool) -> TagAction:
     """Return the tag action for a free-text description element.
 
-    A caller-supplied value takes precedence and is written verbatim via
-    :func:`set_value`. When the value is ``None`` the element is redacted from
-    the dataset using the allowlist redactor, so PHI in SeriesDescription,
-    StudyDescription, and ProtocolName is removed while allowlisted tokens are
-    preserved.
+    A per-patient value supplied on ``params.<field_name>`` takes precedence and
+    is written verbatim. When it is ``None`` the element is redacted using the
+    allowlist redactor, so PHI in SeriesDescription, StudyDescription, and
+    ProtocolName is removed while allowlisted tokens are preserved. The action is
+    present-only: a missing element is left absent.
     """
-    if value is not None:
-        return set_value(value)
-    return redact_text(get_text_redactor(allowlist_csv, preserve_dates))
+    redactor = get_text_redactor(allowlist_csv, preserve_dates)
+
+    def action(ds: Dataset, tag: BaseTag, params: DeidParameters) -> None:
+        override = getattr(params, field_name)
+        if override is not None:
+            if tag in ds:
+                ds[tag].value = override
+            return
+        if tag not in ds:
+            return
+        value = ds[tag].value
+        if value:
+            ds[tag].value = cast(str, redactor.redact_text(text=str(value), track_redacted=False))
+        else:
+            ds[tag].value = ""
+
+    return action
 
 
 def _build_constant_rules() -> dict[BaseTag, TagAction]:
@@ -444,64 +464,50 @@ def _build_constant_rules() -> dict[BaseTag, TagAction]:
     return rules
 
 
-# Patient-invariant rules shared across every default_profile() result, built
-# once at import. Each call shallow-copies this mapping and overwrites only the
-# per-patient entries (UID hash, date jitter, identifiers, descriptions, and
-# DeIdentificationMethod). Safe to share because the action objects are
-# stateless and derived profiles copy the mapping before mutating it.
-_CONSTANT_RULES: dict[BaseTag, TagAction] = _build_constant_rules()
-
-
 def default_profile(
-    patient_id: str,
-    accession_number: str,
-    study_id: str,
-    jitter: int = 10,
+    *,
     uid_root: str = UIDROOT,
-    series_description: str | None = None,
-    study_description: str | None = None,
-    protocol_name: str | None = None,
     deid_method: str = "DICOM-PS3.15E-Basic",
-    patient_name: str | None = None,
     allowlist_csv: str = "default.csv",
     preserve_dates: bool = False,
 ) -> DeidProfile:
     """Construct a full PS3.15E de-identification profile.
 
-    All parameters are bound into closures at construction time.
-    The returned profile's apply() method requires no additional arguments.
-    PatientName defaults to patient_id when patient_name is None.
+    The returned profile is a patient-invariant policy object. Per-patient
+    identity values (PatientID, AccessionNumber, StudyID, PatientName, the
+    free-text description overrides, and the date jitter) are supplied at apply
+    time via :class:`DeidParameters`.
 
-    The free-text description fields (series_description, study_description,
-    protocol_name) accept a caller value that takes precedence; when left as
-    ``None`` the engine redacts the corresponding element from the dataset at
-    apply time using the ``allowlist_csv`` allowlist. ``preserve_dates`` selects
-    a date-preserving redactor for the free-text fields and does not alter the
-    profile's date-jitter behavior.
+    The free-text description fields accept a per-patient value that takes
+    precedence; when it is ``None`` the engine redacts the corresponding element
+    from the dataset at apply time using the ``allowlist_csv`` allowlist.
+    ``preserve_dates`` selects a date-preserving redactor for the free-text
+    fields and does not alter the profile's date-jitter behavior.
     """
-    resolved_patient_name = patient_name if patient_name is not None else patient_id
-    uid_action = hash_uid(uid_root, salt=study_id)
-    shift = if_exists(jitter_date(jitter))
+    uid_action = hash_uid(uid_root, use_study_salt=True)
+    shift = if_exists(jitter_date())
 
-    # Start from the shared patient-invariant rules and overwrite only the
-    # entries that depend on this patient's parameters.
-    rules: dict[BaseTag, TagAction] = dict(_CONSTANT_RULES)
+    rules = _build_constant_rules()
     rules.update(dict.fromkeys(UID_TAGS, uid_action))
     rules.update(dict.fromkeys(DATE_TAGS, shift))
 
-    rules[Tag(0x0010, 0x0010)] = set_value(resolved_patient_name)  # PatientName
-    rules[Tag(0x0010, 0x0020)] = set_value(patient_id)  # PatientID
-    rules[Tag(0x0008, 0x0050)] = set_value(accession_number)  # AccessionNumber
+    rules[Tag(0x0010, 0x0010)] = set_param(
+        "patient_name", fallback_field="patient_id", default=IDENTIFIER_PLACEHOLDER
+    )  # PatientName
+    rules[Tag(0x0010, 0x0020)] = set_param("patient_id", default=IDENTIFIER_PLACEHOLDER)  # PatientID
+    rules[Tag(0x0008, 0x0050)] = set_param("accession_number", default=IDENTIFIER_PLACEHOLDER)  # AccessionNumber
     rules[Tag(0x0008, 0x103E)] = description_action(
-        series_description, allowlist_csv, preserve_dates
+        "series_description", allowlist_csv, preserve_dates
     )  # SeriesDescription
     rules[Tag(0x0008, 0x1030)] = description_action(
-        study_description, allowlist_csv, preserve_dates
+        "study_description", allowlist_csv, preserve_dates
     )  # StudyDescription
-    rules[Tag(0x0018, 0x1030)] = description_action(protocol_name, allowlist_csv, preserve_dates)  # ProtocolName
+    rules[Tag(0x0018, 0x1030)] = description_action("protocol_name", allowlist_csv, preserve_dates)  # ProtocolName
 
     # Mandatory evidence attributes -- created if missing and then set here
-    rules[Tag(0x0012, 0x0020)] = set_value(study_id, create_if_missing=True)  # ClinicalTrialProtocolID
+    rules[Tag(0x0012, 0x0020)] = set_param(
+        "study_id", default=DEFAULT_STUDY_ID, create_if_missing=True
+    )  # ClinicalTrialProtocolID
     rules[Tag(0x0012, 0x0063)] = append_value(deid_method, create_if_missing=True)  # DeIdentificationMethod
 
     return DeidProfile(
