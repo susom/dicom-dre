@@ -1,6 +1,6 @@
 # DICOM-DRE
 
-A fast, deterministic DICOM de-identification and redaction engine.
+A fast, reproducible DICOM de-identification and redaction engine.
 
 `dicom-dre` removes protected health information (PHI) from DICOM instances in
 two places where it commonly hides:
@@ -26,16 +26,16 @@ Instance metadata is also scrubbed against a configurable de-identification
 profile, and instance/study/series UIDs are deterministically re-derived, so the
 same input plus the same parameters always yields the same output.
 
-## Deterministic by design
+## Reproducible by design
 
 The engine performs no hashing lookups, no network calls, and no randomization
 of its own. De-identification parameters (patient ID, accession number, UID
-root, salt, etc.) are consumed exactly as supplied. Given identical inputs and
-parameters, output is byte-reproducible. Callers are responsible for supplying
-already-hashed or already-mapped identifier values.
+root, salt, jitter, etc.) are consumed exactly as supplied. Given identical
+inputs and parameters, output is byte-for-byte reproducible. Callers are
+responsible for supplying already-hashed or already-mapped identifier values.
 
-This determinism is guarded by a regression test suite built from sampled DICOM
-studies. Each fixture records the technical matching tags and the expected
+This reproducibility is guarded by a regression test suite built from sampled
+DICOM studies. Each fixture records the technical matching tags and the expected
 catalog filtering and pixel-scrub decisions (with no PHI or pixel data), and the
 tests assert that the engine still reaches the recorded decision for every case,
 so catalog or profile changes that alter existing outcomes are caught.
@@ -132,13 +132,14 @@ site's vocabulary.
 ## Library usage
 
 ```python
-from dicom_dre import deidentify_paths, ProfileSpec
+from dicom_dre import DeidParameters, ProfileSpec, deidentify_paths
 
 for item in deidentify_paths(
     sources=["studies/"],
     output_dir="out/",
     recursive=True,
-    profile_spec=ProfileSpec(name="default", parameters={"PATIENT_ID": "TEST"}),
+    profile_spec=ProfileSpec(name="default"),
+    parameters=DeidParameters(patient_id="TEST"),
 ):
     print(item.input_file, item.result.outcome)
 ```
