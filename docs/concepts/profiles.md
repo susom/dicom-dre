@@ -20,7 +20,7 @@ A profile is constructed from a profile name and a runtime parameter dict by
 {py:func}`dicom_dre.profiles.builder.build_profile`. The parameter dict is
 consumed as-is: the library performs no hashing, no settings lookups, and no
 free-text lookups. Callers supply already-hashed and already-redacted values.
-See [Determinism](determinism.md).
+See [Reproducibility](reproducibility.md).
 
 ## Default (full de-identification)
 

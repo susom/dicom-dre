@@ -2,6 +2,11 @@
 
 The device catalog is a Python module that unifies image filtering and pixel
 scrubbing into a single, structured representation of known imaging devices.
+Each entry acts as a fingerprint for a specific hardware device: a set of DICOM
+attribute patterns (manufacturer, model, modality, software version, image
+dimensions) that together identify images produced by that device, so the
+engine can recognize them and blank the pixel regions where that device burns
+in text.
 
 :::{note}
 The bundled catalog was derived from studies on a single PACS at one medical
@@ -15,9 +20,10 @@ validation. See [Provenance and portability](../about/provenance.md).
 
 The device catalog is built on the following design choices:
 
-1. **Model known devices, not arbitrary expressions.** Each entry describes a
-   specific imaging device by manufacturer, model, modality, software version,
-   and image dimensions. The rules read as data, not code.
+1. **Model known devices, not arbitrary expressions.** Each entry is a
+   fingerprint for a specific imaging device, described by manufacturer, model,
+   modality, software version, and image dimensions. The rules read as data,
+   not code.
 
 2. **Couple resolution to scrub regions.** Each device entry contains
    resolution-specific variants that bind image dimensions directly to the

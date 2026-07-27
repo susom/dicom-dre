@@ -1,10 +1,10 @@
-# Determinism
+# Reproducibility
 
-`dicom-dre` is deterministic by design. The engine performs no hashing lookups,
+`dicom-dre` is reproducible by design. The engine performs no hashing lookups,
 no network calls, and no randomization of its own. De-identification parameters
 (patient ID, accession number, UID root, salt, jitter, and so on) are consumed
 exactly as supplied. Given identical inputs and parameters, the output is
-byte-reproducible.
+byte-for-byte identical.
 
 ## What the caller supplies
 
@@ -24,7 +24,7 @@ under the caller's control rather than hidden inside the engine. See
 
 ## Regression guard
 
-Determinism is guarded by a regression test suite built from sampled DICOM
+Reproducibility is guarded by a regression test suite built from sampled DICOM
 studies. Each fixture records the technical matching tags and the expected
 catalog filtering and pixel-scrub decisions, with no PHI or pixel data, and the
 tests assert that the engine still reaches the recorded decision for every case.

@@ -1,22 +1,22 @@
 # dicom-dre
 
-A fast, deterministic DICOM de-identification and redaction engine.
+A fast, reproducible DICOM de-identification and redaction engine.
 
 `dicom-dre` removes protected health information (PHI) from DICOM instances in
 two places where it commonly hides:
 
-- **Burned-in pixel PHI.** A declarative device catalog matches each instance to
-  a known device and acquisition variant and blanks the fixed pixel regions
-  where that device is known to burn in text. For JPEG Baseline images, regions
-  are zeroed directly in the DCT domain, so unblanked pixels are preserved
-  bit-for-bit with no recompression loss.
+- **Burned-in pixel PHI.** A declarative device catalog fingerprints each
+  instance against a known hardware device and acquisition variant and blanks
+  the fixed pixel regions where that device is known to burn in text. For JPEG
+  Baseline images, regions are zeroed directly in the DCT domain, so unblanked
+  pixels are preserved bit-for-bit with no recompression loss.
 - **Free-text metadata PHI.** Description fields that frequently carry PHI
   (`SeriesDescription`, `StudyDescription`, `ProtocolName`) are redacted
   token-by-token against an allowlist: any token not on the allowlist is masked,
   while known clinical terms pass through.
 
 Instance metadata is also scrubbed against a configurable de-identification
-profile, and instance/study/series UIDs are deterministically re-derived, so the
+profile, and instance/study/series UIDs are re-derived reproducibly, so the
 same input plus the same parameters always yields the same output.
 
 :::{note}
@@ -46,7 +46,7 @@ concepts/device-catalog
 concepts/jpeg-dct
 concepts/profiles
 concepts/text-redaction
-concepts/determinism
+concepts/reproducibility
 ```
 
 ```{toctree}
