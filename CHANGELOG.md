@@ -2,6 +2,31 @@
 
 <!-- version list -->
 
+## v1.0.0-dev.3 (2026-07-27)
+
+### Documentation
+
+- Clarify redactor usage
+  ([`77c4871`](https://github.com/susom/dicom-dre/commit/77c4871ff9ba7edcfd8107bcd485f7af40f982f1))
+
+- Clarify with implementation
+  ([`4c8a61d`](https://github.com/susom/dicom-dre/commit/4c8a61db18194d3b2033658db0d9b246a375cb31))
+
+- Consistency
+  ([`5c8f40a`](https://github.com/susom/dicom-dre/commit/5c8f40a2853036c1ce8d6f4b6d25ca53aff3f9ec))
+
+- Misc
+  ([`27a6b3b`](https://github.com/susom/dicom-dre/commit/27a6b3be40d57b646a803add32217ebb26ef5595))
+
+- Misc
+  ([`3be5bb3`](https://github.com/susom/dicom-dre/commit/3be5bb36b0684eca2321d2224700995882ac5e83))
+
+### Features
+
+- Previous should have been a feat, let's bump dev version build
+  ([`317bfcd`](https://github.com/susom/dicom-dre/commit/317bfcde78ee770b6d13e7f0361cf83b2e2f00d9))
+
+
 ## v1.0.0-dev.2 (2026-07-24)
 
 ### Documentation
