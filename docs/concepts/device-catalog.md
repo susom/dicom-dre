@@ -2,18 +2,18 @@
 
 The device catalog is a Python module that unifies image filtering and pixel
 scrubbing into a single, structured representation of known imaging devices.
-Each entry acts as a fingerprint for a specific hardware device: a set of DICOM
-attribute patterns (manufacturer, model, modality, software version, image
-dimensions) that together identify images produced by that device, so the
-engine can recognize them and blank the pixel regions where that device burns
-in text.
+Each entry acts as a fingerprint for a specific hardware device. It is a set of
+DICOM attribute patterns (manufacturer, model, modality, software version, image
+dimensions) that identify the images that device produces. The engine uses the
+fingerprint to recognize those images and blank the pixel regions where the
+device burns in text.
 
 :::{note}
-The bundled catalog was derived from studies on a single PACS at one medical
-research center. Its device rules and pixel scrub regions reflect the scanner
-fleet observed there and are unlikely to be complete or correct for another
-site. Treat the shipped catalog as a starting point that requires local
-validation. See [Provenance and portability](../about/provenance.md).
+The bundled catalog comes from studies on a single PACS at one medical research
+center. Its device rules and pixel scrub regions reflect the scanner fleet seen
+there. They are unlikely to be complete or correct for another site. Treat the
+shipped catalog as a starting point that requires local validation. See
+[Provenance and portability](../about/provenance.md).
 :::
 
 ## Goals
@@ -27,8 +27,8 @@ The device catalog is built on the following design choices:
 
 2. **Couple resolution to scrub regions.** Each device entry contains
    resolution-specific variants that bind image dimensions directly to the
-   pixel regions that must be blanked. A device's filter decision and its
-   scrub regions are defined together.
+   pixel regions to blank. Each device defines its filter decision and its
+   scrub regions together.
 
 3. **Return a structured decision with a reason.** Every evaluation returns a
    `CatalogDecision` carrying the action (`allow`, `deny`, `scrub`), a
@@ -36,9 +36,9 @@ The device catalog is built on the following design choices:
    propagates through the pipeline into the `FILTERED` result so callers can
    distinguish why a file was rejected.
 
-4. **Validate at import time.** The catalog is a Python module. Syntax errors
-   are caught when the interpreter loads it. No runtime script parsing is
-   involved.
+4. **Validate at import time.** The catalog is a Python module. The interpreter
+   catches syntax errors when it loads the module. It runs no runtime script
+   parsing.
 
 ## Modules
 
@@ -51,7 +51,7 @@ The device catalog is built on the following design choices:
 ## String matching
 
 Pattern strings on device fields use a prefix to select the match operator.
-All comparisons are case-insensitive unless the `=` prefix is used.
+All comparisons are case-insensitive unless you use the `=` prefix.
 
 | Prefix | Operator | Example |
 |--------|----------|---------|
@@ -95,9 +95,9 @@ action: `"allow"`, `"deny"`, or `"scrub"`.
 ### Device rule fields
 
 All keyword fields on `device()` are optional and default to `None`
-(unconstrained). A field constrains the match only when specified. Every
+(unconstrained). A field constrains the match only when you specify it. Every
 specified field is AND'd together — a device matches only when all of its
-fields match. When a field is given a list, the list uses OR semantics.
+fields match. When you give a field a list, the list uses OR semantics.
 
 | Field | DICOM tag | Purpose |
 |-------|-----------|---------|
@@ -124,16 +124,16 @@ fields match. When a field is given a list, the list uses OR semantics.
 | `rows` / `cols` / `scrub` | `Rows` / `Columns` / — | Shorthand for a single-variant device |
 
 Every match attribute has a dedicated field; there is no free-form keyword dict.
-Each field is evaluated with the same [string matching](#string-matching) rules.
-Matching is limited to the attributes read by `DicomTags.from_dataset()`.
+The catalog evaluates each field with the same [string matching](#string-matching)
+rules. It matches only the attributes that `DicomTags.from_dataset()` reads.
 
 The three `image_type*` fields match differently depending on whether the
 pattern is a single string or a list. `ImageType` is a multi-valued tag stored
 as backslash-joined components (for example `ORIGINAL\PRIMARY\AXIAL`). A list
 value such as `image_type=["DERIVED", "PRIMARY"]` matches each element against
-the individual components. A single string containing backslashes such as
-`image_type="DERIVED\\PRIMARY\\DIXON\\WATER"` is matched against the full joined
-string, which lets you require a specific component order.
+the individual components. The catalog matches a single string containing
+backslashes such as `image_type="DERIVED\\PRIMARY\\DIXON\\WATER"` against the
+full joined string, which lets you require a specific component order.
 
 The `rows`, `cols`, and `scrub` shorthand parameters are mutually exclusive with
 `variants`. Supplying both raises `ValueError` at import time. Use the shorthand
@@ -161,14 +161,15 @@ resolutions. A variant with only rows/cols (no scrub) allows files at that
 resolution without blanking.
 
 When a device has variants, the evaluation finds the first variant whose
-constraints match the DICOM file. If no variant matches, the device is skipped.
+constraints match the DICOM file. If no variant matches, the engine skips the
+device.
 
-Skipping means the whole device rule is abandoned, including its filter
-decision — evaluation continues to later device rules and then the exclusion
-list, where the file is commonly denied. As a result, every resolution you want
-allowed needs its own variant, even one with no `scrub` regions
-(`variant(rows=780, cols=800)`). A resolution with no matching variant is not
-implicitly allowed.
+Skipping abandons the whole device rule, including its filter decision.
+Evaluation continues to later device rules and then the exclusion list, which
+commonly denies the file. As a result, every resolution you want allowed needs
+its own variant, even one with no `scrub` regions (`variant(rows=780,
+cols=800)`). The engine does not implicitly allow a resolution with no matching
+variant.
 
 ### Scrub region coordinates
 
@@ -189,10 +190,10 @@ increases downward. A region is the rectangle spanning columns `x` to
 ```
 
 Regions may extend past the image bounds; the pixel blanker clips to the actual
-dimensions. A wide sentinel width such as `10000` is used in the default catalog
-to blank a full-width banner regardless of the exact column count (for example,
-`scrub=[(0, 0, 10000, 70)]` blanks the top 70 rows). Multiple regions on one
-variant are blanked independently:
+dimensions. The default catalog uses a wide sentinel width such as `10000` to
+blank a full-width banner regardless of the exact column count (for example,
+`scrub=[(0, 0, 10000, 70)]` blanks the top 70 rows). The blanker blanks multiple
+regions on one variant independently:
 `scrub=[(0, 0, 500, 80), (256, 0, 256, 22)]`.
 
 ### Scrub-only devices
@@ -201,14 +202,14 @@ A device with `action="scrub"` accumulates scrub regions but does not make a
 filter decision. Evaluation continues to subsequent devices and exclusion rules
 to determine whether the file is ultimately allowed or denied.
 
-Scrub accumulation is forward-only: regions collected by an earlier `scrub`
-device are attached to a later `allow` (or exclusion `deny`) decision, but not
-the reverse. An `allow` or `deny` match returns immediately, so any `scrub`
-device declared after it is never reached. Because `_scrub_only_devices` is
-appended last in `default_devices`, its rules only contribute when no earlier
-device returned `allow`. If a scrub-only overlay needs to apply to a file that a
-specific device already allows, add the scrub region to that device's variant
-instead of relying on a later scrub-only rule.
+Scrub accumulation is forward-only. An earlier `scrub` device attaches its
+regions to a later `allow` (or exclusion `deny`) decision, but not the reverse.
+An `allow` or `deny` match returns immediately, so evaluation never reaches a
+`scrub` device declared after it. Because `default_devices` appends
+`_scrub_only_devices` last, its rules contribute only when no earlier device
+returned `allow`. To apply a scrub-only overlay to a file that a specific device
+already allows, add the scrub region to that device's variant instead of relying
+on a later scrub-only rule.
 
 ```python
 device(
@@ -250,22 +251,23 @@ device(
 ```
 
 The private-creator block (`xx` in `(gggg,xxnn)`) is not fixed. At de-identify
-time the engine resolves the block by locating the creator element in the group
+time, the engine resolves the block: it locates the creator element in the group
 whose value equals the spec's `creator`, then keeps both the resolved data
-elements and their creator element. Every other private element is removed as
+elements and their creator element. It removes every other private element as
 usual.
 
-Because a device match short-circuits the entire exclusion pass, a rule that
-carries `preserved_private_tags` acts as an admission gate and must reproduce
+A device match short-circuits the entire exclusion pass. A rule that carries
+`preserved_private_tags` therefore acts as an admission gate. It must reproduce
 inline the guards that the bypassed exclusions would otherwise enforce
 (`burned_in_annotation`, `image_type`, `image_type_exclude`, `sop_class_uid`,
-and `ConversionType` above). When preservation is active the engine also emits
+and `ConversionType` above). When preservation is active, the engine also emits
 the De-identification Method Code Sequence `(0012,0064)` with the Retain Safe
 Private Option; see [Profiles](profiles.md).
 
 ## Exclusion rules
 
-Exclusion rules form the deny-list. They are checked after all device rules.
+Exclusion rules form the deny-list. The engine checks them after all device
+rules.
 
 ### `deny_modalities`
 
@@ -321,8 +323,8 @@ a constructed string for exclusion matches (for example, `"Denied modality: XA"`
 
 ## Default catalog
 
-{py:mod}`dicom_dre.default_catalog` contains the device and exclusion rules. Device
-rules are grouped by modality:
+{py:mod}`dicom_dre.default_catalog` contains the device and exclusion rules. It
+groups device rules by modality:
 
 - CR/DX (computed radiography and digital radiography)
 - CT, CT/PET, PET/MR

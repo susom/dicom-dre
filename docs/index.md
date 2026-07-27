@@ -6,26 +6,27 @@ A fast, reproducible DICOM de-identification and redaction engine.
 two places where it commonly hides:
 
 - **Burned-in pixel PHI.** A declarative device catalog fingerprints each
-  instance against a known hardware device and acquisition variant and blanks
-  the fixed pixel regions where that device is known to burn in text. For JPEG
-  Baseline images, regions are zeroed directly in the DCT domain, so unblanked
-  pixels are preserved bit-for-bit with no recompression loss.
-- **Free-text metadata PHI.** Description fields that frequently carry PHI
-  (`SeriesDescription`, `StudyDescription`, `ProtocolName`) are redacted
-  token-by-token against an allowlist: any token not on the allowlist is masked,
-  while known clinical terms pass through.
+  instance against a known hardware device and acquisition variant. It then
+  blanks the fixed pixel regions where that device burns in text. For JPEG
+  Baseline images, the engine zeroes regions directly in the DCT domain, so
+  unblanked pixels stay bit-for-bit identical with no recompression loss.
+- **Free-text metadata PHI.** The engine redacts description fields that often
+  carry PHI (`SeriesDescription`, `StudyDescription`, `ProtocolName`) token by
+  token against an allowlist. It masks any token that is not on the allowlist
+  and passes known clinical terms through.
 
-Instance metadata is also scrubbed against a configurable de-identification
-profile, and instance/study/series UIDs are re-derived reproducibly, so the
-same input plus the same parameters always yields the same output.
+The engine also scrubs instance metadata against a configurable
+de-identification profile and re-derives instance, study, and series UIDs
+reproducibly. The same input and the same parameters always yield the same
+output.
 
 :::{note}
-The bundled device catalog and free-text allowlist were derived from studies on
-a single PACS at one medical research center. Their device rules, pixel scrub
-regions, and allowlisted vocabulary reflect the scanner fleet and reporting
-conventions observed there, and are unlikely to be complete or correct for a
-different site. Treat the shipped catalog and allowlist as a starting point that
-requires local validation, not as a turnkey configuration. See
+The bundled device catalog and free-text allowlist come from studies on a single
+PACS at one medical research center. Their device rules, pixel scrub regions, and
+allowlisted vocabulary reflect the scanner fleet and reporting conventions seen
+there. They are unlikely to be complete or correct for a different site. Treat
+the shipped catalog and allowlist as a starting point that requires local
+validation, not as a turnkey configuration. See
 [Provenance and portability](about/provenance.md).
 :::
 

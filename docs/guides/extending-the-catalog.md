@@ -12,8 +12,8 @@ rules, variants, scrub-region coordinates, and evaluation order, see
 
 ## 1. Inspect a representative DICOM file
 
-Read the tags the catalog matches on from a real instance produced by the
-device. `pydicom` is available in the project environment:
+Read the tags the catalog matches on from a real instance the device produced.
+`pydicom` is available in the project environment:
 
 ```python
 import pydicom
@@ -62,7 +62,7 @@ described in the concept page. Bind each set of regions to the resolution it
 applies to with a `variant`.
 
 If the device produces clean pixels (no burned-in text), omit `scrub`
-entirely — the device is allowed with no blanking.
+entirely — the engine allows the device with no blanking.
 
 ## 4. Write the device entry
 
@@ -114,11 +114,11 @@ device(
 ## 5. Handle a new modality
 
 If the device belongs to a modality that the deny-list currently rejects, the
-allow rule must be reachable before the exclusion. Device rules are always
-evaluated before exclusion rules, so an `allow` device for a denied modality
-takes precedence. Confirm the modality is not caught by a `deny_when` condition
-(for example the `SECONDARY`/`DERIVED` image-type denials) that would still apply
-after the device matches — those only run when no device rule returns `allow`.
+allow rule must be reachable before the exclusion. The engine always evaluates
+device rules before exclusion rules, so an `allow` device for a denied modality
+takes precedence. Confirm that no `deny_when` condition catches the modality
+(for example the `SECONDARY`/`DERIVED` image-type denials) after the device
+matches — those only run when no device rule returns `allow`.
 
 To introduce an entirely new modality group, create a new
 `list[DeviceRule]` (following the `_us_devices` pattern) and append it to
@@ -137,15 +137,15 @@ default_devices: list[DeviceRule] = (
 ## 6. Match a tag without a dedicated field
 
 Every match attribute has a dedicated `device()` parameter; there is no
-free-form keyword dict. If the device is identified by an attribute that has no
-parameter yet, add an explicit field:
+free-form keyword dict. If an attribute that has no parameter yet identifies the
+device, add an explicit field:
 
 1. Add the field to `DeviceRule`, the `device()` factory, and `_match_device()`
    in `catalog.py`, wiring it to the DICOM keyword via `_match_field`.
 2. Add the keyword to the `keywords` list in `DicomTags.from_dataset()` so the
-   value is extracted — otherwise the value is always empty and the match never
-   succeeds. The regression fixtures capture exactly this keyword set, so an
-   unextracted keyword also carries no regression coverage.
+   extractor reads the value — otherwise the value is always empty and the match
+   never succeeds. The regression fixtures capture exactly this keyword set, so
+   an unextracted keyword also carries no regression coverage.
 
 ```python
 device(

@@ -2,8 +2,8 @@
 
 The {py:mod}`dicom_dre.jpeg_dct_scrubber` module blanks rectangular regions in JPEG
 Baseline images by zeroing DCT coefficients directly in the compressed
-bitstream. No full decompression or recompression is performed, so non-blanked
-regions are preserved bit-for-bit with no quality loss.
+bitstream. The module performs no full decompression or recompression, so
+non-blanked regions stay bit-for-bit identical with no quality loss.
 
 :::{note}
 This module implements the JPEG Baseline path of the pixel-scrub stage. For how
@@ -14,12 +14,12 @@ it fits into the end-to-end de-identification flow, see
 ## Background
 
 The DCT-domain redaction approach comes from the
-[PixelMed DICOM Toolkit](https://www.pixelmed.com/jpeg.html), which demonstrated
-that burned-in text in JPEG-compressed DICOM images can be removed by operating
-on the Huffman-coded DCT coefficients without decoding and re-encoding pixel
-data. This module is a Python port of the PixelMed JPEG Selective Block
-Redaction Codec by David A. Clunie, with an optional C accelerator. The PixelMed
-BSD license is reproduced at the top of the module source.
+[PixelMed DICOM Toolkit](https://www.pixelmed.com/jpeg.html). PixelMed
+demonstrated that you can remove burned-in text from JPEG-compressed DICOM
+images by operating on the Huffman-coded DCT coefficients, without decoding and
+re-encoding pixel data. This module is a Python port of the PixelMed JPEG
+Selective Block Redaction Codec by David A. Clunie, with an optional C
+accelerator. The module source reproduces the PixelMed BSD license at the top.
 
 ## Supported format
 
@@ -29,27 +29,27 @@ Only JPEG Baseline (SOF0) is supported:
 - Huffman-coded entropy coding
 - Sequential DCT
 
-Progressive JPEG, arithmetic coding, and extended JPEG processes are rejected
-with a `ValueError`.
+The module rejects progressive JPEG, arithmetic coding, and extended JPEG
+processes with a `ValueError`.
 
 ## How it works
 
-1. The JPEG bytestream is parsed marker-by-marker (SOI, SOF0, DHT, DQT, DRI,
-   SOS, EOI).
-2. Huffman tables from DHT segments are used to build decode and encode lookup
-   structures.
-3. The entropy-coded segment after each SOS marker is decoded MCU-by-MCU. For
-   each 8x8 DCT block, the module checks whether the block overlaps any of the
-   specified blanking regions.
-4. Blocks that overlap a blanking region have their DC coefficient set to zero
-   and all 63 AC coefficients replaced with an EOB (end-of-block) marker.
-   This produces a uniform mid-gray patch in the output.
-5. Blocks outside blanking regions are passed through with their original
+1. The module parses the JPEG bytestream marker by marker (SOI, SOF0, DHT, DQT,
+   DRI, SOS, EOI).
+2. It builds decode and encode lookup structures from the Huffman tables in the
+   DHT segments.
+3. It decodes the entropy-coded segment after each SOS marker MCU by MCU. For
+   each 8x8 DCT block, it checks whether the block overlaps any of the specified
+   blanking regions.
+4. For a block that overlaps a blanking region, the module sets the DC
+   coefficient to zero and replaces all 63 AC coefficients with an EOB
+   (end-of-block) marker. This produces a uniform mid-gray patch in the output.
+5. The module passes blocks outside blanking regions through with their original
    coefficients. Two separate DC prediction chains (one for the input stream,
    one for the output stream) ensure that modifying one block does not corrupt
-   the DC values of subsequent blocks.
-6. Restart markers (DRI/RST) are handled by resetting both prediction chains at
-   each restart interval boundary.
+   the DC values of later blocks.
+6. The module handles restart markers (DRI/RST) by resetting both prediction
+   chains at each restart interval boundary.
 
 ## C accelerator
 
@@ -99,7 +99,7 @@ Scrub JPEG data in memory and return the modified bytes.
 
 ## Command-line usage
 
-The module can be run directly for testing:
+You can run the module directly for testing:
 
 ```bash
 python -m dicom_dre.jpeg_dct_scrubber input.jpg output.jpg 10,5,200,50 300,400,100,30

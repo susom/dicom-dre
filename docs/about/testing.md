@@ -51,12 +51,12 @@ package, runs the suite, and restores the extension afterward.
 reaches the recorded filtering and pixel-scrub decision for each sampled case.
 The fixtures record only the technical matching tags and the expected decision,
 with no PHI or pixel data. Run this suite after any catalog or profile change so
-that alterations to existing outcomes are caught.
+that it catches alterations to existing outcomes.
 
 ## Writing tests
 
 - Place tests in `tests/unit/`, mirroring the source structure.
-- Use descriptive test names that state what is being verified.
+- Use descriptive test names that state what each test verifies.
 - Mock external services in unit tests, especially any that would make network
   calls.
 - Use fixtures for common setup.

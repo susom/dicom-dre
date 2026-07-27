@@ -16,8 +16,8 @@ dicom-dre deidentify scan.dcm -o out/
 dicom-dre deidentify studies/ -o out/ -r
 ```
 
-Sources are read but never modified. Output is written under the directory
-passed with `-o`.
+Sources are read but never modified. The command writes output under the
+directory you pass with `-o`.
 
 ## Select a profile and parameters
 
@@ -42,10 +42,10 @@ Each instance resolves to one terminal outcome:
 - `DEIDENTIFIED` — metadata scrubbed, pixel regions blanked as required, and the
   instance written to the output directory.
 - `FILTERED` — the instance matched a deny rule (for example an unsupported
-  modality or device) and was intentionally not emitted.
-- `QUARANTINED` — processing failed; the instance was not emitted.
+  modality or device), so the engine did not emit it.
+- `QUARANTINED` — processing failed, so the engine did not emit the instance.
 
-The command exits non-zero if any instance is `QUARANTINED`. `FILTERED`
+The command exits non-zero when any instance is `QUARANTINED`. `FILTERED`
 instances are a normal outcome and do not cause a non-zero exit. See
 [Architecture](../concepts/architecture.md) for how instances reach each
 outcome.

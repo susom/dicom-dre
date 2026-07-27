@@ -8,18 +8,18 @@ it produces one of three outcomes by running three stages in sequence.
 
 For each input DICOM file the engine runs three stages:
 
-1. **Filter** — a device catalog decides whether the image is kept or rejected.
-2. **Pixel scrub** — burned-in text regions identified by the catalog are
-   blanked.
-3. **Metadata** — DICOM tags are rewritten (PHI removed, UIDs re-derived, dates
-   shifted or kept).
+1. **Filter** — a device catalog decides whether to keep or reject the image.
+2. **Pixel scrub** — the engine blanks the burned-in text regions the catalog
+   identified.
+3. **Metadata** — the engine rewrites DICOM tags: it removes PHI, re-derives
+   UIDs, and shifts or keeps dates.
 
 Each run returns a {py:class}`~dicom_dre.result.DeidentifyResult` whose `outcome`
 is one of three {py:class}`~dicom_dre.result.Outcome` values:
 
 | Outcome | Cause |
 |---------|-------|
-| `DEIDENTIFIED` | The file passed the filter and was written out. |
+| `DEIDENTIFIED` | The file passed the filter, and the engine wrote it out. |
 | `FILTERED` | A device or exclusion rule rejected the file; the result carries the matched reason. |
 | `QUARANTINED` | Processing raised an exception; the result carries the error text. |
 
@@ -39,8 +39,8 @@ flowchart LR
     F -.->|exception| Q["QUARANTINED"]
 ```
 
-An exception raised in any stage is caught by `deidentify_file` and returned as
-a `QUARANTINED` result rather than propagating to the caller.
+An exception raised in any stage does not propagate to the caller.
+`deidentify_file` catches it and returns a `QUARANTINED` result instead.
 
 ## Stages
 
@@ -57,10 +57,10 @@ See [Device Catalog](device-catalog.md).
 ### Pixel scrub
 
 When the decision carries scrub regions,
-{py:func}`dicom_dre.pixel_blanker.blank_regions` blanks them. JPEG Baseline images
-are edited directly in the compressed bitstream with no re-encoding; all other
-transfer syntaxes are decoded with pydicom and numpy, blanked, and written as
-uncompressed Explicit VR Little Endian.
+{py:func}`dicom_dre.pixel_blanker.blank_regions` blanks them. The engine edits
+JPEG Baseline images directly in the compressed bitstream with no re-encoding.
+For all other transfer syntaxes, it decodes with pydicom and numpy, blanks the
+regions, and writes uncompressed Explicit VR Little Endian.
 
 See [JPEG DCT Scrubbing](jpeg-dct.md).
 
@@ -69,8 +69,8 @@ See [JPEG DCT Scrubbing](jpeg-dct.md).
 The bound {py:class}`~dicom_dre.profile.DeidProfile` runs its tag rules on the
 dataset with `DeidProfile.apply(ds)`. Rules are small closures defined in
 {py:mod}`dicom_dre.actions` (for example `remove`, `empty`, `hash_uid`,
-`jitter_date`, `keep`); the tag sets each profile applies them to are composed
-by the profile factories in {py:mod}`dicom_dre.profiles`.
+`jitter_date`, `keep`). The profile factories in {py:mod}`dicom_dre.profiles`
+compose the tag sets each profile applies them to.
 
 Each factory in `actions.py` closes over its arguments at profile-construction
 time and returns a `(Dataset, BaseTag) -> None` callable. The available actions:
@@ -97,12 +97,12 @@ By default the engine removes every private data element that has no explicit
 tag rule. A device rule may name a small, reviewer-approved set of private
 elements to retain verbatim through its `preserved_private_tags` field (a tuple
 of `PrivateTagSpec`). When the catalog decision carries specs, the pipeline
-attaches them to the `DeidProfile`, and `DeidProfile.apply(ds)` resolves each
-spec's private-creator block at apply time (the block is runtime-assigned, not
-fixed) and keeps both the resolved data elements and their creator element. All
-other private elements are removed as usual. When preservation is active the
-engine also stamps the De-identification Method Code Sequence `(0012,0064)` with
-the Retain Safe Private Option; the sequence is emitted only for files that
+attaches them to the `DeidProfile`. At apply time, `DeidProfile.apply(ds)`
+resolves each spec's private-creator block (the block is runtime-assigned, not
+fixed) and keeps both the resolved data elements and their creator element. The
+engine removes all other private elements as usual. When preservation is active,
+the engine also stamps the De-identification Method Code Sequence `(0012,0064)`
+with the Retain Safe Private Option. It emits the sequence only for files that
 actually preserve private tags.
 
 See [Device Catalog](device-catalog.md#preserved-private-tags) and
@@ -111,16 +111,16 @@ See [Device Catalog](device-catalog.md#preserved-private-tags) and
 ## Profiles
 
 The `default`, `lds`, `lds-no-dob`, and `pixels-only` profiles each map to a
-factory function in {py:mod}`dicom_dre.profiles`. A profile name selects which tags
-are kept, removed, or shifted. The behavior of each profile is described in
-[Profiles](profiles.md).
+factory function in {py:mod}`dicom_dre.profiles`. A profile name selects which
+tags the engine keeps, removes, or shifts. [Profiles](profiles.md) describes the
+behavior of each profile.
 
 ## Regression validation
 
 A regression fixture suite guards catalog and metadata behavior against known
 inputs. Each fixture pins the expected filter decision, scrub decision, scrub
-regions, and de-identified metadata for a representative instance, so a change
-that alters any of them is caught in the test run. The fixtures live in
+regions, and de-identified metadata for a representative instance, so the test
+run catches a change that alters any of them. The fixtures live in
 `tests/unit/test_catalog_regression_fixtures.py`.
 
 See [Testing](../about/testing.md).

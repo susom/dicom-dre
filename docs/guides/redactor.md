@@ -1,10 +1,10 @@
 # Redactor Commands
 
 The `dicom-dre redactor` command group provides free-text redaction operations
-for description fields. Tokens absent from the allowlist are replaced with a
-redaction marker. Dates, times, emails, URLs, and hexadecimal numbers are
-redacted regardless of the allowlist; use `--preserve-dates` to keep date and
-time values intact, as required for HIPAA limited datasets. See
+for description fields. It replaces tokens absent from the allowlist with a
+redaction marker. It redacts dates, times, emails, URLs, and hexadecimal numbers
+regardless of the allowlist; use `--preserve-dates` to keep date and time values
+intact, as required for HIPAA limited datasets. See
 [Text Redaction](../concepts/text-redaction.md) for the underlying model.
 
 ```bash
@@ -20,10 +20,11 @@ Commands:
 
 ## redact
 
-Redact free text from an input CSV and write the result to an output CSV. Every
-cell of every row is treated as an independent piece of text; no header row is
-required and the column layout does not matter. The output CSV mirrors the
-input, with tokens absent from the allowlist replaced by a redaction marker.
+Redact free text from an input CSV and write the result to an output CSV. The
+command treats every cell of every row as an independent piece of text; it
+requires no header row, and the column layout does not matter. The output CSV
+mirrors the input, with tokens absent from the allowlist replaced by a redaction
+marker.
 
 ```bash
 dicom-dre redactor redact [OPTIONS]
@@ -68,9 +69,9 @@ not being redacted) before relying on the allowlist.
 dicom-dre redactor quality-check [OPTIONS] INPUT
 ```
 
-`INPUT` is a CSV file. Every cell of every row is treated as an independent
-piece of free text; no header row is required and the column layout does not
-matter.
+`INPUT` is a CSV file. The command treats every cell of every row as an
+independent piece of free text; it requires no header row, and the column layout
+does not matter.
 
 **Options:**
 
@@ -122,16 +123,16 @@ shortcuts:
 - `q` — Quit review early.
 - `ESC` — Quit review early.
 
-After the review reaches the end of the file or is quit, the command displays a
+After the review reaches the end of the file or you quit, the command displays a
 summary of queued additions, prompts for confirmation, and atomically updates
-the allowlist file if confirmed.
+the allowlist file once you confirm.
 
 ## show-tokens
 
-Extract and display all unique tokens from an input CSV. Every cell of every row
-is split into tokens; no header row is required and the column layout does not
-matter. The distinct tokens are printed sorted, one per line. Use this to
-discover candidate terms to add to an allowlist.
+Extract and display all unique tokens from an input CSV. The command splits
+every cell of every row into tokens; it requires no header row, and the column
+layout does not matter. It prints the distinct tokens sorted, one per line. Use
+this to discover candidate terms to add to an allowlist.
 
 ```bash
 dicom-dre redactor show-tokens [OPTIONS]
@@ -149,8 +150,8 @@ dicom-dre redactor show-tokens --input samples.csv
 
 ## allow-token
 
-Add one or more tokens to the allowlist file. Tokens are stripped of whitespace
-and inserted in sorted order; duplicates are skipped.
+Add one or more tokens to the allowlist file. The command strips whitespace from
+tokens and inserts them in sorted order; it skips duplicates.
 
 ```bash
 dicom-dre redactor allow-token [OPTIONS] TOKENS...

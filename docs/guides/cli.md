@@ -3,8 +3,8 @@
 The `dicom-dre deidentify` command de-identifies one or more DICOM files or
 directories. It is a thin wrapper over the batch engine
 ([`dicom_dre.deidentify_paths`](../reference/api.md)) and performs no hashing,
-settings lookups, or free-text redaction. De-identification parameters are
-consumed as supplied, mirroring the library contract.
+settings lookups, or free-text redaction. It consumes de-identification
+parameters as supplied, mirroring the library contract.
 
 ## Usage
 
@@ -12,10 +12,10 @@ consumed as supplied, mirroring the library contract.
 dicom-dre deidentify [OPTIONS] SOURCES...
 ```
 
-`SOURCES` is one or more files and/or directories. Every source is read but
-never modified. Directory trees are mirrored under the output directory;
-explicitly listed files land flat in the output directory. One line is printed
-per processed file, followed by a summary.
+`SOURCES` is one or more files and/or directories. The command reads every
+source but never modifies it. It mirrors directory trees under the output
+directory; explicitly listed files land flat in the output directory. It prints
+one line per processed file, followed by a summary.
 
 ## Options
 
@@ -42,13 +42,14 @@ per processed file, followed by a summary.
 ## Output filenames
 
 Output filenames are the new SOP Instance UID by default. With
-`--no-rename-to-sop-uid` the input basename is kept, and the command fails
-before writing anything if two inputs would resolve to the same output path.
+`--no-rename-to-sop-uid`, the command keeps the input basename and fails before
+writing anything if two inputs would resolve to the same output path.
 
 ## Parallel processing
 
-With `--workers` greater than `1`, files are processed across worker processes
-and lines are printed as each file completes rather than in discovery order.
+With `--workers` greater than `1`, the command processes files across worker
+processes and prints lines as each file completes rather than in discovery
+order.
 
 ## Outcomes and exit status
 
@@ -56,11 +57,10 @@ Each instance resolves to one terminal outcome:
 
 - `DEIDENTIFIED` — metadata scrubbed, pixel regions blanked as required, and the
   instance written to the output directory.
-- `FILTERED` — the instance matched a deny rule and was intentionally not
-  emitted.
-- `QUARANTINED` — processing failed; the instance was not emitted.
+- `FILTERED` — the instance matched a deny rule, so the command did not emit it.
+- `QUARANTINED` — processing failed, so the command did not emit the instance.
 
-The command exits with status `1` if any file was `QUARANTINED`. `FILTERED`
+The command exits with status `1` when any file was `QUARANTINED`. `FILTERED`
 files are a normal outcome and do not affect the exit code.
 
 ## Examples

@@ -1,11 +1,11 @@
 # Local Validation
 
-The bundled device catalog and free-text allowlist were derived from studies on
-a single PACS at one medical research center. Their device rules, pixel scrub
-regions, and allowlisted vocabulary reflect the scanner fleet and reporting
-conventions observed there, and are unlikely to be complete or correct for a
-different site. This guide describes how to validate the shipped configuration
-against your own data before relying on the output.
+The bundled device catalog and free-text allowlist come from studies on a single
+PACS at one medical research center. Their device rules, pixel scrub regions, and
+allowlisted vocabulary reflect the scanner fleet and reporting conventions seen
+there. They are unlikely to be complete or correct for a different site. This
+guide describes how to validate the shipped configuration against your own data
+before relying on the output.
 
 :::{note}
 Treat the shipped catalog and allowlist as a starting point that requires local
@@ -15,10 +15,10 @@ validation, not as a turnkey configuration. See
 
 ## Validate pixel scrubbing per device
 
-A device that the catalog does not recognize is either denied or allowed with no
-pixel blanking. An allowed device with a scrub region defined for the wrong
-resolution leaves burned-in text unblanked. Confirm the catalog reaches the
-expected decision for every device in your fleet.
+For a device that the catalog does not recognize, the engine either denies it or
+allows it with no pixel blanking. An allowed device with a scrub region defined
+for the wrong resolution leaves burned-in text unblanked. Confirm the catalog
+reaches the expected decision for every device in your fleet.
 
 1. Collect representative instances across the resolutions and software versions
    each device produces. Read the matching tags with `pydicom`:
@@ -38,8 +38,8 @@ expected decision for every device in your fleet.
    `scrub` regions), and that `scrub_regions` covers every burned-in text banner
    at that resolution.
 
-3. De-identify a sample and inspect the output pixels to confirm each banner is
-   blanked:
+3. De-identify a sample and inspect the output pixels to confirm the engine
+   blanked each banner:
 
    ```bash
    dicom-dre deidentify sample.dcm -o out/
@@ -51,8 +51,8 @@ expected decision for every device in your fleet.
 
 ## Review and extend the allowlist
 
-Free-text description fields are redacted by masking every token that is not on
-the allowlist. An allowlist tuned to another site over-redacts your local
+The engine redacts free-text description fields by masking every token that is
+not on the allowlist. An allowlist tuned to another site over-redacts your local
 vocabulary (masking legitimate terms) or under-redacts (leaking PHI that appears
 as an allowlisted token).
 
@@ -78,9 +78,10 @@ as an allowlisted token).
    ```
 
 4. Confirm that no token carrying PHI (names, identifiers, locations) remains on
-   the allowlist. Dates, times, emails, URLs, and hexadecimal strings are masked
-   regardless of the allowlist; use `--preserve-dates` only for limited data set
-   profiles that retain dates. See [Text redaction](../concepts/text-redaction.md).
+   the allowlist. The redactor masks dates, times, emails, URLs, and hexadecimal
+   strings regardless of the allowlist; use `--preserve-dates` only for limited
+   data set profiles that retain dates. See
+   [Text redaction](../concepts/text-redaction.md).
 
 ## Run the regression suite
 
