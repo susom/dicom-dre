@@ -181,17 +181,6 @@ Scrub regions are `(x, y, width, height)` tuples in pixel units. The origin
 increases downward. A region is the rectangle spanning columns `x` to
 `x + width` and rows `y` to `y + height`.
 
-```
-   (0,0) ─────────── x increases ──────────▶  Columns
-     ┌──────────────────────────────────────┐
-     │  (x, y)                               │
-     │    ┌───── width ─────┐                │
-   y │    │                 │ height         │
-     │    └─────────────────┘                │
-     ▼                                       │
-  Rows └──────────────────────────────────────┘
-```
-
 Regions may extend past the image bounds; the pixel blanker clips to the actual
 dimensions. The default catalog uses a wide sentinel width such as `10000` to
 blank a full-width banner regardless of the exact column count (for example,
