@@ -51,24 +51,27 @@ The device catalog is built on the following design choices:
 ## String matching
 
 Pattern strings on device fields use a prefix to select the match operator.
-All comparisons are case-insensitive unless you use the `=` prefix.
+All comparisons are case-insensitive except `/regex/` patterns, which are
+case-sensitive unless the pattern includes an inline flag such as `(?i)`.
 
 | Prefix | Operator | Example |
 |--------|----------|---------|
 | *(none)* | case-insensitive substring | `"KONICA"` |
-| `=` | case-sensitive exact | `"=GE MEDICAL SYSTEMS"` |
+| `=` | case-insensitive exact | `"=GE MEDICAL SYSTEMS"` |
 | `^` | case-insensitive starts-with | `"^GE MEDICAL"` |
-| `/regex/` | `re.search` | `"/[1-9]\\d{3,}/"` |
+| `/regex/` | `re.search` (case-sensitive by default) | `"/[1-9]\\d{3,}/"` |
 | `=` (alone) | tag absent or blank | `"="` |
 
 A list of values on any field uses OR semantics — at least one must match.
 All fields on a single device rule are AND'd together.
 
-The `=` exact match is case-sensitive. Use it only when the device writes the
-tag with stable casing. To match an exact value case-insensitively, use an
-anchored regex with the `(?i)` flag instead — for example
-`"/(?i)^SIGNA PET\\/MR$/"`. This is why many rules in the default catalog use
-`/(?i)^...$/` rather than `=`.
+The `=` exact match compares the full value case-insensitively. A `/regex/`
+pattern is evaluated with `re.search` and is case-sensitive unless the pattern
+includes an inline flag such as `(?i)`. To match an exact value case-insensitively
+with a regex — for example when you also need anchoring, alternation, or a
+negative lookahead — anchor the pattern and add `(?i)`, as in
+`"/(?i)^SIGNA PET\\/MR$/"`. This is why many regex rules in the default catalog
+use the `/(?i)^...$/` form.
 
 ## Device rules
 
