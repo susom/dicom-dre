@@ -7,6 +7,16 @@ regardless of the allowlist; use `--preserve-dates` to keep date and time values
 intact, as required for HIPAA limited datasets. See
 [Text Redaction](../concepts/text-redaction.md) for the underlying model.
 
+:::{important}
+These commands are intended for short, semi-structured description fields such
+as `SeriesDescription` and `StudyDescription`, where the distinct values are
+overwhelmingly derived from structured fields in the source PACS and a finite
+allowlist covers the legitimate vocabulary. Do not use them on paragraphs of
+text, general clinical notes, report bodies, or other entirely free-form fields
+with no discernible pattern; the allowlist model cannot reliably de-identify
+unbounded prose.
+:::
+
 ```bash
 dicom-dre redactor [OPTIONS] COMMAND [ARGS]...
 ```

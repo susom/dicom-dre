@@ -14,7 +14,13 @@ two places where it commonly hides:
 - **Free-text metadata PHI.** Description fields that frequently carry PHI
   (`SeriesDescription`, `StudyDescription`, `ProtocolName`) are redacted
   token-by-token against an allowlist: any token not on the allowlist is masked,
-  while known clinical terms pass through.
+  while known clinical terms pass through. This approach works because the
+  distinct values in these short description fields are overwhelmingly derived
+  from structured entries in the source PACS, so a finite allowlist covers the
+  legitimate vocabulary. It is not intended for paragraphs of prose, general
+  clinical notes, or other entirely free-form fields with no discernible
+  pattern, where the allowlist model cannot bound the vocabulary or reliably
+  de-identify the text.
 
 Instance metadata is also scrubbed against a configurable de-identification
 profile, and instance/study/series UIDs are deterministically re-derived, so the

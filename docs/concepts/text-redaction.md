@@ -6,6 +6,20 @@ names, dates, accession numbers, and other identifiers. `dicom-dre` redacts
 these fields token by token against an allowlist, so known clinical vocabulary
 passes through and the engine masks unrecognized tokens.
 
+:::{important}
+**Intended scope.** The redactor targets short, semi-structured description
+fields such as `SeriesDescription` and `StudyDescription`. In these fields the
+distinct values are overwhelmingly derived from structured entries in the source
+PACS (protocol names, modality codes, body parts, view labels), so a finite
+allowlist covers the legitimate vocabulary and unrecognized tokens are strong
+PHI candidates.
+
+Do not use the redactor on paragraphs of prose, general clinical notes, report
+bodies, or any field that is entirely free-form text with no discernible
+pattern. The token-allowlist model does not bound the vocabulary of such fields
+and cannot provide reliable de-identification for them.
+:::
+
 :::{note}
 The bundled free-text allowlist comes from studies on a single PACS at one
 medical research center. Its vocabulary reflects the reporting conventions seen
