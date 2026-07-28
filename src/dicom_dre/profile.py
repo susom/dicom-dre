@@ -71,7 +71,7 @@ class DeidProfile:
         self._apply_global_rules(ds)
         self._emit_deid_method_code_sequence(ds)
         _remove_group_length_tags(ds)
-        _correct_implicit_vr_elements(ds)
+        correct_implicit_vr_elements(ds)
 
     def _validate_jitter(self, params: DeidParameters) -> None:
         """Reject a jitter inconsistent with this profile's date policy.
@@ -329,7 +329,7 @@ def _remove_group_length_tags(ds: Dataset) -> None:
 _STRING_VRS = frozenset({"CS", "DS", "IS", "LO", "SH", "PN", "UI", "AE", "AS", "DA", "DT", "TM", "LT", "ST", "UT"})
 
 
-def _correct_implicit_vr_elements(ds: Dataset) -> None:
+def correct_implicit_vr_elements(ds: Dataset) -> None:
     """Correct VRs for elements pydicom decoded as OB or UN inside sequences.
 
     Some DICOM files use implicit VR encoding inside explicit VR sequences.
@@ -348,7 +348,7 @@ def _correct_implicit_vr_elements(ds: Dataset) -> None:
 
         if vr == "SQ" and elem.value:
             for item in elem.value:
-                _correct_implicit_vr_elements(item)
+                correct_implicit_vr_elements(item)
             continue
 
         if vr not in ("OB", "UN"):
@@ -387,3 +387,8 @@ def _correct_implicit_vr_elements(ds: Dataset) -> None:
         elif correct_vr == "SS" and len(raw_val) == 2:
             elem.VR = correct_vr
             elem.value = struct.unpack("<h", raw_val)[0]
+
+
+# Backward-compatible alias for the former private name. Internal callers and
+# existing imports continue to resolve to the public function object.
+_correct_implicit_vr_elements = correct_implicit_vr_elements

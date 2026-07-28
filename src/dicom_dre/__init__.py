@@ -23,11 +23,14 @@ from dicom_dre.default_catalog import get_default_catalog
 from dicom_dre.parameters import DeidParameters
 from dicom_dre.pipeline import deidentify_file
 from dicom_dre.profile import DeidProfile
+from dicom_dre.profile import correct_implicit_vr_elements
 from dicom_dre.profiles import default_profile
 from dicom_dre.profiles import lds_no_dob_profile
 from dicom_dre.profiles import lds_profile
 from dicom_dre.profiles import pixels_only_profile
 from dicom_dre.profiles.builder import build_profile
+from dicom_dre.profiles.default import DATE_TAGS
+from dicom_dre.profiles.default import UID_TAGS
 from dicom_dre.result import BatchItemResult
 from dicom_dre.result import DeidentifyResult
 from dicom_dre.result import Outcome
@@ -45,6 +48,7 @@ except ImportError:  # pragma: no cover - version file generated at build time
 __all__ = [
     "BatchItemResult",
     "CatalogDecision",
+    "DATE_TAGS",
     "DeidParameters",
     "DeidProfile",
     "DeidentifyResult",
@@ -56,9 +60,11 @@ __all__ = [
     "ProfileSpec",
     "ScrubRegion",
     "TextRedactor",
+    "UID_TAGS",
     "Variant",
     "__version__",
     "build_profile",
+    "correct_implicit_vr_elements",
     "deidentify_file",
     "deidentify_paths",
     "default_profile",

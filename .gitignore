@@ -40,3 +40,6 @@ coverage.xml
 
 # Local working files
 temp/
+
+# Avoid accidentally committing sensitive or temporary files
+*.dcm
