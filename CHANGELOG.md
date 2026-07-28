@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.0.0-dev.5 (2026-07-28)
+
+### Bug Fixes
+
+- Api for accel check
+  ([`bb0373b`](https://github.com/susom/dicom-dre/commit/bb0373bb0d6686c2100bc1b310958d8592a330f6))
+
+
 ## v1.0.0-dev.4 (2026-07-28)
 
 ### Bug Fixes
