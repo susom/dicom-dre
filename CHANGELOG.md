@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.0.0-dev.4 (2026-07-28)
+
+### Bug Fixes
+
+- More public api
+  ([`0dfb8c0`](https://github.com/susom/dicom-dre/commit/0dfb8c0ec19bb5090e9c77348f0dd96ac83978e6))
+
+
 ## v1.0.0-dev.3 (2026-07-27)
 
 ### Documentation
