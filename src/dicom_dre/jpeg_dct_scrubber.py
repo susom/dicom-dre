@@ -68,6 +68,7 @@ Acknowledgements:
 import io
 import logging
 import struct
+import sys
 import warnings
 from typing import TYPE_CHECKING
 
@@ -101,6 +102,39 @@ except ImportError:
         "╚══════════════════════════════════════════════════════════════════════╝",
         stacklevel=2,
     )
+
+
+def jpeg_dct_accelerator_available() -> bool:
+    """Report whether the JPEG DCT C accelerator is active.
+
+    Returns the effective runtime state used by the scrubber to select the fast
+    path. When ``False`` the pure-Python entropy codec fallback is used, which
+    is roughly 300x slower.
+
+    This function is import-safe and side-effect-free: it does not raise and
+    does not re-emit the missing-extension warning.
+
+    Returns:
+        ``True`` if the compiled ``_jpeg_dct_accel`` extension is loaded and in
+        use, ``False`` if the pure-Python fallback is active.
+    """
+    return _HAS_C_ACCEL
+
+
+def jpeg_dct_accelerator_info() -> dict[str, object]:
+    """Return diagnostic details about the JPEG DCT C accelerator.
+
+    Returns:
+        A mapping with at least the key ``"available"`` (``bool``). When the
+        accelerator is loaded, ``"path"`` holds the extension module file path
+        if it can be determined.
+    """
+    info: dict[str, object] = {"available": _HAS_C_ACCEL}
+    if _HAS_C_ACCEL:
+        module_file = getattr(sys.modules.get("dicom_dre._jpeg_dct_accel"), "__file__", None)
+        if module_file is not None:
+            info["path"] = module_file
+    return info
 
 
 # JPEG markers

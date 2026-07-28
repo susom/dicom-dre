@@ -309,3 +309,28 @@ def test_redactor_allow_token(tmp_path: Path) -> None:
     assert "Added 1 token" in result.output
     contents = allowlist.read_text(encoding="utf-8")
     assert "abdomen" in contents, "New token should be written to the allowlist"
+
+
+def test_accelerator_status_active(monkeypatch) -> None:
+    """The command reports ACTIVE and exits 0 when the accelerator is present."""
+    from dicom_dre import cli as cli_module
+
+    monkeypatch.setattr(cli_module, "jpeg_dct_accelerator_available", lambda: True)
+    runner = CliRunner()
+    result = runner.invoke(cli, ["accelerator-status"])
+
+    assert result.exit_code == 0, f"Expected exit code 0 when active, got {result.exit_code}: {result.output}"
+    assert "JPEG DCT C accelerator: ACTIVE" in result.output, f"Expected ACTIVE line, got: {result.output!r}"
+
+
+def test_accelerator_status_fallback(monkeypatch) -> None:
+    """The command reports the fallback and exits non-zero when absent."""
+    from dicom_dre import cli as cli_module
+
+    monkeypatch.setattr(cli_module, "jpeg_dct_accelerator_available", lambda: False)
+    runner = CliRunner()
+    result = runner.invoke(cli, ["accelerator-status"])
+
+    assert result.exit_code == 1, f"Expected exit code 1 on fallback, got {result.exit_code}: {result.output}"
+    assert "NOT AVAILABLE" in result.output, f"Expected NOT AVAILABLE, got: {result.output!r}"
+    assert "pure-Python fallback" in result.output, f"Expected fallback note, got: {result.output!r}"

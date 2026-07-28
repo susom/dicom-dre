@@ -17,6 +17,7 @@ import click
 
 from dicom_dre import __version__
 from dicom_dre import deidentify_paths
+from dicom_dre import jpeg_dct_accelerator_available
 from dicom_dre.batch import OutputPathCollisionError
 from dicom_dre.batch import ProfileSpec
 from dicom_dre.parameters import DeidParameters
@@ -218,6 +219,21 @@ def deidentify(
     )
     if counts[Outcome.QUARANTINED] > 0:
         raise SystemExit(1)
+
+
+@cli.command(name="accelerator-status", short_help="Report JPEG DCT C accelerator status.")
+def accelerator_status() -> None:
+    """Report whether the JPEG DCT C accelerator is active.
+
+    Prints a human-readable status line and sets the process exit code: ``0``
+    when the accelerator is active, ``1`` when the pure-Python fallback is in
+    use. Usable in CI and health checks.
+    """
+    if jpeg_dct_accelerator_available():
+        click.echo("JPEG DCT C accelerator: ACTIVE")
+        return
+    click.echo("JPEG DCT C accelerator: NOT AVAILABLE (using pure-Python fallback, ~300x slower)")
+    raise SystemExit(1)
 
 
 def _resolve_allowlist_path(allowlist: str) -> Path:

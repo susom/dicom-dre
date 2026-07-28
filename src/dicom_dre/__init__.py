@@ -20,6 +20,8 @@ from dicom_dre.catalog import DeviceCatalog
 from dicom_dre.catalog import DicomTags
 from dicom_dre.catalog import Variant
 from dicom_dre.default_catalog import get_default_catalog
+from dicom_dre.jpeg_dct_scrubber import jpeg_dct_accelerator_available
+from dicom_dre.jpeg_dct_scrubber import jpeg_dct_accelerator_info
 from dicom_dre.parameters import DeidParameters
 from dicom_dre.pipeline import deidentify_file
 from dicom_dre.profile import DeidProfile
@@ -70,6 +72,8 @@ __all__ = [
     "default_profile",
     "get_default_catalog",
     "get_text_redactor",
+    "jpeg_dct_accelerator_available",
+    "jpeg_dct_accelerator_info",
     "lds_no_dob_profile",
     "lds_profile",
     "pixels_only_profile",

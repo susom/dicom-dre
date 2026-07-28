@@ -96,6 +96,26 @@ dicom-dre deidentify a.dcm b.dcm dir/ -o out/ \
 Sources are read but never modified. The command exits non-zero if any instance
 is `QUARANTINED`; `FILTERED` instances are a normal outcome.
 
+### JPEG DCT accelerator status
+
+JPEG DCT-domain blanking uses an optional compiled C extension that is roughly
+300x faster than the pure-Python fallback. Confirm it is active:
+
+```bash
+dicom-dre accelerator-status
+```
+
+The command prints `JPEG DCT C accelerator: ACTIVE` and exits `0` when the
+extension is loaded, or reports the pure-Python fallback and exits `1`
+otherwise. The same state is available in Python via
+`dicom_dre.jpeg_dct_accelerator_available()`:
+
+```python
+from dicom_dre import jpeg_dct_accelerator_available
+
+assert jpeg_dct_accelerator_available(), "JPEG DCT C accelerator is not compiled"
+```
+
 ### Profiles
 
 Select a de-identification profile with `--profile`:

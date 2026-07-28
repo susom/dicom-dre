@@ -91,3 +91,31 @@ dicom-dre deidentify studies/ -o out/ -r \
     -p PATIENT_ID=TEST -p ACCESSION_NUMBER=TESTING \
     -j 8
 ```
+
+## Checking the JPEG DCT accelerator
+
+JPEG DCT-domain blanking uses an optional compiled C extension
+(`_jpeg_dct_accel`) that is roughly 300x faster than the pure-Python fallback.
+The `dicom-dre accelerator-status` command reports whether that extension is
+active, so operators can confirm the fast path in CI and health checks.
+
+```bash
+dicom-dre accelerator-status
+```
+
+It prints one line and sets the exit code:
+
+- `JPEG DCT C accelerator: ACTIVE` — exit code `0`.
+- `JPEG DCT C accelerator: NOT AVAILABLE (using pure-Python fallback, ~300x slower)`
+  — exit code `1`.
+
+The same state is available from Python through
+[`dicom_dre.jpeg_dct_accelerator_available`](../reference/api.md):
+
+```python
+from dicom_dre import jpeg_dct_accelerator_available
+
+if not jpeg_dct_accelerator_available():
+    raise SystemExit("JPEG DCT C accelerator is not compiled")
+```
+
