@@ -180,6 +180,10 @@ class DicomTags:
         """Return the string value for *keyword*, or ``""`` if absent."""
         return self._values.get(keyword, "")
 
+    def as_dict(self) -> dict[str, str]:
+        """Return the catalog-relevant tag values as a plain dict copy."""
+        return dict(self._values)
+
     def get_list(self, keyword: str) -> list[str]:
         """Return the multi-valued tag as a list of strings.
 

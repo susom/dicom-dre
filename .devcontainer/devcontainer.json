@@ -40,7 +40,7 @@
       "configureZshAsDefaultShell": "false"
     },
     "ghcr.io/devcontainers-extra/features/apt-packages:1": {
-      "packages": "build-essential,ca-certificates,cmake,curl,dcmtk,file,git,just,ninja-build,patchelf,pkg-config,swig,unzip,wget,zip"
+      "packages": "build-essential,ca-certificates,cmake,curl,dcmtk,file,git,just,ninja-build,patchelf,pkg-config,swig,unzip,wget,zip,bubblewrap,socat"
     },
     "ghcr.io/jsburckhardt/devcontainer-features/uv:1": {},
     "ghcr.io/devcontainers/features/github-cli:1": {}
