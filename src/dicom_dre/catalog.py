@@ -181,7 +181,7 @@ class DicomTags:
         return self._values.get(keyword, "")
 
     def as_dict(self) -> dict[str, str]:
-        """Return the catalog-relevant tag values as a plain dict copy."""
+        """Return the tag values as a plain dict copy."""
         return dict(self._values)
 
     def get_list(self, keyword: str) -> list[str]:
