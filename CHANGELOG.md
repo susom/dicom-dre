@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.0.0-dev.6 (2026-07-29)
+
+### Bug Fixes
+
+- Public api change, bump version
+  ([`a2ec45c`](https://github.com/susom/dicom-dre/commit/a2ec45c6d9e00fa30136bead4eada1c4d1e30d31))
+
+
 ## v1.0.0-dev.5 (2026-07-28)
 
 ### Bug Fixes
