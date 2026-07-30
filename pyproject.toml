@@ -66,6 +66,7 @@ dev = [
     "coverage[toml]",
     "hatch-vcs",
     "hatchling",
+    "pre-commit",
     "pyrefly",
     "pillow",
     "ruff",

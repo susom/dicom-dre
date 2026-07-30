@@ -9,6 +9,14 @@ default:
 sync:
     uv sync
 
+# Install git hooks (pre-commit, pre-push, commit-msg)
+git-hooks:
+    uv run pre-commit install --hook-type pre-commit --hook-type pre-push --hook-type commit-msg
+
+# Run pre-commit checks on staged files (or all files with FILES=--all-files)
+precommit *FILES:
+    uv run pre-commit run {{ FILES }}
+
 # Compile the CFFI JPEG-DCT acceleration extension
 build-ext:
     cd src && uv run python -m dicom_dre._jpeg_dct_accel_build

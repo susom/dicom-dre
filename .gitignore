@@ -41,5 +41,30 @@ coverage.xml
 # Local working files
 temp/
 
-# Avoid accidentally committing sensitive or temporary files
+# --- PHI leak prevention -------------------------------------------------
+# Block data-file types at the repo root where ad-hoc tooling drops output.
+# Scoped to root with a leading slash so tracked fixtures and resources deeper
+# in the tree (allow lists, catalog fixtures) are unaffected.
+/*.json
+/*.csv
+/*.sql
+/regression*
+/~*
+
+# Scratch / local working directories
+/reference/**
+/scripts/**
+local_workspace/
+temp-test/*
+**/ignore/*
+**/DO_NOT_COMMIT.*
+
+# Databases and logs
+db.sqlite3
+*.log
+
+# DICOM and derived image binaries (may carry burned-in PHI)
 *.dcm
+*.dicom
+*.ima
+*.DCM

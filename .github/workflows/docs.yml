@@ -1,0 +1,122 @@
+name: Deploy Documentation
+
+# Publishes the Sphinx documentation to GitHub Pages, versioned by branch.
+#
+# Pushes to `development` publish under /development/ (pre-release docs).
+# Pushes to `main` publish under /stable/ (released docs).
+#
+# Each version lives in its own subdirectory on the `gh-pages` branch. A run
+# reconstructs the full tree (previously published versions plus the version it
+# just built), then force-publishes it, so removed pages do not linger and other
+# versions are preserved. The site root redirects to /stable/ when it exists and
+# otherwise to /development/.
+#
+# GitHub Pages must be configured to serve from the `gh-pages` branch (root).
+
+on:
+  push:
+    branches:
+      - main
+      - development
+    paths:
+      - "docs/**"
+      - "src/**"
+      - "pyproject.toml"
+      - ".github/workflows/docs.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+# Serialize deployments so concurrent pushes to main and development do not race
+# when reconstructing and publishing the shared gh-pages tree.
+concurrency:
+  group: docs-pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: uv sync
+
+      - name: Determine version slug
+        id: slug
+        run: |
+          case "${GITHUB_REF_NAME}" in
+            main) echo "slug=stable" >> "$GITHUB_OUTPUT" ;;
+            development) echo "slug=development" >> "$GITHUB_OUTPUT" ;;
+            *) echo "slug=${GITHUB_REF_NAME}" >> "$GITHUB_OUTPUT" ;;
+          esac
+
+      - name: Build HTML documentation
+        run: uv run --group docs sphinx-build -b html docs build/html
+
+      - name: Checkout existing published docs
+        uses: actions/checkout@v4
+        continue-on-error: true
+        with:
+          ref: gh-pages
+          path: gh-pages
+
+      - name: Assemble versioned site
+        run: |
+          set -euo pipefail
+          slug="${{ steps.slug.outputs.slug }}"
+          mkdir -p site
+
+          # Carry forward every previously published version except the one being
+          # rebuilt in this run.
+          if [ -d gh-pages ]; then
+            for path in gh-pages/*/; do
+              name="$(basename "$path")"
+              [ "$name" = "${slug}" ] && continue
+              cp -r "$path" "site/${name}"
+            done
+          fi
+
+          # Place the freshly built version.
+          rm -rf "site/${slug}"
+          cp -r build/html "site/${slug}"
+
+          # Serve underscore-prefixed asset directories (Sphinx _static, etc.).
+          touch site/.nojekyll
+
+          # Root redirect: prefer stable, fall back to development, then the slug
+          # just built.
+          if [ -d site/stable ]; then
+            target="stable"
+          elif [ -d site/development ]; then
+            target="development"
+          else
+            target="${slug}"
+          fi
+          cat > site/index.html <<EOF
+          <!doctype html>
+          <meta charset="utf-8">
+          <meta http-equiv="refresh" content="0; url=./${target}/">
+          <link rel="canonical" href="./${target}/">
+          <title>dicom-dre documentation</title>
+          <a href="./${target}/">Continue to the documentation</a>
+          EOF
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: ./site
+          force_orphan: true
+          user_name: "github-actions[bot]"
+          user_email: "github-actions[bot]@users.noreply.github.com"

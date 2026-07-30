@@ -15,8 +15,8 @@ sys.path.insert(0, os.path.abspath("../src"))
 # -- Project information ------------------------------------------------------
 
 project = "dicom-dre"
-author = "Stanford"
-copyright = "2026, Stanford"
+author = "DICOM-DRE contributors"
+copyright = "2026"
 
 try:
     release = importlib.metadata.version("dicom-dre")

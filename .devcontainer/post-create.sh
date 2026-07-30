@@ -32,3 +32,7 @@ uv sync
 echo -e "${BLUE}Compiling JPEG-DCT acceleration extension...${NC}"
 (cd src && uv run python -m dicom_dre._jpeg_dct_accel_build)
 rm -f src/dicom_dre/_jpeg_dct_accel.c src/dicom_dre/_jpeg_dct_accel.o
+
+# Install git hooks so PHI-protection checks run on commit, push, and commit-msg.
+echo -e "${BLUE}Installing git hooks...${NC}"
+uv run pre-commit install --hook-type pre-commit --hook-type pre-push --hook-type commit-msg
