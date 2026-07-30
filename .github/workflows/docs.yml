@@ -73,18 +73,20 @@ jobs:
       - name: Assemble versioned site
         run: |
           set -euo pipefail
+          # A non-matching glob expands to nothing rather than the literal
+          # pattern; the gh-pages checkout leaves an empty directory on the first
+          # run before the branch exists.
+          shopt -s nullglob
           slug="${{ steps.slug.outputs.slug }}"
           mkdir -p site
 
           # Carry forward every previously published version except the one being
           # rebuilt in this run.
-          if [ -d gh-pages ]; then
-            for path in gh-pages/*/; do
-              name="$(basename "$path")"
-              [ "$name" = "${slug}" ] && continue
-              cp -r "$path" "site/${name}"
-            done
-          fi
+          for path in gh-pages/*/; do
+            name="$(basename "$path")"
+            [ "$name" = "${slug}" ] && continue
+            cp -r "$path" "site/${name}"
+          done
 
           # Place the freshly built version.
           rm -rf "site/${slug}"
