@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.0.0-dev.7 (2026-07-30)
+
+### Bug Fixes
+
+- **ci**: Handle missing gh-pages branch on first docs deploy
+  ([`7788b48`](https://github.com/susom/dicom-dre/commit/7788b481225bfe09a9d1e8fdc4580bb7baf71655))
+
+
 ## v1.0.0-dev.6 (2026-07-29)
 
 ### Bug Fixes
