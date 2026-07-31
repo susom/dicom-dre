@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.0.0-dev.8 (2026-07-31)
+
+### Bug Fixes
+
+- Previous commit should have been fix
+  ([`e972a2e`](https://github.com/susom/dicom-dre/commit/e972a2e61316f6fc539b24eccb8a3a85efb98c20))
+
+
 ## v1.0.0-dev.7 (2026-07-30)
 
 ### Bug Fixes
