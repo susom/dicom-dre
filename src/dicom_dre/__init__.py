@@ -30,6 +30,7 @@ from dicom_dre.profiles import default_profile
 from dicom_dre.profiles import lds_no_dob_profile
 from dicom_dre.profiles import lds_profile
 from dicom_dre.profiles import pixels_only_profile
+from dicom_dre.profiles.builder import ProfileSettings
 from dicom_dre.profiles.builder import build_profile
 from dicom_dre.profiles.default import DATE_TAGS
 from dicom_dre.profiles.default import UID_TAGS
@@ -49,6 +50,7 @@ except ImportError:  # pragma: no cover - version file generated at build time
 
 __all__ = [
     "BatchItemResult",
+    "ProfileSettings",
     "CatalogDecision",
     "DATE_TAGS",
     "DeidParameters",

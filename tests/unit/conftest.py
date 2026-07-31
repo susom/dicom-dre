@@ -113,3 +113,16 @@ def signa_premier_file(tmp_path: Path) -> Path:
     path = tmp_path / "signa_premier.dcm"
     ds.save_as(path, enforce_file_format=True)
     return path
+
+
+@pytest.fixture(autouse=True)
+def isolated_config_home(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """Redirect XDG_CONFIG_HOME to a temp dir so the CLI never writes to real home.
+
+    The deidentify command generates and persists an identifier-hash salt under
+    the user config directory when none is supplied; isolating it keeps tests
+    from creating or reading the developer's real salt file. The salt environment
+    variable is cleared so an ambient value never leaks into a test.
+    """
+    monkeypatch.setenv("XDG_CONFIG_HOME", str(tmp_path / "xdg_config"))
+    monkeypatch.delenv("DICOM_DRE_HASH_SALT", raising=False)

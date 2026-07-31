@@ -10,21 +10,19 @@ from pydicom.tag import Tag
 
 from dicom_dre.actions import keep
 from dicom_dre.profile import DeidProfile
-from dicom_dre.profiles.default import UIDROOT
+from dicom_dre.profiles.config import ProfileSettings
 from dicom_dre.profiles.default import default_profile
 
 
 def lds_profile(
+    settings: ProfileSettings | None = None,
     *,
-    uid_root: str = UIDROOT,
     deid_method: str = "DICOM-PS3.15E-Basic-LDS",
-    allowlist_csv: str = "default.csv",
 ) -> DeidProfile:
     """Construct an LDS profile. All dates are preserved via VR inspection."""
     base = default_profile(
-        uid_root=uid_root,
+        settings,
         deid_method=deid_method,
-        allowlist_csv=allowlist_csv,
         preserve_dates=True,
     )
     # Preserve PatientAge unchanged (LDS does not cap age)

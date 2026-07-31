@@ -4,11 +4,11 @@ The bundled device catalog and free-text allowlist come from studies on a single
 PACS at one medical research center. Their device rules, pixel scrub regions, and
 allowlisted vocabulary reflect the scanner fleet and reporting conventions seen
 there. They are unlikely to be complete or correct for a different site. This
-guide describes how to validate the shipped configuration against your own data
+guide describes how to validate the included configuration against your own data
 before relying on the output.
 
 :::{note}
-Treat the shipped catalog and allowlist as a starting point that requires local
+Treat the included catalog and allowlist as a starting point that requires local
 validation, not as a turnkey configuration. See
 [Provenance and portability](../about/provenance.md).
 :::
@@ -77,7 +77,7 @@ as an allowlisted token).
    dicom-dre redactor quality-check samples.csv --interactive
    ```
 
-4. Confirm that no token carrying PHI (names, identifiers, locations) remains on
+4. Confirm that no token containing PHI (names, identifiers, locations) remains on
    the allowlist. The redactor masks dates, times, emails, URLs, and hexadecimal
    strings regardless of the allowlist; use `--preserve-dates` only for limited
    data set profiles that retain dates. See

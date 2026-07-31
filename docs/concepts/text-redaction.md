@@ -1,6 +1,6 @@
 # Text Redaction
 
-DICOM description fields frequently carry free-text PHI. Operators populate
+DICOM description fields frequently contain free-text PHI. Operators populate
 `SeriesDescription`, `StudyDescription`, and `ProtocolName`, which can contain
 names, dates, accession numbers, and other identifiers. `dicom-dre` redacts
 these fields token by token against an allowlist, so known clinical vocabulary
@@ -42,7 +42,7 @@ Redaction runs in three passes over each field value:
    codes, ZIP codes preceded by a US state, and the prefixes `NRP`, `MRN`, and
    `SSN` followed by four or more digits. The redactor replaces matched
    characters with `X` and leaves separators such as `/`, `-`, `.`, `:`, and
-   whitespace in place, so the value keeps its shape.
+   whitespace in place, so the value retains its width and separator layout.
 
 2. **Tokenization.** The redactor splits the remaining text on a fixed set of
    delimiters (spaces, punctuation, and boundaries between letters and digits).
@@ -58,7 +58,7 @@ content.
 
 ## Date preservation
 
-The `preserve_dates` flag controls whether dates and times survive redaction:
+The `preserve_dates` flag controls whether the redactor retains dates and times:
 
 - When `preserve_dates` is `False` (`default` and `pixels-only` profiles), the
   redactor masks date and time tokens along with everything else off the

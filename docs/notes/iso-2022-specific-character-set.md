@@ -44,15 +44,15 @@ Decoded as ISO 2022-JP this is the two-character string of full-width black star
 string `\x1b$B!z!z\x1b(B` (escape codes preserved as control/ASCII characters)
 instead of the intended two stars.
 
-## Why only date-preserving profiles surface it
+## Why only date-preserving profiles emit the warning
 
-The warning fires when a text element is decoded. Whether an element is decoded
-depends on which tags a profile touches:
+The warning is emitted when a text element is decoded. Whether an element is
+decoded depends on which tags a profile touches:
 
 - A profile that preserves dates (`preserve_dates=True`) calls
   `_should_skip_for_date_preservation`, which reads `ds[tag].VR` for elements as
   it decides whether to keep them. Accessing `ds[tag]` forces pydicom to lazily
-  decode the raw element value, hitting the bad escape sequence.
+  decode the raw element value, which encounters the malformed escape sequence.
 - A profile that does not preserve dates never runs that check, so it never
   decodes that element and never emits the warning.
 
@@ -83,8 +83,8 @@ Both were verified to decode with no warning:
 A pre-decode normalization pass, run immediately after each `dcmread` and before
 any text element is decoded. It scans undecoded `RawDataElement` bytes for
 ISO 2022 escape sequences, maps each escape to its DICOM defined term using
-pydicom's own tables, and — when the declared `SpecificCharacterSet` does not
-already cover those terms — widens (0008,0005) to the multi-valued ISO 2022 form
+pydicom's own tables, and, when the declared `SpecificCharacterSet` does not
+already cover those terms, widens (0008,0005) to the multi-valued ISO 2022 form
 and resets the dataset's original encoding so pydicom re-decodes the existing
 bytes correctly. This is content-preserving (bytes unchanged), conformant, and
 handles any ISO 2022 code-extension charset (not just Japanese).
@@ -147,7 +147,7 @@ def normalize_character_set(ds) -> bool:
     return True
 ```
 
-### Where to hook it
+### Where to call it
 
 In the DRE `deidentify_file` pipeline, call `normalize_character_set(ds)` after
 each read and before catalog evaluation, element rules, and write:
@@ -163,8 +163,8 @@ correct code-extension charset instead of defaulting to `ISO_IR 100`.
 
 - The two key pydicom details that make this work: decode uses
   `original_character_set` (the read-time `_read_charset`), so rewriting only
-  (0008,0005) is not enough — `set_original_encoding` must update the original
-  encoding too; and inspecting `RawDataElement.value` returns raw bytes without
+  (0008,0005) is not enough (`set_original_encoding` must update the original
+  encoding too); and inspecting `RawDataElement.value` returns raw bytes without
   triggering a decode.
 - A warning filter alone would only silence the message; it would not fix the
   garbled preserved value, so it is not a substitute for normalization.

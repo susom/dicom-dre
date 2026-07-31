@@ -62,7 +62,7 @@ def _get_tuple(ds: pydicom.Dataset, keyword: str) -> tuple[str, ...] | None:
 def _get_transfer_syntax_uid(ds: pydicom.Dataset) -> str | None:
     """Return the Transfer Syntax UID from the File Meta group, or None if absent.
 
-    The Transfer Syntax UID lives in the File Meta Information group (0002), not
+    The Transfer Syntax UID is stored in the File Meta Information group (0002), not
     the main dataset, so it is read from ``ds.file_meta`` rather than ``ds``. A
     bare in-memory dataset with no ``file_meta`` yields None.
     """

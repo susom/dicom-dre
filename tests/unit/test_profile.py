@@ -552,6 +552,7 @@ class TestJitterValidation:
             "remove_curves": False,
             "remove_overlays": False,
             "modifies_dates": True,
+            "hash_salt": "test-salt",
         }
         defaults.update(overrides)
         return DeidProfile(**defaults)
@@ -570,12 +571,30 @@ class TestJitterValidation:
         with pytest.raises(ValueError, match="jitter"):
             profile.apply(ds, DeidParameters(jitter=0))
 
-    def test_unset_jitter_shifts_by_default(self):
-        """An unset jitter shifts a date-shifting profile by DEFAULT_JITTER (10)."""
+    def test_unset_jitter_shifts_by_stable_amount(self):
+        """An unset jitter shifts by the deterministic per-patient/study amount."""
+        from dicom_dre.uid_utils import stable_jitter
+
         profile = self._date_profile()
         ds = self._dataset()
         profile.apply(ds, DeidParameters())
-        assert str(ds[self.STUDY_DATE_TAG].value) == "20200120", "unset jitter should shift by 10 days"
+        # No PatientID in the dataset, so the patient key is empty; study_id is UNKNOWN.
+        expected_days = stable_jitter("test-salt", "UNKNOWN", "")
+        assert expected_days != 0, "derived jitter must be non-zero"
+        assert str(ds[self.STUDY_DATE_TAG].value) == "20200120", (
+            f"unset jitter should shift by the stable amount ({expected_days} days)"
+        )
+
+    def test_unset_jitter_varies_with_patient_id(self):
+        """The derived shift depends on the original PatientID for longitudinal consistency."""
+        profile = self._date_profile()
+        shifts = set()
+        for patient_id in ("MRN-1", "MRN-2", "MRN-3", "MRN-4", "MRN-5"):
+            ds = self._dataset()
+            ds.add_new(Tag(0x0010, 0x0020), "LO", patient_id)  # PatientID
+            profile.apply(ds, DeidParameters())
+            shifts.add(str(ds[self.STUDY_DATE_TAG].value))
+        assert len(shifts) > 1, f"Different PatientIDs should produce different shifts, got {shifts}"
 
     def test_explicit_jitter_shifts_by_that_amount(self):
         """An explicit jitter shifts a date-shifting profile by that many days."""
@@ -590,3 +609,50 @@ class TestJitterValidation:
         ds = self._dataset()
         profile.apply(ds, DeidParameters(jitter=0))
         assert str(ds[self.STUDY_DATE_TAG].value) == "20200110", "non-shifting profile should not shift the date"
+
+
+class TestDefaultProfileJitterSource:
+    """The default profile derives its unset jitter from the original PHI PatientID."""
+
+    STUDY_DATE_TAG = Tag(0x0008, 0x0020)
+    PATIENT_ID_TAG = Tag(0x0010, 0x0020)
+
+    def _dataset(self, patient_id: str) -> Dataset:
+        ds = Dataset()
+        ds.add_new(self.STUDY_DATE_TAG, "DA", "20200110")
+        ds.add_new(self.PATIENT_ID_TAG, "LO", patient_id)
+        return ds
+
+    def test_shift_uses_original_patient_id_not_hashed(self):
+        """The shift matches the original PatientID and PatientID is still hashed."""
+        from datetime import datetime
+        from datetime import timedelta
+
+        from dicom_dre.profiles.config import ProfileSettings
+        from dicom_dre.profiles.default import default_profile
+        from dicom_dre.uid_utils import stable_jitter
+
+        profile = default_profile(ProfileSettings(hash_salt="pepper"))
+        ds = self._dataset("MRN999")
+        profile.apply(ds, DeidParameters())
+
+        expected_days = stable_jitter("pepper", "UNKNOWN", "MRN999")
+        expected_date = (datetime.strptime("20200110", "%Y%m%d") + timedelta(days=expected_days)).strftime("%Y%m%d")
+        assert str(ds[self.STUDY_DATE_TAG].value) == expected_date, (
+            "StudyDate should shift by the jitter derived from the original PatientID"
+        )
+        assert str(ds[self.PATIENT_ID_TAG].value) != "MRN999", "PatientID should still be hashed in the output"
+
+    def test_same_patient_different_study_shifts_differently(self):
+        """One patient across two studies receives different shifts."""
+        from dicom_dre.profiles.config import ProfileSettings
+        from dicom_dre.profiles.default import default_profile
+
+        profile = default_profile(ProfileSettings(hash_salt="pepper"))
+        ds_a = self._dataset("MRN999")
+        ds_b = self._dataset("MRN999")
+        profile.apply(ds_a, DeidParameters(study_id="STUDY_A"))
+        profile.apply(ds_b, DeidParameters(study_id="STUDY_B"))
+        assert str(ds_a[self.STUDY_DATE_TAG].value) != str(ds_b[self.STUDY_DATE_TAG].value), (
+            "The same patient in different studies should shift dates differently"
+        )

@@ -5,9 +5,9 @@ flags that `dicom-dre` applies to instance metadata. The profile you select
 determines which attributes the engine keeps, removes, empties, date-shifts, or
 re-derives, and how it redacts free-text description fields.
 
-`dicom-dre` ships four profiles: `default`, `lds`, `lds-no-dob`, and
+`dicom-dre` includes four profiles: `default`, `lds`, `lds-no-dob`, and
 `pixels-only`. {py:func}`dicom_dre.profiles.builder.list_profiles` returns the
-live list.
+authoritative list.
 
 | Profile | Preserve dates | Use case |
 |---------|----------------|----------|
@@ -17,16 +17,22 @@ live list.
 | `pixels-only` | No (dates removed) | Pixel data only, minimal retained metadata |
 
 {py:func}`dicom_dre.profiles.builder.build_profile` constructs a
-patient-invariant profile from a profile name and an optional build-configuration
-mapping (`UIDROOT`, `ALLOWLIST_CSV`). Per-patient identity values (PatientID,
-AccessionNumber, StudyID, PatientName, the free-text description overrides, and
-the date jitter) are supplied at apply time via
+patient-invariant profile from a profile name and an optional
+{py:class}`dicom_dre.profiles.config.ProfileSettings` (its `uid_root`,
+`allowlist_csv`, and `hash_salt` fields). Per-patient identity values
+(PatientID, AccessionNumber, StudyID, PatientName, the free-text description
+overrides, and the date jitter) are supplied at apply time via
 {py:class}`dicom_dre.parameters.DeidParameters`, not to `build_profile`. A single
-profile is reusable across any number of patients. The engine writes the
-replacement identifiers verbatim and re-derives UIDs by deterministic hashing
-(the UID root and the study-ID salt); it performs no identifier-mapping lookups,
-no settings lookups, and no network calls, so the same profile and parameters
-always produce the same output. See [Reproducibility](reproducibility.md).
+profile is reusable across any number of patients. When a caller supplies a
+replacement PatientID, PatientName, or AccessionNumber the engine writes it
+verbatim. When it does not, the engine derives the replacement by hashing the
+original element value (SHA-256, salted with the `ProfileSettings.hash_salt` value
+and the study identifier, truncated to 16 uppercase hex characters), reusing the
+PatientID hash for PatientName. It falls back to `[REDACTED]` only when there is
+no value to hash. It re-derives UIDs by deterministic hashing (the UID root and
+the study-ID salt). It performs no identifier-mapping lookups, no settings
+lookups, and no network calls, so the same profile and parameters always produce
+the same output. See [Reproducibility](reproducibility.md).
 
 ## Default (full de-identification)
 
@@ -34,17 +40,22 @@ Profile name: `default`
 
 The default profile applies DICOM PS3.15E basic de-identification with date
 shifting. It shifts date and datetime attributes by a per-patient jitter value
-(the `JITTER` parameter, default 10 days). It shifts patient birth date, removes
-patient birth time, and caps patient age at 89 years (it replaces values at or
-above the cap with `090Y`). It re-derives UIDs. It redacts free-text description
-fields against the allowlist, which also masks dates, times, emails, URLs, and
-hexadecimal numbers. See [Text redaction](text-redaction.md).
+(the `JITTER` parameter). When `JITTER` is not supplied, the shift is derived
+deterministically from the hash salt, the study identifier, and the original
+(PHI) PatientID, yielding a non-zero value in the range -30 to +30 days. The same
+patient within a study always shifts by the same amount (longitudinal
+consistency), while the same patient in a different study shifts differently. It
+shifts patient birth date, removes patient birth time, and caps patient age at 89
+years (it replaces values at or above the cap with `090Y`). It re-derives UIDs.
+It redacts free-text description fields against the allowlist, which also masks
+dates, times, emails, URLs, and hexadecimal numbers. See
+[Text redaction](text-redaction.md).
 
 | Attribute | Action |
 |-----------|--------|
-| StudyDate, SeriesDate, AcquisitionDate, ContentDate | Shifted by `JITTER` days |
+| StudyDate, SeriesDate, AcquisitionDate, ContentDate | Shifted by the jitter (`JITTER`, or the derived per-patient/study shift) |
 | StudyTime, SeriesTime, AcquisitionTime, ContentTime | Kept |
-| PatientBirthDate | Shifted by `JITTER` days |
+| PatientBirthDate | Shifted by the jitter (`JITTER`, or the derived per-patient/study shift) |
 | PatientBirthTime | Removed |
 | PatientAge | Kept if under 89, otherwise replaced with `090Y` |
 | Free-text fields | Dates and times masked by the redactor |
@@ -105,8 +116,8 @@ the patient date of birth must not be included in the output.
 
 Profile name: `pixels-only`
 
-The pixels-only profile is the most aggressive metadata reduction that still
-yields a file most DICOM viewers and libraries can open. It retains a fixed set
+The pixels-only profile retains the least metadata while still yielding a file
+that most DICOM viewers and libraries can open. It retains a fixed set
 of technical elements, re-derives UIDs (no salt), and removes every element that
 has no explicit rule. It always protects groups `0028` (image pixel description)
 and `7FE0` (pixel data), plus `SOPClassUID`, `SOPInstanceUID`, and
@@ -146,7 +157,7 @@ When the pipeline preserves device-approved private tags (see
 [Device Catalog](device-catalog.md)), the profile stamps the De-identification
 Method Code Sequence `(0012,0064)`. The profile emits the sequence only for
 instances that actually retain private tags; other instances and profiles do not
-receive it. Each item carries a code value `(0008,0100)`, the `DCM` coding
+receive it. Each item contains a code value `(0008,0100)`, the `DCM` coding
 scheme designator `(0008,0102)`, and a code meaning `(0008,0104)`:
 
 | Code value | Code meaning | Emitted |

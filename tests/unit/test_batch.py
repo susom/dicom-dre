@@ -17,6 +17,7 @@ from typing import TYPE_CHECKING
 
 import pytest
 
+from dicom_dre import ProfileSettings
 from dicom_dre import build_profile
 from dicom_dre.batch import OutputPathCollisionError
 from dicom_dre.batch import ProfileSpec
@@ -29,18 +30,12 @@ if TYPE_CHECKING:
     from pathlib import Path
 
 
-_BATCH_PARAMS = {
-    "PATIENT_ID": "TEST",
-    "ACCESSION_NUMBER": "TEST",
-    "STUDY_ID": "TEST",
-    "JITTER": "10",
-    "UIDROOT": "1.2.3",
-}
+_BATCH_SETTINGS = ProfileSettings(uid_root="1.2.3")
 
 
 def _profile():
-    """Build a default profile bound with deterministic batch parameters."""
-    return build_profile("default", dict(_BATCH_PARAMS))
+    """Build a default profile bound with a deterministic UID root."""
+    return build_profile("default", _BATCH_SETTINGS)
 
 
 class TestDiscoverInputs:
@@ -245,7 +240,7 @@ class TestOutputCollisions:
 
 def _spec() -> ProfileSpec:
     """Build the picklable profile spec matching the sequential test profile."""
-    return ProfileSpec(name="default", config={"UIDROOT": "1.2.3"})
+    return ProfileSpec(name="default", settings=ProfileSettings(uid_root="1.2.3"))
 
 
 class TestParallelDeidentifyPaths:
@@ -440,12 +435,19 @@ class TestDeidParametersInBatch:
         assert restored == params, "DeidParameters should survive a pickle round-trip"
 
     def test_from_mapping_reads_identity_keys_and_parses_jitter(self) -> None:
-        """from_mapping reads identity keys, parses JITTER, and ignores build knobs."""
+        """from_mapping reads identity keys and parses JITTER to an int."""
         from dicom_dre import DeidParameters
 
-        params = DeidParameters.from_mapping({"PATIENT_ID": "P", "JITTER": "12", "UIDROOT": "1.2.3"})
+        params = DeidParameters.from_mapping({"PATIENT_ID": "P", "JITTER": "12"})
         assert params.patient_id == "P", "PATIENT_ID should be read"
         assert params.jitter == 12, "JITTER should be parsed to an int"
+
+    def test_from_mapping_rejects_unknown_key(self) -> None:
+        """from_mapping rejects build settings and other non-identity keys."""
+        from dicom_dre import DeidParameters
+
+        with pytest.raises(ValueError, match="Unknown de-identification parameter"):
+            DeidParameters.from_mapping({"PATIENT_ID": "P", "UIDROOT": "1.2.3"})
 
     def test_from_mapping_rejects_non_integer_jitter(self) -> None:
         """from_mapping raises when JITTER is not an integer."""

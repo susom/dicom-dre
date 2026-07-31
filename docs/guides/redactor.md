@@ -23,10 +23,10 @@ dicom-dre redactor [OPTIONS] COMMAND [ARGS]...
 
 Commands:
 
-- `redact` — Redact free text from an input CSV and write the result.
-- `quality-check` — Preview redaction of a CSV of free text side by side.
-- `show-tokens` — Extract and display all unique tokens from an input.
-- `allow-token` — Add one or more tokens to the allowlist file.
+- `redact`: Redact free text from an input CSV and write the result.
+- `quality-check`: Preview redaction of a CSV of free text side by side.
+- `show-tokens`: Extract and display all unique tokens from an input.
+- `allow-token`: Add one or more tokens to the allowlist file.
 
 ## redact
 
@@ -42,12 +42,12 @@ dicom-dre redactor redact [OPTIONS]
 
 **Options:**
 
-- `--track-redacted` — Also write the distinct tokens that were redacted.
-- `--allowlist TEXT` — Allowlist filename (for example `default.csv`) or absolute
+- `--track-redacted`: Also write the distinct tokens that were redacted.
+- `--allowlist TEXT`: Allowlist filename (for example `default.csv`) or absolute
   path to an allowlist CSV. Default: `default.csv`.
-- `--preserve-dates` — Keep dates and times in text, for HIPAA limited datasets.
-- `--input TEXT` — Path to the input CSV file. Default: `input.csv`.
-- `--output TEXT` — Path to the output CSV file. Default: `output.csv`.
+- `--preserve-dates`: Keep dates and times in text, for HIPAA limited datasets.
+- `--input TEXT`: Path to the input CSV file. Default: `input.csv`.
+- `--output TEXT`: Path to the output CSV file. Default: `output.csv`.
 
 **Examples:**
 
@@ -85,12 +85,12 @@ does not matter.
 
 **Options:**
 
-- `--allowlist TEXT` — Allowlist filename (for example `default.csv`) or absolute
+- `--allowlist TEXT`: Allowlist filename (for example `default.csv`) or absolute
   path to an allowlist CSV. Default: `default.csv`.
-- `--preserve-dates` — Keep dates and times in text, for HIPAA limited datasets.
-- `--redacted-only` — Only display cells that were redacted.
-- `--simple` — Only print tokens that would be redacted, sorted and de-duplicated.
-- `--interactive` — Interactively review and add tokens to the allowlist.
+- `--preserve-dates`: Keep dates and times in text, for HIPAA limited datasets.
+- `--redacted-only`: Only display cells that were redacted.
+- `--simple`: Only print tokens that would be redacted, sorted and de-duplicated.
+- `--interactive`: Interactively review and add tokens to the allowlist.
 
 **Examples:**
 
@@ -128,10 +128,10 @@ For each redacted token, the display shows the row number, the original cell
 text, the redacted version, the current token, and its status. Keyboard
 shortcuts:
 
-- `a` — Add the token to the allowlist (queue for addition).
-- `s` — Skip the token (no action).
-- `q` — Quit review early.
-- `ESC` — Quit review early.
+- `a`: Add the token to the allowlist (queue for addition).
+- `s`: Skip the token (no action).
+- `q`: Quit review early.
+- `ESC`: Quit review early.
 
 After the review reaches the end of the file or you quit, the command displays a
 summary of queued additions, prompts for confirmation, and atomically updates
@@ -150,7 +150,7 @@ dicom-dre redactor show-tokens [OPTIONS]
 
 **Options:**
 
-- `--input TEXT` — Path to the input CSV file. Default: `input.csv`.
+- `--input TEXT`: Path to the input CSV file. Default: `input.csv`.
 
 **Example:**
 
@@ -171,7 +171,7 @@ dicom-dre redactor allow-token [OPTIONS] TOKENS...
 
 **Options:**
 
-- `--allowlist TEXT` — Allowlist filename (for example `default.csv`) or absolute
+- `--allowlist TEXT`: Allowlist filename (for example `default.csv`) or absolute
   path to an allowlist CSV. Default: `default.csv`.
 
 **Examples:**

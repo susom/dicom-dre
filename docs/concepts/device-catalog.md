@@ -2,17 +2,17 @@
 
 The device catalog is a Python module that unifies image filtering and pixel
 scrubbing into a single, structured representation of known imaging devices.
-Each entry acts as a fingerprint for a specific hardware device. It is a set of
-DICOM attribute patterns (manufacturer, model, modality, software version, image
-dimensions) that identify the images that device produces. The engine uses the
-fingerprint to recognize those images and blank the pixel regions where the
-device burns in text.
+Each entry identifies a specific hardware device by a set of DICOM attribute
+patterns (manufacturer, model, modality, software version, image dimensions)
+that match the images that device produces. The engine uses these patterns to
+recognize those images and blank the pixel regions where the device burns in
+text.
 
 :::{note}
 The bundled catalog comes from studies on a single PACS at one medical research
 center. Its device rules and pixel scrub regions reflect the scanner fleet seen
 there. They are unlikely to be complete or correct for another site. Treat the
-shipped catalog as a starting point that requires local validation. See
+included catalog as a starting point that requires local validation. See
 [Provenance and portability](../about/provenance.md).
 :::
 
@@ -20,10 +20,9 @@ shipped catalog as a starting point that requires local validation. See
 
 The device catalog is built on the following design choices:
 
-1. **Model known devices, not arbitrary expressions.** Each entry is a
-   fingerprint for a specific imaging device, described by manufacturer, model,
-   modality, software version, and image dimensions. The rules read as data,
-   not code.
+1. **Model known devices, not arbitrary expressions.** Each entry matches a
+   specific imaging device by manufacturer, model, modality, software version,
+   and image dimensions. The rules read as data, not code.
 
 2. **Couple resolution to scrub regions.** Each device entry contains
    resolution-specific variants that bind image dimensions directly to the
@@ -31,7 +30,7 @@ The device catalog is built on the following design choices:
    scrub regions together.
 
 3. **Return a structured decision with a reason.** Every evaluation returns a
-   `CatalogDecision` carrying the action (`allow`, `deny`, `scrub`), a
+   `CatalogDecision` containing the action (`allow`, `deny`, `scrub`), a
    human-readable reason string, and the list of scrub regions. The reason
    propagates through the pipeline into the `FILTERED` result so callers can
    distinguish why a file was rejected.
@@ -62,14 +61,14 @@ case-sensitive unless the pattern includes an inline flag such as `(?i)`.
 | `/regex/` | `re.search` (case-sensitive by default) | `"/[1-9]\\d{3,}/"` |
 | `=` (alone) | tag absent or blank | `"="` |
 
-A list of values on any field uses OR semantics — at least one must match.
+A list of values on any field uses OR semantics: at least one must match.
 All fields on a single device rule are AND'd together.
 
 The `=` exact match compares the full value case-insensitively. A `/regex/`
 pattern is evaluated with `re.search` and is case-sensitive unless the pattern
 includes an inline flag such as `(?i)`. To match an exact value case-insensitively
-with a regex — for example when you also need anchoring, alternation, or a
-negative lookahead — anchor the pattern and add `(?i)`, as in
+with a regex (for example when you also need anchoring, alternation, or a
+negative lookahead), anchor the pattern and add `(?i)`, as in
 `"/(?i)^SIGNA PET\\/MR$/"`. This is why many regex rules in the default catalog
 use the `/(?i)^...$/` form.
 
@@ -99,7 +98,7 @@ action: `"allow"`, `"deny"`, or `"scrub"`.
 
 All keyword fields on `device()` are optional and default to `None`
 (unconstrained). A field constrains the match only when you specify it. Every
-specified field is AND'd together — a device matches only when all of its
+specified field is AND'd together: a device matches only when all of its
 fields match. When you give a field a list, the list uses OR semantics.
 
 | Field | DICOM tag | Purpose |
@@ -122,9 +121,9 @@ fields match. When you give a field a list, the list uses OR semantics.
 | `pixel_spacing` | `PixelSpacing` (0028,0030) | Physical pixel spacing |
 | `body_part_examined` | `BodyPartExamined` (0018,0015) | Anatomic region |
 | `requires_ultrasound_regions` | `SequenceOfUltrasoundRegions` (0018,6011) | When `True`, a non-empty regions sequence must be present |
-| `variants` | — | List of resolution/version variants (see below) |
+| `variants` | n/a | List of resolution/version variants (see below) |
 | `preserved_private_tags` | private data elements | Tuple of `PrivateTagSpec` for device-approved private elements to preserve verbatim (see below) |
-| `rows` / `cols` / `scrub` | `Rows` / `Columns` / — | Shorthand for a single-variant device |
+| `rows` / `cols` / `scrub` | `Rows` / `Columns` / n/a | Shorthand for a single-variant device |
 
 Every match attribute has a dedicated field; there is no free-form keyword dict.
 The catalog evaluates each field with the same [string matching](#string-matching)
@@ -154,7 +153,7 @@ variant(
     rows=2446,           # exact Rows match
     cols=2446,           # exact Columns match
     software_versions="^6.",  # further narrows the device-level version
-    image_type=["DERIVED"],   # ImageType components — all must appear
+    image_type=["DERIVED"],   # ImageType components, all must appear
     scrub=[(x, y, w, h)],     # pixel regions to blank
 )
 ```
@@ -216,7 +215,7 @@ device(
 
 ### Preserved private tags
 
-Some devices carry private data elements that a reviewer has approved as safe to
+Some devices contain private data elements that a reviewer has approved as safe to
 retain verbatim. The `preserved_private_tags` field on `device()` takes a tuple
 of `PrivateTagSpec` entries. Each spec names a private group, a private-creator
 string, and the element offsets (low byte) to keep within that creator's block:
@@ -248,9 +247,10 @@ whose value equals the spec's `creator`, then keeps both the resolved data
 elements and their creator element. It removes every other private element as
 usual.
 
-A device match short-circuits the entire exclusion pass. A rule that carries
-`preserved_private_tags` therefore acts as an admission gate. It must reproduce
-inline the guards that the bypassed exclusions would otherwise enforce
+A device match short-circuits the entire exclusion pass. A rule that declares
+`preserved_private_tags` therefore admits the instance without any exclusion
+check. It must reproduce inline the guards that the bypassed exclusions would
+otherwise enforce
 (`burned_in_annotation`, `image_type`, `image_type_exclude`, `sop_class_uid`,
 and `ConversionType` above). When preservation is active, the engine also emits
 the De-identification Method Code Sequence `(0012,0064)` with the Retain Safe

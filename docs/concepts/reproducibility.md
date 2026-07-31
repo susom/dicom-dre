@@ -1,28 +1,38 @@
 # Reproducibility
 
-`dicom-dre` is reproducible by design. The engine performs no hashing lookups,
-no network calls, and no randomization of its own. It consumes de-identification
-parameters (patient ID, accession number, UID root, salt, jitter, and so on)
-exactly as supplied. Given identical inputs and parameters, the output is
-byte-for-byte identical.
+`dicom-dre` is reproducible by design. The engine makes no network calls,
+consults no external mapping tables, and draws no random values. Given the same
+input DICOM and the same parameters, it produces byte-for-byte identical output.
+Every value the engine writes is either copied verbatim from a parameter or
+computed by a pure function of the input and the parameters. The hashed
+identifiers and UIDs, the date shift, and free-text redaction are all computed
+this way.
 
 ## What the caller supplies
 
-Because the engine does no lookups, the caller is responsible for supplying
-already-mapped identifier values:
+The caller may supply already-mapped replacement values; when it omits them the
+engine derives them deterministically rather than looking them up:
 
-- The engine writes replacement identifiers (patient ID, accession number)
-  verbatim.
+- The engine writes caller-supplied replacement identifiers (patient ID,
+  patient name, accession number) verbatim. When the caller omits one, the
+  engine derives the replacement by hashing the original element value, a pure
+  function of that value, the `ProfileSettings.hash_salt` value, and the study
+  identifier.
 - UID re-derivation is a pure function of the UID root and salt passed in; the
   same source UID plus the same root and salt always yields the same output UID.
-- Date shifting uses the caller-supplied jitter value, not a random draw.
+- Date shifting uses the caller-supplied jitter value when provided. When it is
+  omitted, the shift is a pure function of the hash salt, the study identifier,
+  and the original PatientID, so it is deterministic rather than a random draw.
 - The engine writes free-text description values verbatim when the caller
   provides them; when the caller omits them, redaction is a pure function of the
   field content and the allowlist.
 
-This keeps identifier mapping, salt management, and any cross-study consistency
-under the caller's control rather than hidden inside the engine. See
-[De-identification Profiles](profiles.md) and [Text redaction](text-redaction.md).
+The identifier-hash salt is itself a parameter. The `dicom-dre` CLI can generate
+and persist one on first use (a one-time random draw), but reusing that saved
+salt keeps every subsequent run reproducible. This keeps identifier mapping, salt
+management, and any cross-study consistency under the caller's control rather than
+hidden inside the engine. See [De-identification Profiles](profiles.md) and
+[Text redaction](text-redaction.md).
 
 ## Regression guard
 

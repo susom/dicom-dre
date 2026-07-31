@@ -1,10 +1,13 @@
 # Command-line Interface
 
 The `dicom-dre deidentify` command de-identifies one or more DICOM files or
-directories. It is a thin wrapper over the batch engine
-([`dicom_dre.deidentify_paths`](../reference/api.md)) and performs no hashing,
-settings lookups, or free-text redaction. It consumes de-identification
-parameters as supplied, mirroring the library contract.
+directories. It is a command-line wrapper over the batch engine
+([`dicom_dre.deidentify_paths`](../reference/api.md)). Beyond forwarding the
+per-patient parameters, the CLI resolves the identifier-hash salt (from
+`--hash-salt`, the `DICOM_DRE_HASH_SALT` environment variable, or a generated
+per-user salt file) and the build-time configuration (`--uid-root`,
+`--allowlist-csv`, `--hash-salt`); the engine performs the identifier and UID
+hashing, date jitter, and free-text redaction.
 
 ## Usage
 
@@ -14,30 +17,60 @@ dicom-dre deidentify [OPTIONS] SOURCES...
 
 `SOURCES` is one or more files and/or directories. The command reads every
 source but never modifies it. It mirrors directory trees under the output
-directory; explicitly listed files land flat in the output directory. It prints
-one line per processed file, followed by a summary.
+directory; explicitly listed files are written directly into the output
+directory. It prints one line per processed file, followed by a summary.
 
 ## Options
 
-- `-o, --output-dir DIRECTORY` — Directory to write de-identified files into,
+- `-o, --output-dir DIRECTORY`: Directory to write de-identified files into,
   created if needed. Required.
-- `-r, --recursive` — Recurse into subdirectories of directory sources.
-- `--glob PATTERN` — Filename pattern for directory scans. Repeatable and
+- `-r, --recursive`: Recurse into subdirectories of directory sources.
+- `--glob PATTERN`: Filename pattern for directory scans. Repeatable and
   case-insensitive. Default: `*.dcm`, `*.dicom`.
-- `--profile [default|lds|lds-no-dob|pixels-only]` — De-identification profile
+- `--profile [default|lds|lds-no-dob|pixels-only]`: De-identification profile
   to apply. Default: `default`. See
   [De-identification Profiles](../concepts/profiles.md).
-- `-p, --param KEY=VALUE` — A de-identification parameter, repeatable, for
-  example `-p PATIENT_ID=TEST`.
-- `--decompress / --no-decompress` — Decompress encapsulated pixel data on
+- `-p, --param KEY=VALUE`: A per-patient de-identification parameter,
+  repeatable, for example `-p PATIENT_ID=TEST`. Accepts only the per-patient
+  identity keys (`PATIENT_ID`, `PATIENT_NAME`, `ACCESSION_NUMBER`, `STUDY_ID`,
+  `SERIES_DESCRIPTION`, `STUDY_DESCRIPTION`, `PROTOCOL_NAME`, `JITTER`); any
+  other key is rejected. Build-time settings use their own flags below.
+- `--study-id VALUE`: Study identifier scoping the identifier and UID hashes
+  (the `STUDY_ID` parameter). Default: unset.
+- `--uid-root VALUE`: UID root prefix under which re-derived UIDs are hashed.
+  Default: `1.2.840.4267.32.`.
+- `--allowlist-csv VALUE`: Free-text redaction allowlist filename or absolute
+  path. Default: `default.csv`.
+- `--hash-salt VALUE`: Salt applied when hashing `PatientID`, `PatientName`,
+  and `AccessionNumber`. When omitted, the salt is resolved in order: the
+  `DICOM_DRE_HASH_SALT` environment variable, then the per-user salt file at
+  `$XDG_CONFIG_HOME/dicom-dre/salt` (default `~/.config/dicom-dre/salt`). If
+  none exists, a memorable passphrase is generated, saved with `0600`
+  permissions, and reported on stderr. Keep that file secret and back it up: the
+  same salt is required to reproduce the same pseudonyms on later runs. For
+  scripted or CI use, supply the salt explicitly (via `--hash-salt` or
+  `DICOM_DRE_HASH_SALT`) so runs stay deterministic.
+- `--generate-salt / --no-generate-salt`: Whether to generate and persist a
+  salt when none is supplied. With `--no-generate-salt` the command errors
+  instead of generating, keeping scripted runs deterministic. Default:
+  `--generate-salt`.
+- `-q, --quiet`: Suppress informational notices on stderr, such as the salt
+  generation notice. Does not affect the per-file result lines or summary on
+  stdout.
+- `-v, --verbose`: Enable debug logging, including tracebacks for quarantined
+  files. Quarantine reasons are always reported on the `QUARANTINED:` line; this
+  flag adds the underlying traceback for diagnosis. Python warnings raised by
+  dependencies (for example pydicom VR mismatches) are routed through logging
+  and shown only under this flag; otherwise they are suppressed.
+- `--decompress / --no-decompress`: Decompress encapsulated pixel data on
   output. Default: `--no-decompress`.
-- `--rename-to-sop-uid / --no-rename-to-sop-uid` — Rename each output file to
+- `--rename-to-sop-uid / --no-rename-to-sop-uid`: Rename each output file to
   its new SOP Instance UID. Default: `--rename-to-sop-uid`.
-- `--highlight-blanked-pixels` — Fill scrubbed pixel regions with a visible
+- `--highlight-blanked-pixels`: Fill scrubbed pixel regions with a visible
   color.
-- `-j, --workers N` — Number of worker processes; `1` runs sequentially
+- `-j, --workers N`: Number of worker processes; `1` runs sequentially
   in-process. Default: number of CPUs.
-- `--help` — Show the message and exit.
+- `--help`: Show the message and exit.
 
 ## Output filenames
 
@@ -55,10 +88,10 @@ order.
 
 Each instance resolves to one terminal outcome:
 
-- `DEIDENTIFIED` — metadata scrubbed, pixel regions blanked as required, and the
+- `DEIDENTIFIED`: metadata scrubbed, pixel regions blanked as required, and the
   instance written to the output directory.
-- `FILTERED` — the instance matched a deny rule, so the command did not emit it.
-- `QUARANTINED` — processing failed, so the command did not emit the instance.
+- `FILTERED`: the instance matched a deny rule, so the command did not emit it.
+- `QUARANTINED`: processing failed, so the command did not emit the instance.
 
 The command exits with status `1` when any file was `QUARANTINED`. `FILTERED`
 files are a normal outcome and do not affect the exit code.
@@ -105,9 +138,9 @@ dicom-dre accelerator-status
 
 It prints one line and sets the exit code:
 
-- `JPEG DCT C accelerator: ACTIVE` — exit code `0`.
-- `JPEG DCT C accelerator: NOT AVAILABLE (using pure-Python fallback, ~300x slower)`
-  — exit code `1`.
+- `JPEG DCT C accelerator: ACTIVE`, exit code `0`.
+- `JPEG DCT C accelerator: NOT AVAILABLE (using pure-Python fallback, ~300x slower)`,
+  exit code `1`.
 
 The same state is available from Python through
 [`dicom_dre.jpeg_dct_accelerator_available`](../reference/api.md):

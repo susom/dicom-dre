@@ -24,7 +24,6 @@ DEID_PARAMETERS = {
     "ACCESSION_NUMBER": "TEST",
     "STUDY_ID": "TEST",
     "JITTER": "10",
-    "UIDROOT": "1.2.3",
 }
 
 
@@ -37,10 +36,11 @@ class TestPipelineAttributePopulation:
         from dicom_dre import Outcome
         from dicom_dre import build_profile
         from dicom_dre import deidentify_file
+        from dicom_dre.profiles.builder import ProfileSettings
 
         output = tmp_path / "out.dcm"
         params = DeidParameters.from_mapping(DEID_PARAMETERS)
-        profile = build_profile("default", dict(DEID_PARAMETERS))
+        profile = build_profile("default", ProfileSettings(uid_root="1.2.3"))
         result = deidentify_file(
             input_file=signa_premier_file,
             output_file=output,
@@ -60,9 +60,10 @@ class TestPipelineAttributePopulation:
         from dicom_dre import DeidParameters
         from dicom_dre import build_profile
         from dicom_dre import deidentify_file
+        from dicom_dre.profiles.builder import ProfileSettings
 
         output = tmp_path / "out.dcm"
-        profile = build_profile("default", dict(DEID_PARAMETERS))
+        profile = build_profile("default", ProfileSettings(uid_root="1.2.3"))
         result = deidentify_file(
             input_file=signa_premier_file,
             output_file=output,
@@ -85,6 +86,7 @@ class TestPipelineAttributePopulation:
 
         from dicom_dre import build_profile
         from dicom_dre import deidentify_file
+        from dicom_dre.profiles.builder import ProfileSettings
 
         calls = {"count": 0}
         original = pydicom.dcmread
@@ -98,7 +100,7 @@ class TestPipelineAttributePopulation:
         output = tmp_path / "out.dcm"
         from dicom_dre import DeidParameters
 
-        profile = build_profile("default", dict(DEID_PARAMETERS))
+        profile = build_profile("default", ProfileSettings(uid_root="1.2.3"))
         deidentify_file(
             input_file=signa_premier_file,
             output_file=output,

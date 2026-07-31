@@ -7,7 +7,7 @@ non-blanked regions stay bit-for-bit identical with no quality loss.
 
 :::{note}
 This module implements the JPEG Baseline path of the pixel-scrub stage. For how
-it fits into the end-to-end de-identification flow, see
+it fits into the end-to-end de-identification pipeline, see
 [Architecture](architecture.md).
 :::
 
@@ -15,8 +15,8 @@ it fits into the end-to-end de-identification flow, see
 
 The DCT-domain redaction approach comes from the
 [PixelMed DICOM Toolkit](https://www.pixelmed.com/jpeg.html). PixelMed
-demonstrated that you can remove burned-in text from JPEG-compressed DICOM
-images by operating on the Huffman-coded DCT coefficients, without decoding and
+demonstrated removing burned-in text from JPEG-compressed DICOM images by
+operating on the Huffman-coded DCT coefficients, without decoding and
 re-encoding pixel data. This module is a Python port of the PixelMed JPEG
 Selective Block Redaction Codec by David A. Clunie, with an optional C
 accelerator. The module source reproduces the PixelMed BSD license at the top.
@@ -95,11 +95,11 @@ Scrub JPEG data in memory and return the modified bytes.
 | `data` | `bytes` | Raw JPEG data |
 | `regions` | `list[ScrubRegion]` | Rectangles to blank as `ScrubRegion(x, y, width, height)` in pixel coordinates |
 
-**Returns:** `bytes` — the modified JPEG data.
+**Returns:** `bytes`, the modified JPEG data.
 
 ## Command-line usage
 
-You can run the module directly for testing:
+Run the module directly for testing:
 
 ```bash
 python -m dicom_dre.jpeg_dct_scrubber input.jpg output.jpg 10,5,200,50 300,400,100,30

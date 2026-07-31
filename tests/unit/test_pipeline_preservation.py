@@ -29,7 +29,6 @@ DEID_PARAMETERS = {
     "ACCESSION_NUMBER": "TEST",
     "STUDY_ID": "TEST",
     "JITTER": "10",
-    "UIDROOT": "1.2.3",
 }
 
 # Preserved data element tags, as (group, element).
@@ -57,12 +56,11 @@ def _deidentify(
     from dicom_dre import Outcome
     from dicom_dre import build_profile
     from dicom_dre import deidentify_file
-    from dicom_dre.profiles.builder import BUILD_CONFIG_KEYS
+    from dicom_dre.profiles.builder import ProfileSettings
 
     output = tmp_path / f"out_{profile_name}.dcm"
     parameters = dict(deid_parameters) if deid_parameters is not None else dict(DEID_PARAMETERS)
-    config = {key: value for key, value in parameters.items() if key in BUILD_CONFIG_KEYS}
-    profile = build_profile(profile_name, config)
+    profile = build_profile(profile_name, ProfileSettings(uid_root="1.2.3"))
     result = deidentify_file(
         input_file=signa_premier_file,
         output_file=output,
@@ -216,8 +214,9 @@ class TestProfileReuseAcrossPatients:
         from dicom_dre import Outcome
         from dicom_dre import build_profile
         from dicom_dre import deidentify_file
+        from dicom_dre.profiles.builder import ProfileSettings
 
-        profile = build_profile("default", {"UIDROOT": "1.2.3"})
+        profile = build_profile("default", ProfileSettings(uid_root="1.2.3"))
 
         params_a = DeidParameters(patient_id="AAA", accession_number="ACC_A", study_id="STUDY_A", jitter=3)
         params_b = DeidParameters(patient_id="BBB", accession_number="ACC_B", study_id="STUDY_B", jitter=7)

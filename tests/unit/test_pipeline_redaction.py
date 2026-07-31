@@ -29,7 +29,6 @@ DEID_PARAMETERS = {
     "ACCESSION_NUMBER": "TEST",
     "STUDY_ID": "TEST",
     "JITTER": "10",
-    "UIDROOT": "1.2.3",
 }
 
 
@@ -72,10 +71,9 @@ def _deidentify(input_file: Path, output: Path, parameters: dict[str, str]) -> D
     from dicom_dre import Outcome
     from dicom_dre import build_profile
     from dicom_dre import deidentify_file
-    from dicom_dre.profiles.builder import BUILD_CONFIG_KEYS
+    from dicom_dre.profiles.builder import ProfileSettings
 
-    config = {key: value for key, value in parameters.items() if key in BUILD_CONFIG_KEYS}
-    profile = build_profile("default", config)
+    profile = build_profile("default", ProfileSettings(uid_root="1.2.3"))
     result = deidentify_file(
         input_file=input_file,
         output_file=output,

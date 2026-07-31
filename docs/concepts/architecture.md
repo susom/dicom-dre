@@ -8,10 +8,10 @@ it produces one of three outcomes by running three stages in sequence.
 
 For each input DICOM file the engine runs three stages:
 
-1. **Filter** — a device catalog decides whether to keep or reject the image.
-2. **Pixel scrub** — the engine blanks the burned-in text regions the catalog
+1. **Filter**: a device catalog decides whether to keep or reject the image.
+2. **Pixel scrub**: the engine blanks the burned-in text regions the catalog
    identified.
-3. **Metadata** — the engine rewrites DICOM tags: it removes PHI, re-derives
+3. **Metadata**: the engine rewrites DICOM tags: it removes PHI, re-derives
    UIDs, and shifts or keeps dates.
 
 Each run returns a {py:class}`~dicom_dre.result.DeidentifyResult` whose `outcome`
@@ -20,8 +20,8 @@ is one of three {py:class}`~dicom_dre.result.Outcome` values:
 | Outcome | Cause |
 |---------|-------|
 | `DEIDENTIFIED` | The file passed the filter, and the engine wrote it out. |
-| `FILTERED` | A device or exclusion rule rejected the file; the result carries the matched reason. |
-| `QUARANTINED` | Processing raised an exception; the result carries the error text. |
+| `FILTERED` | A device or exclusion rule rejected the file; the result contains the matched reason. |
+| `QUARANTINED` | Processing raised an exception; the result contains the error text. |
 
 ## Pipeline
 
@@ -56,7 +56,7 @@ See [Device Catalog](device-catalog.md).
 
 ### Pixel scrub
 
-When the decision carries scrub regions,
+When the decision contains scrub regions,
 {py:func}`dicom_dre.pixel_blanker.blank_regions` blanks them. The engine edits
 JPEG Baseline images directly in the compressed bitstream with no re-encoding.
 For all other transfer syntaxes, it decodes with pydicom and numpy, blanks the
@@ -68,7 +68,7 @@ See [JPEG DCT Scrubbing](jpeg-dct.md).
 
 The bound {py:class}`~dicom_dre.profile.DeidProfile` runs its tag rules on the
 dataset with `DeidProfile.apply(ds, params)`, where `params` is a
-{py:class}`~dicom_dre.parameters.DeidParameters` carrying the per-patient values.
+{py:class}`~dicom_dre.parameters.DeidParameters` containing the per-patient values.
 Rules are small closures defined in
 {py:mod}`dicom_dre.actions` (for example `remove`, `empty`, `hash_uid`,
 `jitter_date`, `keep`). The profile factories in {py:mod}`dicom_dre.profiles`
@@ -86,8 +86,9 @@ values from the supplied parameters. The available actions:
 | `empty()` | Replace the value with a zero-length value (empty list for `SQ`). |
 | `set_value(value, create_if_missing=False)` | Replace the value with a literal string, optionally creating the element when absent. |
 | `set_param(field, default=None, fallback_field=None, create_if_missing=False)` | Write a per-patient value read from `DeidParameters`, with fallbacks. |
+| `hash_identifier_param(field, salt, fallback_field=None, source_tag=None)` | Write a caller-supplied identifier verbatim, otherwise hash the original element value (salted with `salt` and the study identifier); write `[REDACTED]` when there is nothing to hash. |
 | `hash_uid(root, use_study_salt=False)` | Re-derive a UID as an MD5 hash under `root`, optionally salted with the study identifier. |
-| `jitter_date()` | Shift the `DA`/`DT` date component forward by `params.jitter` days, preserving any time/timezone remainder. |
+| `jitter_date()` | Shift the `DA`/`DT` date component forward by `params.jitter` days, preserving any time/timezone remainder; the profile resolves an unset jitter to a deterministic per-patient, per-study amount before rules run. |
 | `append_value(text, create_if_missing=False)` | Append `text` to a multi-valued element using `\` as separator. |
 | `cap_age(threshold, replacement)` | Replace an `AS` age when its numeric part exceeds `threshold`. |
 | `if_exists(inner)` | Apply `inner` only when the element is present. |
@@ -100,7 +101,7 @@ Profiles compose these actions rather than parsing a script.
 By default the engine removes every private data element that has no explicit
 tag rule. A device rule may name a small, reviewer-approved set of private
 elements to retain verbatim through its `preserved_private_tags` field (a tuple
-of `PrivateTagSpec`). When the catalog decision carries specs, the pipeline
+of `PrivateTagSpec`). When the catalog decision contains specs, the pipeline
 attaches them to the `DeidProfile`. At apply time, `DeidProfile.apply(ds, params)`
 resolves each spec's private-creator block (the block is runtime-assigned, not
 fixed) and keeps both the resolved data elements and their creator element. The
@@ -124,7 +125,7 @@ behavior of each profile.
 A regression fixture suite guards catalog and metadata behavior against known
 inputs. Each fixture pins the expected filter decision, scrub decision, scrub
 regions, and de-identified metadata for a representative instance, so the test
-run catches a change that alters any of them. The fixtures live in
+run catches a change that alters any of them. The fixtures reside in
 `tests/unit/test_catalog_regression_fixtures.py`.
 
 See [Testing](../about/testing.md).

@@ -15,17 +15,14 @@ from pydicom.tag import BaseTag
 from pydicom.tag import Tag
 
 from dicom_dre.actions import TagAction
+from dicom_dre.actions import hash_identifier_param
 from dicom_dre.actions import hash_uid
 from dicom_dre.actions import keep
 from dicom_dre.actions import remove
-from dicom_dre.actions import set_param
 from dicom_dre.actions import set_value
-from dicom_dre.parameters import IDENTIFIER_PLACEHOLDER
 from dicom_dre.profile import DeidProfile
+from dicom_dre.profiles.config import ProfileSettings
 from dicom_dre.profiles.default import description_action
-
-
-UIDROOT = "1.2.840.4267.32."
 
 
 # 15 UID tags re-hashed in the pixels-only profile, without a salt.
@@ -365,22 +362,22 @@ PIXELS_ONLY_REMOVE_TAGS: frozenset[BaseTag] = frozenset(
 )
 
 
-def pixels_only_profile(
-    *,
-    uid_root: str = UIDROOT,
-    allowlist_csv: str = "default.csv",
-) -> DeidProfile:
+def pixels_only_profile(settings: ProfileSettings | None = None) -> DeidProfile:
     """Construct a pixels-only profile.
 
-    No salt, no jitter, minimal metadata. Removes all unspecified elements.
-    Per-patient identity values are supplied at apply time via
-    :class:`DeidParameters`; absent PatientName falls back to PatientID.
+    No jitter, minimal metadata. Removes all unspecified elements. UIDs are
+    re-derived without the study-ID salt. Per-patient identity values are
+    supplied at apply time via :class:`DeidParameters`. When PatientID,
+    PatientName, or AccessionNumber are not supplied, the original element value
+    is hashed with ``settings.hash_salt`` and the study identifier;
+    PatientName reuses the PatientID hash.
 
     The free-text description fields take a per-patient value verbatim; when it
-    is ``None`` they are redacted from the dataset using the ``allowlist_csv``
-    allowlist at apply time.
+    is ``None`` they are redacted from the dataset using
+    ``settings.allowlist_csv`` at apply time.
     """
-    uid_action = hash_uid(uid_root)  # no salt
+    settings = settings or ProfileSettings()
+    uid_action = hash_uid(settings.uid_root)  # no study-ID salt
 
     rules: dict[BaseTag, TagAction] = {}
 
@@ -393,15 +390,21 @@ def pixels_only_profile(
     # Remove tags
     rules.update({t: remove() for t in PIXELS_ONLY_REMOVE_TAGS})
 
-    # Literal value substitution
-    rules[Tag(0x0010, 0x0010)] = set_param(
-        "patient_name", fallback_field="patient_id", default=IDENTIFIER_PLACEHOLDER
+    # Identifier substitution -- caller value wins, else hash the original.
+    # PatientName runs before the PatientID rule so it hashes the original
+    # PatientID element and matches the value the PatientID rule then writes.
+    rules[Tag(0x0010, 0x0010)] = hash_identifier_param(
+        "patient_name", salt=settings.hash_salt, fallback_field="patient_id", source_tag=Tag(0x0010, 0x0020)
     )  # PatientName
-    rules[Tag(0x0010, 0x0020)] = set_param("patient_id", default=IDENTIFIER_PLACEHOLDER)  # PatientID
-    rules[Tag(0x0008, 0x0050)] = set_param("accession_number", default=IDENTIFIER_PLACEHOLDER)  # AccessionNumber
-    rules[Tag(0x0008, 0x103E)] = description_action("series_description", allowlist_csv, False)  # SeriesDescription
-    rules[Tag(0x0008, 0x1030)] = description_action("study_description", allowlist_csv, False)  # StudyDescription
-    rules[Tag(0x0018, 0x1030)] = description_action("protocol_name", allowlist_csv, False)  # ProtocolName
+    rules[Tag(0x0010, 0x0020)] = hash_identifier_param("patient_id", salt=settings.hash_salt)  # PatientID
+    rules[Tag(0x0008, 0x0050)] = hash_identifier_param("accession_number", salt=settings.hash_salt)  # AccessionNumber
+    rules[Tag(0x0008, 0x103E)] = description_action(
+        "series_description", settings.allowlist_csv, False
+    )  # SeriesDescription
+    rules[Tag(0x0008, 0x1030)] = description_action(
+        "study_description", settings.allowlist_csv, False
+    )  # StudyDescription
+    rules[Tag(0x0018, 0x1030)] = description_action("protocol_name", settings.allowlist_csv, False)  # ProtocolName
 
     # PatientIdentityRemoved -- created if missing and set to YES
     rules[Tag(0x0012, 0x0062)] = set_value("YES", create_if_missing=True)
@@ -414,5 +417,6 @@ def pixels_only_profile(
         remove_curves=True,
         remove_overlays=True,
         remove_unspecified=True,
-        allowlist_csv=allowlist_csv,
+        allowlist_csv=settings.allowlist_csv,
+        hash_salt=settings.hash_salt,
     )

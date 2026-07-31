@@ -60,7 +60,7 @@ Acknowledgements:
 
     Note on DC handling: the PixelMed codec leaves each redacted block's DC
     difference unchanged (so blocks take the average color of the preceding
-    block). This port instead zeroes the DC coefficient and carries the
+    block). This port instead zeroes the DC coefficient and propagates the
     correction forward on a separate DC-prediction chain, which the paper
     mentions as an alternative but the reference codec does not implement.
 """

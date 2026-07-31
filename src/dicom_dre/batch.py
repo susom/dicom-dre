@@ -27,6 +27,7 @@ from typing import TYPE_CHECKING
 
 from dicom_dre.parameters import DeidParameters
 from dicom_dre.pipeline import deidentify_file
+from dicom_dre.profiles.builder import ProfileSettings
 from dicom_dre.profiles.builder import build_profile
 from dicom_dre.result import BatchItemResult
 from dicom_dre.result import DeidentifyResult
@@ -50,19 +51,20 @@ class ProfileSpec:
     """Picklable description of a de-identification profile.
 
     A bound :class:`~dicom_dre.profile.DeidProfile` cannot cross a process
-    boundary because its tag rules are closures. This spec carries the profile
+    boundary because its tag rules are closures. This spec contains the profile
     name and build-time configuration instead, so each worker process can
     rebuild the profile with :func:`dicom_dre.build_profile`. Per-patient
-    identity values are not part of the spec; they travel on a
+    identity values are not part of the spec; they are passed on a
     :class:`~dicom_dre.parameters.DeidParameters`.
 
     Attributes:
         name: Profile name accepted by :func:`dicom_dre.build_profile`.
-        config: Build-time configuration mapping (UIDROOT, ALLOWLIST_CSV).
+        settings: Build-time configuration (UID root, allowlist CSV, and
+            identifier-hash salt).
     """
 
     name: str
-    config: dict[str, str] = field(default_factory=dict)
+    settings: ProfileSettings = field(default_factory=ProfileSettings)
 
 
 @dataclass(frozen=True)
@@ -262,7 +264,7 @@ def deidentify_paths(
         if profile is None:
             if profile_spec is None:
                 raise ValueError("deidentify_paths requires either profile or profile_spec")
-            profile = build_profile(profile_spec.name, profile_spec.config)
+            profile = build_profile(profile_spec.name, profile_spec.settings)
         yield from _run_sequential(
             discovered, output_dir, profile=profile, parameters=parameters, catalog=catalog, options=options
         )
@@ -400,7 +402,7 @@ def _init_worker(
     module globals so :func:`_process_one` can reuse them across tasks.
     """
     global _WORKER_PROFILE, _WORKER_PARAMETERS, _WORKER_CATALOG, _WORKER_OPTIONS
-    _WORKER_PROFILE = build_profile(profile_spec.name, profile_spec.config)
+    _WORKER_PROFILE = build_profile(profile_spec.name, profile_spec.settings)
     _WORKER_PARAMETERS = parameters
     _WORKER_CATALOG = catalog
     _WORKER_OPTIONS = options

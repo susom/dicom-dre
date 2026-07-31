@@ -48,13 +48,34 @@ just test-fallback
 
 ## Development environment
 
-Sync all dependency groups and compile the extension in one step:
+Development uses a [Dev Container](https://containers.dev/) so every contributor
+has the same toolchain (Python 3.12, `uv`, `just`, `dcmtk`, and the build
+dependencies for the C extension) regardless of host operating system.
 
-```bash
-just bootstrap
-```
+### Prerequisites
 
-This runs `uv sync` followed by `just build-ext`. Run the test suite with:
+- [Visual Studio Code](https://code.visualstudio.com/)
+- [Docker](https://www.docker.com/)
+- The [Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
+  VS Code extension
+
+### Open the repository in the container
+
+1. Clone the repository and open the folder in VS Code.
+2. When VS Code detects the Dev Container configuration, select "Reopen in
+   Container". You can also run "Dev Containers: Reopen in Container" from the
+   command palette.
+3. The first build downloads the base image and installs the container
+   features; later starts reuse the cached image.
+
+The container's `postCreateCommand` runs `.devcontainer/post-create.sh`, which:
+
+- runs `uv sync` to install all dependency groups,
+- compiles the CFFI JPEG-DCT acceleration extension into `src/dicom_dre/`, and
+- installs the pre-commit, pre-push, and commit-msg git hooks.
+
+No manual bootstrap step is required. After the script finishes, run the test
+suite:
 
 ```bash
 uv run pytest

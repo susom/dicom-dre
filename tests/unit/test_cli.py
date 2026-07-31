@@ -10,6 +10,8 @@ conftest.py pytest_configure hook for details.
 
 from __future__ import annotations
 
+import logging
+import warnings
 from typing import TYPE_CHECKING
 
 import pytest
@@ -17,6 +19,7 @@ from click.testing import CliRunner
 
 from dicom_dre.cli import _parse_parameters
 from dicom_dre.cli import cli
+from dicom_dre.salt import default_salt_path
 
 
 if TYPE_CHECKING:
@@ -62,8 +65,8 @@ def test_deidentify_command_success(signa_premier_file: Path, tmp_path: Path) ->
             "STUDY_ID=TEST",
             "-p",
             "JITTER=10",
-            "-p",
-            "UIDROOT=1.2.3",
+            "--uid-root",
+            "1.2.3",
             "--no-rename-to-sop-uid",
         ],
     )
@@ -112,8 +115,8 @@ _BATCH_PARAMS = [
     "STUDY_ID=TEST",
     "-p",
     "JITTER=10",
-    "-p",
-    "UIDROOT=1.2.3",
+    "--uid-root",
+    "1.2.3",
 ]
 
 
@@ -226,6 +229,287 @@ def test_deidentify_missing_output_dir_is_usage_error(signa_premier_file: Path) 
 
     assert result.exit_code != 0
     assert "output-dir" in result.output.lower()
+
+
+class TestSaltResolution:
+    """The deidentify command loads, generates, or bypasses the persisted salt."""
+
+    def test_generates_and_persists_salt_when_absent(self, signa_premier_file: Path, tmp_path: Path) -> None:
+        """With no salt supplied a salt file is generated and a notice is printed."""
+        out = tmp_path / "out"
+        runner = CliRunner()
+        result = runner.invoke(
+            cli,
+            ["deidentify", str(signa_premier_file), "-o", str(out), "--no-rename-to-sop-uid", *_BATCH_PARAMS],
+        )
+
+        assert result.exit_code == 0, result.output
+        assert default_salt_path().exists(), "A salt file should be generated when none is supplied"
+        assert "generated one and saved it" in result.output, f"Expected a generation notice, got: {result.output!r}"
+
+    def test_reuses_persisted_salt_on_second_run(self, signa_premier_file: Path, tmp_path: Path) -> None:
+        """A second run reuses the persisted salt and prints no generation notice."""
+        runner = CliRunner()
+        first = runner.invoke(
+            cli,
+            [
+                "deidentify",
+                str(signa_premier_file),
+                "-o",
+                str(tmp_path / "out1"),
+                "--no-rename-to-sop-uid",
+                *_BATCH_PARAMS,
+            ],
+        )
+        second = runner.invoke(
+            cli,
+            [
+                "deidentify",
+                str(signa_premier_file),
+                "-o",
+                str(tmp_path / "out2"),
+                "--no-rename-to-sop-uid",
+                *_BATCH_PARAMS,
+            ],
+        )
+
+        assert first.exit_code == 0, first.output
+        assert second.exit_code == 0, second.output
+        assert "generated one and saved it" not in second.output, (
+            f"The second run should reuse the salt, got: {second.output!r}"
+        )
+
+    def test_explicit_hash_salt_skips_generation(self, signa_premier_file: Path, tmp_path: Path) -> None:
+        """An explicit --hash-salt suppresses salt-file generation."""
+        out = tmp_path / "out"
+        runner = CliRunner()
+        result = runner.invoke(
+            cli,
+            [
+                "deidentify",
+                str(signa_premier_file),
+                "-o",
+                str(out),
+                "--no-rename-to-sop-uid",
+                "--hash-salt",
+                "fixed-salt",
+                *_BATCH_PARAMS,
+            ],
+        )
+
+        assert result.exit_code == 0, result.output
+        assert not default_salt_path().exists(), "No salt file should be written when --hash-salt is supplied"
+        assert "generated one and saved it" not in result.output, f"No notice should be printed, got: {result.output!r}"
+
+    def test_env_var_salt_skips_generation(
+        self, signa_premier_file: Path, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """DICOM_DRE_HASH_SALT is used and no salt file is generated."""
+        monkeypatch.setenv("DICOM_DRE_HASH_SALT", "env-provided-salt")
+        out = tmp_path / "out"
+        runner = CliRunner()
+        result = runner.invoke(
+            cli,
+            ["deidentify", str(signa_premier_file), "-o", str(out), "--no-rename-to-sop-uid", *_BATCH_PARAMS],
+        )
+
+        assert result.exit_code == 0, result.output
+        assert not default_salt_path().exists(), "No salt file should be written when the env var supplies a salt"
+        assert "generated one and saved it" not in result.output, f"No notice should be printed, got: {result.output!r}"
+
+    def test_no_generate_salt_errors_when_absent(self, signa_premier_file: Path, tmp_path: Path) -> None:
+        """--no-generate-salt errors when no salt is available anywhere."""
+        out = tmp_path / "out"
+        runner = CliRunner()
+        result = runner.invoke(
+            cli,
+            ["deidentify", str(signa_premier_file), "-o", str(out), "--no-generate-salt", *_BATCH_PARAMS],
+        )
+
+        assert result.exit_code != 0, result.output
+        assert "no-generate-salt" in result.output, f"Expected the strict-mode message, got: {result.output!r}"
+        assert not default_salt_path().exists(), "No salt file should be written in strict mode"
+
+    def test_no_generate_salt_uses_existing_file(self, signa_premier_file: Path, tmp_path: Path) -> None:
+        """--no-generate-salt reuses an existing persisted salt without error."""
+        default_salt_path().parent.mkdir(parents=True)
+        default_salt_path().write_text("preset-salt\n", encoding="utf-8")
+        out = tmp_path / "out"
+        runner = CliRunner()
+        result = runner.invoke(
+            cli,
+            [
+                "deidentify",
+                str(signa_premier_file),
+                "-o",
+                str(out),
+                "--no-rename-to-sop-uid",
+                "--no-generate-salt",
+                *_BATCH_PARAMS,
+            ],
+        )
+
+        assert result.exit_code == 0, result.output
+
+    def test_quiet_suppresses_generation_notice(self, signa_premier_file: Path, tmp_path: Path) -> None:
+        """--quiet suppresses the generation notice while still persisting the salt."""
+        out = tmp_path / "out"
+        runner = CliRunner()
+        result = runner.invoke(
+            cli,
+            [
+                "deidentify",
+                str(signa_premier_file),
+                "-o",
+                str(out),
+                "--no-rename-to-sop-uid",
+                "--quiet",
+                *_BATCH_PARAMS,
+            ],
+        )
+
+        assert result.exit_code == 0, result.output
+        assert default_salt_path().exists(), "The salt file should still be generated under --quiet"
+        assert "generated one and saved it" not in result.output, (
+            f"The notice should be suppressed, got: {result.output!r}"
+        )
+
+
+class TestIdentifierParameterConflicts:
+    """Dedicated identity options conflict with the same key given via --param."""
+
+    def test_study_id_conflict_raises(self, signa_premier_file: Path, tmp_path: Path) -> None:
+        """Supplying STUDY_ID via both --study-id and --param is an error."""
+        runner = CliRunner()
+        result = runner.invoke(
+            cli,
+            ["deidentify", str(signa_premier_file), "-o", str(tmp_path / "out"), "--study-id", "A", "-p", "STUDY_ID=B"],
+        )
+
+        assert result.exit_code != 0, result.output
+        assert "STUDY_ID" in result.output, f"Expected the conflict to name STUDY_ID, got: {result.output!r}"
+        assert "only once" in result.output, f"Expected a single-source message, got: {result.output!r}"
+
+    def test_build_setting_via_param_rejected(self, signa_premier_file: Path, tmp_path: Path) -> None:
+        """A build setting passed through --param is rejected as an unknown parameter."""
+        runner = CliRunner()
+        result = runner.invoke(
+            cli,
+            [
+                "deidentify",
+                str(signa_premier_file),
+                "-o",
+                str(tmp_path / "out"),
+                "-p",
+                "UIDROOT=1.2.3",
+            ],
+        )
+
+        assert result.exit_code != 0, result.output
+        assert "UIDROOT" in result.output, f"Expected the error to name UIDROOT, got: {result.output!r}"
+
+
+@pytest.fixture()
+def reset_root_logging() -> object:
+    """Snapshot and restore logging state so --verbose configures deterministically.
+
+    pytest attaches handlers to the root logger, which would make the command's
+    ``logging.basicConfig`` a no-op. Root handlers are cleared and the root,
+    ``dicom_dre``, and ``py.warnings`` logger state plus the warnings-capture
+    hook are reset before the test, then restored, so the ``--verbose`` changes
+    neither depend on nor leak into other tests.
+    """
+    root = logging.getLogger()
+    pkg = logging.getLogger("dicom_dre")
+    warnings_logger = logging.getLogger("py.warnings")
+    root_level = root.level
+    root_handlers = root.handlers[:]
+    pkg_level = pkg.level
+    warn_propagate = warnings_logger.propagate
+    warn_handlers = warnings_logger.handlers[:]
+    show_warning = warnings.showwarning
+    root.handlers[:] = []
+    root.setLevel(logging.WARNING)
+    pkg.setLevel(logging.NOTSET)
+    yield
+    root.setLevel(root_level)
+    root.handlers[:] = root_handlers
+    pkg.setLevel(pkg_level)
+    warnings_logger.propagate = warn_propagate
+    warnings_logger.handlers[:] = warn_handlers
+    warnings.showwarning = show_warning
+
+
+class TestQuarantineLogging:
+    """A file that fails to process is quarantined without leaking a traceback."""
+
+    def _write_malformed_dicom(self, path: Path) -> None:
+        """Write a file that is not valid DICOM so the pipeline quarantines it."""
+        path.write_text("not a dicom file", encoding="utf-8")
+
+    def test_quarantine_prints_no_traceback_by_default(self, tmp_path: Path) -> None:
+        """A quarantined file reports its reason but no traceback on stderr."""
+        bad = tmp_path / "bad.dcm"
+        self._write_malformed_dicom(bad)
+        out = tmp_path / "out"
+        runner = CliRunner()
+        result = runner.invoke(cli, ["deidentify", str(bad), "-o", str(out), "--hash-salt", "s"])
+
+        assert result.exit_code == 1, result.output
+        assert "QUARANTINED" in result.output, f"Expected a QUARANTINED line, got: {result.output!r}"
+        assert "Traceback" not in result.output, f"No traceback should print by default, got: {result.output!r}"
+
+    def test_verbose_enables_debug_logging(self, tmp_path: Path, reset_root_logging: object) -> None:
+        """The --verbose flag raises logging to DEBUG so tracebacks are emitted."""
+        bad = tmp_path / "bad.dcm"
+        self._write_malformed_dicom(bad)
+        out = tmp_path / "out"
+        runner = CliRunner()
+        result = runner.invoke(cli, ["deidentify", str(bad), "-o", str(out), "--hash-salt", "s", "-v"])
+
+        assert result.exit_code == 1, result.output
+        assert logging.getLogger("dicom_dre.pipeline").isEnabledFor(logging.DEBUG), (
+            "--verbose should enable DEBUG logging for the pipeline"
+        )
+
+    def test_default_does_not_enable_debug_logging(self, tmp_path: Path, reset_root_logging: object) -> None:
+        """Without --verbose the pipeline logger stays above DEBUG."""
+        bad = tmp_path / "bad.dcm"
+        self._write_malformed_dicom(bad)
+        out = tmp_path / "out"
+        runner = CliRunner()
+        result = runner.invoke(cli, ["deidentify", str(bad), "-o", str(out), "--hash-salt", "s"])
+
+        assert result.exit_code == 1, result.output
+        assert not logging.getLogger("dicom_dre.pipeline").isEnabledFor(logging.DEBUG), (
+            "DEBUG logging should stay off without --verbose"
+        )
+
+    def test_warnings_suppressed_by_default(self, tmp_path: Path, reset_root_logging: object) -> None:
+        """Captured Python warnings are kept off the console without --verbose."""
+        bad = tmp_path / "bad.dcm"
+        self._write_malformed_dicom(bad)
+        out = tmp_path / "out"
+        runner = CliRunner()
+        runner.invoke(cli, ["deidentify", str(bad), "-o", str(out), "--hash-salt", "s"])
+
+        warnings_logger = logging.getLogger("py.warnings")
+        assert warnings_logger.propagate is False, "Captured warnings should not propagate by default"
+        assert any(isinstance(h, logging.NullHandler) for h in warnings_logger.handlers), (
+            "A NullHandler should absorb captured warnings by default"
+        )
+
+    def test_warnings_enabled_under_verbose(self, tmp_path: Path, reset_root_logging: object) -> None:
+        """The --verbose flag lets captured Python warnings reach the console."""
+        bad = tmp_path / "bad.dcm"
+        self._write_malformed_dicom(bad)
+        out = tmp_path / "out"
+        runner = CliRunner()
+        runner.invoke(cli, ["deidentify", str(bad), "-o", str(out), "--hash-salt", "s", "-v"])
+
+        assert logging.getLogger("py.warnings").propagate is True, (
+            "--verbose should let captured warnings propagate to the console"
+        )
 
 
 def _write_allowlist(path: Path, tokens: list[str]) -> None:

@@ -1,14 +1,14 @@
 # Provenance and Portability
 
-The bundled device catalog and free-text allowlist come from studies on a single
-PACS at one medical research center. The catalog's device rules, pixel scrub
+The bundled device catalog and free-text allowlist come from studies derived from a single
+PACS at a medical research center. The catalog's device rules, pixel scrub
 regions, and allowlisted vocabulary reflect the scanner fleet and reporting
 conventions seen there. They are unlikely to be complete or correct for a
 different site.
 
 ## What is site-specific
 
-The following ship with `dicom-dre` but encode assumptions about one site:
+The following are distributed with `dicom-dre` but encode assumptions about one site:
 
 - **Device rules.** Each catalog entry matches a specific device by
   manufacturer, model, modality, software version, and image dimensions. Devices
@@ -47,5 +47,5 @@ The [Local validation](../guides/local-validation.md) guide describes these
 steps in detail. The [Extending the catalog](../guides/extending-the-catalog.md)
 guide covers adding new device entries.
 
-Treat the shipped catalog and allowlist as a starting point that requires local
+Treat the included catalog and allowlist as a starting point that requires local
 validation, not as a turnkey configuration.

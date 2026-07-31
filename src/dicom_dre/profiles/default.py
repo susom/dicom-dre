@@ -14,6 +14,7 @@ from dicom_dre.actions import TagAction
 from dicom_dre.actions import append_value
 from dicom_dre.actions import cap_age
 from dicom_dre.actions import empty
+from dicom_dre.actions import hash_identifier_param
 from dicom_dre.actions import hash_uid
 from dicom_dre.actions import if_exists
 from dicom_dre.actions import jitter_date
@@ -23,13 +24,10 @@ from dicom_dre.actions import remove
 from dicom_dre.actions import set_param
 from dicom_dre.actions import set_value
 from dicom_dre.parameters import DEFAULT_STUDY_ID
-from dicom_dre.parameters import IDENTIFIER_PLACEHOLDER
 from dicom_dre.parameters import DeidParameters
 from dicom_dre.profile import DeidProfile
+from dicom_dre.profiles.config import ProfileSettings
 from dicom_dre.text_redactor import get_text_redactor
-
-
-UIDROOT = "1.2.840.4267.32."
 
 
 # 214 tags removed during de-identification because they may carry PHI.
@@ -465,10 +463,9 @@ def _build_constant_rules() -> dict[BaseTag, TagAction]:
 
 
 def default_profile(
+    settings: ProfileSettings | None = None,
     *,
-    uid_root: str = UIDROOT,
     deid_method: str = "DICOM-PS3.15E-Basic",
-    allowlist_csv: str = "default.csv",
     preserve_dates: bool = False,
 ) -> DeidProfile:
     """Construct a full PS3.15E de-identification profile.
@@ -478,31 +475,41 @@ def default_profile(
     free-text description overrides, and the date jitter) are supplied at apply
     time via :class:`DeidParameters`.
 
+    When a caller supplies no PatientID, PatientName, or AccessionNumber, the
+    original element value is hashed with ``settings.hash_salt`` and the study
+    identifier; PatientName reuses the PatientID hash. A fail-safe placeholder is
+    written only when there is no value to hash.
+
     The free-text description fields accept a per-patient value that takes
     precedence; when it is ``None`` the engine redacts the corresponding element
-    from the dataset at apply time using the ``allowlist_csv`` allowlist.
+    from the dataset at apply time using ``settings.allowlist_csv``.
     ``preserve_dates`` selects a date-preserving redactor for the free-text
     fields and does not alter the profile's date-jitter behavior.
     """
-    uid_action = hash_uid(uid_root, use_study_salt=True)
+    settings = settings or ProfileSettings()
+    uid_action = hash_uid(settings.uid_root, use_study_salt=True)
     shift = if_exists(jitter_date())
 
     rules = _build_constant_rules()
     rules.update(dict.fromkeys(UID_TAGS, uid_action))
     rules.update(dict.fromkeys(DATE_TAGS, shift))
 
-    rules[Tag(0x0010, 0x0010)] = set_param(
-        "patient_name", fallback_field="patient_id", default=IDENTIFIER_PLACEHOLDER
+    # PatientName runs before the PatientID rule so it hashes the original
+    # PatientID element, yielding the same hash the PatientID rule then writes.
+    rules[Tag(0x0010, 0x0010)] = hash_identifier_param(
+        "patient_name", salt=settings.hash_salt, fallback_field="patient_id", source_tag=Tag(0x0010, 0x0020)
     )  # PatientName
-    rules[Tag(0x0010, 0x0020)] = set_param("patient_id", default=IDENTIFIER_PLACEHOLDER)  # PatientID
-    rules[Tag(0x0008, 0x0050)] = set_param("accession_number", default=IDENTIFIER_PLACEHOLDER)  # AccessionNumber
+    rules[Tag(0x0010, 0x0020)] = hash_identifier_param("patient_id", salt=settings.hash_salt)  # PatientID
+    rules[Tag(0x0008, 0x0050)] = hash_identifier_param("accession_number", salt=settings.hash_salt)  # AccessionNumber
     rules[Tag(0x0008, 0x103E)] = description_action(
-        "series_description", allowlist_csv, preserve_dates
+        "series_description", settings.allowlist_csv, preserve_dates
     )  # SeriesDescription
     rules[Tag(0x0008, 0x1030)] = description_action(
-        "study_description", allowlist_csv, preserve_dates
+        "study_description", settings.allowlist_csv, preserve_dates
     )  # StudyDescription
-    rules[Tag(0x0018, 0x1030)] = description_action("protocol_name", allowlist_csv, preserve_dates)  # ProtocolName
+    rules[Tag(0x0018, 0x1030)] = description_action(
+        "protocol_name", settings.allowlist_csv, preserve_dates
+    )  # ProtocolName
 
     # Mandatory evidence attributes -- created if missing and then set here
     rules[Tag(0x0012, 0x0020)] = set_param(
@@ -518,5 +525,6 @@ def default_profile(
         remove_curves=False,
         remove_overlays=True,
         modifies_dates=True,
-        allowlist_csv=allowlist_csv,
+        allowlist_csv=settings.allowlist_csv,
+        hash_salt=settings.hash_salt,
     )

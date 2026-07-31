@@ -1,15 +1,18 @@
 """Command-line interface for the DICOM De-identification & Redaction Engine.
 
 Exposes the batch engine entry point (:func:`dicom_dre.deidentify_paths`)
-as a ``dicom-dre`` console script. The CLI performs no hashing, settings lookups,
-or free-text redaction: de-identification parameters are consumed as-is, mirroring
-the library contract.
+as a ``dicom-dre`` console script. The CLI resolves the identifier-hash salt
+(from ``--hash-salt``, the ``DICOM_DRE_HASH_SALT`` environment variable, or a
+generated per-user salt file) and forwards the build-time configuration and
+per-patient parameters to the engine, which performs the identifier and UID
+hashing, date jitter, and free-text redaction.
 """
 
 from __future__ import annotations
 
 import csv
 import importlib.resources as pkg_resources
+import logging
 import os
 from pathlib import Path
 
@@ -21,9 +24,12 @@ from dicom_dre import jpeg_dct_accelerator_available
 from dicom_dre.batch import OutputPathCollisionError
 from dicom_dre.batch import ProfileSpec
 from dicom_dre.parameters import DeidParameters
-from dicom_dre.profiles.builder import BUILD_CONFIG_KEYS
+from dicom_dre.profiles.builder import ProfileSettings
 from dicom_dre.profiles.builder import list_profiles
 from dicom_dre.result import Outcome
+from dicom_dre.salt import default_salt_path
+from dicom_dre.salt import load_or_create_salt
+from dicom_dre.salt import read_salt
 from dicom_dre.text_redactor import TextRedactor
 from dicom_dre.text_redactor import extract_unique_tokens
 from dicom_dre.text_redactor import interactive_quality_check_csv_file
@@ -31,6 +37,11 @@ from dicom_dre.text_redactor import print_redacted_tokens
 from dicom_dre.text_redactor import process_csv_file
 from dicom_dre.text_redactor import quality_check_csv_file
 from dicom_dre.text_redactor import save_allowlist_to_csv
+
+
+# Environment variable read as the identifier-hash salt when no explicit value
+# is supplied on the command line, before falling back to the persisted file.
+HASH_SALT_ENV_VAR = "DICOM_DRE_HASH_SALT"
 
 
 def _parse_parameters(pairs: tuple[str, ...]) -> dict[str, str]:
@@ -56,6 +67,71 @@ def _parse_parameters(pairs: tuple[str, ...]) -> dict[str, str]:
             )
         parameters[key] = value
     return parameters
+
+
+def _configure_logging(*, verbose: bool) -> None:
+    """Set console verbosity and route Python warnings through logging.
+
+    Warnings raised by dependencies (for example pydicom VR mismatches) are
+    captured into the ``py.warnings`` logger so they follow the same verbosity
+    control as the pipeline's own logging. With ``verbose`` the ``dicom_dre``
+    logger drops to DEBUG and captured warnings reach the console; otherwise the
+    warnings are captured but kept off the console.
+    """
+    logging.captureWarnings(True)
+    warnings_logger = logging.getLogger("py.warnings")
+    if verbose:
+        warnings_logger.propagate = True
+        logging.getLogger("dicom_dre").setLevel(logging.DEBUG)
+        logging.basicConfig(level=logging.DEBUG)
+    else:
+        warnings_logger.propagate = False
+        if not any(isinstance(handler, logging.NullHandler) for handler in warnings_logger.handlers):
+            warnings_logger.addHandler(logging.NullHandler())
+
+
+def _resolve_hash_salt(explicit: str | None, *, generate_salt: bool, quiet: bool) -> str:
+    """Resolve the identifier-hash salt for a run.
+
+    Precedence: the explicit ``--hash-salt`` value, then the
+    ``DICOM_DRE_HASH_SALT`` environment variable, then the persisted per-user
+    salt file. With ``generate_salt`` False, an absent salt raises instead of
+    generating one, so scripted runs stay deterministic. A newly generated salt
+    is reported on stderr unless ``quiet`` is set.
+    """
+    if explicit is not None:
+        return explicit
+
+    env_salt = os.environ.get(HASH_SALT_ENV_VAR)
+    if env_salt is not None:
+        return env_salt
+
+    existing = read_salt()
+    if existing is not None:
+        return existing
+
+    if not generate_salt:
+        raise click.UsageError(
+            "No identifier-hash salt supplied and --no-generate-salt is set. "
+            f"Provide --hash-salt, set {HASH_SALT_ENV_VAR}, "
+            f"or create {default_salt_path()}."
+        )
+
+    resolved_salt, created = load_or_create_salt()
+    if created and not quiet:
+        click.echo(
+            "\n".join(
+                (
+                    "No identifier-hash salt supplied; generated one and saved it to:",
+                    f"    {default_salt_path()}",
+                    "Keep this file secret and back it up; the same salt is required",
+                    "to reproduce these pseudonyms on later runs.",
+                    f"Override with --hash-salt or {HASH_SALT_ENV_VAR}.",
+                )
+            ),
+            err=True,
+        )
+    return resolved_salt
 
 
 @click.group(context_settings={"max_content_width": 120})
@@ -124,7 +200,61 @@ def cli() -> None:
     "params",
     multiple=True,
     metavar="KEY=VALUE",
-    help="A de-identification parameter (repeatable), e.g. -p PATIENT_ID=TEST.",
+    help="A per-patient de-identification parameter (repeatable), e.g. -p PATIENT_ID=TEST.",
+)
+@click.option(
+    "--study-id",
+    "study_id",
+    default=None,
+    metavar="VALUE",
+    help="Study identifier scoping the identifier and UID hashes (STUDY_ID parameter).",
+)
+@click.option(
+    "--uid-root",
+    "uid_root",
+    default=None,
+    metavar="VALUE",
+    help="UID root prefix under which re-derived UIDs are hashed.",
+)
+@click.option(
+    "--allowlist-csv",
+    "allowlist_csv",
+    default=None,
+    metavar="VALUE",
+    help="Free-text redaction allowlist filename or absolute path.",
+)
+@click.option(
+    "--hash-salt",
+    "hash_salt",
+    default=None,
+    metavar="VALUE",
+    help="Salt for hashing PatientID/PatientName/AccessionNumber.",
+)
+@click.option(
+    "--generate-salt/--no-generate-salt",
+    "generate_salt",
+    default=True,
+    show_default=True,
+    help=(
+        "When no salt is supplied, generate and persist one. With "
+        "--no-generate-salt the command errors instead of generating."
+    ),
+)
+@click.option(
+    "--quiet",
+    "-q",
+    "quiet",
+    is_flag=True,
+    default=False,
+    help="Suppress informational notices on stderr (for example salt generation).",
+)
+@click.option(
+    "--verbose",
+    "-v",
+    "verbose",
+    is_flag=True,
+    default=False,
+    help="Enable debug logging, including tracebacks for quarantined files.",
 )
 @click.option(
     "--decompress/--no-decompress",
@@ -160,6 +290,13 @@ def deidentify(
     globs: tuple[str, ...],
     profile_name: str,
     params: tuple[str, ...],
+    study_id: str | None,
+    uid_root: str | None,
+    allowlist_csv: str | None,
+    hash_salt: str | None,
+    generate_salt: bool,
+    quiet: bool,
+    verbose: bool,
     decompress: bool,
     rename_to_sop_uid: bool,
     highlight_blanked_pixels: bool,
@@ -176,9 +313,19 @@ def deidentify(
     command exits with status 1 if any file was QUARANTINED; FILTERED files are
     a normal outcome and do not affect the exit code.
     """
+    _configure_logging(verbose=verbose)
     parameters = _parse_parameters(params)
-    config = {key: value for key, value in parameters.items() if key in BUILD_CONFIG_KEYS}
-    profile_spec = ProfileSpec(name=profile_name, config=config)
+    if study_id is not None:
+        if "STUDY_ID" in parameters:
+            raise click.UsageError("STUDY_ID given via both --study-id and --param; supply it only once.")
+        parameters["STUDY_ID"] = study_id
+    resolved_hash_salt = _resolve_hash_salt(hash_salt, generate_salt=generate_salt, quiet=quiet)
+    settings_overrides: dict[str, str] = {"hash_salt": resolved_hash_salt}
+    if uid_root is not None:
+        settings_overrides["uid_root"] = uid_root
+    if allowlist_csv is not None:
+        settings_overrides["allowlist_csv"] = allowlist_csv
+    profile_spec = ProfileSpec(name=profile_name, settings=ProfileSettings(**settings_overrides))
     try:
         deid_parameters = DeidParameters.from_mapping(parameters)
     except ValueError as error:

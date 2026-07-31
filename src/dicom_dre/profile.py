@@ -4,12 +4,16 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from dataclasses import field
+from dataclasses import replace
 from typing import TYPE_CHECKING
 
 from pydicom.datadict import dictionary_VR
 from pydicom.errors import BytesLengthException
 from pydicom.tag import BaseTag
 from pydicom.tag import Tag
+
+from dicom_dre.parameters import DEFAULT_STUDY_ID
+from dicom_dre.uid_utils import stable_jitter
 
 
 if TYPE_CHECKING:
@@ -50,6 +54,7 @@ class DeidProfile:
     preserve_dates: bool = False
     modifies_dates: bool = False
     allowlist_csv: str = "default.csv"
+    hash_salt: str = ""
     date_override_tags: frozenset[BaseTag] = field(default_factory=frozenset)
     preserved_private_specs: frozenset[PrivateTagSpec] = field(default_factory=frozenset)
 
@@ -58,7 +63,7 @@ class DeidProfile:
 
         Per-patient values are read from ``params`` at apply time.
 
-        Phase 0: Validate the jitter against this profile's date policy.
+        Phase 0: Validate the jitter and resolve a per-patient shift when unset.
         Phase 1: Insert a default SpecificCharacterSet when absent.
         Phase 2: Apply element-level rules.
         Phase 3: Apply global removal rules (private, curves, overlays, unspecified).
@@ -66,6 +71,7 @@ class DeidProfile:
         Phase 5: Correct VRs for elements read as OB/UN inside sequences.
         """
         self._validate_jitter(params)
+        params = self._resolve_jitter(ds, params)
         self._ensure_specific_character_set(ds)
         self._apply_element_rules(ds, params)
         self._apply_global_rules(ds)
@@ -78,14 +84,34 @@ class DeidProfile:
 
         A date-shifting profile (``modifies_dates=True``) must never emit an
         unshifted (zero-day) result, so an explicit ``jitter == 0`` is rejected;
-        an unset jitter resolves to :data:`DEFAULT_JITTER`. Non-shifting profiles
-        ignore jitter entirely -- their date rules never run -- so any value
-        (including ``0``) is accepted and inert.
+        an unset jitter resolves to a deterministic per-study shift derived from
+        the hash salt and study identifier. Non-shifting profiles ignore jitter
+        entirely -- their date rules never run -- so any value (including ``0``)
+        is accepted and inert.
         """
         if not self.modifies_dates:
             return
         if params.jitter == 0:
             raise ValueError("jitter must be non-zero for a date-shifting profile")
+
+    def _resolve_jitter(self, ds: Dataset, params: DeidParameters) -> DeidParameters:
+        """Return params with a derived jitter when the caller supplied none.
+
+        For a date-shifting profile with no explicit jitter, the shift is derived
+        once from the profile salt, the study identifier, and the original (PHI)
+        PatientID read from the top-level dataset. Resolving here -- before any
+        rule mutates PatientID -- keeps every date in the instance shifted by the
+        same per-patient, per-study amount. Non-shifting profiles and an explicit
+        jitter are returned unchanged.
+        """
+        if not self.modifies_dates or params.jitter is not None:
+            return params
+        study_id = params.study_id if params.study_id is not None else DEFAULT_STUDY_ID
+        patient_id_tag = Tag(0x0010, 0x0020)
+        original_patient_id = ds[patient_id_tag].value if patient_id_tag in ds else None
+        patient_key = str(original_patient_id) if original_patient_id else ""
+        days = stable_jitter(self.hash_salt, study_id, patient_key)
+        return replace(params, jitter=days)
 
     def _ensure_specific_character_set(self, ds: Dataset) -> None:
         """Insert a default SpecificCharacterSet when absent or empty.

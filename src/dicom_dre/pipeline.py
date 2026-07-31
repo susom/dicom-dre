@@ -185,7 +185,9 @@ def deidentify_file(
             output_attributes=output_attributes,
         )
     except Exception as exc:
-        logger.exception("Error during Python de-identification of %s: %s", input_file, exc)
+        # Quarantine is a normal terminal outcome reported to the caller via the
+        # result; keep the traceback at debug level so it does not spam stderr.
+        logger.debug("Error during Python de-identification of %s: %s", input_file, exc, exc_info=True)
         return DeidentifyResult.quarantined(
             error=str(exc),
             input_file=input_file,

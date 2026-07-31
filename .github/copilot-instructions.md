@@ -26,6 +26,7 @@ INTERACTION & REASONING GUIDELINES
   Never use marketing terms (efficient, compelling, comprehensively, effectively, successfully).
   Never use promotional adjectives (comprehensive, robust, powerful, optimized, seamless, flexible, scalable, intuitive, advanced, cutting-edge).
   Never use enthusiastic phrases (Perfect! Excellent! Great! Awesome! I have successfully...).
+  Avoid the informal term "knobs" for configurable values; use "settings", "options", or "parameters".
   Avoid evaluative or subjective judgments.
   Prefer verbs and concrete nouns over adjectives.
   Omit unverifiable or unquantifiable claims.
@@ -105,6 +106,26 @@ DOCSTRINGS & COMMENTS
 - First line: short summary sentence
 - Document all public classes, methods, and functions
 - Never write obvious comments that simply restate what the code does
+- Omit self-evident or trivially true statements. Do not document facts the
+  reader can infer from the signature, types, or an obvious guarantee (for
+  example "this module has no dependencies so it avoids an import cycle",
+  "returns a value", "this is a helper"). Record a fact only when it is
+  non-obvious and affects correctness, safety, performance, or correct use.
+- State what the code does, not what it does not do. Avoid negative-space
+  statements that contrast with an alternative or a prior design (for example
+  "not passed to X", "rather than closing over Y"); these are usually
+  refactoring artifacts. Keep a negative statement only when it conveys
+  critical information the reader cannot infer, such as a safety constraint.
+- Write dry, precise prose using established computer science and engineering
+  terms. Name the actual mechanism, not an analogy for it.
+- Do not use metaphor or anthropomorphism. Data does not "travel", "live",
+  "ship", "flow", or get "baked in"; objects do not "carry", "own", or "want".
+  Use precise verbs instead: "is stored in", "resides in", "is fixed at
+  construction", "is serialized to", "is passed to", "occurs", "is scoped to".
+- Prohibited terms and replacements: "baked" -> "fixed"/"set at construction";
+  "knobs" -> "settings"/"options"/"parameters"; "lives" -> "is stored"/
+  "resides"/"occurs"; "travel"/"ship" -> "is serialized"/"is sent"/"is passed";
+  "carries" -> "holds"/"contains".
 
 Example:
 def add(x: int, y: int) -> int:

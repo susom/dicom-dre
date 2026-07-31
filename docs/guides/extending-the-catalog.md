@@ -1,8 +1,8 @@
 # Extending the Catalog
 
 This guide walks through adding support for a new imaging device to the device
-catalog. The catalog data lives in the {py:mod}`dicom_dre.default_catalog` module;
-the matching engine and factory functions live in {py:mod}`dicom_dre.catalog`.
+catalog. The catalog data resides in the {py:mod}`dicom_dre.default_catalog` module;
+the matching engine and factory functions reside in {py:mod}`dicom_dre.catalog`.
 
 :::{note}
 This page is the how-to walkthrough. For the reference description of device
@@ -45,10 +45,10 @@ Choose a match prefix per field (see
 - Use `^` (starts-with) for model families like `"^AXIOM"`.
 - Use `=` (exact) when a substring would collide with another model, for
   example `"=S1000"` versus `"=S2000"`.
-- Use a bare substring when you only care that the tag contains a known token
-  and the surrounding text varies. For example, `"KONICA"` matches both
-  `"KONICA"` and `"KONICA MINOLTA"`, so you do not have to enumerate every
-  vendor string variation.
+- Use a bare substring to require only that the tag contains a known token and
+  the surrounding text varies. For example, `"KONICA"` matches both `"KONICA"`
+  and `"KONICA MINOLTA"`, so it is not necessary to enumerate every vendor
+  string variation.
 - Use `/regex/` for alternations or negative lookahead, for example
   `"/^(?!YES$)/"` to match any `BurnedInAnnotation` that is not exactly `YES`.
 
@@ -62,15 +62,15 @@ described in the concept page. Bind each set of regions to the resolution it
 applies to with a `variant`.
 
 If the device produces clean pixels (no burned-in text), omit `scrub`
-entirely — the engine allows the device with no blanking.
+entirely. The engine allows the device with no blanking.
 
 ## 4. Write the device entry
 
 Add the entry to the modality-appropriate list in `default_catalog.py`
 (`_cr_dx_devices`, `_ct_pet_devices`, `_nm_devices`, `_mammo_devices`,
 `_breast_mri_devices`, `_us_devices`, or `_scrub_only_devices`). Order matters:
-the first matching `allow` or `deny` device wins, so place a specific rule before
-a more general one.
+the first matching `allow` or `deny` device takes precedence, so place a specific
+rule before a more general one.
 
 Single-resolution device with one scrub banner:
 
@@ -94,7 +94,7 @@ SOP Class UID prefixes for single-frame, multi-frame, and secondary-capture
 ultrasound images. Ultrasound rules list the frame types they accept; other
 modalities usually constrain `sop_class_uid` directly or omit it.
 
-Multi-resolution device — one variant per image size:
+Multi-resolution device, one variant per image size:
 
 ```python
 device(
@@ -118,7 +118,7 @@ allow rule must be reachable before the exclusion. The engine always evaluates
 device rules before exclusion rules, so an `allow` device for a denied modality
 takes precedence. Confirm that no `deny_when` condition catches the modality
 (for example the `SECONDARY`/`DERIVED` image-type denials) after the device
-matches — those only run when no device rule returns `allow`.
+matches. Those only run when no device rule returns `allow`.
 
 To introduce an entirely new modality group, create a new
 `list[DeviceRule]` (following the `_us_devices` pattern) and append it to
@@ -143,9 +143,9 @@ device, add an explicit field:
 1. Add the field to `DeviceRule`, the `device()` factory, and `_match_device()`
    in `catalog.py`, wiring it to the DICOM keyword via `_match_field`.
 2. Add the keyword to the `keywords` list in `DicomTags.from_dataset()` so the
-   extractor reads the value — otherwise the value is always empty and the match
+   extractor reads the value. Otherwise the value is always empty and the match
    never succeeds. The regression fixtures capture exactly this keyword set, so
-   an unextracted keyword also carries no regression coverage.
+   an unextracted keyword also has no regression coverage.
 
 ```python
 device(
@@ -205,5 +205,5 @@ the fixture to the corrected decision. Then run the full suite:
 just test
 ```
 
-For sites validating the shipped catalog against their own devices before
+For sites validating the included catalog against their own devices before
 trusting output, see [Local validation](local-validation.md).

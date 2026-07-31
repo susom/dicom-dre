@@ -10,20 +10,15 @@ from pydicom.tag import Tag
 
 from dicom_dre.actions import remove
 from dicom_dre.profile import DeidProfile
-from dicom_dre.profiles.default import UIDROOT
+from dicom_dre.profiles.config import ProfileSettings
 from dicom_dre.profiles.lds import lds_profile
 
 
-def lds_no_dob_profile(
-    *,
-    uid_root: str = UIDROOT,
-    allowlist_csv: str = "default.csv",
-) -> DeidProfile:
+def lds_no_dob_profile(settings: ProfileSettings | None = None) -> DeidProfile:
     """Construct an LDS-No-DOB profile. All dates kept except BirthDate/BirthTime."""
     base = lds_profile(
-        uid_root=uid_root,
+        settings,
         deid_method="DICOM-PS3.15E-Basic-LDS-No-DOB",
-        allowlist_csv=allowlist_csv,
     )
     # Remove PatientBirthDate and PatientBirthTime
     updated_rules = dict(base.rules)

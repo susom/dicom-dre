@@ -1,6 +1,6 @@
 # History
 
-`dicom-dre` grew out of a de-identification workflow built on the MIRC CTP
+`dicom-dre` originated from a de-identification workflow built on the MIRC CTP
 (Clinical Trial Processor) engine. This page records that background. It is not
 a reference for configuring the engine; the device catalog and profiles
 documented elsewhere in these docs have replaced the behavior described here.
@@ -24,8 +24,8 @@ dimensions. Pixel rules paired a matching signature with one or more
 Two problems motivated the rewrite:
 
 - The filter and pixel scripts encoded the same device signatures twice, once to
-  decide acceptance and again to place scrub regions, so the two files drifted
-  apart as maintainers added devices.
+  decide acceptance and again to place scrub regions, so the two files diverged
+  as maintainers added devices.
 - The expression syntax was code rather than data, which made the rule set hard
   to inspect, test, and validate.
 
@@ -38,7 +38,7 @@ its scrub regions together. See [Device catalog](../concepts/device-catalog.md).
 
 De-identification profiles now express the metadata handling that a CTP
 anonymizer template previously expressed. See
-[Profiles](../concepts/profiles.md) for the profiles shipped in this repository.
+[Profiles](../concepts/profiles.md) for the profiles included in this repository.
 
 ## Acknowledgement
 

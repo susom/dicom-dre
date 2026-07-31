@@ -1,6 +1,6 @@
 # Testing
 
-The project uses pytest. Tests live in `tests/unit/` and mirror the structure of
+The project uses pytest. Tests reside in `tests/unit/` and mirror the structure of
 `src/dicom_dre/`.
 
 ## Running the test suite

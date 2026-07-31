@@ -2,8 +2,8 @@
 
 ``DeidParameters`` is the typed, immutable record of the per-patient values a
 caller supplies when de-identifying a dataset. A profile is a build-once,
-patient-invariant policy object; the identity values that vary per patient travel
-on ``DeidParameters`` and are threaded through :meth:`DeidProfile.apply`.
+patient-invariant policy object; the per-patient identity values are supplied on
+``DeidParameters`` and passed to :meth:`DeidProfile.apply`.
 """
 
 from __future__ import annotations
@@ -17,11 +17,26 @@ if TYPE_CHECKING:
 
 
 # Write-time defaults resolved by the parameterized tag actions. Kept here as a
-# single source of truth for the placeholder identifiers, the UID-hash salt, and
-# the date-shift amount used when the caller supplies no value.
-IDENTIFIER_PLACEHOLDER = "######"  # PatientID/AccessionNumber when absent
+# single source of truth for the placeholder identifiers and the default study id.
+# When jitter is absent the date-shift is derived per study by stable_jitter.
+IDENTIFIER_PLACEHOLDER = "[REDACTED]"  # PatientID/AccessionNumber fail-safe when neither supplied nor hashable
 DEFAULT_STUDY_ID = "UNKNOWN"  # STUDY_ID (UID-hash salt / ClinicalTrialProtocolID) when absent
-DEFAULT_JITTER = 10  # date shift in days when jitter is absent
+
+# Per-patient identity keys accepted by ``DeidParameters.from_mapping``. Build-time
+# settings (UID root, allowlist CSV, hash salt) are not part of this set; they are
+# held on ``ProfileSettings`` instead.
+_IDENTITY_KEYS = frozenset(
+    {
+        "PATIENT_ID",
+        "PATIENT_NAME",
+        "ACCESSION_NUMBER",
+        "STUDY_ID",
+        "SERIES_DESCRIPTION",
+        "STUDY_DESCRIPTION",
+        "PROTOCOL_NAME",
+        "JITTER",
+    }
+)
 
 
 @dataclass(frozen=True, slots=True)
@@ -31,7 +46,7 @@ class DeidParameters:
     Each field records exactly what the caller supplied; ``None`` means "not
     supplied" and the parameterized tag actions resolve placeholder defaults at
     write time. The type is hashable and picklable so it can be shared read-only
-    across threads and shipped to worker processes.
+    across threads and serialized to worker processes.
     """
 
     patient_id: str | None = None
@@ -47,10 +62,11 @@ class DeidParameters:
     def from_mapping(cls, mapping: Mapping[str, str]) -> DeidParameters:
         """Build ``DeidParameters`` from an uppercase-keyed parameter mapping.
 
-        Reads the identity keys ``PATIENT_ID``, ``PATIENT_NAME``,
+        Reads the per-patient identity keys ``PATIENT_ID``, ``PATIENT_NAME``,
         ``ACCESSION_NUMBER``, ``STUDY_ID``, ``SERIES_DESCRIPTION``,
-        ``STUDY_DESCRIPTION``, ``PROTOCOL_NAME``, and ``JITTER``. Any other key
-        (for example the build knobs ``UIDROOT``/``ALLOWLIST_CSV``) is ignored.
+        ``STUDY_DESCRIPTION``, ``PROTOCOL_NAME``, and ``JITTER``. Build-time
+        settings (UID root, allowlist CSV, identifier-hash salt) are not accepted
+        here; they belong to :class:`dicom_dre.profiles.config.ProfileSettings`.
 
         Args:
             mapping: Parameter mapping with uppercase keys.
@@ -59,8 +75,17 @@ class DeidParameters:
             The parsed parameters.
 
         Raises:
-            ValueError: If ``JITTER`` is present but not an integer.
+            ValueError: If ``JITTER`` is present but not an integer, or if the
+                mapping contains a key that is not a per-patient identity key.
         """
+        unknown = set(mapping) - _IDENTITY_KEYS
+        if unknown:
+            keys = ", ".join(sorted(unknown))
+            raise ValueError(
+                f"Unknown de-identification parameter(s): {keys}. "
+                f"Valid parameters: {', '.join(sorted(_IDENTITY_KEYS))}."
+            )
+
         jitter_value = mapping.get("JITTER")
         if jitter_value is None:
             jitter: int | None = None
