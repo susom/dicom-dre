@@ -2,8 +2,10 @@
 
 A reproducible DICOM de-identification and redaction engine.
 
-`dicom-dre` removes protected health information (PHI) from DICOM instances in
-two places where it commonly appears:
+## What it does
+
+`dicom-dre` removes PHI from DICOM instances in two places where it commonly
+appears:
 
 - **Burned-in pixel PHI.** A declarative device catalog matches each instance to
   a known device and acquisition variant (by manufacturer, model, modality,
@@ -40,21 +42,33 @@ catalog filtering and pixel-scrub decisions (with no PHI or pixel data), and the
 tests assert that the engine still reaches the recorded decision for every case,
 so catalog or profile changes that alter existing outcomes are caught.
 
-## Provenance and portability caveat
+## De-identification status and limits
 
-The bundled device catalog and free-text allowlist were derived from studies on
-a **single PACS at one medical research center**. The catalog's device rules,
-pixel scrub regions, and allowlisted vocabulary reflect the scanner fleet and
-reporting conventions observed there. They are unlikely to be complete or
-correct for a different site. Before relying on `dicom-dre` elsewhere:
+`dicom-dre` performs automated, rule-based de-identification. Its output is not
+de-identified under HIPAA Safe Harbor or Expert Determination, so it should not
+be treated as de-identified or released publicly on the basis of this tool alone.
+Output should be validated by a qualified person before downstream use or
+sharing.
 
-- Validate pixel scrubbing against your own devices; unmatched or mismatched
-  devices will not have their burned-in text blanked.
-- Review and extend the allowlist for your local vocabulary to avoid
-  over-redaction (masking legitimate terms) or under-redaction (leaking PHI).
+The engine reduces PHI but does not guarantee its removal. The bundled device
+catalog and free-text allowlist were derived from studies on a **single PACS at
+one medical research center**, so they encode that site's scanner fleet and
+reporting conventions and are unlikely to be complete for a different site.
+Unmatched or mismatched devices do not have their burned-in text blanked, and
+free-text PHI that resembles allowlisted terms can pass through. The tool also
+does not address re-identification vectors in the image content itself, such as
+facial reconstruction from volumetric imaging.
 
-Treat the shipped catalog and allowlist as a starting point that requires local
-validation, not as a turnkey configuration.
+At our institution, output from this application is classified as high risk: a
+step down from full PHI, but still requiring a HIPAA Data Privacy Attestation
+(DPA) before use. We recommend treating the output as retaining residual PHI risk
+and governing it accordingly.
+
+Before relying on `dicom-dre` at another site, validate pixel scrubbing against
+your own devices and extend the allowlist for your local vocabulary. See
+[Limitations and portability](docs/about/limitations.md) for the full list of
+site-specific assumptions and re-identification vectors this tool does not
+address.
 
 ## Outcomes
 
@@ -217,7 +231,9 @@ a pull request or opening an issue.
 
 ## License
 
-Apache-2.0. The JPEG DCT-domain scrubber is a port of the PixelMed JPEG
+Apache-2.0. The software is provided "AS IS", without warranty of any kind; see
+the [LICENSE](LICENSE) file for the governing terms. The JPEG DCT-domain
+scrubber is a port of the PixelMed JPEG
 Selective Block Redaction Codec and is distributed under that codec's BSD
 license; see the source header in `src/dicom_dre/jpeg_dct_scrubber.py` and the
 `NOTICE` file.

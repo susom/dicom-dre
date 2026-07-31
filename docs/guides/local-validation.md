@@ -10,7 +10,7 @@ before relying on the output.
 :::{note}
 Treat the included catalog and allowlist as a starting point that requires local
 validation, not as a turnkey configuration. See
-[Provenance and portability](../about/provenance.md).
+[Limitations and portability](../about/limitations.md).
 :::
 
 ## Validate pixel scrubbing per device

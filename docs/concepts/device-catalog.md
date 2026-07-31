@@ -13,7 +13,7 @@ The bundled catalog comes from studies on a single PACS at one medical research
 center. Its device rules and pixel scrub regions reflect the scanner fleet seen
 there. They are unlikely to be complete or correct for another site. Treat the
 included catalog as a starting point that requires local validation. See
-[Provenance and portability](../about/provenance.md).
+[Limitations and portability](../about/limitations.md).
 :::
 
 ## Goals

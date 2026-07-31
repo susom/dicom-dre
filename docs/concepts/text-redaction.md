@@ -27,7 +27,7 @@ there. It is unlikely to be complete or correct for another site. Validate and
 extend the allowlist against your own descriptions before relying on it, to
 avoid over-redaction (masking legitimate terms) and under-redaction (leaking
 PHI). See
-[Provenance and portability](../about/provenance.md) and
+[Limitations and portability](../about/limitations.md) and
 [Local validation](../guides/local-validation.md).
 :::
 

@@ -2,6 +2,25 @@
 
 A reproducible DICOM de-identification and redaction engine.
 
+:::{warning}
+`dicom-dre` performs automated, rule-based de-identification of protected health
+information (PHI). Its output is not de-identified under HIPAA Safe Harbor or
+Expert Determination, so it should not be treated as de-identified or released
+publicly on the basis of this tool alone. Output should be validated by a
+qualified person before downstream use or sharing.
+
+The engine reduces PHI; it does not guarantee its removal. Burned-in pixel PHI is
+blanked only for devices and regions present in the catalog, and free-text PHI is
+masked only for tokens absent from the allowlist. Unmatched devices, moved
+overlays, and PHI that resembles allowlisted terms can all leave residual PHI in
+the output.
+
+At the originating institution, output from this application is classified as
+high risk: a step down from full PHI, but still requiring a HIPAA Data Privacy
+Attestation (DPA) before use. Treat the output as retaining residual PHI risk and
+govern it accordingly. See [Limitations and portability](about/limitations.md).
+:::
+
 `dicom-dre` removes protected health information (PHI) from DICOM instances in
 two locations where it commonly occurs:
 
@@ -27,7 +46,7 @@ allowlisted vocabulary reflect the scanner fleet and reporting conventions seen
 there. They are unlikely to be complete or correct for a different site. Treat
 the included catalog and allowlist as a starting point that requires local
 validation, not as a turnkey configuration. See
-[Provenance and portability](about/provenance.md).
+[Limitations and portability](about/limitations.md).
 :::
 
 ```{toctree}
@@ -78,7 +97,7 @@ notes/iso-2022-specific-character-set
 :maxdepth: 2
 :caption: About
 
-about/provenance
+about/limitations
 about/history
 about/testing
 about/changelog

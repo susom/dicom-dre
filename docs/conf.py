@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import datetime
 import importlib.metadata
 import os
 import sys
@@ -16,7 +17,7 @@ sys.path.insert(0, os.path.abspath("../src"))
 
 project = "dicom-dre"
 author = "DICOM-DRE contributors"
-copyright = "2026"
+copyright = f"{datetime.date.today().year} The Board of Trustees of The Leland Stanford Junior University"
 
 try:
     release = importlib.metadata.version("dicom-dre")
