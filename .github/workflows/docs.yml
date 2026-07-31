@@ -23,6 +23,7 @@ on:
       - "src/**"
       - "pyproject.toml"
       - ".github/workflows/docs.yml"
+      - "README.md"
   workflow_dispatch:
 
 permissions:
