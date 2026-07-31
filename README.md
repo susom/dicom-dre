@@ -1,9 +1,9 @@
 # DICOM-DRE
 
-A fast, reproducible DICOM de-identification and redaction engine.
+A reproducible DICOM de-identification and redaction engine.
 
 `dicom-dre` removes protected health information (PHI) from DICOM instances in
-two places where it commonly hides:
+two places where it commonly appears:
 
 - **Burned-in pixel PHI.** A declarative device catalog matches each instance to
   a known device and acquisition variant (by manufacturer, model, modality,
@@ -60,11 +60,11 @@ validation, not as a turnkey configuration.
 
 Each instance resolves to one terminal outcome:
 
-- `DEIDENTIFIED` — metadata scrubbed, pixel regions blanked as required, written
+- `DEIDENTIFIED`: metadata scrubbed, pixel regions blanked as required, written
   to the output directory.
-- `FILTERED` — the instance matched a deny rule (for example an unsupported
-  modality or device) and was intentionally not emitted.
-- `QUARANTINED` — processing failed; the instance was not emitted.
+- `FILTERED`: the instance matched a deny rule (for example an unsupported
+  modality or device) and was not emitted.
+- `QUARANTINED`: processing failed; the instance was not emitted.
 
 ## Installation
 
@@ -120,10 +120,10 @@ assert jpeg_dct_accelerator_available(), "JPEG DCT C accelerator is not compiled
 
 Select a de-identification profile with `--profile`:
 
-- `default` — full metadata scrub with re-derived UIDs.
-- `lds` — HIPAA limited data set (retains dates).
-- `lds-no-dob` — limited data set without date of birth.
-- `pixels-only` — pixel scrubbing with minimal metadata changes.
+- `default`: full metadata scrub with re-derived UIDs.
+- `lds`: HIPAA limited data set (retains dates).
+- `lds-no-dob`: limited data set without date of birth.
+- `pixels-only`: pixel scrubbing with minimal metadata changes.
 
 ### Free-text redaction tools
 
@@ -137,8 +137,14 @@ dicom-dre redactor redact --input input.csv --output output.csv
 # Preview redactions side by side
 dicom-dre redactor quality-check input.csv
 
+# Interactively review flagged tokens and add them to the allowlist
+dicom-dre redactor quality-check input.csv --interactive
+
 # List unique tokens to help curate an allowlist
 dicom-dre redactor show-tokens --input input.csv
+
+# Add one or more tokens to the allowlist
+dicom-dre redactor allow-token TERM1 TERM2
 ```
 
 Pass `--allowlist <file.csv-or-path>` to use a custom allowlist and

@@ -1,6 +1,6 @@
 ---
 description: Writing documentation in docs/
-applyTo: "docs/**/*.md"
+applyTo: "docs/**/*.md, README.md"
 ---
 
 # Writing Documentation in dicom-dre
