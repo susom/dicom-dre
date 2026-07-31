@@ -180,6 +180,41 @@ factories. See the module docstrings and `docs/` for details.
 uv run pytest        # run the test suite
 ```
 
+## Contributing
+
+`dicom-dre` was built first for our own use and is tuned to the structure and
+conventions of our datasets. We are sharing it because parts of it may be useful
+to others, but its direction follows our internal needs. A few consequences
+follow from that:
+
+- **Pull requests are appreciated and are the best way to contribute.** Bug
+  fixes, new features, and broader format support are all welcome. To keep
+  review straightforward, keep each pull request focused, describe what changed
+  and why, and add tests where they apply.
+
+- **Changes to de-identification policy require local evidence.** Edits to the
+  device catalog, pixel scrub regions, de-identification profiles, or the
+  free-text allowlist change what counts as PHI and what is emitted. Ground any
+  such change in a representative test sample drawn from your own imaging
+  library, and add regression fixtures that record the expected catalog
+  filtering and pixel-scrub decisions (with no PHI or pixel data). A policy
+  change without supporting fixtures cannot be reviewed for correctness.
+
+- **We may not act on every issue.** Because the engine is tuned to our use
+  case, behavior that looks like a defect from the outside can be expected for
+  us. We may be unable to reproduce or prioritize problems that do not affect
+  our own workflows.
+
+- **Support is best-effort.** We maintain this alongside our regular work, so
+  responses may be slow.
+
+If your requirements diverge from ours, forking is reasonable and encouraged; a
+version you control fully may serve you better.
+
+That said, we would like this library to be as generalizable as possible for the
+broader community, so do not let any of the above discourage you from submitting
+a pull request or opening an issue.
+
 ## License
 
 Apache-2.0. The JPEG DCT-domain scrubber is a port of the PixelMed JPEG
