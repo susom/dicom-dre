@@ -30,17 +30,22 @@ same input plus the same parameters always yields the same output.
 
 ## Reproducible by design
 
-The engine performs no hashing lookups, no network calls, and no randomization
-of its own. De-identification parameters (patient ID, accession number, UID
-root, salt, jitter, etc.) are consumed exactly as supplied. Given identical
-inputs and parameters, output is byte-for-byte reproducible. Callers are
-responsible for supplying already-hashed or already-mapped identifier values.
+The engine performs no lookups and no network calls. Replacement identifiers are
+derived deterministically: when a caller supplies no explicit value, PatientID
+and AccessionNumber are hashed with SHA-256 over `salt|study_id|identifier`,
+UIDs are re-derived under the configured UID root, and the date shift is derived
+per study from the salt and study identifier when no jitter is supplied.
+Explicitly supplied de-identification parameters (patient ID, accession number,
+jitter, etc.) are consumed exactly as given. Given identical inputs, parameters,
+and salt, the derived replacement identifiers, UIDs, and date shifts are
+reproduced exactly.
 
-This reproducibility is guarded by a regression test suite built from sampled
-DICOM studies. Each fixture records the technical matching tags and the expected
-catalog filtering and pixel-scrub decisions (with no PHI or pixel data), and the
-tests assert that the engine still reaches the recorded decision for every case,
-so catalog or profile changes that alter existing outcomes are caught.
+A separate regression test suite guards the catalog decisions. It is built from
+sampled DICOM studies. Each fixture records the technical matching tags and the
+expected catalog filtering and pixel-scrub decisions (with no PHI or pixel
+data), and the tests assert that the engine still reaches the recorded decision
+for every case, so catalog or profile changes that alter existing outcomes are
+caught.
 
 ## De-identification status and limits
 
