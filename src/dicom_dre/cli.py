@@ -25,6 +25,7 @@ from dicom_dre.batch import OutputPathCollisionError
 from dicom_dre.batch import ProfileSpec
 from dicom_dre.parameters import DeidParameters
 from dicom_dre.profiles.builder import ProfileSettings
+from dicom_dre.profiles.builder import build_profile
 from dicom_dre.profiles.builder import list_profiles
 from dicom_dre.result import Outcome
 from dicom_dre.salt import default_salt_path
@@ -330,6 +331,15 @@ def deidentify(
         deid_parameters = DeidParameters.from_mapping(parameters)
     except ValueError as error:
         raise click.BadParameter(str(error), param_hint="--param") from error
+
+    if deid_parameters.jitter is not None:
+        modifies_dates = build_profile(profile_name, profile_spec.settings).modifies_dates
+        if not modifies_dates and deid_parameters.jitter != 0:
+            raise click.UsageError(
+                f"JITTER cannot be used with the {profile_name!r} profile because it preserves dates."
+            )
+        if modifies_dates and deid_parameters.jitter == 0:
+            raise click.UsageError(f"JITTER must be non-zero for the {profile_name!r} profile because it shifts dates.")
 
     counts = {Outcome.DEIDENTIFIED: 0, Outcome.FILTERED: 0, Outcome.QUARANTINED: 0}
     items = deidentify_paths(

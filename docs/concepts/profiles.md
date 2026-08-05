@@ -100,6 +100,11 @@ with VR `DA`, `DT`, or `TM`. It keeps patient birth date. It keeps patient age
 without the 89-year cap. It configures the redactor with `preserve_dates=True`,
 so dates and times embedded in free-text fields are also kept.
 
+Because the profile preserves dates, it rejects a non-zero `JITTER`: supplying
+a non-zero `JITTER` with `lds` (or any date-preserving profile) is a usage error
+rather than a silently ignored value. `JITTER=0` requests no shift and is
+accepted and inert.
+
 | Attribute | Action |
 |-----------|--------|
 | StudyDate, SeriesDate, AcquisitionDate, ContentDate | Kept |

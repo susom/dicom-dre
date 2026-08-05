@@ -608,11 +608,27 @@ class TestJitterValidation:
         profile.apply(ds, DeidParameters(jitter=5))
         assert str(ds[self.STUDY_DATE_TAG].value) == "20200115", "jitter of 5 should shift by 5 days"
 
+    def test_explicit_jitter_rejected_for_non_shifting_profile(self):
+        """A date-preserving profile rejects an explicit non-zero jitter."""
+        import pytest
+
+        profile = self._date_profile(modifies_dates=False, preserve_dates=True)
+        ds = self._dataset()
+        with pytest.raises(ValueError, match="jitter"):
+            profile.apply(ds, DeidParameters(jitter=5))
+
     def test_zero_jitter_inert_for_non_shifting_profile(self):
-        """A non-shifting profile accepts any jitter and does not shift dates."""
+        """A non-shifting profile accepts jitter=0 and does not shift dates."""
         profile = self._date_profile(modifies_dates=False, preserve_dates=True)
         ds = self._dataset()
         profile.apply(ds, DeidParameters(jitter=0))
+        assert str(ds[self.STUDY_DATE_TAG].value) == "20200110", "non-shifting profile should not shift the date"
+
+    def test_unset_jitter_inert_for_non_shifting_profile(self):
+        """A non-shifting profile accepts an unset jitter and does not shift dates."""
+        profile = self._date_profile(modifies_dates=False, preserve_dates=True)
+        ds = self._dataset()
+        profile.apply(ds, DeidParameters())
         assert str(ds[self.STUDY_DATE_TAG].value) == "20200110", "non-shifting profile should not shift the date"
 
 

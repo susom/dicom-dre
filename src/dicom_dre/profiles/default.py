@@ -802,9 +802,9 @@ def _build_constant_rules() -> dict[BaseTag, TagAction]:
 
     # Mandatory evidence attributes with literal values
     rules[Tag(0x0012, 0x0062)] = set_value("YES", create_if_missing=True)  # PatientIdentityRemoved
-    rules[Tag(0x0028, 0x0303)] = set_value("MODIFIED", create_if_missing=True)
-
-    # LongitudinalTemporalInformationModified
+    rules[Tag(0x0028, 0x0303)] = set_value(  # LongitudinalTemporalInformationModified
+        "MODIFIED", create_if_missing=True
+    )
     rules[Tag(0x0010, 0x1010)] = cap_age(89, "090Y")  # PatientAge
     rules[Tag(0x0040, 0xA075)] = remove_action  # VerifyingObserverName
 
@@ -861,20 +861,20 @@ def default_profile(
 
     # PatientName runs before the PatientID rule so it hashes the original
     # PatientID element, yielding the same hash the PatientID rule then writes.
-    rules[Tag(0x0010, 0x0010)] = hash_identifier_param(
+    rules[Tag(0x0010, 0x0010)] = hash_identifier_param(  # PatientName
         "patient_name", salt=settings.hash_salt, fallback_field="patient_id", source_tag=Tag(0x0010, 0x0020)
-    )  # PatientName
+    )
     rules[Tag(0x0010, 0x0020)] = hash_identifier_param("patient_id", salt=settings.hash_salt)  # PatientID
     rules[Tag(0x0008, 0x0050)] = hash_identifier_param("accession_number", salt=settings.hash_salt)  # AccessionNumber
-    rules[Tag(0x0008, 0x103E)] = redact_description(
+    rules[Tag(0x0008, 0x103E)] = redact_description(  # SeriesDescription
         "series_description", settings.allowlist_csv, preserve_dates
-    )  # SeriesDescription
-    rules[Tag(0x0008, 0x1030)] = redact_description(
+    )
+    rules[Tag(0x0008, 0x1030)] = redact_description(  # StudyDescription
         "study_description", settings.allowlist_csv, preserve_dates
-    )  # StudyDescription
-    rules[Tag(0x0018, 0x1030)] = redact_description(
+    )
+    rules[Tag(0x0018, 0x1030)] = redact_description(  # ProtocolName
         "protocol_name", settings.allowlist_csv, preserve_dates
-    )  # ProtocolName
+    )
 
     # GSPS 2D annotation text
     redact = redact_free_text(settings.allowlist_csv, preserve_dates)
@@ -898,9 +898,9 @@ def default_profile(
     rules[Tag(0x0070, 0x0081)] = empty()  # ContentDescription (LO), Type 2
 
     # Mandatory evidence attributes -- created if missing and then set here
-    rules[Tag(0x0012, 0x0020)] = set_param("study_id", default=DEFAULT_STUDY_ID, create_if_missing=True)
-
-    # ClinicalTrialProtocolID
+    rules[Tag(0x0012, 0x0020)] = set_param(  # ClinicalTrialProtocolID
+        "study_id", default=DEFAULT_STUDY_ID, create_if_missing=True
+    )
     rules[Tag(0x0012, 0x0063)] = append_value(deid_method, create_if_missing=True)  # DeIdentificationMethod
 
     return DeidProfile(

@@ -114,11 +114,14 @@ class DeidProfile:
         A date-shifting profile (``modifies_dates=True``) must never emit an
         unshifted (zero-day) result, so an explicit ``jitter == 0`` is rejected;
         an unset jitter resolves to a deterministic per-study shift derived from
-        the hash salt and study identifier. Non-shifting profiles ignore jitter
-        entirely -- their date rules never run -- so any value (including ``0``)
-        is accepted and inert.
+        the hash salt and study identifier. A date-preserving profile
+        (``modifies_dates=False``) keeps dates verbatim, so an explicit non-zero
+        jitter contradicts the profile and is rejected; ``jitter == 0`` and an
+        unset jitter request no shift and are accepted and inert.
         """
         if not self.modifies_dates:
+            if params.jitter:
+                raise ValueError(f"jitter must not be supplied for the date-preserving profile {self.name!r}")
             return
         if params.jitter == 0:
             raise ValueError("jitter must be non-zero for a date-shifting profile")

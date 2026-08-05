@@ -61,6 +61,8 @@ def _deidentify(
     output = tmp_path / f"out_{profile_name}.dcm"
     parameters = dict(deid_parameters) if deid_parameters is not None else dict(DEID_PARAMETERS)
     profile = build_profile(profile_name, ProfileSettings(uid_root="1.2.3"))
+    if not profile.modifies_dates:
+        parameters.pop("JITTER", None)
     result = deidentify_file(
         input_file=signa_premier_file,
         output_file=output,

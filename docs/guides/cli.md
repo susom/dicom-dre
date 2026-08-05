@@ -34,7 +34,10 @@ directory. It prints one line per processed file, followed by a summary.
   repeatable, for example `-p PATIENT_ID=TEST`. Accepts only the per-patient
   identity keys (`PATIENT_ID`, `PATIENT_NAME`, `ACCESSION_NUMBER`, `STUDY_ID`,
   `SERIES_DESCRIPTION`, `STUDY_DESCRIPTION`, `PROTOCOL_NAME`, `JITTER`); any
-  other key is rejected. Build-time settings use their own flags below.
+  other key is rejected. Build-time settings use their own flags below. A
+  non-zero `JITTER` applies only to date-shifting profiles; combining a non-zero
+  `JITTER` with a date-preserving profile (`lds`, `lds-no-dob`, `pixels-only`)
+  is a usage error. `JITTER=0` requests no shift and is accepted by any profile.
 - `--study-id VALUE`: Study identifier scoping the identifier and UID hashes
   (the `STUDY_ID` parameter). Default: unset.
 - `--uid-root VALUE`: UID root prefix under which re-derived UIDs are hashed.

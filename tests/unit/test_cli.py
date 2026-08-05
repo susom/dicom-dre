@@ -109,6 +109,89 @@ def test_deidentify_bad_parameter(signa_premier_file: Path, tmp_path: Path) -> N
     assert "KEY=VALUE" in result.output, f"Expected the KEY=VALUE usage hint, got: {result.output!r}"
 
 
+@pytest.mark.parametrize("profile_name", ["lds", "lds-no-dob", "pixels-only"])
+def test_deidentify_jitter_rejected_for_date_preserving_profile(
+    signa_premier_file: Path, tmp_path: Path, profile_name: str
+) -> None:
+    """JITTER combined with a date-preserving profile fails with a usage error."""
+    out = tmp_path / "out"
+    runner = CliRunner()
+    result = runner.invoke(
+        cli,
+        [
+            "deidentify",
+            str(signa_premier_file),
+            "-o",
+            str(out),
+            "--profile",
+            profile_name,
+            "-p",
+            "JITTER=10",
+        ],
+    )
+
+    assert result.exit_code != 0, (
+        f"JITTER with the {profile_name} profile should fail, got exit {result.exit_code}: {result.output!r}"
+    )
+    assert "JITTER" in result.output, f"Expected the error to mention JITTER, got: {result.output!r}"
+    assert not out.exists(), f"No output should be written when the combination is rejected: {out}"
+
+
+def test_deidentify_zero_jitter_rejected_for_date_shifting_profile(signa_premier_file: Path, tmp_path: Path) -> None:
+    """JITTER=0 with a date-shifting profile fails with a usage error."""
+    out = tmp_path / "out"
+    runner = CliRunner()
+    result = runner.invoke(
+        cli,
+        [
+            "deidentify",
+            str(signa_premier_file),
+            "-o",
+            str(out),
+            "--profile",
+            "default",
+            "-p",
+            "JITTER=0",
+        ],
+    )
+
+    assert result.exit_code != 0, (
+        f"JITTER=0 with the default profile should fail, got exit {result.exit_code}: {result.output!r}"
+    )
+    assert "JITTER" in result.output, f"Expected the error to mention JITTER, got: {result.output!r}"
+    assert not out.exists(), f"No output should be written when the combination is rejected: {out}"
+
+
+@pytest.mark.parametrize("profile_name", ["lds", "lds-no-dob", "pixels-only"])
+def test_deidentify_zero_jitter_accepted_for_date_preserving_profile(
+    signa_premier_file: Path, tmp_path: Path, profile_name: str
+) -> None:
+    """JITTER=0 with a date-preserving profile is accepted and inert."""
+    out = tmp_path / "out"
+    runner = CliRunner()
+    result = runner.invoke(
+        cli,
+        [
+            "deidentify",
+            str(signa_premier_file),
+            "-o",
+            str(out),
+            "--profile",
+            profile_name,
+            "-p",
+            "JITTER=0",
+            "--uid-root",
+            "1.2.3",
+            "--no-rename-to-sop-uid",
+        ],
+    )
+
+    assert result.exit_code == 0, (
+        f"JITTER=0 with the {profile_name} profile should succeed, got exit {result.exit_code}: {result.output!r}"
+    )
+    assert "DEIDENTIFIED" in result.output, f"Expected a DEIDENTIFIED line, got: {result.output!r}"
+
+
 _BATCH_PARAMS = [
     "-p",
     "PATIENT_ID=TEST",
