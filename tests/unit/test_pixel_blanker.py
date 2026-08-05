@@ -110,8 +110,12 @@ class TestBlankRegionsNoOp:
 
         result = blank_regions(path, out, [ScrubRegion(0, 0, 10, 10)])
 
-        assert result.was_scrubbed is False
-        assert result.output_path == path
+        assert result.was_scrubbed is False, (
+            f"Dataset without PixelData should not be scrubbed, got {result.was_scrubbed}"
+        )
+        assert result.output_path == path, (
+            f"Output path should be the input path when nothing is scrubbed, got {result.output_path}"
+        )
 
     def test_empty_regions(self, uncompressed_mono2):
         """Empty regions list returns was_scrubbed=False."""
@@ -119,8 +123,10 @@ class TestBlankRegionsNoOp:
 
         result = blank_regions(in_path, out_path, [])
 
-        assert result.was_scrubbed is False
-        assert result.output_path == in_path
+        assert result.was_scrubbed is False, f"Empty regions list should not scrub, got {result.was_scrubbed}"
+        assert result.output_path == in_path, (
+            f"Output path should be the input path for empty regions, got {result.output_path}"
+        )
 
 
 class TestJpegBaselinePath:
@@ -133,12 +139,16 @@ class TestJpegBaselinePath:
 
         result = blank_regions(in_path, out_path, regions)
 
-        assert result.was_scrubbed is True
-        assert result.output_path == out_path
+        assert result.was_scrubbed is True, f"Single region should be scrubbed, got {result.was_scrubbed}"
+        assert result.output_path == out_path, (
+            f"Output path should be the requested output path, got {result.output_path}"
+        )
 
         # Verify transfer syntax is preserved
         ds_out = pydicom.dcmread(out_path)
-        assert str(ds_out.file_meta.TransferSyntaxUID) == JPEG_BASELINE_TS
+        assert str(ds_out.file_meta.TransferSyntaxUID) == JPEG_BASELINE_TS, (
+            f"Transfer syntax should remain JPEG Baseline, got {ds_out.file_meta.TransferSyntaxUID}"
+        )
 
     def test_transfer_syntax_preserved(self, jpeg_baseline_rgb):
         """JPEG Baseline transfer syntax remains after blanking."""
@@ -147,7 +157,9 @@ class TestJpegBaselinePath:
         blank_regions(in_path, out_path, [ScrubRegion(0, 0, 20, 20)])
 
         ds_out = pydicom.dcmread(out_path)
-        assert str(ds_out.file_meta.TransferSyntaxUID) == JPEG_BASELINE_TS
+        assert str(ds_out.file_meta.TransferSyntaxUID) == JPEG_BASELINE_TS, (
+            f"Transfer syntax should remain JPEG Baseline, got {ds_out.file_meta.TransferSyntaxUID}"
+        )
 
     def test_surrounding_pixels_unchanged(self, jpeg_baseline_rgb):
         """Pixels outside the blanked region are not modified."""
@@ -167,7 +179,9 @@ class TestJpegBaselinePath:
         out_arr = np.array(Image.open(io.BytesIO(out_frame)))
 
         # Pixels far from the blanked region should be identical
-        assert np.array_equal(orig_arr[100:200, 100:200], out_arr[100:200, 100:200])
+        assert np.array_equal(orig_arr[100:200, 100:200], out_arr[100:200, 100:200]), (
+            "Pixels outside the blanked region should be unchanged"
+        )
 
     def test_multiple_regions(self, jpeg_baseline_rgb):
         """Multiple regions are all blanked."""
@@ -176,9 +190,11 @@ class TestJpegBaselinePath:
 
         result = blank_regions(in_path, out_path, regions)
 
-        assert result.was_scrubbed is True
+        assert result.was_scrubbed is True, f"Multiple regions should be scrubbed, got {result.was_scrubbed}"
         ds_out = pydicom.dcmread(out_path)
-        assert str(ds_out.file_meta.TransferSyntaxUID) == JPEG_BASELINE_TS
+        assert str(ds_out.file_meta.TransferSyntaxUID) == JPEG_BASELINE_TS, (
+            f"Transfer syntax should remain JPEG Baseline, got {ds_out.file_meta.TransferSyntaxUID}"
+        )
 
     def test_multiframe_jpeg_baseline(self, jpeg_baseline_ybr_multiframe):
         """Multi-frame JPEG Baseline processes all frames."""
@@ -188,11 +204,13 @@ class TestJpegBaselinePath:
 
         result = blank_regions(in_path, out_path, regions)
 
-        assert result.was_scrubbed is True
+        assert result.was_scrubbed is True, f"Multi-frame JPEG Baseline should be scrubbed, got {result.was_scrubbed}"
         ds_out = pydicom.dcmread(out_path)
-        assert str(ds_out.file_meta.TransferSyntaxUID) == JPEG_BASELINE_TS
+        assert str(ds_out.file_meta.TransferSyntaxUID) == JPEG_BASELINE_TS, (
+            f"Transfer syntax should remain JPEG Baseline, got {ds_out.file_meta.TransferSyntaxUID}"
+        )
         # All 120 frames should still be present
-        assert int(ds_out.NumberOfFrames) == 120
+        assert int(ds_out.NumberOfFrames) == 120, f"Expected 120 frames after blanking, got {ds_out.NumberOfFrames}"
 
     def test_fallback_on_value_error(self, jpeg_baseline_rgb, mocker):
         """Falls back to general path when scrub_jpeg_bytes raises ValueError."""
@@ -225,11 +243,11 @@ class TestGeneralPath:
 
         result = blank_regions(in_path, out_path, regions)
 
-        assert result.was_scrubbed is True
+        assert result.was_scrubbed is True, f"Grayscale region should be scrubbed, got {result.was_scrubbed}"
         ds_out = pydicom.dcmread(out_path)
         arr = ds_out.pixel_array
         # Blanked region should be zero
-        assert np.all(arr[10:30, 10:30] == 0)
+        assert np.all(arr[10:30, 10:30] == 0), "Blanked grayscale region should be all zeros"
 
     def test_grayscale_surrounding_unchanged(self, uncompressed_mono2):
         """Pixels outside the blanked region are unchanged."""
@@ -244,10 +262,14 @@ class TestGeneralPath:
         out_arr = ds_out.pixel_array
 
         # Pixels outside the region should be identical
-        assert np.array_equal(orig_arr[0:10, :], out_arr[0:10, :])
-        assert np.array_equal(orig_arr[30:, :], out_arr[30:, :])
-        assert np.array_equal(orig_arr[:, 0:10], out_arr[:, 0:10])
-        assert np.array_equal(orig_arr[:, 30:], out_arr[:, 30:])
+        assert np.array_equal(orig_arr[0:10, :], out_arr[0:10, :]), "Rows above the blanked region should be unchanged"
+        assert np.array_equal(orig_arr[30:, :], out_arr[30:, :]), "Rows below the blanked region should be unchanged"
+        assert np.array_equal(orig_arr[:, 0:10], out_arr[:, 0:10]), (
+            "Columns left of the blanked region should be unchanged"
+        )
+        assert np.array_equal(orig_arr[:, 30:], out_arr[:, 30:]), (
+            "Columns right of the blanked region should be unchanged"
+        )
 
     def test_rgb_uncompressed(self, uncompressed_rgb):
         """RGB DICOM region pixels are zeroed across all channels."""
@@ -256,11 +278,11 @@ class TestGeneralPath:
 
         result = blank_regions(in_path, out_path, regions)
 
-        assert result.was_scrubbed is True
+        assert result.was_scrubbed is True, f"RGB region should be scrubbed, got {result.was_scrubbed}"
         ds_out = pydicom.dcmread(out_path)
         arr = ds_out.pixel_array
         # All channels zeroed
-        assert np.all(arr[5:25, 5:25, :] == 0)
+        assert np.all(arr[5:25, 5:25, :] == 0), "Blanked RGB region should be zero across all channels"
 
     def test_transfer_syntax_becomes_explicit_vr(self, jpeg2000_mono):
         """Non-JPEG-Baseline compressed files are saved as Explicit VR LE."""
@@ -270,7 +292,9 @@ class TestGeneralPath:
         blank_regions(in_path, out_path, regions)
 
         ds_out = pydicom.dcmread(out_path)
-        assert str(ds_out.file_meta.TransferSyntaxUID) == str(ExplicitVRLittleEndian)
+        assert str(ds_out.file_meta.TransferSyntaxUID) == str(ExplicitVRLittleEndian), (
+            f"Non-JPEG-Baseline output should be Explicit VR LE, got {ds_out.file_meta.TransferSyntaxUID}"
+        )
 
     def test_multiframe_grayscale(self, uncompressed_multiframe):
         """Multi-frame grayscale blanks region in all frames."""
@@ -279,12 +303,12 @@ class TestGeneralPath:
 
         result = blank_regions(in_path, out_path, regions)
 
-        assert result.was_scrubbed is True
+        assert result.was_scrubbed is True, f"Multi-frame grayscale should be scrubbed, got {result.was_scrubbed}"
         ds_out = pydicom.dcmread(out_path)
         arr = ds_out.pixel_array
         # All 10 frames should have the region zeroed
-        assert arr.shape[0] == 10
-        assert np.all(arr[:, 5:15, 5:15] == 0)
+        assert arr.shape[0] == 10, f"Expected 10 frames, got {arr.shape[0]}"
+        assert np.all(arr[:, 5:15, 5:15] == 0), "Blanked region should be zero in all frames"
 
     def test_monochrome1_fill_value(self, tmp_path):
         """MONOCHROME1 uses (2^BitsStored)-1 as fill value (display-black)."""
@@ -297,7 +321,7 @@ class TestGeneralPath:
         ds_out = pydicom.dcmread(out_path)
         arr = ds_out.pixel_array
         # BitsStored=12, so fill = 4095
-        assert np.all(arr[10:30, 10:30] == 4095)
+        assert np.all(arr[10:30, 10:30] == 4095), "MONOCHROME1 blanked region should be filled with 4095 (2^12 - 1)"
 
     def test_monochrome1_signed_fill_value(self, tmp_path):
         """Signed MONOCHROME1 fill value stays within the signed range."""
@@ -323,11 +347,11 @@ class TestGeneralPath:
 
         result = blank_regions(path, out_path, regions)
 
-        assert result.was_scrubbed is True
+        assert result.was_scrubbed is True, f"Signed MONOCHROME1 should be scrubbed, got {result.was_scrubbed}"
         ds_out = pydicom.dcmread(out_path)
         out_arr = ds_out.pixel_array
         # Signed 16-bit max is 32767, not 65535
-        assert np.all(out_arr[10:30, 10:30] == 32767)
+        assert np.all(out_arr[10:30, 10:30] == 32767), "Signed MONOCHROME1 blanked region should be filled with 32767"
 
     def test_ybr_full_converted_to_rgb(self, tmp_path):
         """YBR_FULL is converted to RGB when going through general path."""
@@ -356,7 +380,9 @@ class TestGeneralPath:
         blank_regions(ybr_path, out_path, [ScrubRegion(0, 0, 16, 16)])
 
         ds_out = pydicom.dcmread(out_path)
-        assert ds_out.PhotometricInterpretation == "RGB"
+        assert ds_out.PhotometricInterpretation == "RGB", (
+            f"YBR_FULL should be converted to RGB, got {ds_out.PhotometricInterpretation}"
+        )
 
     def test_ybr_rct_relabeled_to_rgb(self, tmp_path):
         """YBR_RCT is relabeled to RGB in the general path.
@@ -388,8 +414,10 @@ class TestGeneralPath:
         blank_regions(ybr_path, out_path, [ScrubRegion(0, 0, 16, 16)])
 
         ds_out = pydicom.dcmread(out_path)
-        assert ds_out.PhotometricInterpretation == "RGB"
-        assert ds_out.PlanarConfiguration == 0
+        assert ds_out.PhotometricInterpretation == "RGB", (
+            f"YBR_RCT should be relabeled to RGB, got {ds_out.PhotometricInterpretation}"
+        )
+        assert ds_out.PlanarConfiguration == 0, f"PlanarConfiguration should remain 0, got {ds_out.PlanarConfiguration}"
 
     def test_sop_instance_uid_unchanged(self, uncompressed_mono2):
         """The blanker does not mint a new SOP Instance UID."""
@@ -401,25 +429,33 @@ class TestGeneralPath:
         blank_regions(in_path, out_path, [ScrubRegion(10, 10, 20, 20)])
 
         ds_out = pydicom.dcmread(out_path)
-        assert ds_out.SOPInstanceUID == orig_uid
-        assert ds_out.file_meta.MediaStorageSOPInstanceUID == orig_media_uid
+        assert ds_out.SOPInstanceUID == orig_uid, (
+            f"SOP Instance UID should be unchanged, expected {orig_uid}, got {ds_out.SOPInstanceUID}"
+        )
+        assert ds_out.file_meta.MediaStorageSOPInstanceUID == orig_media_uid, (
+            f"Media Storage SOP Instance UID should be unchanged, expected {orig_media_uid}, got {ds_out.file_meta.MediaStorageSOPInstanceUID}"
+        )
 
     def test_signed_pixel_data(self, uncompressed_mono2):
         """Signed MONOCHROME2 region is zeroed without overflow or masking."""
         in_path, out_path = uncompressed_mono2
         # CT_small.dcm is signed 16-bit (PixelRepresentation=1).
         ds_orig = pydicom.dcmread(in_path)
-        assert ds_orig.PixelRepresentation == 1
+        assert ds_orig.PixelRepresentation == 1, (
+            f"CT_small.dcm should be signed (PixelRepresentation=1), got {ds_orig.PixelRepresentation}"
+        )
         orig_arr = ds_orig.pixel_array.copy()
 
         blank_regions(in_path, out_path, [ScrubRegion(10, 10, 20, 20)])
 
         ds_out = pydicom.dcmread(out_path)
         out_arr = ds_out.pixel_array
-        assert np.all(out_arr[10:30, 10:30] == 0)
+        assert np.all(out_arr[10:30, 10:30] == 0), "Signed grayscale blanked region should be all zeros"
         # Pixels outside the region round-trip unchanged, including any negative
         # values, confirming no unintended masking of signed data.
-        assert np.array_equal(orig_arr[0:10, :], out_arr[0:10, :])
+        assert np.array_equal(orig_arr[0:10, :], out_arr[0:10, :]), (
+            "Pixels outside the blanked region should round-trip unchanged"
+        )
 
     def test_signed_bits_stored_below_allocated(self, tmp_path):
         """Signed 12-in-16 image with stray high bits round-trips without error."""
@@ -447,15 +483,15 @@ class TestGeneralPath:
 
         result = blank_regions(path, out_path, [ScrubRegion(0, 0, 4, 4)])
 
-        assert result.was_scrubbed is True
+        assert result.was_scrubbed is True, f"Signed 12-in-16 image should be scrubbed, got {result.was_scrubbed}"
         ds_out = pydicom.dcmread(out_path)
         out_arr = ds_out.pixel_array
         # Decoded values stay within the signed 12-bit stored range.
-        assert out_arr.min() >= -2048
-        assert out_arr.max() <= 2047
-        assert np.all(out_arr[0:4, 0:4] == 0)
+        assert out_arr.min() >= -2048, f"Decoded minimum should be >= -2048, got {out_arr.min()}"
+        assert out_arr.max() <= 2047, f"Decoded maximum should be <= 2047, got {out_arr.max()}"
+        assert np.all(out_arr[0:4, 0:4] == 0), "Blanked region should be all zeros"
         # Unblanked pixels decode to 2047 (garbage high bits stripped).
-        assert np.all(out_arr[4:8, 4:8] == 2047)
+        assert np.all(out_arr[4:8, 4:8] == 2047), "Unblanked pixels should decode to 2047 with high bits stripped"
 
     def test_unsigned_high_bit_overlay_masked(self, tmp_path):
         """Unsigned 12-in-16 image with high-bit overlay is masked to stored width."""
@@ -482,19 +518,23 @@ class TestGeneralPath:
 
         result = blank_regions(path, out_path, [ScrubRegion(0, 0, 4, 4)])
 
-        assert result.was_scrubbed is True
+        assert result.was_scrubbed is True, f"Unsigned 12-in-16 image should be scrubbed, got {result.was_scrubbed}"
         ds_out = pydicom.dcmread(out_path)
         out_arr = ds_out.pixel_array
         # High-bit overlay stripped; stored value preserved.
-        assert np.all(out_arr[4:8, 4:8] == 0x0ABC)
-        assert out_arr.max() <= 4095
-        assert np.all(out_arr[0:4, 0:4] == 0)
+        assert np.all(out_arr[4:8, 4:8] == 0x0ABC), (
+            "Unblanked pixels should preserve stored value 0x0ABC with overlay stripped"
+        )
+        assert out_arr.max() <= 4095, f"Decoded maximum should be <= 4095, got {out_arr.max()}"
+        assert np.all(out_arr[0:4, 0:4] == 0), "Blanked region should be all zeros"
 
     def test_mask_no_op_when_bits_stored_equals_allocated(self, uncompressed_rgb):
         """Unsigned image with BitsStored == BitsAllocated round-trips unchanged."""
         in_path, out_path = uncompressed_rgb
         ds_orig = pydicom.dcmread(in_path)
-        assert ds_orig.BitsStored == ds_orig.BitsAllocated
+        assert ds_orig.BitsStored == ds_orig.BitsAllocated, (
+            f"Fixture should have BitsStored == BitsAllocated, got {ds_orig.BitsStored} vs {ds_orig.BitsAllocated}"
+        )
         orig_arr = ds_orig.pixel_array.copy()
 
         blank_regions(in_path, out_path, [ScrubRegion(5, 5, 20, 20)])
@@ -502,7 +542,9 @@ class TestGeneralPath:
         ds_out = pydicom.dcmread(out_path)
         out_arr = ds_out.pixel_array
         # Pixels outside the blanked region are bit-for-bit identical.
-        assert np.array_equal(orig_arr[30:, :, :], out_arr[30:, :, :])
+        assert np.array_equal(orig_arr[30:, :, :], out_arr[30:, :, :]), (
+            "Pixels outside the blanked region should be bit-for-bit identical"
+        )
 
     def test_multiframe_color_all_frames_blanked(self, tmp_path):
         """Multi-frame RGB blanks every frame and preserves NumberOfFrames."""
@@ -530,12 +572,12 @@ class TestGeneralPath:
 
         result = blank_regions(path, out_path, [ScrubRegion(0, 0, 8, 8)])
 
-        assert result.was_scrubbed is True
+        assert result.was_scrubbed is True, f"Multi-frame RGB should be scrubbed, got {result.was_scrubbed}"
         ds_out = pydicom.dcmread(out_path)
-        assert int(ds_out.NumberOfFrames) == 4
+        assert int(ds_out.NumberOfFrames) == 4, f"Expected 4 frames after blanking, got {ds_out.NumberOfFrames}"
         out_arr = ds_out.pixel_array
-        assert out_arr.shape[0] == 4
-        assert np.all(out_arr[:, 0:8, 0:8, :] == 0)
+        assert out_arr.shape[0] == 4, f"Pixel array should have 4 frames, got {out_arr.shape[0]}"
+        assert np.all(out_arr[:, 0:8, 0:8, :] == 0), "Blanked region should be zero across all frames and channels"
 
 
 class TestFloatPixelDataGuard:
@@ -601,7 +643,7 @@ class TestEdgeCases:
 
         ds_out = pydicom.dcmread(out_path)
         out_arr = ds_out.pixel_array
-        assert np.array_equal(orig_arr, out_arr)
+        assert np.array_equal(orig_arr, out_arr), "Region fully outside image bounds should leave pixels unchanged"
 
     def test_region_partially_outside(self, uncompressed_mono2):
         """Region extending beyond image bounds is clipped."""
@@ -614,7 +656,7 @@ class TestEdgeCases:
         ds_out = pydicom.dcmread(out_path)
         arr = ds_out.pixel_array
         # Clipped to (120:128, 120:128)
-        assert np.all(arr[120:128, 120:128] == 0)
+        assert np.all(arr[120:128, 120:128] == 0), "Clipped region (120:128, 120:128) should be all zeros"
 
     def test_region_at_image_boundary(self, uncompressed_mono2):
         """Region exactly at the image edge does not cause index errors."""
@@ -624,10 +666,10 @@ class TestEdgeCases:
 
         result = blank_regions(in_path, out_path, regions)
 
-        assert result.was_scrubbed is True
+        assert result.was_scrubbed is True, f"Region at image boundary should be scrubbed, got {result.was_scrubbed}"
         ds_out = pydicom.dcmread(out_path)
         arr = ds_out.pixel_array
-        assert np.all(arr[118:128, 118:128] == 0)
+        assert np.all(arr[118:128, 118:128] == 0), "Region at the bottom-right corner should be all zeros"
 
     def test_zero_width_region(self, uncompressed_mono2):
         """Zero-width region is skipped without error."""
@@ -639,7 +681,7 @@ class TestEdgeCases:
         blank_regions(in_path, out_path, regions)
 
         ds_out = pydicom.dcmread(out_path)
-        assert np.array_equal(orig_arr, ds_out.pixel_array)
+        assert np.array_equal(orig_arr, ds_out.pixel_array), "Zero-width region should leave pixels unchanged"
 
 
 class TestHighlight:
@@ -656,7 +698,7 @@ class TestHighlight:
         arr = ds_out.pixel_array
         # CT_small.dcm is signed 16-bit, so highlight = ((2^15 - 1)) // 2 = 16383
         expected = ((2**15) - 1) // 2
-        assert np.all(arr[10:30, 10:30] == expected)
+        assert np.all(arr[10:30, 10:30] == expected), f"Highlighted grayscale region should equal {expected}"
 
     def test_highlight_rgb(self, uncompressed_rgb):
         """Highlight fills RGB with magenta (255, 0, 255)."""
@@ -667,6 +709,6 @@ class TestHighlight:
 
         ds_out = pydicom.dcmread(out_path)
         arr = ds_out.pixel_array
-        assert np.all(arr[5:25, 5:25, 0] == 255)  # R
-        assert np.all(arr[5:25, 5:25, 1] == 0)  # G
-        assert np.all(arr[5:25, 5:25, 2] == 255)  # B
+        assert np.all(arr[5:25, 5:25, 0] == 255), "Highlighted RGB region red channel should be 255"  # R
+        assert np.all(arr[5:25, 5:25, 1] == 0), "Highlighted RGB region green channel should be 0"  # G
+        assert np.all(arr[5:25, 5:25, 2] == 255), "Highlighted RGB region blue channel should be 255"  # B

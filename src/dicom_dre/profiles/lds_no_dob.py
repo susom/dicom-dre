@@ -28,6 +28,7 @@ def lds_no_dob_profile(settings: ProfileSettings | None = None) -> DeidProfile:
         base,
         name="LDS-No-DOB",
         rules=updated_rules,
+        deid_options=frozenset({"113105", "113108"}),
         date_override_tags=frozenset(
             {
                 Tag(0x0010, 0x0030),  # PatientBirthDate

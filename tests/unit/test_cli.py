@@ -23,13 +23,16 @@ from dicom_dre.salt import default_salt_path
 
 
 if TYPE_CHECKING:
+    from collections.abc import Iterator
     from pathlib import Path
 
 
 def test_parse_parameters_valid() -> None:
     """KEY=VALUE pairs parse into a dict, preserving empty values."""
     result = _parse_parameters(("PATIENT_ID=TEST", "JITTER=10", "STUDY_DESCRIPTION="))
-    assert result == {"PATIENT_ID": "TEST", "JITTER": "10", "STUDY_DESCRIPTION": ""}
+    assert result == {"PATIENT_ID": "TEST", "JITTER": "10", "STUDY_DESCRIPTION": ""}, (
+        f"KEY=VALUE pairs should parse into a dict preserving empty values, got: {result!r}"
+    )
 
 
 @pytest.mark.parametrize("bad", ["PATIENT_ID", "=TEST", ""])
@@ -72,12 +75,12 @@ def test_deidentify_command_success(signa_premier_file: Path, tmp_path: Path) ->
     )
 
     assert result.exit_code == 0, result.output
-    assert "DEIDENTIFIED" in result.output
+    assert "DEIDENTIFIED" in result.output, f"Expected a DEIDENTIFIED line, got: {result.output!r}"
     output = out / signa_premier_file.name
-    assert output.exists()
+    assert output.exists(), f"A de-identified file should be written to {output}"
 
     ds = pydicom.dcmread(output, force=True)
-    assert ds[Tag(0x0010, 0x0020)].value != "MRN123456"  # PatientID scrubbed
+    assert ds[Tag(0x0010, 0x0020)].value != "MRN123456", "PatientID should be scrubbed"
 
 
 def test_deidentify_unknown_profile(signa_premier_file: Path, tmp_path: Path) -> None:
@@ -89,8 +92,8 @@ def test_deidentify_unknown_profile(signa_premier_file: Path, tmp_path: Path) ->
         ["deidentify", str(signa_premier_file), "-o", str(out), "--profile", "nope"],
     )
 
-    assert result.exit_code != 0
-    assert "nope" in result.output
+    assert result.exit_code != 0, f"An unknown profile should fail, got exit {result.exit_code}: {result.output!r}"
+    assert "nope" in result.output, f"Expected the rejected profile name in the error, got: {result.output!r}"
 
 
 def test_deidentify_bad_parameter(signa_premier_file: Path, tmp_path: Path) -> None:
@@ -102,8 +105,8 @@ def test_deidentify_bad_parameter(signa_premier_file: Path, tmp_path: Path) -> N
         ["deidentify", str(signa_premier_file), "-o", str(out), "-p", "PATIENT_ID"],
     )
 
-    assert result.exit_code != 0
-    assert "KEY=VALUE" in result.output
+    assert result.exit_code != 0, f"A malformed --param should fail, got exit {result.exit_code}: {result.output!r}"
+    assert "KEY=VALUE" in result.output, f"Expected the KEY=VALUE usage hint, got: {result.output!r}"
 
 
 _BATCH_PARAMS = [
@@ -177,7 +180,7 @@ def test_deidentify_batch_quarantine_exit_code(signa_premier_file: Path, tmp_pat
     )
 
     assert result.exit_code == 1, result.output
-    assert "QUARANTINED" in result.output
+    assert "QUARANTINED" in result.output, f"Expected a QUARANTINED line, got: {result.output!r}"
     assert (out / "good.dcm").exists(), "Valid file should still be written"
 
 
@@ -208,7 +211,7 @@ def test_deidentify_basename_collision_is_usage_error(signa_premier_file: Path, 
     )
 
     assert result.exit_code != 0, result.output
-    assert "same output path" in result.output
+    assert "same output path" in result.output, f"Expected a basename-collision message, got: {result.output!r}"
     assert not out.exists() or not any(out.iterdir()), "No output should be written on collision"
 
 
@@ -218,8 +221,8 @@ def test_deidentify_no_sources_is_usage_error(tmp_path: Path) -> None:
     runner = CliRunner()
     result = runner.invoke(cli, ["deidentify", "-o", str(out)])
 
-    assert result.exit_code != 0
-    assert "source" in result.output.lower()
+    assert result.exit_code != 0, f"Missing sources should fail, got exit {result.exit_code}: {result.output!r}"
+    assert "source" in result.output.lower(), f"Expected a missing-source message, got: {result.output!r}"
 
 
 def test_deidentify_missing_output_dir_is_usage_error(signa_premier_file: Path) -> None:
@@ -227,8 +230,8 @@ def test_deidentify_missing_output_dir_is_usage_error(signa_premier_file: Path) 
     runner = CliRunner()
     result = runner.invoke(cli, ["deidentify", str(signa_premier_file)])
 
-    assert result.exit_code != 0
-    assert "output-dir" in result.output.lower()
+    assert result.exit_code != 0, f"Missing --output-dir should fail, got exit {result.exit_code}: {result.output!r}"
+    assert "output-dir" in result.output.lower(), f"Expected an output-dir requirement message, got: {result.output!r}"
 
 
 class TestSaltResolution:
@@ -410,7 +413,7 @@ class TestIdentifierParameterConflicts:
 
 
 @pytest.fixture()
-def reset_root_logging() -> object:
+def reset_root_logging() -> Iterator[None]:
     """Snapshot and restore logging state so --verbose configures deterministically.
 
     pytest attaches handlers to the root logger, which would make the command's
@@ -577,8 +580,8 @@ def test_redactor_show_tokens(tmp_path: Path) -> None:
     result = runner.invoke(cli, ["redactor", "show-tokens", "--input", str(input_csv)])
 
     assert result.exit_code == 0, result.output
-    assert "Chest" in result.output
-    assert "Abdomen" in result.output
+    assert "Chest" in result.output, f"Expected the token Chest to be listed, got: {result.output!r}"
+    assert "Abdomen" in result.output, f"Expected the token Abdomen to be listed, got: {result.output!r}"
 
 
 def test_redactor_allow_token(tmp_path: Path) -> None:
@@ -590,7 +593,7 @@ def test_redactor_allow_token(tmp_path: Path) -> None:
     result = runner.invoke(cli, ["redactor", "allow-token", "--allowlist", str(allowlist), "abdomen"])
 
     assert result.exit_code == 0, result.output
-    assert "Added 1 token" in result.output
+    assert "Added 1 token" in result.output, f"Expected a single-token addition notice, got: {result.output!r}"
     contents = allowlist.read_text(encoding="utf-8")
     assert "abdomen" in contents, "New token should be written to the allowlist"
 

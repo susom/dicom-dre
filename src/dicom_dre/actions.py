@@ -30,6 +30,10 @@ if TYPE_CHECKING:
 
 TagAction = Callable[[Dataset, BaseTag, "DeidParameters"], None]
 
+# Text VRs receiving a fixed non-empty token in dummy_for_vr(). UN is handled
+# separately because it is written as raw bytes; numeric VRs are branched inline.
+_DUMMY_TEXT_VRS: frozenset[str] = frozenset({"AE", "CS", "LO", "LT", "PN", "SH", "ST", "UC", "UR", "UT", "UN"})
+
 
 def _create_element(ds: Dataset, tag: BaseTag, value: str) -> None:
     """Create a new element for *tag*, resolving its VR from the data dictionary.
@@ -131,6 +135,36 @@ def set_param(
     return action
 
 
+def _hash_source_value(value: object, *, salt: str, params: DeidParameters) -> str:
+    """Hash a source element value with the study-scoped identifier salt.
+
+    Resolves ``params.study_id`` (or :data:`DEFAULT_STUDY_ID` when absent) and
+    returns the :func:`hash_identifier` result for ``str(value)``.
+    """
+    study_id = params.study_id if params.study_id is not None else DEFAULT_STUDY_ID
+    return hash_identifier(str(value), salt=salt, study_id=study_id)
+
+
+def hash_value_identifier(*, salt: str) -> TagAction:
+    """Hash the present value of an element with the study-scoped salt.
+
+    Unlike :func:`hash_identifier_param`, this reads no per-patient parameter; it
+    always hashes the element's current value. Used for TrackingID (0062,0020),
+    which has no per-patient parameter. Study-scoped, so a hashed TrackingID and
+    its paired TrackingUID (hashed with ``use_study_salt=True``) link
+    consistently within a study.
+    """
+
+    def action(ds: Dataset, tag: BaseTag, params: DeidParameters) -> None:
+        if tag not in ds:
+            return
+        original = ds[tag].value
+        if original:
+            ds[tag].value = _hash_source_value(original, salt=salt, params=params)
+
+    return action
+
+
 def hash_identifier_param(
     field_name: str,
     *,
@@ -166,8 +200,7 @@ def hash_identifier_param(
             read_tag = source_tag if source_tag is not None else tag
             original = ds[read_tag].value if read_tag in ds else None
             if original:
-                study_id = params.study_id if params.study_id is not None else DEFAULT_STUDY_ID
-                value = hash_identifier(str(original), salt=salt, study_id=study_id)
+                value = _hash_source_value(original, salt=salt, params=params)
             else:
                 value = placeholder
         if tag in ds:
@@ -196,6 +229,70 @@ def hash_uid(root: str, *, use_study_salt: bool = False) -> TagAction:
             else:
                 combined = original
             ds[tag].value = hashuid(root, combined)
+
+    return action
+
+
+def dummy_for_vr(uid_root: str, *, use_study_salt: bool = False) -> TagAction:
+    """Replace a present element with a VR-valid non-empty dummy value.
+
+    Implements PS3.15 Table E.1-1 action code D in a VR-aware way. Present-only:
+    an absent tag is left unchanged. The element VR is resolved from the element,
+    mapping a runtime ``UN``/``OB`` (from an implicit-VR read) back to the
+    data-dictionary VR so the dummy matches the intended VR. Replacements:
+
+    - Text VRs -> ``"ANONYMIZED"`` (``UN`` receives the same token as bytes).
+    - ``AS`` (Age String) -> ``"000Y"``.
+    - Numeric VRs -> zero (``"0"`` for DS/IS; ``0``/``0.0`` for binary numerics).
+    - ``UI`` -> hashed with ``uid_root`` and, when ``use_study_salt`` is True, the
+      study identifier, matching the profile UID policy.
+    - ``OB`` -> empty bytes; ``SQ`` -> empty sequence. A binary or sequence
+      element has no scalar dummy, so an empty value is the safe equivalent.
+    """
+
+    def action(ds: Dataset, tag: BaseTag, params: DeidParameters) -> None:
+        if tag not in ds:
+            return
+        elem = ds[tag]
+        try:
+            raw_vr = elem.VR
+        except (ValueError, NotImplementedError):
+            return
+        vr = raw_vr
+        if vr in ("UN", "OB"):
+            try:
+                vr = dictionary_VR(tag)
+            except KeyError:
+                pass
+        # Correct an implicit-VR placeholder so the new value is stored under the
+        # dictionary VR (mirrors correct_implicit_vr_elements).
+        if raw_vr in ("UN", "OB") and vr not in ("OB", "SQ"):
+            elem.VR = vr
+        if vr == "UI":
+            original = str(elem.value) if elem.value else ""
+            if use_study_salt:
+                salt = params.study_id if params.study_id is not None else DEFAULT_STUDY_ID
+                combined = original + salt
+            else:
+                combined = original
+            elem.value = hashuid(uid_root, combined)
+        elif vr == "AS":
+            elem.value = "000Y"
+        elif vr in ("DS", "IS"):
+            elem.value = "0"
+        elif vr in ("FL", "FD"):
+            elem.value = 0.0
+        elif vr in ("SL", "SS", "UL", "US"):
+            elem.value = 0
+        elif vr == "SQ":
+            elem.value = []
+        elif vr == "OB":
+            elem.value = b""
+        elif vr == "UN":
+            # UN is written as raw bytes, so the dummy must be bytes, not str.
+            elem.value = b"ANONYMIZED"
+        elif vr in _DUMMY_TEXT_VRS:
+            elem.value = "ANONYMIZED"
 
     return action
 
@@ -325,26 +422,4 @@ def if_exists(inner: TagAction) -> TagAction:
         if tag in ds:
             inner(ds, tag, params)
 
-    return action
-
-
-def process() -> TagAction:
-    """Marker action for a processed sequence.
-
-    A processed sequence applies the full de-identification rule set (element
-    rules and global removal) recursively to each item dataset of an SQ
-    element. That recursion is driven by ``DeidProfile`` using its own
-    ``self.rules``, so this action performs no work when invoked directly; it
-    exists only to mark the tag as a processed sequence via
-    ``is_process_action``. Driving the recursion from the profile (rather than
-    closing over a rules dict here) keeps derived profiles correct without
-    rebinding: the profile always recurses with its own final rule set.
-    """
-
-    def action(ds: Dataset, tag: BaseTag, params: DeidParameters) -> None:
-        # Recursion into the sequence items is handled by DeidProfile
-        # using its own rule set; nothing to do here.
-        pass
-
-    action.is_process_action = True  # type: ignore[attr-defined]
     return action

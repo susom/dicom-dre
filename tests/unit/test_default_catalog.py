@@ -25,17 +25,21 @@ class TestCatalogLoading:
 
     def test_devices_list_non_empty(self):
         """Verify devices list contains entries."""
-        assert len(default_devices) > 100
+        assert len(default_devices) > 100, f"expected more than 100 devices, got {len(default_devices)}"
 
     def test_exclusions_list_non_empty(self):
         """Verify exclusions list contains entries."""
-        assert len(default_exclusions) > 20
+        assert len(default_exclusions) > 20, f"expected more than 20 exclusions, got {len(default_exclusions)}"
 
     def test_get_default_catalog_returns_catalog(self, catalog):
         """Verify factory returns a catalog with expected counts."""
-        assert catalog is not None
-        assert len(catalog.devices) == len(default_devices)
-        assert len(catalog.exclusions) == len(default_exclusions)
+        assert catalog is not None, "get_default_catalog should return a catalog instance"
+        assert len(catalog.devices) == len(default_devices), (
+            f"expected {len(default_devices)} devices, got {len(catalog.devices)}"
+        )
+        assert len(catalog.exclusions) == len(default_exclusions), (
+            f"expected {len(default_exclusions)} exclusions, got {len(catalog.exclusions)}"
+        )
 
     def test_all_devices_have_valid_action(self):
         """Verify every device has allow, deny, or scrub action."""
@@ -64,8 +68,10 @@ class TestCRDXDevices:
             }
         )
         decision = catalog.evaluate(tags)
-        assert decision.action == "allow"
-        assert decision.scrub_regions == [ScrubRegion(0, 2308, 2446, 137)]
+        assert decision.action == "allow", f"expected allow, got {decision.action}"
+        assert decision.scrub_regions == [ScrubRegion(0, 2308, 2446, 137)], (
+            f"unexpected scrub regions: {decision.scrub_regions}"
+        )
 
     def test_konica_0402_cr_v2_allows(self, catalog):
         """KONICA 0402 CR version 2 variant allows with scrub."""
@@ -80,8 +86,10 @@ class TestCRDXDevices:
             }
         )
         decision = catalog.evaluate(tags)
-        assert decision.action == "allow"
-        assert decision.scrub_regions == [ScrubRegion(0, 0, 2446, 115)]
+        assert decision.action == "allow", f"expected allow, got {decision.action}"
+        assert decision.scrub_regions == [ScrubRegion(0, 0, 2446, 115)], (
+            f"unexpected scrub regions: {decision.scrub_regions}"
+        )
 
     def test_medicatech_krystalrad_allows(self, catalog):
         """MedicaTechUSA KrystalRad 660 allows with scrub."""
@@ -94,8 +102,8 @@ class TestCRDXDevices:
             }
         )
         decision = catalog.evaluate(tags)
-        assert decision.action == "allow"
-        assert len(decision.scrub_regions) > 0
+        assert decision.action == "allow", f"expected allow, got {decision.action}"
+        assert len(decision.scrub_regions) > 0, "expected at least one scrub region"
 
     def test_cuattro_clouddr_allows(self, catalog):
         """Cuattro CloudDR allows with scrub region."""
@@ -110,8 +118,10 @@ class TestCRDXDevices:
             }
         )
         decision = catalog.evaluate(tags)
-        assert decision.action == "allow"
-        assert ScrubRegion(2500, 0, 572, 400) in decision.scrub_regions
+        assert decision.action == "allow", f"expected allow, got {decision.action}"
+        assert ScrubRegion(2500, 0, 572, 400) in decision.scrub_regions, (
+            f"expected scrub region not present in {decision.scrub_regions}"
+        )
 
 
 class TestCTPETDevices:
@@ -132,8 +142,8 @@ class TestCTPETDevices:
             }
         )
         decision = catalog.evaluate(tags)
-        assert decision.action == "allow"
-        assert len(decision.scrub_regions) > 0
+        assert decision.action == "allow", f"expected allow, got {decision.action}"
+        assert len(decision.scrub_regions) > 0, "expected at least one scrub region"
 
     def test_ge_revolution_ct_allows(self, catalog):
         """GE Revolution CT allows."""
@@ -148,7 +158,7 @@ class TestCTPETDevices:
             }
         )
         decision = catalog.evaluate(tags)
-        assert decision.action == "allow"
+        assert decision.action == "allow", f"expected allow, got {decision.action}"
 
     def test_ge_revolution_ct_derived_reformat_mixed_case_allows(self, catalog):
         """GE Revolution CT DERIVED reformat with mixed-case identifiers allows.
@@ -175,7 +185,7 @@ class TestCTPETDevices:
         )
         decision = catalog.evaluate(tags)
         assert decision.action == "allow", f"expected allow, got {decision.action} ({decision.reason})"
-        assert decision.reason == "GE REVOLUTION CT"
+        assert decision.reason == "GE REVOLUTION CT", f"unexpected matching rule: {decision.reason}"
 
     def test_mimvista_standalone_allows(self, catalog):
         """MIMvista standalone CT allows."""
@@ -189,7 +199,7 @@ class TestCTPETDevices:
             }
         )
         decision = catalog.evaluate(tags)
-        assert decision.action == "allow"
+        assert decision.action == "allow", f"expected allow, got {decision.action}"
 
 
 class TestSiemensCT:
@@ -207,7 +217,7 @@ class TestSiemensCT:
             }
         )
         decision = catalog.evaluate(tags)
-        assert decision.action == "allow"
+        assert decision.action == "allow", f"expected allow, got {decision.action}"
 
     def test_siemens_ct_with_burned_in_denies(self, catalog):
         """Siemens CT with BurnedInAnnotation YES is denied."""
@@ -221,7 +231,7 @@ class TestSiemensCT:
             }
         )
         decision = catalog.evaluate(tags)
-        assert decision.action == "deny"
+        assert decision.action == "deny", f"expected deny, got {decision.action}"
 
 
 class TestUltrasoundDevices:
@@ -241,8 +251,10 @@ class TestUltrasoundDevices:
             }
         )
         decision = catalog.evaluate(tags)
-        assert decision.action == "allow"
-        assert ScrubRegion(0, 0, 1024, 40) in decision.scrub_regions
+        assert decision.action == "allow", f"expected allow, got {decision.action}"
+        assert ScrubRegion(0, 0, 1024, 40) in decision.scrub_regions, (
+            f"expected scrub region not present in {decision.scrub_regions}"
+        )
 
     def test_philips_epiq_1080x1920_allows(self, catalog):
         """Philips EPIQ 1080x1920 allows with scrub."""
@@ -259,8 +271,10 @@ class TestUltrasoundDevices:
             }
         )
         decision = catalog.evaluate(tags)
-        assert decision.action == "allow"
-        assert ScrubRegion(0, 0, 1920, 32) in decision.scrub_regions
+        assert decision.action == "allow", f"expected allow, got {decision.action}"
+        assert ScrubRegion(0, 0, 1920, 32) in decision.scrub_regions, (
+            f"expected scrub region not present in {decision.scrub_regions}"
+        )
 
     def test_ge_logiq_e9_970x1552_allows(self, catalog):
         """GE LOGIQE9 970x1552 allows with scrub."""
@@ -276,8 +290,10 @@ class TestUltrasoundDevices:
             }
         )
         decision = catalog.evaluate(tags)
-        assert decision.action == "allow"
-        assert ScrubRegion(0, 0, 1174, 68) in decision.scrub_regions
+        assert decision.action == "allow", f"expected allow, got {decision.action}"
+        assert ScrubRegion(0, 0, 1174, 68) in decision.scrub_regions, (
+            f"expected scrub region not present in {decision.scrub_regions}"
+        )
 
     def test_ge_v830_852x1136_allows(self, catalog):
         """GE V830 852x1136 allows with scrub."""
@@ -293,8 +309,10 @@ class TestUltrasoundDevices:
             }
         )
         decision = catalog.evaluate(tags)
-        assert decision.action == "allow"
-        assert ScrubRegion(0, 0, 1136, 64) in decision.scrub_regions
+        assert decision.action == "allow", f"expected allow, got {decision.action}"
+        assert ScrubRegion(0, 0, 1136, 64) in decision.scrub_regions, (
+            f"expected scrub region not present in {decision.scrub_regions}"
+        )
 
     def test_sonosite_turbo_480x640_allows(self, catalog):
         """SonoSite Turbo 480x640 allows with scrub."""
@@ -311,8 +329,10 @@ class TestUltrasoundDevices:
             }
         )
         decision = catalog.evaluate(tags)
-        assert decision.action == "allow"
-        assert ScrubRegion(0, 0, 640, 24) in decision.scrub_regions
+        assert decision.action == "allow", f"expected allow, got {decision.action}"
+        assert ScrubRegion(0, 0, 640, 24) in decision.scrub_regions, (
+            f"expected scrub region not present in {decision.scrub_regions}"
+        )
 
 
 class TestMammography:
@@ -330,7 +350,7 @@ class TestMammography:
             }
         )
         decision = catalog.evaluate(tags)
-        assert decision.action == "allow"
+        assert decision.action == "allow", f"expected allow, got {decision.action}"
 
     def test_hologic_selenia_secondary_allows(self, catalog):
         """Hologic Selenia allows SECONDARY images."""
@@ -344,7 +364,7 @@ class TestMammography:
             }
         )
         decision = catalog.evaluate(tags)
-        assert decision.action == "allow"
+        assert decision.action == "allow", f"expected allow, got {decision.action}"
 
     def test_mammography_with_burned_in_denies(self, catalog):
         """Mammography with BurnedInAnnotation YES is denied."""
@@ -358,7 +378,7 @@ class TestMammography:
             }
         )
         decision = catalog.evaluate(tags)
-        assert decision.action == "deny"
+        assert decision.action == "deny", f"expected deny, got {decision.action}"
 
 
 class TestExclusionRules:
@@ -368,13 +388,13 @@ class TestExclusionRules:
         """PR modality is denied."""
         tags = DicomTags({"Modality": "PR"})
         decision = catalog.evaluate(tags)
-        assert decision.action == "deny"
+        assert decision.action == "deny", f"expected deny, got {decision.action}"
 
     def test_deny_sr_modality(self, catalog):
         """SR modality is denied."""
         tags = DicomTags({"Modality": "SR"})
         decision = catalog.evaluate(tags)
-        assert decision.action == "deny"
+        assert decision.action == "deny", f"expected deny, got {decision.action}"
 
     def test_deny_secondary_capture_sop(self, catalog):
         """Secondary Capture SOP class is denied."""
@@ -385,7 +405,7 @@ class TestExclusionRules:
             }
         )
         decision = catalog.evaluate(tags)
-        assert decision.action == "deny"
+        assert decision.action == "deny", f"expected deny, got {decision.action}"
 
     def test_deny_encapsulated_pdf(self, catalog):
         """Encapsulated PDF SOP class is denied."""
@@ -396,7 +416,7 @@ class TestExclusionRules:
             }
         )
         decision = catalog.evaluate(tags)
-        assert decision.action == "deny"
+        assert decision.action == "deny", f"expected deny, got {decision.action}"
 
     def test_deny_empty_image_type(self, catalog):
         """Empty ImageType is denied."""
@@ -407,7 +427,7 @@ class TestExclusionRules:
             }
         )
         decision = catalog.evaluate(tags)
-        assert decision.action == "deny"
+        assert decision.action == "deny", f"expected deny, got {decision.action}"
 
     def test_deny_burned_in_yes(self, catalog):
         """BurnedInAnnotation YES is denied."""
@@ -418,7 +438,7 @@ class TestExclusionRules:
             }
         )
         decision = catalog.evaluate(tags)
-        assert decision.action == "deny"
+        assert decision.action == "deny", f"expected deny, got {decision.action}"
 
     def test_deny_vidar(self, catalog):
         """Vidar manufacturer is denied."""
@@ -429,7 +449,7 @@ class TestExclusionRules:
             }
         )
         decision = catalog.evaluate(tags)
-        assert decision.action == "deny"
+        assert decision.action == "deny", f"expected deny, got {decision.action}"
 
     def test_deny_icad(self, catalog):
         """Verify iCAD manufacturer is denied."""
@@ -440,19 +460,19 @@ class TestExclusionRules:
             }
         )
         decision = catalog.evaluate(tags)
-        assert decision.action == "deny"
+        assert decision.action == "deny", f"expected deny, got {decision.action}"
 
     def test_deny_xa_modality(self, catalog):
         """XA modality is denied."""
         tags = DicomTags({"Modality": "XA"})
         decision = catalog.evaluate(tags)
-        assert decision.action == "deny"
+        assert decision.action == "deny", f"expected deny, got {decision.action}"
 
     def test_deny_rf_modality(self, catalog):
         """RF modality is denied."""
         tags = DicomTags({"Modality": "RF"})
         decision = catalog.evaluate(tags)
-        assert decision.action == "deny"
+        assert decision.action == "deny", f"expected deny, got {decision.action}"
 
 
 class TestDefaultAccept:
@@ -470,13 +490,13 @@ class TestDefaultAccept:
             }
         )
         decision = catalog.evaluate(tags)
-        assert decision.action == "allow"
+        assert decision.action == "allow", f"expected allow, got {decision.action}"
 
     def test_empty_tags_denied(self, catalog):
         """Empty tags produce a deny decision."""
         tags = DicomTags({})
         decision = catalog.evaluate(tags)
-        assert decision.action == "deny"
+        assert decision.action == "deny", f"expected deny, got {decision.action}"
 
 
 class TestScrubOnlyDevices:
@@ -496,7 +516,7 @@ class TestScrubOnlyDevices:
         decision = catalog.evaluate(tags)
         # The scrub device matches and short-circuits, keeping the instance
         # with its own scrub regions instead of falling through to exclusions.
-        assert isinstance(decision, CatalogDecision)
+        assert isinstance(decision, CatalogDecision), f"expected CatalogDecision, got {type(decision).__name__}"
 
 
 class TestSignaPremierPreservedPrivateTags:
@@ -567,4 +587,65 @@ class TestSignaPremierPreservedPrivateTags:
         decision = catalog.evaluate(self._base_tags(ImageType="DERIVED\\SECONDARY\\OTHER"))
         assert decision.action == "deny", (
             f"DERIVED/SECONDARY without ORIGINAL/PRIMARY should deny, got {decision.action}"
+        )
+
+
+class TestPresentationStateAdmission:
+    """GSPS 2D softcopy presentation state admission and denial rules."""
+
+    def test_annotated_admitted_class_allowed(self, catalog):
+        """An admitted-class PR with a graphic annotation sequence is allowed."""
+        tags = DicomTags(
+            {
+                "Modality": "PR",
+                "SOPClassUID": "1.2.840.10008.5.1.4.1.1.11.1",
+                "GraphicAnnotationSequence": "present",
+            }
+        )
+        decision = catalog.evaluate(tags)
+        assert decision.action == "allow", f"annotated GSPS should allow, got {decision.action}"
+
+    def test_unannotated_admitted_class_denied(self, catalog):
+        """An admitted-class PR without an annotation sequence is denied."""
+        tags = DicomTags(
+            {
+                "Modality": "PR",
+                "SOPClassUID": "1.2.840.10008.5.1.4.1.1.11.1",
+            }
+        )
+        decision = catalog.evaluate(tags)
+        assert decision.action == "deny", f"un-annotated GSPS should deny, got {decision.action}"
+        assert "no annotation data" in decision.reason, f"unexpected reason: {decision.reason}"
+
+    def test_volumetric_presentation_state_denied(self, catalog):
+        """A volumetric presentation state SOP class is denied as unsupported."""
+        tags = DicomTags(
+            {
+                "Modality": "PR",
+                "SOPClassUID": "1.2.840.10008.5.1.4.1.1.11.6",
+                "GraphicAnnotationSequence": "present",
+            }
+        )
+        decision = catalog.evaluate(tags)
+        assert decision.action == "deny", f"volumetric PR should deny, got {decision.action}"
+        assert "unsupported presentation state" in decision.reason, f"unexpected reason: {decision.reason}"
+
+    def test_non_pr_instance_unaffected(self, catalog):
+        """A non-PR CT instance is not denied by the presentation-state rules."""
+        tags = DicomTags(
+            {
+                "Manufacturer": "GE MEDICAL SYSTEMS",
+                "Modality": "CT",
+                "ManufacturerModelName": "REVOLUTION CT",
+                "SOPClassUID": "1.2.840.10008.5.1.4.1.1.2",
+                "SoftwareVersions": "REVO_CT_22BC.50",
+                "ImageType": "ORIGINAL\\PRIMARY\\AXIAL",
+                "Rows": "512",
+                "Columns": "512",
+            }
+        )
+        decision = catalog.evaluate(tags)
+        assert decision.action == "allow", f"CT instance should allow, got {decision.action}"
+        assert "presentation state" not in decision.reason, (
+            f"CT instance should not match presentation-state rules, got reason: {decision.reason}"
         )

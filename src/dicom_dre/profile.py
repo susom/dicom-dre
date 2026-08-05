@@ -13,6 +13,7 @@ from pydicom.tag import BaseTag
 from pydicom.tag import Tag
 
 from dicom_dre.parameters import DEFAULT_STUDY_ID
+from dicom_dre.uid_utils import hashuid
 from dicom_dre.uid_utils import stable_jitter
 
 
@@ -25,6 +26,26 @@ if TYPE_CHECKING:
 
 # File Meta Information group is always preserved.
 _PRESERVED_GROUPS: frozenset[int] = frozenset({0x0002})
+
+# CID 7050 code meanings for the non-temporal de-identification option codes a
+# profile may declare in deid_options. The temporal codes 113106/113107 and the
+# Basic Profile code 113100 are emitted separately, not from this map.
+_DEID_OPTION_MEANINGS: dict[str, str] = {
+    "113101": "Clean Pixel Data Option",
+    "113102": "Clean Recognizable Visual Features Option",
+    "113103": "Clean Graphics Option",
+    "113104": "Clean Structured Content Option",
+    "113105": "Clean Descriptors Option",
+    "113108": "Retain Patient Characteristics Option",
+    "113109": "Retain Device Identity Option",
+    "113110": "Retain UIDs Option",
+}
+
+# UIDs under the DICOM root are registered values (SOP Class, Transfer Syntax,
+# coding scheme, well-known SOP instance) and must not be hashed. Per-object
+# identifier UIDs are generated under organization roots, never this root, so the
+# prefix reliably separates the two.
+_DICOM_UID_ROOT = "1.2.840.10008."
 
 # These groups and tags are unconditionally protected from global removal,
 # regardless of whether an explicit rule exists. Without this,
@@ -55,13 +76,21 @@ class DeidProfile:
     modifies_dates: bool = False
     allowlist_csv: str = "default.csv"
     hash_salt: str = ""
+    uid_root: str | None = None
+    uid_use_study_salt: bool = False
     date_override_tags: frozenset[BaseTag] = field(default_factory=frozenset)
     preserved_private_specs: frozenset[PrivateTagSpec] = field(default_factory=frozenset)
+    emits_basic_profile: bool = True
+    deid_options: frozenset[str] = field(default_factory=frozenset)
 
-    def apply(self, ds: Dataset, params: DeidParameters) -> None:
+    def apply(self, ds: Dataset, params: DeidParameters, *, applied_options: frozenset[str] = frozenset()) -> None:
         """Apply all de-identification rules to a pydicom Dataset in place.
 
-        Per-patient values are read from ``params`` at apply time.
+        Per-patient values are read from ``params`` at apply time. ``applied_options``
+        carries per-instance de-identification option codes the caller applied
+        outside the profile rules (for example ``113101`` when the pipeline
+        scrubbed burned-in pixel text); they are merged into the method code
+        sequence alongside the profile-declared ``deid_options``.
 
         Phase 0: Validate the jitter and resolve a per-patient shift when unset.
         Phase 1: Insert a default SpecificCharacterSet when absent.
@@ -75,7 +104,7 @@ class DeidProfile:
         self._ensure_specific_character_set(ds)
         self._apply_element_rules(ds, params)
         self._apply_global_rules(ds)
-        self._emit_deid_method_code_sequence(ds)
+        self._emit_deid_method_code_sequence(ds, applied_options)
         _remove_group_length_tags(ds)
         correct_implicit_vr_elements(ds)
 
@@ -147,11 +176,11 @@ class DeidProfile:
         return False
 
     def _apply_element_rules(self, ds: Dataset, params: DeidParameters) -> None:
-        """Apply per-tag rules to the dataset, then recurse into processed sequence items.
+        """Apply per-tag rules to the dataset, then recurse into every sequence.
 
         The top-level dataset receives every rule (a set_value/append_value rule
         with create_if_missing=True may create a missing element here). Item
-        datasets of any processed sequence then receive the same rules, applied
+        datasets of every nested sequence then receive the same rules, applied
         only to elements already present; no new elements are created inside
         sequence items.
         """
@@ -159,19 +188,21 @@ class DeidProfile:
             if self._should_skip_for_date_preservation(ds, tag):
                 continue
             action(ds, tag, params)
-        self._apply_element_rules_to_process_items(ds, params)
+        self._apply_uid_fallback(ds, params)
+        self._apply_element_rules_to_sequence_items(ds, params)
 
-    def _apply_element_rules_to_process_items(self, ds: Dataset, params: DeidParameters) -> None:
-        """Recurse element rules into the item datasets of processed sequences.
+    def _apply_element_rules_to_sequence_items(self, ds: Dataset, params: DeidParameters) -> None:
+        """Recurse element rules into the item datasets of every sequence.
 
         The full rule set is applied to each item dataset, but only to elements
         already present so no new elements are created inside sequence items.
-        Sequences are traversed only when their rule is a process action, and
-        nested processed sequences inside items are handled by recursion.
+        Every nested SQ element is traversed, so tag-based rules (UID hashing,
+        date jitter, PHI removal, keep, free-text redaction) reach every nesting
+        level. UIDs are hashed by tag membership in the UID-hash rule set, so SOP
+        Class and transfer-syntax UIDs are left unchanged; the UID fallback
+        hashes any other UID not under the DICOM root.
         """
-        for tag, action in self.rules.items():
-            if not getattr(action, "is_process_action", False) or tag not in ds:
-                continue
+        for tag in list(ds.keys()):
             elem = ds[tag]
             try:
                 is_sq = elem.VR == "SQ" and bool(elem.value)
@@ -186,13 +217,81 @@ class DeidProfile:
                     if self._should_skip_for_date_preservation(item, item_tag):
                         continue
                     item_action(item, item_tag, params)
-                self._apply_element_rules_to_process_items(item, params)
+                self._apply_uid_fallback(item, params)
+                self._apply_element_rules_to_sequence_items(item, params)
+
+    def _apply_uid_fallback(self, ds: Dataset, params: DeidParameters) -> None:
+        """Hash unregistered UID values that have no more-specific rule.
+
+        For each UI element with no explicit rule, the value is hashed unless it
+        is a DICOM-registered UID (under the 1.2.840.10008 root: SOP Class,
+        Transfer Syntax, coding scheme, well-known SOP instance), which is left
+        unchanged. Hashing uses the profile UID root and salt policy, so a UID
+        that also appears under an explicit UID rule maps to the same
+        replacement and cross-references stay consistent. Disabled when the
+        profile sets no UID root.
+        """
+        if self.uid_root is None:
+            return
+        for elem in list(ds):
+            tag = elem.tag
+            if tag.group == 0x0002 or tag in self.rules:
+                continue
+            if self._resolve_effective_vr(elem) != "UI":
+                continue
+            self._hash_unregistered_uid(elem, params)
+
+    def _hash_unregistered_uid(self, elem: object, params: DeidParameters) -> None:
+        """Hash a single unregistered UID element in place.
+
+        Decodes raw bytes for an implicit-VR (UN/OB) element and sets VR to UI so
+        Phase 5 does not re-decode it. Empty and multi-valued values are left
+        unchanged, as is a value under the DICOM root. Hashing matches the
+        profile UID rule (root and study-salt policy) so shared UIDs align.
+        """
+        root = self.uid_root
+        if root is None:
+            return
+        value = elem.value  # type: ignore[attr-defined]
+        if isinstance(value, bytes):
+            value = value.decode("ascii", errors="replace").strip().rstrip("\x00")
+            elem.VR = "UI"  # type: ignore[attr-defined]
+        if not value or not isinstance(value, str):
+            return
+        if value.startswith(_DICOM_UID_ROOT):
+            return
+        if self.uid_use_study_salt:
+            salt = params.study_id if params.study_id is not None else DEFAULT_STUDY_ID
+            combined = value + salt
+        else:
+            combined = value
+        elem.value = hashuid(root, combined)  # type: ignore[attr-defined]
+
+    @staticmethod
+    def _resolve_effective_vr(elem: object) -> str:
+        """Resolve an element's VR, mapping a runtime UN/OB to its dictionary VR.
+
+        An element read from an implicit-VR-encoded sequence item carries VR UN
+        or OB until Phase 5 corrects it. Resolving the dictionary VR here makes
+        the UID fallback independent of encoding. An unknown tag keeps its
+        runtime VR.
+        """
+        try:
+            vr = elem.VR  # type: ignore[attr-defined]
+        except (ValueError, NotImplementedError):
+            return ""
+        if vr in ("UN", "OB"):
+            try:
+                return dictionary_VR(elem.tag)  # type: ignore[attr-defined]
+            except KeyError:
+                return vr
+        return vr
 
     def _apply_global_rules(self, ds: Dataset) -> None:
         """Remove private groups, curves, overlays, and unspecified elements.
 
         The rules are applied to the top-level dataset and, recursively, to the
-        item datasets of any processed sequence.
+        item datasets of every nested sequence.
         """
         self._apply_global_rules_to_dataset(ds)
 
@@ -200,8 +299,8 @@ class DeidProfile:
         """Apply global removal rules to a single dataset.
 
         After removing elements at this level, recurse into the item datasets
-        of any processed sequence so private groups, overlays, and unspecified
-        elements nested inside a processed sequence are removed the same way.
+        of every nested sequence so private groups, overlays, and unspecified
+        elements nested at any depth are removed the same way.
         """
         tags_to_remove: list[BaseTag] = []
 
@@ -246,23 +345,20 @@ class DeidProfile:
         for tag in tags_to_remove:
             del ds[tag]
 
-        # Recurse into processed sequences. The same global removal rules are
-        # applied to each item dataset of a sequence carrying a process action.
-        # Only sequences whose rule is a process action are traversed,
-        # descending exclusively into explicitly processed sequences.
-        for proc_tag, action in self.rules.items():
-            if not getattr(action, "is_process_action", False):
+        # Recurse into every sequence so private groups, curves, overlays, and
+        # unspecified elements nested at any depth are removed the same way.
+        for seq_tag in list(ds.keys()):
+            if seq_tag not in ds:
                 continue
-            if proc_tag not in ds:
-                continue
-            elem = ds[proc_tag]
+            elem = ds[seq_tag]
             try:
                 is_sq = elem.VR == "SQ" and bool(elem.value)
             except (ValueError, NotImplementedError):
                 continue
-            if is_sq:
-                for item in elem.value:
-                    self._apply_global_rules_to_dataset(item)
+            if not is_sq:
+                continue
+            for item in elem.value:
+                self._apply_global_rules_to_dataset(item)
 
     def _resolve_preserved_tags(self, ds: Dataset) -> set[BaseTag]:
         """Resolve preserved private specs to concrete tags in this dataset.
@@ -292,32 +388,46 @@ class DeidProfile:
                 break
         return keep
 
-    def _emit_deid_method_code_sequence(self, ds: Dataset) -> None:
-        """Add De-identification Method Code Sequence (0012,0064) when active.
+    def _emit_deid_method_code_sequence(self, ds: Dataset, applied_options: frozenset[str] = frozenset()) -> None:
+        """Add De-identification Method Code Sequence (0012,0064).
 
-        Emitted only when private tags are preserved, so the sequence appears
-        solely on files that retain private elements (SIGNA Premier MR) and
-        never on other files or profiles. Must run after global rules, since
-        the pixels-only profile removes any element without an explicit rule.
+        Emitted on every de-identified dataset. Items are added in this order:
+        the Basic Application Confidentiality Profile (113100) when this profile
+        implements it; the derived longitudinal temporal code (113107 for
+        modified dates, 113106 for full dates, none when dates are removed); one
+        item per code in ``deid_options`` unioned with ``applied_options`` (the
+        per-instance codes the caller applied outside the rules); and 113111
+        (Retain Safe Private Option) when private elements are preserved. Codes
+        are de-duplicated before writing. Runs after global rules, since the
+        pixels-only profile removes any element without an explicit rule.
         """
-        if not self.preserved_private_specs:
-            return
-
         from pydicom.dataset import Dataset as PydicomDataset
 
-        codes = [
-            ("113100", "Basic Application Confidentiality Profile"),
-            ("113111", "Retain Safe Private Option"),
-        ]
-        # 113107 applies only when dates are shifted (retained but modified),
-        # i.e. the jitter/default profile. Date-preserving profiles (LDS) keep
-        # full dates, and the pixels-only profile removes dates entirely; neither
-        # retains modified longitudinal temporal information.
+        codes: list[tuple[str, str]] = []
+        if self.emits_basic_profile:
+            codes.append(("113100", "Basic Application Confidentiality Profile"))
         if self.modifies_dates:
             codes.append(("113107", "Retain Longitudinal Temporal Information With Modified Dates"))
+        elif self.preserve_dates:
+            codes.append(("113106", "Retain Longitudinal Temporal Information With Full Dates"))
+        for code_value in sorted(self.deid_options | applied_options):
+            codes.append((code_value, _DEID_OPTION_MEANINGS.get(code_value, code_value)))
+        if self.preserved_private_specs:
+            codes.append(("113111", "Retain Safe Private Option"))
+
+        seen: set[str] = set()
+        unique: list[tuple[str, str]] = []
+        for code_value, code_meaning in codes:
+            if code_value in seen:
+                continue
+            seen.add(code_value)
+            unique.append((code_value, code_meaning))
+
+        if not unique:
+            return
 
         items = []
-        for code_value, code_meaning in codes:
+        for code_value, code_meaning in unique:
             item = PydicomDataset()
             item.add_new(Tag(0x0008, 0x0100), "SH", code_value)
             item.add_new(Tag(0x0008, 0x0102), "SH", "DCM")

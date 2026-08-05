@@ -1855,7 +1855,6 @@ default_exclusions: list[ExclusionRule] = [
             "IR",
             "KO",
             "PN",
-            "PR",
             "RAW",
             "REPORT",
             "REQUEST",
@@ -1898,10 +1897,26 @@ default_exclusions: list[ExclusionRule] = [
         "iCAD mammo scanner",
         manufacturer="icad",
     ),
-    # Deny 7: Presentation state and SR SOP classes
+    # Deny 7: Presentation state and SR SOP classes.
+    # Admit Modality PR instances that are 2D softcopy presentation states
+    # carrying a Graphic Annotation Sequence; deny volumetric/unknown PR classes
+    # and admitted-class instances that carry no annotation.
     deny_when(
-        "Soft-copy presentation state SOP",
-        sop_class="^1.2.840.10008.5.1.4.1.1.11.",
+        "unsupported presentation state",
+        modality="=PR",
+        sop_class_not=[
+            "=1.2.840.10008.5.1.4.1.1.11.1",
+            "=1.2.840.10008.5.1.4.1.1.11.2",
+            "=1.2.840.10008.5.1.4.1.1.11.3",
+            "=1.2.840.10008.5.1.4.1.1.11.4",
+            "=1.2.840.10008.5.1.4.1.1.11.5",
+            "=1.2.840.10008.5.1.4.1.1.11.12",
+        ],
+    ),
+    deny_when(
+        "no annotation data",
+        modality="=PR",
+        graphic_annotation_absent=True,
     ),
     deny_when(
         "SR/KO SOP class",
@@ -1940,10 +1955,11 @@ default_exclusions: list[ExclusionRule] = [
         "Secondary Capture SOP",
         sop_class="1.2.840.10008.5.1.4.1.1.7",
     ),
-    # Deny 11: Empty ImageType
+    # Deny 11: Empty ImageType (GSPS presentation states have no ImageType).
     deny_when(
         "Empty ImageType",
         image_type_empty=True,
+        modality_not=["=PR"],
     ),
     # Deny 12: BurnedInAnnotation YES
     deny_when(

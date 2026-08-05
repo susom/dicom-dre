@@ -1,0 +1,25 @@
+{
+  "entries": [
+    {
+      "description": "Admitted-class presentation state without a graphic annotation sequence is denied.",
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Modality": "PR",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.11.1"
+      }
+    },
+    {
+      "description": "Volumetric presentation state SOP class is denied as unsupported.",
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Modality": "PR",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.11.6",
+        "GraphicAnnotationSequence": "present"
+      }
+    }
+  ]
+}

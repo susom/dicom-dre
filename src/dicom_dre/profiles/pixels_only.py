@@ -22,7 +22,7 @@ from dicom_dre.actions import remove
 from dicom_dre.actions import set_value
 from dicom_dre.profile import DeidProfile
 from dicom_dre.profiles.config import ProfileSettings
-from dicom_dre.profiles.default import description_action
+from dicom_dre.profiles.default import redact_description
 
 
 # 15 UID tags re-hashed in the pixels-only profile, without a salt.
@@ -398,13 +398,13 @@ def pixels_only_profile(settings: ProfileSettings | None = None) -> DeidProfile:
     )  # PatientName
     rules[Tag(0x0010, 0x0020)] = hash_identifier_param("patient_id", salt=settings.hash_salt)  # PatientID
     rules[Tag(0x0008, 0x0050)] = hash_identifier_param("accession_number", salt=settings.hash_salt)  # AccessionNumber
-    rules[Tag(0x0008, 0x103E)] = description_action(
+    rules[Tag(0x0008, 0x103E)] = redact_description(
         "series_description", settings.allowlist_csv, False
     )  # SeriesDescription
-    rules[Tag(0x0008, 0x1030)] = description_action(
+    rules[Tag(0x0008, 0x1030)] = redact_description(
         "study_description", settings.allowlist_csv, False
     )  # StudyDescription
-    rules[Tag(0x0018, 0x1030)] = description_action("protocol_name", settings.allowlist_csv, False)  # ProtocolName
+    rules[Tag(0x0018, 0x1030)] = redact_description("protocol_name", settings.allowlist_csv, False)  # ProtocolName
 
     # PatientIdentityRemoved -- created if missing and set to YES
     rules[Tag(0x0012, 0x0062)] = set_value("YES", create_if_missing=True)
@@ -419,4 +419,8 @@ def pixels_only_profile(settings: ProfileSettings | None = None) -> DeidProfile:
         remove_unspecified=True,
         allowlist_csv=settings.allowlist_csv,
         hash_salt=settings.hash_salt,
+        uid_root=settings.uid_root,
+        uid_use_study_salt=False,
+        emits_basic_profile=False,
+        deid_options=frozenset(),
     )

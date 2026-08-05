@@ -649,13 +649,15 @@ class TestRedactPlainCache:
         """Reloading the allowlist invalidates cached redactions."""
         text = "mint Rodriguez report"
         before = allowlist_redactor.redact_text(text)
-        assert "Rodriguez" not in before
+        assert "Rodriguez" not in before, f"Expected 'Rodriguez' redacted before reload, got {before!r}"
 
         allowlist_file = tmp_path / "allow.csv"
         allowlist_file.write_text("mint,report,rodriguez\n", encoding="utf-8")
         allowlist_redactor.load_allowlist_from_csv(allowlist_file)
 
-        assert allowlist_redactor._cached_redact_plain.cache_info().currsize == 0
+        assert allowlist_redactor._cached_redact_plain.cache_info().currsize == 0, (
+            "reloading the allowlist should clear the cached redactions"
+        )
         after = allowlist_redactor.redact_text(text)
         assert "Rodriguez" in after, f"Expected 'Rodriguez' preserved after reload, got {after!r}"
 

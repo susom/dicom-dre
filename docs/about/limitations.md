@@ -59,6 +59,12 @@ scope and remain in the output.
   embedded icons or secondary-capture overlays, structured report content, and
   file metadata outside the scrubbed tag set may carry identifiers that the
   configured profile does not remove.
+- **Residual PHI in retained annotation subtrees.** Admitted 2D softcopy
+  presentation states retain their Graphic Annotation Sequence. The profile
+  redacts free-text values by VR and hashes identifiers within the subtree, but
+  operator free text that resembles allowlisted terms can survive redaction, and
+  retained reference sequences reconstruct a hashed cross-object linkage graph
+  for admitted instances.
 
 Evaluating and mitigating these vectors is the responsibility of the site and,
 where public release is intended, of the expert performing the HIPAA Expert

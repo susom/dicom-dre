@@ -79,7 +79,7 @@ def jpeg_1_1_1_frame():
     chroma subsampling. Each block is exactly 8x8 pixels for all components.
     """
     path = get_testdata_file("SC_jpeg_no_color_transform.dcm")
-    assert isinstance(path, str)
+    assert isinstance(path, str), f"get_testdata_file should return a str path, got {type(path).__name__}"
     ds = dcmread(path, force=True)
     if str(ds.file_meta.TransferSyntaxUID) != JPEG_BASELINE_TS:
         pytest.skip("Test file is not JPEG Baseline")
@@ -94,7 +94,7 @@ def jpeg_4_2_0_frame():
     H=2/V=2 luma subsampling. Chroma blocks span 16x16 pixel areas.
     """
     path = get_testdata_file("SC_rgb_jpeg_lossy_gdcm.dcm")
-    assert isinstance(path, str)
+    assert isinstance(path, str), f"get_testdata_file should return a str path, got {type(path).__name__}"
     ds = dcmread(path, force=True)
     if str(ds.file_meta.TransferSyntaxUID) != JPEG_BASELINE_TS:
         pytest.skip("Test file is not JPEG Baseline")
@@ -119,8 +119,8 @@ class TestSizeAndAmplitude:
     def test_size_and_amplitude(self, value, expected_size, expected_amp):
         """Verify SSSS category and amplitude encoding."""
         size, amp = _size_and_amplitude(value)
-        assert size == expected_size
-        assert amp == expected_amp
+        assert size == expected_size, f"Size for value {value} should be {expected_size}, got {size}"
+        assert amp == expected_amp, f"Amplitude for value {value} should be {expected_amp}, got {amp}"
 
 
 class TestBlockOverlap:
@@ -128,28 +128,40 @@ class TestBlockOverlap:
 
     def test_overlap_exact(self):
         """Block exactly matches region."""
-        assert _block_overlaps_any_region(0, 0, 8, 8, [(0, 0, 8, 8)]) is True
+        assert _block_overlaps_any_region(0, 0, 8, 8, [(0, 0, 8, 8)]) is True, (
+            "Block matching the region exactly should overlap"
+        )
 
     def test_overlap_partial(self):
         """Block partially overlaps region."""
-        assert _block_overlaps_any_region(4, 4, 8, 8, [(0, 0, 8, 8)]) is True
+        assert _block_overlaps_any_region(4, 4, 8, 8, [(0, 0, 8, 8)]) is True, (
+            "Block partially overlapping the region should overlap"
+        )
 
     def test_no_overlap_adjacent(self):
         """Block is adjacent but does not overlap."""
-        assert _block_overlaps_any_region(8, 0, 8, 8, [(0, 0, 8, 8)]) is False
+        assert _block_overlaps_any_region(8, 0, 8, 8, [(0, 0, 8, 8)]) is False, (
+            "Block adjacent to the region should not overlap"
+        )
 
     def test_no_overlap_distant(self):
         """Block is far from region."""
-        assert _block_overlaps_any_region(100, 100, 8, 8, [(0, 0, 8, 8)]) is False
+        assert _block_overlaps_any_region(100, 100, 8, 8, [(0, 0, 8, 8)]) is False, (
+            "Block far from the region should not overlap"
+        )
 
     def test_multiple_regions(self):
         """Block overlaps one of multiple regions."""
         regions = [(0, 0, 8, 8), (50, 50, 10, 10)]
-        assert _block_overlaps_any_region(52, 52, 8, 8, regions) is True
+        assert _block_overlaps_any_region(52, 52, 8, 8, regions) is True, (
+            "Block overlapping one of multiple regions should overlap"
+        )
 
     def test_no_regions(self):
         """Empty region list never matches."""
-        assert _block_overlaps_any_region(0, 0, 8, 8, []) is False
+        assert _block_overlaps_any_region(0, 0, 8, 8, []) is False, (
+            "Block should not overlap when the region list is empty"
+        )
 
 
 class TestScrubJpegBytes1x1:
@@ -191,7 +203,9 @@ class TestScrubJpegBytes1x1:
 
         # Blanked area: exactly [16:48, 16:48]
         blanked = anon_pixels[16:48, 16:48]
-        assert (blanked == DCT_ZERO_VALUE).all()
+        assert (blanked == DCT_ZERO_VALUE).all(), (
+            f"All pixels in blanked area [16:48, 16:48] should be {DCT_ZERO_VALUE}"
+        )
 
         # Adjacent block just outside: [16:48, 48:56] should be unchanged
         adjacent = anon_pixels[16:48, 48:56]
@@ -219,8 +233,12 @@ class TestScrubJpegBytes1x1:
 
         anon_pixels = _decode_jpeg_to_array(result)
 
-        assert (anon_pixels[0:8, 0:8] == DCT_ZERO_VALUE).all()
-        assert (anon_pixels[64:80, 64:80] == DCT_ZERO_VALUE).all()
+        assert (anon_pixels[0:8, 0:8] == DCT_ZERO_VALUE).all(), (
+            f"First blanked region [0:8, 0:8] should be {DCT_ZERO_VALUE}"
+        )
+        assert (anon_pixels[64:80, 64:80] == DCT_ZERO_VALUE).all(), (
+            f"Second blanked region [64:80, 64:80] should be {DCT_ZERO_VALUE}"
+        )
 
     def test_empty_regions_preserves_image(self, jpeg_1_1_1_frame):
         """An empty region list produces output identical to input."""
@@ -228,7 +246,7 @@ class TestScrubJpegBytes1x1:
 
         orig_pixels = _decode_jpeg_to_array(jpeg_1_1_1_frame)
         anon_pixels = _decode_jpeg_to_array(result)
-        assert np.array_equal(orig_pixels, anon_pixels)
+        assert np.array_equal(orig_pixels, anon_pixels), "Empty region list should produce output identical to input"
 
     def test_output_is_valid_jpeg(self, jpeg_1_1_1_frame):
         """Output starts with SOI and ends with EOI."""
@@ -289,11 +307,13 @@ class TestScrubJpegFilePaths:
 
         scrub_jpeg(str(input_path), str(output_path), [(0, 0, 16, 16)])
 
-        assert output_path.exists()
+        assert output_path.exists(), f"Output file {output_path} should exist after scrubbing"
         result_bytes = output_path.read_bytes()
-        assert result_bytes[:2] == b"\xff\xd8"
+        assert result_bytes[:2] == b"\xff\xd8", "Output file should start with JPEG SOI marker"
         anon_pixels = _decode_jpeg_to_array(result_bytes)
-        assert (anon_pixels[0:16, 0:16] == DCT_ZERO_VALUE).all()
+        assert (anon_pixels[0:16, 0:16] == DCT_ZERO_VALUE).all(), (
+            f"Blanked region [0:16, 0:16] should be {DCT_ZERO_VALUE}"
+        )
 
 
 class TestUnsupportedJpeg:
