@@ -32,7 +32,7 @@ TagAction = Callable[[Dataset, BaseTag, "DeidParameters"], None]
 
 # Text VRs receiving a fixed non-empty token in dummy_for_vr(). UN is handled
 # separately because it is written as raw bytes; numeric VRs are branched inline.
-_DUMMY_TEXT_VRS: frozenset[str] = frozenset({"AE", "CS", "LO", "LT", "PN", "SH", "ST", "UC", "UR", "UT", "UN"})
+_DUMMY_TEXT_VRS: frozenset[str] = frozenset({"AE", "CS", "LO", "LT", "PN", "SH", "ST", "UC", "UR", "UT"})
 
 
 def _create_element(ds: Dataset, tag: BaseTag, value: str) -> None:

@@ -14,6 +14,7 @@ import csv
 import importlib.resources as pkg_resources
 import logging
 import os
+from fnmatch import fnmatch
 from pathlib import Path
 
 import click
@@ -133,6 +134,30 @@ def _resolve_hash_salt(explicit: str | None, *, generate_salt: bool, quiet: bool
             err=True,
         )
     return resolved_salt
+
+
+def _has_files_in_subdirectories(sources: tuple[Path, ...], patterns: tuple[str, ...]) -> bool:
+    """Return whether any directory source holds matching files only in subdirectories.
+
+    Used to decide whether to suggest ``-r/--recursive`` when a non-recursive
+    scan found nothing. Reports True when a directory source has no matching
+    file directly under it but at least one matching file in a subdirectory.
+    """
+    for source in sources:
+        if not source.is_dir():
+            continue
+        for candidate in source.rglob("*"):
+            if candidate.parent == source:
+                continue
+            if candidate.is_file() and _matches_any_pattern(candidate.name, patterns):
+                return True
+    return False
+
+
+def _matches_any_pattern(name: str, patterns: tuple[str, ...]) -> bool:
+    """Return whether ``name`` matches any pattern case-insensitively."""
+    lowered = name.lower()
+    return any(fnmatch(lowered, pattern.lower()) for pattern in patterns)
 
 
 @click.group(context_settings={"max_content_width": 120})
@@ -336,7 +361,7 @@ def deidentify(
         modifies_dates = build_profile(profile_name, profile_spec.settings).modifies_dates
         if not modifies_dates and deid_parameters.jitter != 0:
             raise click.UsageError(
-                f"JITTER cannot be used with the {profile_name!r} profile because it preserves dates."
+                f"JITTER cannot be used with the {profile_name!r} profile because it does not shift dates."
             )
         if modifies_dates and deid_parameters.jitter == 0:
             raise click.UsageError(f"JITTER must be non-zero for the {profile_name!r} profile because it shifts dates.")
@@ -374,6 +399,10 @@ def deidentify(
         f"{counts[Outcome.FILTERED]} filtered, "
         f"{counts[Outcome.QUARANTINED]} quarantined."
     )
+    if total == 0 and not recursive and _has_files_in_subdirectories(sources, globs):
+        click.echo(
+            "No files were found directly under the given directory. Use -r/--recursive to descend into subdirectories."
+        )
     if counts[Outcome.QUARANTINED] > 0:
         raise SystemExit(1)
 

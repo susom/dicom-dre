@@ -121,7 +121,7 @@ class DeidProfile:
         """
         if not self.modifies_dates:
             if params.jitter:
-                raise ValueError(f"jitter must not be supplied for the date-preserving profile {self.name!r}")
+                raise ValueError(f"jitter must not be supplied for the non-date-shifting profile {self.name!r}")
             return
         if params.jitter == 0:
             raise ValueError("jitter must be non-zero for a date-shifting profile")
