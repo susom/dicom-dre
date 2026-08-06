@@ -200,7 +200,29 @@ attribute is handled by an explicit rule or by the bulk rules:
   (Graphic Data, Graphic Type) and the technical/styling attributes are kept
   because they carry no identity and have no removal rule.
 
-## De-identification Method Code Sequence
+## Key Object Selection content
+
+The `default` profile admits Key Object Selection (KO) documents that reference
+at least one instance and retains and cleans their structured content under the
+Clean Structured Content Option (PS3.15 code `113104`). Content Sequence
+`(0040,A730)` is absent from the removal set, so the engine keeps it and
+recurses into its items like any other sequence:
+
+- Text Value `(0040,A160)`, the KO/SR free-text content attribute, is redacted
+  against the allowlist by the same redaction action used for the graphic
+  annotation free text.
+- Referenced UIDs in Content Sequence, Current Requested Procedure Evidence
+  Sequence `(0040,A375)`, Identical Documents Sequence `(0040,A525)`, and
+  Referenced Request Sequence `(0040,A370)` are hashed by the bulk UID rules:
+  Referenced SOP Instance UID `(0008,1155)`, Series Instance UID `(0020,000E)`,
+  and Study Instance UID `(0020,000D)`. Every UID is hashed with the
+  study-scoped hash, so a de-identified KO links to the de-identified referenced
+  objects included in the same export.
+- The document title (Concept Name Code Sequence `(0040,A043)`) and Anatomic
+  Region Sequence `(0008,2218)` are retained; their coded triples carry no
+  identity.
+- Issuer of Accession Number Sequence `(0008,0051)` is removed, so a retained
+  Referenced Request Sequence cannot carry an assigning-authority identifier.
 
 Every de-identified instance receives the De-identification Method Code Sequence
 `(0012,0064)`. Each item contains a code value `(0008,0100)`, the `DCM` coding
@@ -215,6 +237,7 @@ profile emits follow from its configuration:
 | `113106` | Retain Longitudinal Temporal Information With Full Dates | For date-preserving profiles (`lds`, `lds-no-dob`) |
 | `113105` | Clean Descriptors Option | Declared in `deid_options` (`default`, `lds`, `lds-no-dob`) |
 | `113108` | Retain Patient Characteristics Option | Declared in `deid_options` (`default`, `lds`, `lds-no-dob`) |
+| `113104` | Clean Structured Content Option | Declared in `deid_options` (`default`) |
 | `113111` | Retain Safe Private Option | Only when the instance retains device-approved private tags (see [Device Catalog](device-catalog.md)) |
 
 The temporal code is derived from the profile's date policy: `113107` for

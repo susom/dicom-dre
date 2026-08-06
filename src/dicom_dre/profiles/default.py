@@ -45,6 +45,7 @@ PHI_REMOVE_TAGS: frozenset[BaseTag] = frozenset(
         Tag(0x0008, 0x009C),  # ConsultingPhysicianName
         Tag(0x0008, 0x009D),  # ConsultingPhysicianIdentificationSequence
         Tag(0x0008, 0x0201),  # TimezoneOffsetFromUTC
+        Tag(0x0008, 0x0051),  # IssuerOfAccessionNumberSeq
         Tag(0x0008, 0x1010),  # StationName
         Tag(0x0008, 0x1040),  # InstitutionalDepartmentName
         Tag(0x0008, 0x1048),  # PhysicianOfRecord
@@ -62,7 +63,6 @@ PHI_REMOVE_TAGS: frozenset[BaseTag] = frozenset(
         Tag(0x0008, 0x1120),  # RefPatientSeq
         Tag(0x0008, 0x1250),  # RelatedSeriesSequence
         Tag(0x0008, 0x2111),  # DerivationDescription
-        Tag(0x0008, 0x2218),  # AnatomicRegionSeq
         Tag(0x0008, 0x4000),  # IdentifyingComments
         Tag(0x0010, 0x0021),  # IssuerOfPatientID
         Tag(0x0010, 0x0032),  # PatientBirthTime
@@ -207,7 +207,6 @@ PHI_REMOVE_TAGS: frozenset[BaseTag] = frozenset(
         Tag(0x0040, 0xA353),  # TrialAddress
         Tag(0x0040, 0xA354),  # TrialTelephoneNumber
         Tag(0x0040, 0xA358),  # TrialVerbalSourceIdentifierCodeSequence
-        Tag(0x0040, 0xA730),  # ContentSeq
         Tag(0x0060, 0x3000),  # OverlayData
         Tag(0x0060, 0x4000),  # OverlayComments
         Tag(0x0070, 0x0086),  # ContentCreatorsIdCodeSeq
@@ -880,6 +879,7 @@ def default_profile(
     redact = redact_free_text(settings.allowlist_csv, preserve_dates)
     rules[Tag(0x0070, 0x0006)] = redact  # UnformattedTextValue (ST)
     rules[Tag(0x0070, 0x0289)] = redact  # TickLabel (SH)
+    rules[Tag(0x0040, 0xA160)] = redact  # TextValue (UT), KO/SR content free text
     rules[Tag(0x0062, 0x0020)] = hash_value_identifier(salt=settings.hash_salt)  # TrackingID (UT)
 
     # Dummy-value identifiers (PS3.15 Table E.1-1 action code D) that may recur
@@ -915,5 +915,5 @@ def default_profile(
         hash_salt=settings.hash_salt,
         uid_root=settings.uid_root,
         uid_use_study_salt=True,
-        deid_options=frozenset({"113105", "113108"}),
+        deid_options=frozenset({"113104", "113105", "113108"}),
     )

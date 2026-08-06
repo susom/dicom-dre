@@ -134,6 +134,42 @@ class TestDicomTags:
         tags = DicomTags({"Rows": "abc"})
         assert tags.get_int("Rows") is None, f"Expected None for non-numeric value, got {tags.get_int('Rows')}"
 
+    def test_evidence_with_referenced_instance_marks_present(self):
+        """from_dataset marks the evidence sequence present when it nests a SOP instance UID."""
+        from pydicom.dataset import Dataset
+        from pydicom.sequence import Sequence
+
+        sop_item = Dataset()
+        sop_item.ReferencedSOPInstanceUID = "1.2.3.4.5"
+        series_item = Dataset()
+        series_item.ReferencedSOPSequence = Sequence([sop_item])
+        study_item = Dataset()
+        study_item.ReferencedSeriesSequence = Sequence([series_item])
+        ds = Dataset()
+        ds.CurrentRequestedProcedureEvidenceSequence = Sequence([study_item])
+
+        tags = DicomTags.from_dataset(ds)
+        assert tags.get("CurrentRequestedProcedureEvidenceSequence") == "present", (
+            "evidence sequence with a referenced SOP instance UID should be marked present"
+        )
+
+    def test_evidence_without_referenced_instance_absent(self):
+        """from_dataset leaves the evidence marker absent when no SOP instance UID nests."""
+        from pydicom.dataset import Dataset
+        from pydicom.sequence import Sequence
+
+        series_item = Dataset()
+        series_item.ReferencedSOPSequence = Sequence([])
+        study_item = Dataset()
+        study_item.ReferencedSeriesSequence = Sequence([series_item])
+        ds = Dataset()
+        ds.CurrentRequestedProcedureEvidenceSequence = Sequence([study_item])
+
+        tags = DicomTags.from_dataset(ds)
+        assert tags.get("CurrentRequestedProcedureEvidenceSequence") == "", (
+            "evidence sequence without a referenced SOP instance UID should not be marked present"
+        )
+
 
 # ---------------------------------------------------------------------------
 # device() factory

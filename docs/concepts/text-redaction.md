@@ -86,3 +86,17 @@ For the description fields (`SeriesDescription`, `StudyDescription`,
 verbatim with no redaction. When the caller supplies no value, the engine
 redacts the field present in the source dataset with the profile's allowlist and
 `preserve_dates` setting.
+
+## Annotation and structured-content free text
+
+The `default` profile applies the same redaction to the free-text attributes of
+the retained annotation and Key Object Selection subtrees:
+
+- Unformatted Text Value `(0070,0006)` and Tick Label `(0070,0289)` in the
+  Graphic Annotation Sequence of admitted 2D softcopy presentation states.
+- Text Value `(0040,A160)` in the Content Sequence of admitted KO documents.
+
+Each is bound to an explicit rule against the profile allowlist and
+`preserve_dates` setting. The redaction action decodes raw bytes and resolves
+the dictionary VR for an implicit-VR (`UN`/`OB`) element, so redaction is
+independent of encoding. See [De-identification Profiles](profiles.md).

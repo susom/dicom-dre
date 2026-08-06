@@ -265,7 +265,7 @@ rules.
 
 ```python
 deny_modalities(
-    exact=["PR", "KO", "SR"],          # exact modality match
+    exact=["SR", "RTPLAN", "RTDOSE"],  # exact modality match
     substring=["XA", "MG", "US"],      # substring modality match
 )
 ```
@@ -282,11 +282,15 @@ All keyword arguments to `deny_when` are AND'd together. Available parameters
 are: `sop_class`, `sop_class_not`, `burned_in_annotation`, `image_type_empty`,
 `image_type_any`, `image_type_exclude`, `manufacturer`, `manufacturer_model_name`,
 `manufacturer_model_name_fallback`, `modality`, `modality_not`,
-`series_number`, `conversion_type_present`, `graphic_annotation_absent`.
+`series_number`, `conversion_type_present`, `graphic_annotation_absent`,
+`referenced_instance_absent`.
 
 `sop_class_not` matches when the SOP Class UID matches none of its patterns
 (an allowlist condition). `graphic_annotation_absent=True` matches when the
 Graphic Annotation Sequence `(0070,0001)` is absent or empty.
+`referenced_instance_absent=True` matches when the Current Requested Procedure
+Evidence Sequence `(0040,A375)` nests no Referenced SOP Instance UID
+`(0008,1155)`.
 
 ### Presentation state admission
 
@@ -320,6 +324,33 @@ is denied with reason `no annotation data`. An admitted-class `PR` instance
 with a non-empty Graphic Annotation Sequence reaches the default `allow`
 action. The `Empty ImageType` exclusion is scoped with `modality_not=["=PR"]`
 so it does not reject presentation states, which carry no Image Type.
+
+### Key Object Selection admission
+
+Key Object Selection (KO) documents, SOP Class
+`1.2.840.10008.5.1.4.1.1.88.59`, are admitted on the presence of a referenced
+instance. Two ordered `deny_when` rules replace the former single SR/KO deny:
+
+```python
+deny_when(
+    "unsupported structured report",
+    sop_class="^1.2.840.10008.5.1.4.1.1.8",
+    sop_class_not=["=1.2.840.10008.5.1.4.1.1.88.59"],
+),
+deny_when(
+    "no referenced instances",
+    sop_class="=1.2.840.10008.5.1.4.1.1.88.59",
+    referenced_instance_absent=True,
+),
+```
+
+The first rule denies the SR family and the three non-SR classes caught by the
+`^1.2.840.10008.5.1.4.1.1.8` prefix (Ophthalmic Visual Field, Ophthalmic
+Thickness Map, Corneal Topography Map), while exempting KO. The second denies a
+KO that references no instance with reason `no referenced instances`. A KO that
+references at least one instance reaches the default `allow` action. The
+`Empty ImageType` exclusion is scoped with `modality_not=["=PR", "=KO"]` so it
+does not reject KO, which carries no Image Type.
 
 
 ## Evaluation order

@@ -165,6 +165,31 @@ def match_string(pattern: str, value: str) -> bool:
     return pattern.lower() in value.lower()
 
 
+def _has_referenced_instance(evidence_seq: Iterable) -> bool:
+    """Return True if the evidence sequence nests a Referenced SOP Instance UID.
+
+    Walks Current Requested Procedure Evidence Sequence (0040,A375) ->
+    Referenced Series Sequence (0008,1115) -> Referenced SOP Sequence
+    (0008,1199) and reports whether any item carries a non-empty Referenced SOP
+    Instance UID (0008,1155).
+    """
+    try:
+        for study_item in evidence_seq:
+            series_seq = getattr(study_item, "ReferencedSeriesSequence", None)
+            if series_seq is None:
+                continue
+            for series_item in series_seq:
+                sop_seq = getattr(series_item, "ReferencedSOPSequence", None)
+                if sop_seq is None:
+                    continue
+                for sop_item in sop_seq:
+                    if str(getattr(sop_item, "ReferencedSOPInstanceUID", "")) != "":
+                        return True
+    except TypeError:
+        return False
+    return False
+
+
 class DicomTags:
     """Lightweight wrapper for reading DICOM attributes needed by the catalog.
 
@@ -230,6 +255,7 @@ class DicomTags:
             "CommentsOnRadiationDose",
             "SequenceOfUltrasoundRegions",
             "GraphicAnnotationSequence",
+            "CurrentRequestedProcedureEvidenceSequence",
         ]
         values: dict[str, str] = {}
         for kw in keywords:
@@ -261,6 +287,13 @@ class DicomTags:
                         values[kw] = "present"
                 except TypeError:
                     pass
+            elif kw == "CurrentRequestedProcedureEvidenceSequence":
+                # Reference presence: store "present" if the evidence sequence
+                # nests at least one Referenced SOP Instance UID (0008,1155)
+                # under Referenced Series Sequence (0008,1115) -> Referenced
+                # SOP Sequence (0008,1199). Requires an explicit nested walk.
+                if _has_referenced_instance(cast(Iterable, val)):
+                    values[kw] = "present"
             else:
                 values[kw] = str(val)
         return cls(values)
@@ -437,6 +470,7 @@ class ExclusionRule:
     image_type_exclude: str | list[str] | None = None
     sop_class_not: str | list[str] | None = None
     graphic_annotation_absent: bool | None = None
+    referenced_instance_absent: bool | None = None
 
 
 def deny_modalities(
@@ -484,6 +518,7 @@ def deny_when(
     image_type_exclude: str | list[str] | None = None,
     sop_class_not: str | list[str] | None = None,
     graphic_annotation_absent: bool | None = None,
+    referenced_instance_absent: bool | None = None,
 ) -> ExclusionRule:
     """Create a conditional exclusion rule.
 
@@ -503,6 +538,7 @@ def deny_when(
         image_type_exclude: ImageType component(s) — none may appear.
         sop_class_not: SOP Class UID pattern(s); matches when none appear (allowlist).
         graphic_annotation_absent: If True, matches when GraphicAnnotationSequence is absent/empty.
+        referenced_instance_absent: If True, matches when no referenced SOP instance is present.
 
     Returns:
         An ExclusionRule for conditional denial.
@@ -524,6 +560,7 @@ def deny_when(
         image_type_exclude=image_type_exclude,
         sop_class_not=sop_class_not,
         graphic_annotation_absent=graphic_annotation_absent,
+        referenced_instance_absent=referenced_instance_absent,
     )
 
 
@@ -746,6 +783,11 @@ def _match_exclusion(rule: ExclusionRule, tags: DicomTags) -> bool:
     if rule.graphic_annotation_absent is not None:
         is_absent = tags.get("GraphicAnnotationSequence") != "present"
         if rule.graphic_annotation_absent != is_absent:
+            return False
+
+    if rule.referenced_instance_absent is not None:
+        is_absent = tags.get("CurrentRequestedProcedureEvidenceSequence") != "present"
+        if rule.referenced_instance_absent != is_absent:
             return False
 
     return True

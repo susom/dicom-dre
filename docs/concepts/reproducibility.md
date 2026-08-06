@@ -45,6 +45,15 @@ yields matching hashed references between the presentation state and its
 referenced images. Processing them under different study identifiers breaks the
 linkage.
 
+The same requirement governs Key Object Selection (KO) documents. A KO's
+referenced UIDs (Referenced SOP Instance UID `(0008,1155)`, Series Instance UID
+`(0020,000E)`, Study Instance UID `(0020,000D)`) are hashed with the study
+identifier, so a de-identified KO links to a referenced object only when both
+are processed with the same `study_id`. Under the per-recipient assignment,
+every object in one recipient's export is de-identified with the same
+`study_id`, so a KO reference resolves when its target is included in the same
+export and dangles when the target is excluded.
+
 ## Regression guard
 
 A regression test suite built from sampled DICOM studies guards reproducibility.

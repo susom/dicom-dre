@@ -649,3 +649,70 @@ class TestPresentationStateAdmission:
         assert "presentation state" not in decision.reason, (
             f"CT instance should not match presentation-state rules, got reason: {decision.reason}"
         )
+
+
+class TestKeyObjectSelectionAdmission:
+    """Key Object Selection (KO) admission and denial rules."""
+
+    _KO_SOP = "1.2.840.10008.5.1.4.1.1.88.59"
+
+    def test_reference_bearing_ko_allowed(self, catalog):
+        """A KO referencing at least one instance is allowed."""
+        tags = DicomTags(
+            {
+                "Modality": "KO",
+                "SOPClassUID": self._KO_SOP,
+                "CurrentRequestedProcedureEvidenceSequence": "present",
+            }
+        )
+        decision = catalog.evaluate(tags)
+        assert decision.action == "allow", f"reference-bearing KO should allow, got {decision.action}"
+
+    def test_reference_free_ko_denied(self, catalog):
+        """A KO referencing no instance is denied with the reference reason."""
+        tags = DicomTags(
+            {
+                "Modality": "KO",
+                "SOPClassUID": self._KO_SOP,
+            }
+        )
+        decision = catalog.evaluate(tags)
+        assert decision.action == "deny", f"reference-free KO should deny, got {decision.action}"
+        assert "no referenced instances" in decision.reason, f"unexpected reason: {decision.reason}"
+
+    def test_non_ko_structured_report_denied(self, catalog):
+        """An Enhanced SR class remains denied as an unsupported structured report."""
+        tags = DicomTags(
+            {
+                "SOPClassUID": "1.2.840.10008.5.1.4.1.1.88.22",
+                "CurrentRequestedProcedureEvidenceSequence": "present",
+            }
+        )
+        decision = catalog.evaluate(tags)
+        assert decision.action == "deny", f"Enhanced SR should deny, got {decision.action}"
+        assert "unsupported structured report" in decision.reason, f"unexpected reason: {decision.reason}"
+
+    def test_non_sr_class_caught_by_prefix_still_denied(self, catalog):
+        """Corneal Topography Map, caught by the .1.1.8 prefix, remains denied."""
+        tags = DicomTags(
+            {
+                "Modality": "OPT",
+                "SOPClassUID": "1.2.840.10008.5.1.4.1.1.82.1",
+            }
+        )
+        decision = catalog.evaluate(tags)
+        assert decision.action == "deny", f"Corneal Topography Map should deny, got {decision.action}"
+        assert "unsupported structured report" in decision.reason, f"unexpected reason: {decision.reason}"
+
+    def test_empty_image_type_rule_exempts_ko(self, catalog):
+        """A reference-bearing KO with no ImageType is not denied by Empty ImageType."""
+        tags = DicomTags(
+            {
+                "Modality": "KO",
+                "SOPClassUID": self._KO_SOP,
+                "CurrentRequestedProcedureEvidenceSequence": "present",
+            }
+        )
+        decision = catalog.evaluate(tags)
+        assert decision.action == "allow", f"KO with empty ImageType should allow, got {decision.action}"
+        assert "Empty ImageType" not in decision.reason, f"KO should be exempt from Empty ImageType: {decision.reason}"

@@ -320,6 +320,17 @@ class TestTextRedactor:
         # These should be allowed by DEFAULT_ALLOW_REGEX_PATTERNS
         assert result == "XXXXX 12345 XXX 6 XXXX", f"Expected short numbers allowed, got {result!r}"
 
+    @pytest.mark.parametrize("token", ["Autosaved", "pathologic", "Stereotaxy"])
+    def test_ko_allowlist_tokens_pass(self, full_allowlist_redactor, token):
+        """The KO Text Value allowlist additions pass through unmasked."""
+        result = full_allowlist_redactor.redact_text(token)
+        assert result == token, f"allowlisted token {token!r} should pass unmasked, got {result!r}"
+
+    def test_unknown_alphabetic_token_masked(self, full_allowlist_redactor):
+        """An unknown alphabetic token is masked by the full allowlist redactor."""
+        result = full_allowlist_redactor.redact_text("Zzqxwlk")
+        assert result == "XXXXXXX", f"unknown token should be masked, got {result!r}"
+
     def test_load_allowlist_from_csv(self, basic_redactor, temp_dir):
         """Load allowlist from CSV file."""
         csv_file = temp_dir / "allowlist.csv"

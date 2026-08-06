@@ -28,6 +28,21 @@ Instance metadata is also scrubbed against a configurable de-identification
 profile, and instance/study/series UIDs are deterministically re-derived, so the
 same input plus the same parameters always yields the same output.
 
+The `default` profile admits and cleans two annotation-bearing object types in
+place rather than dropping them:
+
+- **2D softcopy presentation states** carrying a Graphic Annotation Sequence
+  `(0070,0001)` and **Key Object Selection documents** that reference at least
+  one instance are retained. Their annotation and content subtrees are cleaned:
+  free-text attributes are redacted against the allowlist and referenced UIDs
+  are hashed with the study-scoped function, so annotations and key-object
+  references reach downstream use with cross-object linkage preserved.
+
+Presentation states without an annotation, and Key Object Selection documents
+that reference no instance, are filtered. See
+[De-identification Profiles](docs/concepts/profiles.md) and the
+[Device Catalog](docs/concepts/device-catalog.md).
+
 ## Reproducible by design
 
 The engine performs no lookups and no network calls. Replacement identifiers are

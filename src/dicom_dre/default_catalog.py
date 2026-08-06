@@ -1853,7 +1853,6 @@ default_exclusions: list[ExclusionRule] = [
             "HD",
             "IO",
             "IR",
-            "KO",
             "PN",
             "RAW",
             "REPORT",
@@ -1900,7 +1899,9 @@ default_exclusions: list[ExclusionRule] = [
     # Deny 7: Presentation state and SR SOP classes.
     # Admit Modality PR instances that are 2D softcopy presentation states
     # carrying a Graphic Annotation Sequence; deny volumetric/unknown PR classes
-    # and admitted-class instances that carry no annotation.
+    # and admitted-class instances that carry no annotation. Admit Key Object
+    # Selection (KO, .88.59) that references at least one instance; deny the rest
+    # of the SR family and deny reference-free KO.
     deny_when(
         "unsupported presentation state",
         modality="=PR",
@@ -1919,8 +1920,14 @@ default_exclusions: list[ExclusionRule] = [
         graphic_annotation_absent=True,
     ),
     deny_when(
-        "SR/KO SOP class",
+        "unsupported structured report",
         sop_class="^1.2.840.10008.5.1.4.1.1.8",
+        sop_class_not=["=1.2.840.10008.5.1.4.1.1.88.59"],
+    ),
+    deny_when(
+        "no referenced instances",
+        sop_class="=1.2.840.10008.5.1.4.1.1.88.59",
+        referenced_instance_absent=True,
     ),
     # Deny 8: INFINITT PACS with high series number
     deny_when(
@@ -1959,7 +1966,7 @@ default_exclusions: list[ExclusionRule] = [
     deny_when(
         "Empty ImageType",
         image_type_empty=True,
-        modality_not=["=PR"],
+        modality_not=["=PR", "=KO"],
     ),
     # Deny 12: BurnedInAnnotation YES
     deny_when(

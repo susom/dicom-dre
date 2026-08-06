@@ -1478,3 +1478,240 @@ class TestTagSetInvariants:
             assert not dupes, f"{name} has duplicate Tag literals: {dupes}"
             checked.add(name)
         assert checked == targets, f"did not scan all sets; missing {targets - checked}"
+
+
+class TestKeyObjectSelectionProfile:
+    """Default profile retention and cleaning of Key Object Selection content."""
+
+    _ORIG_SOP_INSTANCE = "1.2.826.0.1.3680043.REF.9001"
+    _ORIG_SERIES = "1.2.826.0.1.3680043.SER.9002"
+    _ORIG_STUDY = "1.2.826.0.1.3680043.STU.9003"
+    _ORIG_IDENTICAL_STUDY = "1.2.826.0.1.3680043.IDS.9101"
+    _ORIG_IDENTICAL_SERIES = "1.2.826.0.1.3680043.IDS.9102"
+    _ORIG_IDENTICAL_SOP = "1.2.826.0.1.3680043.IDS.9103"
+    _STUDY_ID = "STUDY_KO"
+
+    def _ko_dataset(self) -> Dataset:
+        """Build a synthetic KO dataset with content, evidence, and PHI."""
+        from pydicom.sequence import Sequence
+
+        ds = Dataset()
+        ds.add_new(Tag(0x0008, 0x0060), "CS", "KO")  # Modality
+        ds.add_new(Tag(0x0008, 0x0016), "UI", "1.2.840.10008.5.1.4.1.1.88.59")  # SOPClassUID
+        ds.add_new(Tag(0x0008, 0x0018), "UI", "1.2.826.0.1.3680043.KO.1")  # SOPInstanceUID
+        ds.add_new(Tag(0x0010, 0x0010), "PN", "DOE^JANE")  # PatientName
+        ds.add_new(Tag(0x0010, 0x0020), "LO", "MRN-KO-1")  # PatientID
+        ds.add_new(Tag(0x0008, 0x0050), "SH", "ACC-KO-1")  # AccessionNumber
+        ds.add_new(Tag(0x0008, 0x0090), "PN", "REFER^DOC")  # ReferringPhysicianName
+        ds.add_new(Tag(0x0008, 0x0080), "LO", "SOME HOSPITAL")  # InstitutionName
+        ds.add_new(Tag(0x0008, 0x1010), "SH", "STATION-7")  # StationName
+        ds.add_new(Tag(0x0020, 0x000D), "UI", self._ORIG_STUDY)  # StudyInstanceUID
+
+        # Document Title: Concept Name Code Sequence (0040,A043)
+        title = Dataset()
+        title.add_new(Tag(0x0008, 0x0100), "SH", "113000")  # CodeValue
+        title.add_new(Tag(0x0008, 0x0102), "SH", "DCM")  # CodingSchemeDesignator
+        title.add_new(Tag(0x0008, 0x0104), "LO", "Of Interest")  # CodeMeaning
+        ds.add_new(Tag(0x0040, 0xA043), "SQ", Sequence([title]))
+
+        # Anatomic Region Sequence (0008,2218) coded label
+        region = Dataset()
+        region.add_new(Tag(0x0008, 0x0100), "SH", "T-A0100")
+        region.add_new(Tag(0x0008, 0x0102), "SH", "SRT")
+        region.add_new(Tag(0x0008, 0x0104), "LO", "Brain")
+        ds.add_new(Tag(0x0008, 0x2218), "SQ", Sequence([region]))
+
+        # Current Requested Procedure Evidence Sequence -> Series -> SOP
+        sop_item = Dataset()
+        sop_item.add_new(Tag(0x0008, 0x1150), "UI", "1.2.840.10008.5.1.4.1.1.2")  # RefSOPClassUID
+        sop_item.add_new(Tag(0x0008, 0x1155), "UI", self._ORIG_SOP_INSTANCE)  # RefSOPInstanceUID
+        series_item = Dataset()
+        series_item.add_new(Tag(0x0020, 0x000E), "UI", self._ORIG_SERIES)  # SeriesInstanceUID
+        series_item.add_new(Tag(0x0008, 0x1199), "SQ", Sequence([sop_item]))  # RefSOPSequence
+        study_item = Dataset()
+        study_item.add_new(Tag(0x0020, 0x000D), "UI", self._ORIG_STUDY)  # StudyInstanceUID
+        study_item.add_new(Tag(0x0008, 0x1115), "SQ", Sequence([series_item]))  # RefSeriesSequence
+        ds.add_new(Tag(0x0040, 0xA375), "SQ", Sequence([study_item]))  # EvidenceSequence
+
+        # Content Sequence: a TEXT item with free-text and an IMAGE item.
+        text_item = Dataset()
+        text_item.add_new(Tag(0x0040, 0xA040), "CS", "TEXT")  # ValueType
+        text_item.add_new(Tag(0x0040, 0xA160), "UT", "Malignant lesion noted by Dr Smith")  # TextValue
+        image_sop = Dataset()
+        image_sop.add_new(Tag(0x0008, 0x1150), "UI", "1.2.840.10008.5.1.4.1.1.2")
+        image_sop.add_new(Tag(0x0008, 0x1155), "UI", self._ORIG_SOP_INSTANCE)
+        image_item = Dataset()
+        image_item.add_new(Tag(0x0040, 0xA040), "CS", "IMAGE")  # ValueType
+        image_item.add_new(Tag(0x0008, 0x1199), "SQ", Sequence([image_sop]))  # RefSOPSequence
+        ds.add_new(Tag(0x0040, 0xA730), "SQ", Sequence([text_item, image_item]))  # ContentSequence
+
+        # Identical Documents Sequence (0040,A525) with nested Study/Series/SOP UIDs
+        ids_sop = Dataset()
+        ids_sop.add_new(Tag(0x0008, 0x1150), "UI", "1.2.840.10008.5.1.4.1.1.88.59")
+        ids_sop.add_new(Tag(0x0008, 0x1155), "UI", self._ORIG_IDENTICAL_SOP)
+        ids_series = Dataset()
+        ids_series.add_new(Tag(0x0020, 0x000E), "UI", self._ORIG_IDENTICAL_SERIES)
+        ids_series.add_new(Tag(0x0008, 0x1199), "SQ", Sequence([ids_sop]))
+        ids_study = Dataset()
+        ids_study.add_new(Tag(0x0020, 0x000D), "UI", self._ORIG_IDENTICAL_STUDY)
+        ids_study.add_new(Tag(0x0008, 0x1115), "SQ", Sequence([ids_series]))
+        ds.add_new(Tag(0x0040, 0xA525), "SQ", Sequence([ids_study]))  # IdenticalDocumentsSequence
+
+        # Referenced Request Sequence with a nested Issuer of Accession Number
+        # Sequence and free-text order/procedure members.
+        issuer = Dataset()
+        issuer.add_new(Tag(0x0040, 0x0031), "UT", "SITE-A")  # LocalNamespaceEntityID
+        request_item = Dataset()
+        request_item.add_new(Tag(0x0008, 0x0050), "SH", "ACC-KO-1")  # AccessionNumber
+        request_item.add_new(Tag(0x0040, 0x1001), "SH", "RP-0001")  # RequestedProcedureID
+        request_item.add_new(Tag(0x0032, 0x1060), "LO", "MRI BRAIN W CONTRAST")  # RequestedProcedureDescription
+        request_item.add_new(Tag(0x0008, 0x0051), "SQ", Sequence([issuer]))  # IssuerOfAccessionNumberSeq
+        ds.add_new(Tag(0x0040, 0xA370), "SQ", Sequence([request_item]))  # RefRequestSequence
+
+        # Private group, removed by remove_private=True.
+        ds.add_new(Tag(0x0009, 0x0010), "LO", "ACME PRIVATE")  # PrivateCreator
+        ds.add_new(Tag(0x0009, 0x1001), "LO", "PRIVATE-PHI-VALUE")  # private element
+        return ds
+
+    def _apply(self, ds: Dataset) -> None:
+        from dicom_dre.profiles.config import ProfileSettings
+        from dicom_dre.profiles.default import default_profile
+
+        default_profile(ProfileSettings(hash_salt="pepper")).apply(ds, DeidParameters(study_id=self._STUDY_ID))
+
+    def _expected_uid(self, original: str) -> str:
+        from dicom_dre.uid_utils import hashuid
+
+        return hashuid("1.2.840.4267.32.", original + self._STUDY_ID)
+
+    def test_content_sequence_retained(self):
+        """Content Sequence is retained after de-identification."""
+        ds = self._ko_dataset()
+        self._apply(ds)
+        assert Tag(0x0040, 0xA730) in ds, "Content Sequence should be retained"
+
+    def test_referenced_uids_hashed_to_pipeline_value(self):
+        """Referenced SOP/Series/Study UIDs hash to the study-scoped pipeline value."""
+        ds = self._ko_dataset()
+        self._apply(ds)
+        study_item = ds[Tag(0x0040, 0xA375)].value[0]
+        series_item = study_item[Tag(0x0008, 0x1115)].value[0]
+        sop_item = series_item[Tag(0x0008, 0x1199)].value[0]
+        assert str(sop_item[Tag(0x0008, 0x1155)].value) == self._expected_uid(self._ORIG_SOP_INSTANCE), (
+            "Referenced SOP Instance UID should equal the study-scoped hash"
+        )
+        assert str(series_item[Tag(0x0020, 0x000E)].value) == self._expected_uid(self._ORIG_SERIES), (
+            "Series Instance UID should equal the study-scoped hash"
+        )
+        assert str(study_item[Tag(0x0020, 0x000D)].value) == self._expected_uid(self._ORIG_STUDY), (
+            "Study Instance UID should equal the study-scoped hash"
+        )
+
+    def test_no_original_uid_survives(self):
+        """No original referenced UID survives anywhere in the output tree."""
+        ds = self._ko_dataset()
+        self._apply(ds)
+        values = _all_string_values(ds)
+        for original in (self._ORIG_SOP_INSTANCE, self._ORIG_SERIES, self._ORIG_STUDY):
+            assert original not in values, f"original UID {original} should not survive in output"
+
+    def test_text_value_redacted(self):
+        """Text Value free text is redacted against the allowlist."""
+        ds = self._ko_dataset()
+        self._apply(ds)
+        text_item = ds[Tag(0x0040, 0xA730)].value[0]
+        redacted = str(text_item[Tag(0x0040, 0xA160)].value)
+        assert "Smith" not in redacted, f"operator name should be redacted from Text Value: {redacted!r}"
+
+    def test_document_title_retained(self):
+        """The Concept Name Code Sequence document title is retained unchanged."""
+        ds = self._ko_dataset()
+        self._apply(ds)
+        title = ds[Tag(0x0040, 0xA043)].value[0]
+        assert str(title[Tag(0x0008, 0x0100)].value) == "113000", "code value should be retained"
+        assert str(title[Tag(0x0008, 0x0102)].value) == "DCM", "coding scheme designator should be retained"
+        assert str(title[Tag(0x0008, 0x0104)].value) == "Of Interest", "code meaning should be retained"
+
+    def test_anatomic_region_sequence_retained(self):
+        """Anatomic Region Sequence coded label is retained."""
+        ds = self._ko_dataset()
+        self._apply(ds)
+        assert Tag(0x0008, 0x2218) in ds, "Anatomic Region Sequence should be retained"
+        region = ds[Tag(0x0008, 0x2218)].value[0]
+        assert str(region[Tag(0x0008, 0x0104)].value) == "Brain", "coded anatomy meaning should be retained"
+
+    def test_issuer_of_accession_number_sequence_removed(self):
+        """Issuer of Accession Number Sequence nested in a retained sequence is removed."""
+        ds = self._ko_dataset()
+        self._apply(ds)
+        request_item = ds[Tag(0x0040, 0xA370)].value[0]
+        assert Tag(0x0008, 0x0051) not in request_item, "Issuer of Accession Number Sequence should be removed"
+
+    def test_identity_elements_deidentified(self):
+        """Patient, physician, institution, and station identity elements are de-identified."""
+        ds = self._ko_dataset()
+        self._apply(ds)
+        assert str(ds[Tag(0x0010, 0x0020)].value) != "MRN-KO-1", "PatientID should be hashed"
+        assert str(ds[Tag(0x0010, 0x0010)].value) != "DOE^JANE", "PatientName should be hashed"
+        assert Tag(0x0008, 0x0080) not in ds, "InstitutionName should be removed"
+        assert Tag(0x0008, 0x1010) not in ds, "StationName should be removed"
+
+    def test_clean_structured_content_option_emitted(self):
+        """The De-identification Method Code Sequence includes 113104."""
+        ds = self._ko_dataset()
+        self._apply(ds)
+        codes = {str(item[Tag(0x0008, 0x0100)].value) for item in ds[Tag(0x0012, 0x0064)].value}
+        assert "113104" in codes, f"Clean Structured Content Option should be emitted: {codes}"
+
+    def test_identical_documents_sequence_retained_and_hashed(self):
+        """Identical Documents Sequence is retained with nested UIDs hashed."""
+        ds = self._ko_dataset()
+        self._apply(ds)
+        assert Tag(0x0040, 0xA525) in ds, "Identical Documents Sequence should be retained"
+        study_item = ds[Tag(0x0040, 0xA525)].value[0]
+        series_item = study_item[Tag(0x0008, 0x1115)].value[0]
+        sop_item = series_item[Tag(0x0008, 0x1199)].value[0]
+        assert str(study_item[Tag(0x0020, 0x000D)].value) == self._expected_uid(self._ORIG_IDENTICAL_STUDY), (
+            "Identical Documents Study Instance UID should be study-scoped hashed"
+        )
+        assert str(series_item[Tag(0x0020, 0x000E)].value) == self._expected_uid(self._ORIG_IDENTICAL_SERIES), (
+            "Identical Documents Series Instance UID should be study-scoped hashed"
+        )
+        assert str(sop_item[Tag(0x0008, 0x1155)].value) == self._expected_uid(self._ORIG_IDENTICAL_SOP), (
+            "Identical Documents Referenced SOP Instance UID should be study-scoped hashed"
+        )
+        values = _all_string_values(ds)
+        for original in (self._ORIG_IDENTICAL_STUDY, self._ORIG_IDENTICAL_SERIES, self._ORIG_IDENTICAL_SOP):
+            assert original not in values, f"original identical-documents UID {original} should not survive"
+
+    def test_referenced_request_sequence_accession_hashed_and_free_text_removed(self):
+        """Referenced Request Sequence keeps a hashed accession and drops free-text members."""
+        ds = self._ko_dataset()
+        self._apply(ds)
+        request_item = ds[Tag(0x0040, 0xA370)].value[0]
+        assert str(request_item[Tag(0x0008, 0x0050)].value) != "ACC-KO-1", "nested Accession Number should be hashed"
+        assert Tag(0x0032, 0x1060) not in request_item, "Requested Procedure Description should be removed"
+        assert Tag(0x0040, 0x1001) not in request_item, "Requested Procedure ID should be removed"
+
+    def test_private_group_removed(self):
+        """Private group elements are removed by the default profile."""
+        ds = self._ko_dataset()
+        self._apply(ds)
+        assert Tag(0x0009, 0x0010) not in ds, "private creator should be removed"
+        assert Tag(0x0009, 0x1001) not in ds, "private element should be removed"
+        assert "PRIVATE-PHI-VALUE" not in _all_string_values(ds), "private value should not survive"
+
+    def test_brainlab_private_scheme_title_retained(self):
+        """A document title using a private coding scheme is retained verbatim."""
+        from pydicom.sequence import Sequence
+
+        ds = self._ko_dataset()
+        title = Dataset()
+        title.add_new(Tag(0x0008, 0x0100), "SH", "Plan")  # CodeValue
+        title.add_new(Tag(0x0008, 0x0102), "SH", "BL-S17-1")  # CodingSchemeDesignator
+        title.add_new(Tag(0x0008, 0x0104), "LO", "Plan")  # CodeMeaning
+        ds[Tag(0x0040, 0xA043)].value = Sequence([title])
+        self._apply(ds)
+        retained = ds[Tag(0x0040, 0xA043)].value[0]
+        assert str(retained[Tag(0x0008, 0x0100)].value) == "Plan", "private-scheme code value should be retained"
+        assert str(retained[Tag(0x0008, 0x0102)].value) == "BL-S17-1", "private coding scheme should be retained"
