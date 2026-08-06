@@ -160,6 +160,22 @@ free-text description fields with `preserve_dates=False`.
 | Date and datetime attributes | Removed |
 | Free-text fields | Dates and times masked by the redactor |
 
+Key Object Selection (KO) and Presentation State (PR) objects carry no pixel
+data but hold clinician-curated labels. The profile designates their
+structured-content and graphic-annotation sequences as content roots
+(Content Sequence `(0040,A730)`, Concept Name Code Sequence `(0040,A043)`,
+Current Requested Procedure Evidence Sequence `(0040,A375)`, Identical Documents
+Sequence `(0040,A525)`, Referenced Request Sequence `(0040,A370)`, Anatomic
+Region Sequence `(0008,2218)`, and Graphic Annotation Sequence `(0070,0001)`).
+Unspecified-element removal is disabled below a content root, so the coded labels
+and cross-object references survive, while the shared PHI-removal, date-removal,
+and free-text redaction rules de-identify every element inside the subtree.
+Referenced UIDs are hashed without the study salt, so references resolve within a
+single pixels-only export but not against objects de-identified by another
+profile. Each DICOM cohort is processed with a single profile. The profile
+declares the Clean Graphics Option (`113103`) and the Clean Structured Content
+Option (`113104`).
+
 Because the profile may remove required interchange elements, the output is
 likely not conformant to the DICOM specification. Use this profile only when the
 pixel data is the sole item of interest.
@@ -237,7 +253,8 @@ profile emits follow from its configuration:
 | `113106` | Retain Longitudinal Temporal Information With Full Dates | For date-preserving profiles (`lds`, `lds-no-dob`) |
 | `113105` | Clean Descriptors Option | Declared in `deid_options` (`default`, `lds`, `lds-no-dob`) |
 | `113108` | Retain Patient Characteristics Option | Declared in `deid_options` (`default`, `lds`, `lds-no-dob`) |
-| `113104` | Clean Structured Content Option | Declared in `deid_options` (`default`) |
+| `113103` | Clean Graphics Option | Declared in `deid_options` (`pixels-only`) |
+| `113104` | Clean Structured Content Option | Declared in `deid_options` (`default`, `pixels-only`) |
 | `113111` | Retain Safe Private Option | Only when the instance retains device-approved private tags (see [Device Catalog](device-catalog.md)) |
 
 The temporal code is derived from the profile's date policy: `113107` for

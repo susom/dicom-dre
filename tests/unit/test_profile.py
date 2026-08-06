@@ -1715,3 +1715,147 @@ class TestKeyObjectSelectionProfile:
         retained = ds[Tag(0x0040, 0xA043)].value[0]
         assert str(retained[Tag(0x0008, 0x0100)].value) == "Plan", "private-scheme code value should be retained"
         assert str(retained[Tag(0x0008, 0x0102)].value) == "BL-S17-1", "private coding scheme should be retained"
+
+
+class TestPixelsOnlyContentRetention:
+    """pixels_only_profile retains and cleans KO/PR label subtrees.
+
+    remove_unspecified is disabled below the content-root sequences, so the
+    labels survive while the shared PHI, date, and free-text rules de-identify
+    every element inside them. UIDs are hashed without the study salt.
+    """
+
+    _ORIG_SOP = "1.2.826.0.1.3680043.SOP.1"
+    _ORIG_SERIES = "1.2.826.0.1.3680043.SERIES.1"
+    _ORIG_STUDY = "1.2.826.0.1.3680043.STUDY.1"
+
+    def _apply(self, ds: Dataset) -> None:
+        from dicom_dre.profiles.config import ProfileSettings
+        from dicom_dre.profiles.pixels_only import pixels_only_profile
+
+        pixels_only_profile(ProfileSettings(hash_salt="pepper")).apply(ds, DeidParameters(study_id="COHORT_A"))
+
+    def _ko_dataset(self) -> Dataset:
+        from pydicom.sequence import Sequence
+
+        ds = Dataset()
+        ds.add_new(Tag(0x0008, 0x0060), "CS", "KO")  # Modality
+        ds.add_new(Tag(0x0008, 0x0016), "UI", "1.2.840.10008.5.1.4.1.1.88.59")  # SOPClassUID
+        ds.add_new(Tag(0x0008, 0x0018), "UI", "1.2.826.0.1.3680043.KO.1")  # SOPInstanceUID
+        ds.add_new(Tag(0x0010, 0x0010), "PN", "DOE^JANE")  # PatientName
+        ds.add_new(Tag(0x0010, 0x0020), "LO", "MRN-KO-1")  # PatientID
+        ds.add_new(Tag(0x0020, 0x000D), "UI", self._ORIG_STUDY)  # StudyInstanceUID
+
+        title = Dataset()
+        title.add_new(Tag(0x0008, 0x0100), "SH", "113000")  # CodeValue
+        title.add_new(Tag(0x0008, 0x0102), "SH", "DCM")  # CodingSchemeDesignator
+        title.add_new(Tag(0x0008, 0x0104), "LO", "Of Interest")  # CodeMeaning
+        ds.add_new(Tag(0x0040, 0xA043), "SQ", Sequence([title]))  # ConceptNameCodeSequence
+
+        sop_item = Dataset()
+        sop_item.add_new(Tag(0x0008, 0x1150), "UI", "1.2.840.10008.5.1.4.1.1.2")  # RefSOPClassUID
+        sop_item.add_new(Tag(0x0008, 0x1155), "UI", self._ORIG_SOP)  # RefSOPInstanceUID
+        series_item = Dataset()
+        series_item.add_new(Tag(0x0020, 0x000E), "UI", self._ORIG_SERIES)  # SeriesInstanceUID
+        series_item.add_new(Tag(0x0008, 0x1199), "SQ", Sequence([sop_item]))  # RefSOPSequence
+        study_item = Dataset()
+        study_item.add_new(Tag(0x0020, 0x000D), "UI", self._ORIG_STUDY)  # StudyInstanceUID
+        study_item.add_new(Tag(0x0008, 0x1115), "SQ", Sequence([series_item]))  # RefSeriesSequence
+        ds.add_new(Tag(0x0040, 0xA375), "SQ", Sequence([study_item]))  # EvidenceSequence
+
+        text_item = Dataset()
+        text_item.add_new(Tag(0x0040, 0xA040), "CS", "TEXT")  # ValueType
+        text_item.add_new(Tag(0x0040, 0xA160), "UT", "Key Image")  # TextValue
+        text_item.add_new(Tag(0x0040, 0xA123), "PN", "SMITH^JOHN")  # PersonName (PHI)
+        text_item.add_new(Tag(0x0040, 0xA032), "DT", "20240101120000")  # ObservationDateTime (PHI)
+        image_sop = Dataset()
+        image_sop.add_new(Tag(0x0008, 0x1150), "UI", "1.2.840.10008.5.1.4.1.1.2")
+        image_sop.add_new(Tag(0x0008, 0x1155), "UI", self._ORIG_SOP)
+        image_item = Dataset()
+        image_item.add_new(Tag(0x0040, 0xA040), "CS", "IMAGE")
+        image_item.add_new(Tag(0x0008, 0x1199), "SQ", Sequence([image_sop]))
+        ds.add_new(Tag(0x0040, 0xA730), "SQ", Sequence([text_item, image_item]))  # ContentSequence
+
+        ds.add_new(Tag(0x0009, 0x0010), "LO", "ACME PRIVATE")  # PrivateCreator
+        ds.add_new(Tag(0x0009, 0x1001), "LO", "PRIVATE-PHI-VALUE")  # private element
+        return ds
+
+    def _gsps_dataset(self) -> Dataset:
+        from pydicom.sequence import Sequence
+
+        text_item = Dataset()
+        text_item.add_new(Tag(0x0070, 0x0006), "ST", "Margin ZZQXPHITEXT lesion")  # UnformattedTextValue
+        graphic_item = Dataset()
+        graphic_item.add_new(Tag(0x0070, 0x0023), "CS", "POLYLINE")  # GraphicType
+        graphic_item.add_new(Tag(0x0070, 0x0022), "FL", [1.0, 2.0, 3.0, 4.0])  # GraphicData
+        graphic_item.add_new(Tag(0x0062, 0x0020), "UT", "track-secret-XYZ")  # TrackingID
+        graphic_item.add_new(Tag(0x0062, 0x0021), "UI", "1.9.8.7.6.5.4.3.2.1")  # TrackingUID
+        annotation_item = Dataset()
+        annotation_item.add_new(Tag(0x0020, 0x000E), "UI", self._ORIG_SERIES)  # SeriesInstanceUID
+        annotation_item.add_new(Tag(0x0070, 0x0008), "SQ", Sequence([text_item]))  # TextObjectSequence
+        annotation_item.add_new(Tag(0x0070, 0x0009), "SQ", Sequence([graphic_item]))  # GraphicObjectSequence
+        ds = Dataset()
+        ds.add_new(Tag(0x0008, 0x0016), "UI", "1.2.840.10008.5.1.4.1.1.11.1")  # SOPClassUID
+        ds.add_new(Tag(0x0008, 0x0018), "UI", "1.2.826.0.1.3680043.PR.1")  # SOPInstanceUID
+        ds.add_new(Tag(0x0008, 0x0060), "CS", "PR")  # Modality
+        ds.add_new(Tag(0x0010, 0x0020), "LO", "MRN123")  # PatientID
+        ds.add_new(Tag(0x0070, 0x0001), "SQ", Sequence([annotation_item]))  # GraphicAnnotationSequence
+        return ds
+
+    def _no_salt_uid(self, original: str) -> str:
+        from dicom_dre.uid_utils import hashuid
+
+        return hashuid("1.2.840.4267.32.", original)
+
+    def test_ko_content_and_label_retained(self):
+        """Content Sequence, Evidence Sequence, and the coded title survive."""
+        ds = self._ko_dataset()
+        self._apply(ds)
+        assert Tag(0x0040, 0xA730) in ds, "Content Sequence should be retained"
+        assert Tag(0x0040, 0xA375) in ds, "Evidence Sequence should be retained"
+        title = ds[Tag(0x0040, 0xA043)].value[0]
+        assert str(title[Tag(0x0008, 0x0100)].value) == "113000", "document title code value retained"
+        assert str(title[Tag(0x0008, 0x0104)].value) == "Of Interest", "document title meaning retained"
+
+    def test_ko_phi_inside_content_removed(self):
+        """PersonName, ObservationDateTime, and private data do not survive."""
+        ds = self._ko_dataset()
+        self._apply(ds)
+        values = _all_string_values(ds)
+        assert "SMITH^JOHN" not in values, "PersonName in content should be removed"
+        assert "20240101120000" not in values, "ObservationDateTime in content should be removed"
+        assert "PRIVATE-PHI-VALUE" not in values, "private value should not survive"
+
+    def test_ko_referenced_uids_hashed_without_salt(self):
+        """Referenced UIDs are hashed with the no-salt pixels-only function."""
+        ds = self._ko_dataset()
+        self._apply(ds)
+        values = _all_string_values(ds)
+        assert self._ORIG_SOP not in values, "original referenced SOP UID should not survive"
+        study_item = ds[Tag(0x0040, 0xA375)].value[0]
+        series_item = study_item[Tag(0x0008, 0x1115)].value[0]
+        sop_item = series_item[Tag(0x0008, 0x1199)].value[0]
+        assert str(sop_item[Tag(0x0008, 0x1155)].value) == self._no_salt_uid(self._ORIG_SOP), (
+            "referenced SOP UID should equal the no-salt hash"
+        )
+
+    def test_gsps_annotation_retained_and_cleaned(self):
+        """Graphic Annotation Sequence survives and its identifiers are hashed."""
+        ds = self._gsps_dataset()
+        self._apply(ds)
+        assert Tag(0x0070, 0x0001) in ds, "GraphicAnnotationSequence should be retained"
+        values = _all_string_values(ds)
+        for leaked in ("1.9.8.7.6.5.4.3.2.1", self._ORIG_SERIES, "track-secret-XYZ"):
+            assert leaked not in values, f"{leaked} should not survive"
+        item = ds[Tag(0x0070, 0x0001)].value[0]
+        graphic = item[Tag(0x0070, 0x0009)].value[0]
+        assert str(graphic[Tag(0x0070, 0x0023)].value) == "POLYLINE", "GraphicType should be retained"
+        assert list(graphic[Tag(0x0070, 0x0022)].value) == [1.0, 2.0, 3.0, 4.0], "GraphicData should be retained"
+
+    def test_method_code_sequence_declares_clean_options(self):
+        """The method code sequence declares Clean Graphics and Clean Structured Content."""
+        ds = self._ko_dataset()
+        self._apply(ds)
+        codes = {str(item[Tag(0x0008, 0x0100)].value) for item in ds[Tag(0x0012, 0x0064)].value}
+        assert "113103" in codes, "Clean Graphics Option should be declared"
+        assert "113104" in codes, "Clean Structured Content Option should be declared"

@@ -82,6 +82,7 @@ class DeidProfile:
     preserved_private_specs: frozenset[PrivateTagSpec] = field(default_factory=frozenset)
     emits_basic_profile: bool = True
     deid_options: frozenset[str] = field(default_factory=frozenset)
+    content_root_tags: frozenset[BaseTag] = field(default_factory=frozenset)
 
     def apply(self, ds: Dataset, params: DeidParameters, *, applied_options: frozenset[str] = frozenset()) -> None:
         """Apply all de-identification rules to a pydicom Dataset in place.
@@ -296,14 +297,20 @@ class DeidProfile:
         The rules are applied to the top-level dataset and, recursively, to the
         item datasets of every nested sequence.
         """
-        self._apply_global_rules_to_dataset(ds)
+        self._apply_global_rules_to_dataset(ds, self.remove_unspecified)
 
-    def _apply_global_rules_to_dataset(self, ds: Dataset) -> None:
+    def _apply_global_rules_to_dataset(self, ds: Dataset, remove_unspecified: bool) -> None:
         """Apply global removal rules to a single dataset.
 
         After removing elements at this level, recurse into the item datasets
         of every nested sequence so private groups, overlays, and unspecified
         elements nested at any depth are removed the same way.
+
+        ``remove_unspecified`` is threaded through the recursion so it can be
+        disabled below a content-root sequence. When a sequence tag is in
+        ``content_root_tags`` its subtree is retained verbatim (private, curve,
+        and overlay removal still apply), so a retained structured-content or
+        graphic-annotation tree is not stripped by unspecified-element removal.
         """
         tags_to_remove: list[BaseTag] = []
 
@@ -338,9 +345,12 @@ class DeidProfile:
 
             # Remove unspecified elements (pixels-only profile).
             # Groups 0x0028 and 0x7FE0 plus SOPClassUID, SOPInstanceUID, and
-            # StudyInstanceUID are always protected from this removal.
-            if self.remove_unspecified:
+            # StudyInstanceUID are always protected from this removal, as are
+            # content-root sequences whose subtree carries retained labels.
+            if remove_unspecified:
                 if tag in _PROTECTED_TAGS or group in _PROTECTED_GROUPS:
+                    continue
+                if tag in self.content_root_tags:
                     continue
                 if tag not in self.rules:
                     tags_to_remove.append(tag)
@@ -350,6 +360,7 @@ class DeidProfile:
 
         # Recurse into every sequence so private groups, curves, overlays, and
         # unspecified elements nested at any depth are removed the same way.
+        # Unspecified-element removal is disabled within a content-root subtree.
         for seq_tag in list(ds.keys()):
             if seq_tag not in ds:
                 continue
@@ -360,8 +371,9 @@ class DeidProfile:
                 continue
             if not is_sq:
                 continue
+            child_remove_unspecified = remove_unspecified and seq_tag not in self.content_root_tags
             for item in elem.value:
-                self._apply_global_rules_to_dataset(item)
+                self._apply_global_rules_to_dataset(item, child_remove_unspecified)
 
     def _resolve_preserved_tags(self, ds: Dataset) -> set[BaseTag]:
         """Resolve preserved private specs to concrete tags in this dataset.

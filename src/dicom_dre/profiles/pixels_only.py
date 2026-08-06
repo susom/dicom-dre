@@ -6,6 +6,12 @@ interest and study demographics or other metadata can be discarded. No UID
 salt, no date jitter, minimal retained elements; all unspecified elements are
 removed.
 
+Key Object Selection (KO) and Presentation State (PR) objects carry no pixel
+data but hold clinician-curated labels. Their structured-content and
+graphic-annotation subtrees are retained through ``content_root_tags`` so the
+labels survive, while the shared PHI-removal, date-removal, and free-text
+redaction rules de-identify every element inside those subtrees.
+
 The resulting file is likely not conformant to the DICOM specification, since
 required elements may be removed; it is intended only for pixel-data use, not
 for interchange with systems that enforce conformance.
@@ -17,12 +23,17 @@ from pydicom.tag import Tag
 from dicom_dre.actions import TagAction
 from dicom_dre.actions import hash_identifier_param
 from dicom_dre.actions import hash_uid
+from dicom_dre.actions import hash_value_identifier
 from dicom_dre.actions import keep
 from dicom_dre.actions import remove
 from dicom_dre.actions import set_value
 from dicom_dre.profile import DeidProfile
 from dicom_dre.profiles.config import ProfileSettings
+from dicom_dre.profiles.default import DATE_TAGS
+from dicom_dre.profiles.default import EMPTY_TAGS
+from dicom_dre.profiles.default import PHI_REMOVE_TAGS
 from dicom_dre.profiles.default import redact_description
+from dicom_dre.profiles.default import redact_free_text
 
 
 # 15 UID tags re-hashed in the pixels-only profile, without a salt.
@@ -361,6 +372,24 @@ PIXELS_ONLY_REMOVE_TAGS: frozenset[BaseTag] = frozenset(
     }
 )
 
+# Content-root sequences whose subtree is retained verbatim under
+# remove_unspecified. These carry the KO/PR labels and cross-object references;
+# the shared element rules (PHI removal, date removal, free-text redaction, UID
+# hashing) still de-identify every element within them. Structural and coded
+# members (Value Type, Concept Name/Code sequences, Graphic Data/Type, reference
+# SOP sequences) carry no PHI and are preserved.
+PIXELS_ONLY_CONTENT_ROOT_TAGS: frozenset[BaseTag] = frozenset(
+    {
+        Tag(0x0008, 0x2218),  # AnatomicRegionSequence
+        Tag(0x0040, 0xA043),  # ConceptNameCodeSequence (KO document title)
+        Tag(0x0040, 0xA370),  # ReferencedRequestSequence
+        Tag(0x0040, 0xA375),  # CurrentRequestedProcedureEvidenceSequence
+        Tag(0x0040, 0xA525),  # IdenticalDocumentsSequence
+        Tag(0x0040, 0xA730),  # ContentSequence
+        Tag(0x0070, 0x0001),  # GraphicAnnotationSequence
+    }
+)
+
 
 def pixels_only_profile(settings: ProfileSettings | None = None) -> DeidProfile:
     """Construct a pixels-only profile.
@@ -375,11 +404,28 @@ def pixels_only_profile(settings: ProfileSettings | None = None) -> DeidProfile:
     The free-text description fields take a per-patient value verbatim; when it
     is ``None`` they are redacted from the dataset using
     ``settings.allowlist_csv`` at apply time.
+
+    KO and PR label subtrees are retained through ``content_root_tags``. The
+    shared PHI-removal, date-removal, and free-text redaction rules are applied
+    so those retained subtrees are de-identified: dates are removed (not
+    jittered, matching the profile's no-date posture), and the free-text label
+    fields are redacted against the allowlist. Because the profile hashes UIDs
+    without the study salt, references resolve within a single pixels-only
+    export but not against objects de-identified by another profile.
     """
     settings = settings or ProfileSettings()
     uid_action = hash_uid(settings.uid_root)  # no study-ID salt
 
     rules: dict[BaseTag, TagAction] = {}
+
+    # PHI removal shared with the default profile, applied first so the
+    # image-technical keep rules below win on the few overlapping tags. These
+    # remove PHI wherever it appears, including inside the retained KO/PR
+    # content subtrees. Dates are removed rather than jittered.
+    remove_action = remove()
+    rules.update(dict.fromkeys(PHI_REMOVE_TAGS, remove_action))
+    rules.update(dict.fromkeys(EMPTY_TAGS, remove_action))
+    rules.update(dict.fromkeys(DATE_TAGS, remove_action))
 
     # Preserve tags unchanged
     rules.update({t: keep() for t in PIXELS_ONLY_KEEP_TAGS})
@@ -406,6 +452,14 @@ def pixels_only_profile(settings: ProfileSettings | None = None) -> DeidProfile:
     )  # StudyDescription
     rules[Tag(0x0018, 0x1030)] = redact_description("protocol_name", settings.allowlist_csv, False)  # ProtocolName
 
+    # KO/PR free-text label redaction and identifier hashing inside retained
+    # content subtrees.
+    redact = redact_free_text(settings.allowlist_csv, False)
+    rules[Tag(0x0070, 0x0006)] = redact  # UnformattedTextValue (ST)
+    rules[Tag(0x0070, 0x0289)] = redact  # TickLabel (SH)
+    rules[Tag(0x0040, 0xA160)] = redact  # TextValue (UT), KO/SR content free text
+    rules[Tag(0x0062, 0x0020)] = hash_value_identifier(salt=settings.hash_salt)  # TrackingID (UT)
+
     # PatientIdentityRemoved -- created if missing and set to YES
     rules[Tag(0x0012, 0x0062)] = set_value("YES", create_if_missing=True)
 
@@ -422,5 +476,6 @@ def pixels_only_profile(settings: ProfileSettings | None = None) -> DeidProfile:
         uid_root=settings.uid_root,
         uid_use_study_salt=False,
         emits_basic_profile=False,
-        deid_options=frozenset(),
+        deid_options=frozenset({"113103", "113104"}),
+        content_root_tags=PIXELS_ONLY_CONTENT_ROOT_TAGS,
     )
