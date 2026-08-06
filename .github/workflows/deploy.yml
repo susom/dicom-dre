@@ -161,11 +161,20 @@ jobs:
           path: dist
           merge-multiple: true
 
+      - name: Get Token
+        id: get_workflow_token
+        uses: peter-murray/workflow-application-token-action@d17e3a9a36850ea89f35db16c1067dd2b68ee343 # v4.0.1
+        with:
+          application_id: ${{ secrets.APP_ID }}
+          application_private_key: ${{ secrets.APP_PRIVATE_KEY }}
+
       - name: Python Semantic Release
         id: release
         uses: python-semantic-release/python-semantic-release@39dd2052f2ce8282a5d932c31d58a2ca06d2550e # v10
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ steps.get_workflow_token.outputs.token }}
+          git_committer_name: "github-actions"
+          git_committer_email: "actions@users.noreply.github.com"
 
       - name: Publish to PyPI
         # Uses PyPI Trusted Publishing (OIDC); configure a trusted publisher for
