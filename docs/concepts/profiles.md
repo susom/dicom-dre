@@ -151,8 +151,8 @@ pixel description) and `7FE0` (pixel data), plus `SOPClassUID`, `SOPInstanceUID`
 and `StudyInstanceUID`, from the unspecified-element removal. It removes private
 groups, curves, and overlays.
 
-It removes dates entirely (neither kept nor shifted). It keeps times. It redacts
-free-text description fields with `preserve_dates=False`.
+It removes dates entirely (neither kept nor shifted). It keeps allow-listed time
+attributes. It redacts free-text description fields with `preserve_dates=False`.
 
 | Attribute | Action |
 |-----------|--------|

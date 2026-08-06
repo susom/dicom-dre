@@ -4,8 +4,10 @@ The most aggressive redaction that still yields a DICOM file that opens in most
 DICOM viewers and libraries. It is an allow-list profile: it retains a fixed set
 of technical elements and removes every element without an explicit rule. Use
 only when the pixel data is the sole item of interest and study demographics or
-other metadata can be discarded. No UID salt, no date jitter, minimal retained
-elements; all unspecified elements are removed.
+other metadata can be discarded. No UID salt and minimal retained elements; all
+unspecified elements are removed. Date and datetime elements are removed entirely
+rather than date-shifted, so no jitter is applied; allow-listed time elements
+(for example StudyTime, SeriesTime, AcquisitionTime, ContentTime) are retained.
 
 Key Object Selection (KO) and Presentation State (PR) objects carry no pixel
 data but hold clinician-curated labels. Their structured-content and
@@ -414,8 +416,11 @@ STRICT_CONTENT_ROOT_TAGS: frozenset[BaseTag] = frozenset(
 def strict_profile(settings: ProfileSettings | None = None) -> DeidProfile:
     """Construct a strict profile.
 
-    No jitter, minimal metadata. Removes all unspecified elements. UIDs are
-    re-derived without the study-ID salt. Per-patient identity values are
+    Minimal metadata. Removes all unspecified elements. Date and datetime
+    elements are removed entirely rather than date-shifted, so no jitter is
+    applied; allow-listed time elements are retained. UIDs are re-derived
+    without the study-ID salt.
+    Per-patient identity values are
     supplied at apply time via :class:`DeidParameters`. When PatientID,
     PatientName, or AccessionNumber are not supplied, the original element value
     is hashed with ``settings.hash_salt`` and the study identifier;
@@ -427,8 +432,8 @@ def strict_profile(settings: ProfileSettings | None = None) -> DeidProfile:
 
     KO and PR label subtrees are retained through ``content_root_tags``. The
     shared PHI-removal, date-removal, and free-text redaction rules are applied
-    so those retained subtrees are de-identified: dates are removed (not
-    jittered, matching the profile's no-date posture), and the free-text label
+    so those retained subtrees are de-identified: dates are removed entirely
+    (not date-shifted), and the free-text label
     fields are redacted against the allowlist. Because the profile hashes UIDs
     without the study salt, references resolve within a single strict
     export but not against objects de-identified by another profile.
