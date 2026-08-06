@@ -20,7 +20,7 @@ from dicom_dre.profiles.config import ProfileSettings
 from dicom_dre.profiles.default import default_profile
 from dicom_dre.profiles.lds import lds_profile
 from dicom_dre.profiles.lds_no_dob import lds_no_dob_profile
-from dicom_dre.profiles.pixels_only import pixels_only_profile
+from dicom_dre.profiles.strict import strict_profile
 
 
 if TYPE_CHECKING:
@@ -31,7 +31,7 @@ _BUILDERS = {
     "default": default_profile,
     "lds": lds_profile,
     "lds-no-dob": lds_no_dob_profile,
-    "pixels-only": pixels_only_profile,
+    "strict": strict_profile,
 }
 
 
@@ -40,7 +40,7 @@ def build_profile(name: str, settings: ProfileSettings | None = None) -> DeidPro
 
     Args:
         name: Profile name, one of ``"default"``, ``"lds"``, ``"lds-no-dob"``,
-            or ``"pixels-only"``.
+            or ``"strict"``.
         settings: Optional build-time configuration. When omitted, the
             :class:`ProfileSettings` defaults apply.
 

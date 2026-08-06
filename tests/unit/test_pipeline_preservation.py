@@ -61,6 +61,8 @@ def _deidentify(
     output = tmp_path / f"out_{profile_name}.dcm"
     parameters = dict(deid_parameters) if deid_parameters is not None else dict(DEID_PARAMETERS)
     profile = build_profile(profile_name, ProfileSettings(uid_root="1.2.3"))
+    if not profile.modifies_dates:
+        parameters.pop("JITTER", None)
     result = deidentify_file(
         input_file=signa_premier_file,
         output_file=output,
@@ -145,21 +147,31 @@ class TestPreservationMethodCode:
     """(0012,0064) is emitted with profile-correct codes."""
 
     def test_default_profile_emits_modified_dates_code(self, signa_premier_file, tmp_path):
-        """The date-shifting default profile emits 113100, 113111, and 113107."""
+        """The date-shifting default profile emits the Basic Profile, options, and 113107."""
         ds = _deidentify(signa_premier_file, tmp_path, "default")
         codes = _code_values(ds)
-        assert codes == {"113100", "113111", "113107"}, f"Unexpected (0012,0064) codes for default profile: {codes}"
+        expected = {"113100", "113111", "113107", "113105", "113108"}
+        assert expected <= codes, f"Missing expected (0012,0064) codes for default profile: {expected - codes}"
+        assert "113106" not in codes, f"113106 should be absent for a date-shifting profile: {codes}"
 
-    @pytest.mark.parametrize("profile_name", ["lds", "lds-no-dob", "pixels-only"])
+    @pytest.mark.parametrize("profile_name", ["lds", "lds-no-dob", "strict"])
     def test_non_date_shifting_profiles_omit_modified_dates_code(self, signa_premier_file, tmp_path, profile_name):
         """Date-preserving and date-removing profiles omit 113107."""
         ds = _deidentify(signa_premier_file, tmp_path, profile_name)
         codes = _code_values(ds)
-        assert "113100" in codes, f"113100 missing for profile {profile_name}: {codes}"
-        assert "113111" in codes, f"113111 missing for profile {profile_name}: {codes}"
         assert "113107" not in codes, f"113107 should be absent for profile {profile_name}: {codes}"
+        assert "113111" in codes, f"113111 missing for profile {profile_name}: {codes}"
+        if profile_name == "strict":
+            # The strict profile does not implement the Basic Application
+            # Confidentiality Profile (emits_basic_profile=False) and removes
+            # dates, so neither 113100 nor a temporal code is emitted.
+            assert "113100" not in codes, f"113100 should be absent for strict: {codes}"
+            assert "113106" not in codes, f"113106 should be absent for strict: {codes}"
+        else:
+            assert "113100" in codes, f"113100 missing for profile {profile_name}: {codes}"
+            assert "113106" in codes, f"113106 (full dates) missing for {profile_name}: {codes}"
 
-    @pytest.mark.parametrize("profile_name", ["default", "lds", "lds-no-dob", "pixels-only"])
+    @pytest.mark.parametrize("profile_name", ["default", "lds", "lds-no-dob", "strict"])
     def test_preserved_elements_survive_all_profiles(self, signa_premier_file, tmp_path, profile_name):
         """Preservation applies regardless of profile."""
         from pydicom.tag import Tag
@@ -175,7 +187,7 @@ class TestPatientNameMapping:
 
     PATIENT_NAME_TAG = (0x0010, 0x0010)
 
-    @pytest.mark.parametrize("profile_name", ["default", "lds", "lds-no-dob", "pixels-only"])
+    @pytest.mark.parametrize("profile_name", ["default", "lds", "lds-no-dob", "strict"])
     def test_patient_name_set_from_parameter_when_provided(self, signa_premier_file, tmp_path, profile_name):
         """PatientName is set to PATIENT_NAME when the parameter is supplied."""
         from pydicom.tag import Tag
@@ -188,7 +200,7 @@ class TestPatientNameMapping:
             f"PatientName not set from PATIENT_NAME under profile {profile_name}: got {ds[tag].value!r}"
         )
 
-    @pytest.mark.parametrize("profile_name", ["default", "lds", "lds-no-dob", "pixels-only"])
+    @pytest.mark.parametrize("profile_name", ["default", "lds", "lds-no-dob", "strict"])
     def test_patient_name_falls_back_to_patient_id_when_absent(self, signa_premier_file, tmp_path, profile_name):
         """PatientName falls back to PATIENT_ID when PATIENT_NAME is not supplied."""
         from pydicom.tag import Tag

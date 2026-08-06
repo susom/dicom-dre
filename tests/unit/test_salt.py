@@ -186,3 +186,17 @@ class TestLoadOrCreateSalt:
         assert created is True, "A missing default salt file should be created"
         assert expected.exists(), f"The salt should be written to {expected}"
         assert expected.read_text(encoding="utf-8").strip() == salt, "The stored salt should match the returned value"
+
+    def test_chmod_failure_is_tolerated(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+        """A chmod OSError does not prevent the salt from being created and returned."""
+        from pathlib import Path as _Path
+
+        def _raise_chmod(self: _Path, mode: int) -> None:
+            raise OSError("chmod not supported")
+
+        monkeypatch.setattr(_Path, "chmod", _raise_chmod)
+        path = tmp_path / "dicom-dre" / "salt"
+        salt, created = load_or_create_salt(path)
+        assert created is True, "The salt should still be reported as created despite chmod failure"
+        assert salt.strip() != "", "A non-empty salt should be generated"
+        assert path.read_text(encoding="utf-8").strip() == salt, "The salt should still be written to the file"

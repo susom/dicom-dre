@@ -37,4 +37,5 @@ def lds_profile(
         rules=updated_rules,
         preserve_dates=True,
         modifies_dates=False,
+        deid_options=frozenset({"113105", "113108"}),
     )

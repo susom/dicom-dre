@@ -15,9 +15,12 @@ from pydicom import dcmread
 from pydicom.data import get_testdata_file
 from pydicom.encaps import get_frame
 
+from dicom_dre import jpeg_dct_scrubber
 from dicom_dre.jpeg_dct_scrubber import _block_overlaps_any_region
 from dicom_dre.jpeg_dct_scrubber import _parse_sof
 from dicom_dre.jpeg_dct_scrubber import _size_and_amplitude
+from dicom_dre.jpeg_dct_scrubber import jpeg_dct_accelerator_available
+from dicom_dre.jpeg_dct_scrubber import jpeg_dct_accelerator_info
 from dicom_dre.jpeg_dct_scrubber import scrub_jpeg
 from dicom_dre.jpeg_dct_scrubber import scrub_jpeg_bytes
 from dicom_dre.scrub_region import ScrubRegion
@@ -79,7 +82,7 @@ def jpeg_1_1_1_frame():
     chroma subsampling. Each block is exactly 8x8 pixels for all components.
     """
     path = get_testdata_file("SC_jpeg_no_color_transform.dcm")
-    assert isinstance(path, str)
+    assert isinstance(path, str), f"get_testdata_file should return a str path, got {type(path).__name__}"
     ds = dcmread(path, force=True)
     if str(ds.file_meta.TransferSyntaxUID) != JPEG_BASELINE_TS:
         pytest.skip("Test file is not JPEG Baseline")
@@ -94,7 +97,7 @@ def jpeg_4_2_0_frame():
     H=2/V=2 luma subsampling. Chroma blocks span 16x16 pixel areas.
     """
     path = get_testdata_file("SC_rgb_jpeg_lossy_gdcm.dcm")
-    assert isinstance(path, str)
+    assert isinstance(path, str), f"get_testdata_file should return a str path, got {type(path).__name__}"
     ds = dcmread(path, force=True)
     if str(ds.file_meta.TransferSyntaxUID) != JPEG_BASELINE_TS:
         pytest.skip("Test file is not JPEG Baseline")
@@ -119,8 +122,8 @@ class TestSizeAndAmplitude:
     def test_size_and_amplitude(self, value, expected_size, expected_amp):
         """Verify SSSS category and amplitude encoding."""
         size, amp = _size_and_amplitude(value)
-        assert size == expected_size
-        assert amp == expected_amp
+        assert size == expected_size, f"Size for value {value} should be {expected_size}, got {size}"
+        assert amp == expected_amp, f"Amplitude for value {value} should be {expected_amp}, got {amp}"
 
 
 class TestBlockOverlap:
@@ -128,28 +131,40 @@ class TestBlockOverlap:
 
     def test_overlap_exact(self):
         """Block exactly matches region."""
-        assert _block_overlaps_any_region(0, 0, 8, 8, [(0, 0, 8, 8)]) is True
+        assert _block_overlaps_any_region(0, 0, 8, 8, [(0, 0, 8, 8)]) is True, (
+            "Block matching the region exactly should overlap"
+        )
 
     def test_overlap_partial(self):
         """Block partially overlaps region."""
-        assert _block_overlaps_any_region(4, 4, 8, 8, [(0, 0, 8, 8)]) is True
+        assert _block_overlaps_any_region(4, 4, 8, 8, [(0, 0, 8, 8)]) is True, (
+            "Block partially overlapping the region should overlap"
+        )
 
     def test_no_overlap_adjacent(self):
         """Block is adjacent but does not overlap."""
-        assert _block_overlaps_any_region(8, 0, 8, 8, [(0, 0, 8, 8)]) is False
+        assert _block_overlaps_any_region(8, 0, 8, 8, [(0, 0, 8, 8)]) is False, (
+            "Block adjacent to the region should not overlap"
+        )
 
     def test_no_overlap_distant(self):
         """Block is far from region."""
-        assert _block_overlaps_any_region(100, 100, 8, 8, [(0, 0, 8, 8)]) is False
+        assert _block_overlaps_any_region(100, 100, 8, 8, [(0, 0, 8, 8)]) is False, (
+            "Block far from the region should not overlap"
+        )
 
     def test_multiple_regions(self):
         """Block overlaps one of multiple regions."""
         regions = [(0, 0, 8, 8), (50, 50, 10, 10)]
-        assert _block_overlaps_any_region(52, 52, 8, 8, regions) is True
+        assert _block_overlaps_any_region(52, 52, 8, 8, regions) is True, (
+            "Block overlapping one of multiple regions should overlap"
+        )
 
     def test_no_regions(self):
         """Empty region list never matches."""
-        assert _block_overlaps_any_region(0, 0, 8, 8, []) is False
+        assert _block_overlaps_any_region(0, 0, 8, 8, []) is False, (
+            "Block should not overlap when the region list is empty"
+        )
 
 
 class TestScrubJpegBytes1x1:
@@ -191,7 +206,9 @@ class TestScrubJpegBytes1x1:
 
         # Blanked area: exactly [16:48, 16:48]
         blanked = anon_pixels[16:48, 16:48]
-        assert (blanked == DCT_ZERO_VALUE).all()
+        assert (blanked == DCT_ZERO_VALUE).all(), (
+            f"All pixels in blanked area [16:48, 16:48] should be {DCT_ZERO_VALUE}"
+        )
 
         # Adjacent block just outside: [16:48, 48:56] should be unchanged
         adjacent = anon_pixels[16:48, 48:56]
@@ -219,8 +236,12 @@ class TestScrubJpegBytes1x1:
 
         anon_pixels = _decode_jpeg_to_array(result)
 
-        assert (anon_pixels[0:8, 0:8] == DCT_ZERO_VALUE).all()
-        assert (anon_pixels[64:80, 64:80] == DCT_ZERO_VALUE).all()
+        assert (anon_pixels[0:8, 0:8] == DCT_ZERO_VALUE).all(), (
+            f"First blanked region [0:8, 0:8] should be {DCT_ZERO_VALUE}"
+        )
+        assert (anon_pixels[64:80, 64:80] == DCT_ZERO_VALUE).all(), (
+            f"Second blanked region [64:80, 64:80] should be {DCT_ZERO_VALUE}"
+        )
 
     def test_empty_regions_preserves_image(self, jpeg_1_1_1_frame):
         """An empty region list produces output identical to input."""
@@ -228,7 +249,7 @@ class TestScrubJpegBytes1x1:
 
         orig_pixels = _decode_jpeg_to_array(jpeg_1_1_1_frame)
         anon_pixels = _decode_jpeg_to_array(result)
-        assert np.array_equal(orig_pixels, anon_pixels)
+        assert np.array_equal(orig_pixels, anon_pixels), "Empty region list should produce output identical to input"
 
     def test_output_is_valid_jpeg(self, jpeg_1_1_1_frame):
         """Output starts with SOI and ends with EOI."""
@@ -289,11 +310,13 @@ class TestScrubJpegFilePaths:
 
         scrub_jpeg(str(input_path), str(output_path), [(0, 0, 16, 16)])
 
-        assert output_path.exists()
+        assert output_path.exists(), f"Output file {output_path} should exist after scrubbing"
         result_bytes = output_path.read_bytes()
-        assert result_bytes[:2] == b"\xff\xd8"
+        assert result_bytes[:2] == b"\xff\xd8", "Output file should start with JPEG SOI marker"
         anon_pixels = _decode_jpeg_to_array(result_bytes)
-        assert (anon_pixels[0:16, 0:16] == DCT_ZERO_VALUE).all()
+        assert (anon_pixels[0:16, 0:16] == DCT_ZERO_VALUE).all(), (
+            f"Blanked region [0:16, 0:16] should be {DCT_ZERO_VALUE}"
+        )
 
 
 class TestUnsupportedJpeg:
@@ -305,3 +328,149 @@ class TestUnsupportedJpeg:
         modified = jpeg_1_1_1_frame.replace(b"\xff\xc0", b"\xff\xc2", 1)
         with pytest.raises(ValueError, match="Unsupported JPEG process marker"):
             scrub_jpeg_bytes(modified, [ScrubRegion(0, 0, 8, 8)])
+
+    def test_rejects_non_jpeg_data(self):
+        """Data not beginning with the SOI marker raises ValueError."""
+        with pytest.raises(ValueError, match="Not a JPEG file"):
+            scrub_jpeg_bytes(b"\x00\x01not-a-jpeg", [ScrubRegion(0, 0, 8, 8)])
+
+
+def _make_gradient_jpeg(
+    mode: str,
+    width: int,
+    height: int,
+    subsampling: int,
+    restart_rows: int | None = None,
+    quality: int = 90,
+) -> bytes:
+    """Build an in-memory JPEG Baseline stream with gradient content.
+
+    Args:
+        mode: PIL image mode ("L" for grayscale, "RGB" for color).
+        width: Image width in pixels.
+        height: Image height in pixels.
+        subsampling: PIL JPEG subsampling (0 = 4:4:4, 2 = 4:2:0).
+        restart_rows: If set, emit restart markers every this many MCU rows.
+        quality: JPEG quality factor, chosen to retain non-zero AC coefficients.
+
+    Returns:
+        Encoded JPEG bytes.
+    """
+    if mode == "L":
+        arr = np.tile((np.arange(width, dtype=np.uint16) % 256).astype(np.uint8), (height, 1))
+        image = Image.fromarray(arr, "L")
+    else:
+        arr = np.zeros((height, width, 3), dtype=np.uint8)
+        arr[..., 0] = (np.arange(width, dtype=np.uint16) % 256).astype(np.uint8)
+        arr[..., 1] = (np.arange(height, dtype=np.uint16) % 256).astype(np.uint8)[:, None]
+        arr[..., 2] = 128
+        image = Image.fromarray(arr, "RGB")
+    buffer = io.BytesIO()
+    save_kwargs: dict = {"subsampling": subsampling, "quality": quality}
+    if restart_rows is not None:
+        save_kwargs["restart_marker_rows"] = restart_rows
+    image.save(buffer, "JPEG", **save_kwargs)
+    return buffer.getvalue()
+
+
+# (id, mode, width, height, subsampling, restart_rows, region)
+_FALLBACK_VARIANTS = [
+    ("grayscale_8x8", "L", 64, 48, 0, None, ScrubRegion(8, 8, 20, 16)),
+    ("grayscale_restart", "L", 80, 64, 0, 2, ScrubRegion(10, 10, 30, 20)),
+    ("rgb_1_1_1", "RGB", 64, 48, 0, None, ScrubRegion(8, 8, 20, 16)),
+    ("rgb_4_2_0", "RGB", 64, 48, 2, None, ScrubRegion(8, 8, 20, 16)),
+    ("rgb_4_2_0_restart", "RGB", 96, 64, 2, 2, ScrubRegion(16, 16, 32, 24)),
+]
+
+
+class TestAcceleratorReporting:
+    """Tests for the accelerator introspection helpers."""
+
+    def test_available_matches_module_state(self):
+        """jpeg_dct_accelerator_available reflects the module _HAS_C_ACCEL flag."""
+        assert jpeg_dct_accelerator_available() is jpeg_dct_scrubber._HAS_C_ACCEL, (
+            "Reported availability should match the module-level _HAS_C_ACCEL flag"
+        )
+
+    def test_info_reports_availability(self):
+        """jpeg_dct_accelerator_info exposes the availability boolean."""
+        info = jpeg_dct_accelerator_info()
+        assert info["available"] is jpeg_dct_scrubber._HAS_C_ACCEL, (
+            f"info['available'] should equal _HAS_C_ACCEL, got {info['available']!r}"
+        )
+        if jpeg_dct_scrubber._HAS_C_ACCEL:
+            assert "path" in info, f"Loaded accelerator should report a module path, got {info!r}"
+
+
+class TestPureFallback:
+    """Tests exercising the pure-Python entropy codec fallback.
+
+    The fallback path (_process_entropy_segment without the C extension) is
+    selected when _HAS_C_ACCEL is False. These tests force that path and verify
+    it produces output identical to the accelerated path on the same inputs.
+    """
+
+    @pytest.mark.parametrize(
+        "mode, width, height, subsampling, restart_rows, region",
+        [pytest.param(*v[1:], id=v[0]) for v in _FALLBACK_VARIANTS],
+    )
+    def test_fallback_matches_accelerated(self, mode, width, height, subsampling, restart_rows, region, monkeypatch):
+        """The Python fallback yields byte-identical output to the C path."""
+        data = _make_gradient_jpeg(mode, width, height, subsampling, restart_rows)
+        regions = [region]
+
+        accelerated = None
+        if jpeg_dct_scrubber._HAS_C_ACCEL:
+            accelerated = scrub_jpeg_bytes(data, regions)
+
+        monkeypatch.setattr(jpeg_dct_scrubber, "_HAS_C_ACCEL", False)
+        fallback = scrub_jpeg_bytes(data, regions)
+
+        assert fallback[:2] == b"\xff\xd8", "Fallback output should start with the JPEG SOI marker"
+        assert fallback[-2:] == b"\xff\xd9", "Fallback output should end with the JPEG EOI marker"
+
+        if accelerated is not None:
+            assert fallback == accelerated, (
+                f"Fallback output ({len(fallback)} bytes) should equal the accelerated "
+                f"output ({len(accelerated)} bytes) for variant {mode} sub={subsampling}"
+            )
+
+    def test_fallback_blanks_grayscale_region(self, monkeypatch):
+        """The fallback blanks a grayscale region to a single mid-gray value."""
+        data = _make_gradient_jpeg("L", 64, 48, 0)
+        monkeypatch.setattr(jpeg_dct_scrubber, "_HAS_C_ACCEL", False)
+
+        result = scrub_jpeg_bytes(data, [ScrubRegion(16, 16, 16, 16)])
+        pixels = _decode_jpeg_to_array(result)
+
+        blanked = pixels[16:32, 16:32]
+        assert (blanked == DCT_ZERO_VALUE).all(), (
+            f"Fallback-blanked block [16:32, 16:32] should all equal {DCT_ZERO_VALUE}, "
+            f"got unique values {np.unique(blanked)}"
+        )
+
+    def test_fallback_preserves_distant_blocks(self, monkeypatch):
+        """The fallback leaves blocks outside the region bit-identical."""
+        data = _make_gradient_jpeg("L", 64, 48, 0)
+
+        monkeypatch.setattr(jpeg_dct_scrubber, "_HAS_C_ACCEL", False)
+        result = scrub_jpeg_bytes(data, [ScrubRegion(0, 0, 16, 16)])
+
+        orig_pixels = _decode_jpeg_to_array(data)
+        anon_pixels = _decode_jpeg_to_array(result)
+        assert np.array_equal(orig_pixels[40:48, 48:64], anon_pixels[40:48, 48:64]), (
+            "Blocks far from the blanked region should be unchanged by the fallback"
+        )
+
+    def test_fallback_empty_regions_roundtrip(self, monkeypatch):
+        """The fallback with no regions reproduces the input image."""
+        data = _make_gradient_jpeg("RGB", 64, 48, 0)
+
+        monkeypatch.setattr(jpeg_dct_scrubber, "_HAS_C_ACCEL", False)
+        result = scrub_jpeg_bytes(data, [])
+
+        orig_pixels = _decode_jpeg_to_array(data)
+        anon_pixels = _decode_jpeg_to_array(result)
+        assert np.array_equal(orig_pixels, anon_pixels), (
+            "Fallback with an empty region list should reproduce the input image"
+        )

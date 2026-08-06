@@ -34,6 +34,26 @@ management, and any cross-study consistency under the caller's control rather th
 hidden inside the engine. See [De-identification Profiles](profiles.md) and
 [Text redaction](text-redaction.md).
 
+## Cross-object linkage
+
+A retained presentation state and the images it references align only when both
+are processed with the same `study_id` on `DeidParameters`. UID re-derivation
+salts each UID with the study identifier (`use_study_salt=True`), and the
+identifier hash applied to Tracking ID salts with the same study identifier.
+Processing every instance of a study with one `STUDY_ID` parameter therefore
+yields matching hashed references between the presentation state and its
+referenced images. Processing them under different study identifiers breaks the
+linkage.
+
+The same requirement governs Key Object Selection (KO) documents. A KO's
+referenced UIDs (Referenced SOP Instance UID `(0008,1155)`, Series Instance UID
+`(0020,000E)`, Study Instance UID `(0020,000D)`) are hashed with the study
+identifier, so a de-identified KO links to a referenced object only when both
+are processed with the same `study_id`. Under the per-recipient assignment,
+every object in one recipient's export is de-identified with the same
+`study_id`, so a KO reference resolves when its target is included in the same
+export and dangles when the target is excluded.
+
 ## Regression guard
 
 A regression test suite built from sampled DICOM studies guards reproducibility.

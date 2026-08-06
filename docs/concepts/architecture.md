@@ -10,7 +10,9 @@ For each input DICOM file the engine runs three stages:
 
 1. **Filter**: a device catalog decides whether to keep or reject the image.
 2. **Pixel scrub**: the engine blanks the burned-in text regions the catalog
-   identified.
+   identified. When it blanks a region, it sets `BurnedInAnnotation` (0028,0301)
+   to `NO` and records the Clean Pixel Data Option `113101` in the
+   De-identification Method Code Sequence for that instance.
 3. **Metadata**: the engine rewrites DICOM tags: it removes PHI, re-derives
    UIDs, and shifts or keeps dates.
 
@@ -92,7 +94,6 @@ values from the supplied parameters. The available actions:
 | `append_value(text, create_if_missing=False)` | Append `text` to a multi-valued element using `\` as separator. |
 | `cap_age(threshold, replacement)` | Replace an `AS` age when its numeric part exceeds `threshold`. |
 | `if_exists(inner)` | Apply `inner` only when the element is present. |
-| `process()` | Mark an `SQ` element for recursive rule application by `DeidProfile`. |
 
 Profiles compose these actions rather than parsing a script.
 
@@ -105,17 +106,17 @@ of `PrivateTagSpec`). When the catalog decision contains specs, the pipeline
 attaches them to the `DeidProfile`. At apply time, `DeidProfile.apply(ds, params)`
 resolves each spec's private-creator block (the block is runtime-assigned, not
 fixed) and keeps both the resolved data elements and their creator element. The
-engine removes all other private elements as usual. When preservation is active,
-the engine also stamps the De-identification Method Code Sequence `(0012,0064)`
-with the Retain Safe Private Option. It emits the sequence only for files that
-actually preserve private tags.
+engine removes all other private elements as usual. The engine stamps the
+De-identification Method Code Sequence `(0012,0064)` on every de-identified
+instance; when preservation is active it adds the Retain Safe Private Option
+item `113111`, which appears only on files that preserve private tags.
 
 See [Device Catalog](device-catalog.md#preserved-private-tags) and
 [Profiles](profiles.md).
 
 ## Profiles
 
-The `default`, `lds`, `lds-no-dob`, and `pixels-only` profiles each map to a
+The `default`, `lds`, `lds-no-dob`, and `strict` profiles each map to a
 factory function in {py:mod}`dicom_dre.profiles`. A profile name selects which
 tags the engine keeps, removes, or shifts. [Profiles](profiles.md) describes the
 behavior of each profile.
@@ -147,7 +148,7 @@ See [Testing](../about/testing.md).
 | {py:mod}`dicom_dre.result` | `DeidentifyResult` and `Outcome` result types |
 | {py:mod}`dicom_dre.profile` | `DeidProfile.apply()` metadata rewrite |
 | {py:mod}`dicom_dre.actions` | Tag-action factories (`remove`, `hash_uid`, `jitter_date`, ...) |
-| {py:mod}`dicom_dre.profiles` | `default`, `lds`, `lds-no-dob`, `pixels-only` factories and the profile builder |
+| {py:mod}`dicom_dre.profiles` | `default`, `lds`, `lds-no-dob`, `strict` factories and the profile builder |
 | {py:mod}`dicom_dre.catalog` | Catalog engine: `DeviceCatalog`, `CatalogDecision`, `DicomTags` |
 | {py:mod}`dicom_dre.default_catalog` | Device and exclusion rule data |
 | {py:mod}`dicom_dre.pixel_blanker` | `blank_regions()` pixel scrub dispatch |

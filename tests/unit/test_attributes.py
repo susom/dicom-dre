@@ -123,12 +123,15 @@ class TestIndexAttributesFromDataset:
         assert attrs.study_description is None, "Absent StudyDescription should be None"
         assert attrs.referring_physician_name is None, "Absent physician should be None"
 
-    def test_snapshot_is_hashable(self):
-        """The frozen snapshot with tuple fields is hashable."""
+    def test_snapshot_hash_supports_set_deduplication(self):
+        """Snapshots extracted from one dataset share a hash and deduplicate in a set."""
         from dicom_dre.attributes import IndexAttributes
 
-        attrs = IndexAttributes.from_dataset(_build_dataset())
-        assert isinstance(hash(attrs), int), "Snapshot should be hashable"
+        dataset = _build_dataset()
+        first = IndexAttributes.from_dataset(dataset)
+        second = IndexAttributes.from_dataset(dataset)
+        assert hash(first) == hash(second), f"Equal snapshots should hash equally, got {hash(first)} != {hash(second)}"
+        assert len({first, second}) == 1, "Equal snapshots should collapse to a single entry when placed in a set"
 
 
 class TestIndexAttributesFromFile:
@@ -165,3 +168,80 @@ class TestIndexAttributesFromFile:
         monkeypatch.setattr(pydicom, "dcmread", _spy)
         IndexAttributes.from_file(path)
         assert captured.get("stop_before_pixels") is True, "from_file should read with stop_before_pixels=True"
+
+
+class TestGetIntHelper:
+    """Behavior of the private _get_int scalar helper."""
+
+    def test_non_numeric_value_returns_none(self):
+        """A value that does not convert to int returns None."""
+        from pydicom.dataset import Dataset
+
+        from dicom_dre.attributes import _get_int
+
+        ds = Dataset()
+        ds.Manufacturer = "ACME Corp"
+        assert _get_int(ds, "Manufacturer") is None, "A non-numeric value should return None"
+
+    def test_absent_value_returns_none(self):
+        """An absent keyword returns None."""
+        from pydicom.dataset import Dataset
+
+        from dicom_dre.attributes import _get_int
+
+        ds = Dataset()
+        assert _get_int(ds, "InstanceNumber") is None, "An absent keyword should return None"
+
+    def test_numeric_value_returns_int(self):
+        """A numeric value is converted to int."""
+        from pydicom.dataset import Dataset
+
+        from dicom_dre.attributes import _get_int
+
+        ds = Dataset()
+        ds.InstanceNumber = "7"
+        assert _get_int(ds, "InstanceNumber") == 7, "A numeric value should be parsed to int"
+
+
+class TestGetTupleHelper:
+    """Behavior of the private _get_tuple multi-valued helper."""
+
+    def test_scalar_value_returns_single_element_tuple(self):
+        """A single scalar value is wrapped in a one-element tuple."""
+        from pydicom.dataset import Dataset
+
+        from dicom_dre.attributes import _get_tuple
+
+        ds = Dataset()
+        ds.SoftwareVersions = "1.0"
+        assert _get_tuple(ds, "SoftwareVersions") == ("1.0",), "A scalar value should return a one-element tuple"
+
+    def test_empty_scalar_value_returns_none(self):
+        """A present but empty scalar value returns None."""
+        from pydicom.dataset import Dataset
+        from pydicom.tag import Tag
+
+        from dicom_dre.attributes import _get_tuple
+
+        ds = Dataset()
+        ds.add_new(Tag(0x0018, 0x1020), "LO", "")  # SoftwareVersions
+        assert _get_tuple(ds, "SoftwareVersions") is None, "An empty scalar value should return None"
+
+    def test_list_value_returns_tuple(self):
+        """A multi-valued element returns a tuple of strings."""
+        from pydicom.dataset import Dataset
+
+        from dicom_dre.attributes import _get_tuple
+
+        ds = Dataset()
+        ds.ImageType = ["ORIGINAL", "PRIMARY"]
+        assert _get_tuple(ds, "ImageType") == ("ORIGINAL", "PRIMARY"), "A list value should return a tuple"
+
+    def test_absent_value_returns_none(self):
+        """An absent keyword returns None."""
+        from pydicom.dataset import Dataset
+
+        from dicom_dre.attributes import _get_tuple
+
+        ds = Dataset()
+        assert _get_tuple(ds, "ImageType") is None, "An absent keyword should return None"

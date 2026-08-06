@@ -1,0 +1,47 @@
+name: CI
+
+# Runs the test suite on pull requests. Pushes to `development` and `main` are
+# covered by the test gate in deploy.yml, so they are intentionally excluded
+# here to avoid running the same tests twice.
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    uses: ./.github/workflows/tests.yml
+    permissions:
+      contents: read
+
+  pr-title:
+    name: Validate PR title
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+    steps:
+      - name: Check conventional commit format
+        uses: amannn/action-semantic-pull-request@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          types: |
+            build
+            chore
+            ci
+            docs
+            feat
+            fix
+            perf
+            refactor
+            style
+            test
+          requireScope: false
+          subjectPattern: ^.+$
+          subjectPatternError: |
+            The subject "{subject}" doesn't match the required pattern.
+            Subject must not be empty.

@@ -4,32 +4,42 @@ import dicom_dre
 
 
 def test_public_names_importable_from_package_root():
-    """The three promoted symbols are importable from the package root."""
+    """The promoted symbols are importable and behave as their exported contract."""
+    from pydicom import Dataset
+    from pydicom.tag import Tag
+
     from dicom_dre import DATE_TAGS
     from dicom_dre import UID_TAGS
     from dicom_dre import correct_implicit_vr_elements
 
-    assert callable(correct_implicit_vr_elements)
-    assert isinstance(DATE_TAGS, frozenset)
-    assert isinstance(UID_TAGS, frozenset)
+    # DATE_TAGS and UID_TAGS advertise the tags the pipeline treats specially.
+    assert Tag(0x0008, 0x0020) in DATE_TAGS, f"StudyDate should be a recognized date tag, got {DATE_TAGS}"
+    assert Tag(0x0020, 0x000D) in UID_TAGS, f"StudyInstanceUID should be a recognized UID tag, got {UID_TAGS}"
 
-
-def test_tag_set_membership_unchanged():
-    """DATE_TAGS and UID_TAGS retain their published sizes."""
-    assert len(dicom_dre.DATE_TAGS) == 28
-    assert len(dicom_dre.UID_TAGS) == 35
+    # correct_implicit_vr_elements rewrites an Implicit-VR-decoded UN element to
+    # its dictionary VR so downstream rules match on VR.
+    ds = Dataset()
+    ds.add_new(Tag(0x0010, 0x0020), "UN", b"MRN123")
+    correct_implicit_vr_elements(ds)
+    assert ds[Tag(0x0010, 0x0020)].VR == "LO", (
+        f"PatientID should be corrected from UN to its dictionary VR LO, got {ds[Tag(0x0010, 0x0020)].VR}"
+    )
 
 
 def test_private_alias_identity_holds():
     """The underscore alias resolves to the same public function object."""
-    assert dicom_dre.correct_implicit_vr_elements is dicom_dre.profile._correct_implicit_vr_elements
+    assert dicom_dre.correct_implicit_vr_elements is dicom_dre.profile._correct_implicit_vr_elements, (
+        "correct_implicit_vr_elements should be the same object as profile._correct_implicit_vr_elements"
+    )
 
 
 def test_public_names_in_all():
     """All three names are advertised in the package __all__."""
-    assert "DATE_TAGS" in dicom_dre.__all__
-    assert "UID_TAGS" in dicom_dre.__all__
-    assert "correct_implicit_vr_elements" in dicom_dre.__all__
+    assert "DATE_TAGS" in dicom_dre.__all__, f"DATE_TAGS should be in __all__, got {dicom_dre.__all__}"
+    assert "UID_TAGS" in dicom_dre.__all__, f"UID_TAGS should be in __all__, got {dicom_dre.__all__}"
+    assert "correct_implicit_vr_elements" in dicom_dre.__all__, (
+        f"correct_implicit_vr_elements should be in __all__, got {dicom_dre.__all__}"
+    )
 
 
 def test_accelerator_functions_in_all():
