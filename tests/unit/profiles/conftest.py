@@ -150,7 +150,7 @@ def build_canonical_dataset() -> Dataset:
     ds.add_new(Tag(0x6000, 0x0022), "LO", SENTINELS["OverlayDescription"])
 
     # Nested sequence carrying PHI so recursion is exercised. AnatomicRegionSequence
-    # is retained by every profile (a content root for pixels-only), while the PHI
+    # is retained by every profile (a content root for strict), while the PHI
     # inside its item is removed by the recursive element rules.
     item = Dataset()
     item.add_new(Tag(0x0008, 0x0080), "LO", SENTINELS["NestedInstitutionName"])
@@ -349,7 +349,7 @@ PROFILE_EXPECTATIONS: tuple[ProfileExpectation, ...] = (
         ),
     ),
     ProfileExpectation(
-        name="pixels-only",
+        name="strict",
         date_policy="remove",
         removes_birth_date=True,
         caps_age=False,

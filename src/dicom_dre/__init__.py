@@ -29,7 +29,7 @@ from dicom_dre.profile import correct_implicit_vr_elements
 from dicom_dre.profiles import default_profile
 from dicom_dre.profiles import lds_no_dob_profile
 from dicom_dre.profiles import lds_profile
-from dicom_dre.profiles import pixels_only_profile
+from dicom_dre.profiles import strict_profile
 from dicom_dre.profiles.builder import ProfileSettings
 from dicom_dre.profiles.builder import build_profile
 from dicom_dre.profiles.default import DATE_TAGS
@@ -78,5 +78,5 @@ __all__ = [
     "jpeg_dct_accelerator_info",
     "lds_no_dob_profile",
     "lds_profile",
-    "pixels_only_profile",
+    "strict_profile",
 ]

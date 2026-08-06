@@ -94,7 +94,7 @@ def test_birth_date_and_time_handling(expectation, canonical_dataset, profile_ha
 
     Exercises ``date_override_tags``: lds-no-dob removes PatientBirthDate and
     PatientBirthTime while preserving other dates; lds preserves them; the default
-    profile jitters the birth date and removes the birth time; pixels-only removes
+    profile jitters the birth date and removes the birth time; strict removes
     both.
     """
     result = profile_harness.apply_profile(expectation.name, dataset=canonical_dataset)

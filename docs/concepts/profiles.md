@@ -6,7 +6,7 @@ determines which attributes the engine keeps, removes, empties, date-shifts, or
 re-derives, and how it redacts free-text description fields.
 
 `dicom-dre` includes four profiles: `default`, `lds`, `lds-no-dob`, and
-`pixels-only`. {py:func}`dicom_dre.profiles.builder.list_profiles` returns the
+`strict`. {py:func}`dicom_dre.profiles.builder.list_profiles` returns the
 authoritative list.
 
 | Profile | Preserve dates | Use case |
@@ -14,7 +14,7 @@ authoritative list.
 | `default` | No (dates shifted) | Standard full de-identification |
 | `lds` | Yes | HIPAA limited data set with date/time retention |
 | `lds-no-dob` | Yes, except birth date | Limited data set without patient date of birth |
-| `pixels-only` | No (dates removed) | Pixel data only, minimal retained metadata |
+| `strict` | No (dates removed) | Most aggressive; minimal retained technical metadata |
 
 {py:func}`dicom_dre.profiles.builder.build_profile` constructs a
 patient-invariant profile from a profile name and an optional
@@ -70,7 +70,7 @@ Transfer Syntax, coding scheme, well-known SOP instance) and is left unchanged.
 The fallback uses the same UID root and study-salt policy as the explicit UID
 rules, so a UID that appears both under an explicit rule and an unruled tag maps
 to the same replacement and cross-references stay consistent. The `default`,
-`lds`, and `lds-no-dob` profiles hash with the study salt; the `pixels-only`
+`lds`, and `lds-no-dob` profiles hash with the study salt; the `strict`
 profile hashes without it.
 
 | Attribute | Action |
@@ -139,16 +139,16 @@ configures the redactor with `preserve_dates=True`.
 Use this profile when the downstream use case requires temporal information but
 the patient date of birth must not be included in the output.
 
-## Pixels-only
+## Strict
 
-Profile name: `pixels-only`
+Profile name: `strict`
 
-The pixels-only profile retains the least metadata while still yielding a file
-that most DICOM viewers and libraries can open. It retains a fixed set
-of technical elements, re-derives UIDs (no salt), and removes every element that
-has no explicit rule. It always protects groups `0028` (image pixel description)
-and `7FE0` (pixel data), plus `SOPClassUID`, `SOPInstanceUID`, and
-`StudyInstanceUID`, from the unspecified-element removal. It removes private
+The strict profile retains the least metadata while still yielding a file
+that most DICOM viewers and libraries can open. It is an allow-list profile: it
+retains a fixed set of technical elements, re-derives UIDs (no salt), and removes
+every element that has no explicit rule. It always protects groups `0028` (image
+pixel description) and `7FE0` (pixel data), plus `SOPClassUID`, `SOPInstanceUID`,
+and `StudyInstanceUID`, from the unspecified-element removal. It removes private
 groups, curves, and overlays.
 
 It removes dates entirely (neither kept nor shifted). It keeps times. It redacts
@@ -171,7 +171,7 @@ Unspecified-element removal is disabled below a content root, so the coded label
 and cross-object references survive, while the shared PHI-removal, date-removal,
 and free-text redaction rules de-identify every element inside the subtree.
 Referenced UIDs are hashed without the study salt, so references resolve within a
-single pixels-only export but not against objects de-identified by another
+single strict export but not against objects de-identified by another
 profile. Each DICOM cohort is processed with a single profile. The profile
 declares the Clean Graphics Option (`113103`) and the Clean Structured Content
 Option (`113104`).
@@ -184,7 +184,7 @@ pixel data is the sole item of interest.
 
 Each profile configures the redactor through its `preserve_dates` flag:
 
-- `default` / `pixels-only`: dates, times, emails, URLs, and hexadecimal numbers
+- `default` / `strict`: dates, times, emails, URLs, and hexadecimal numbers
   are masked in free-text fields.
 - `lds` / `lds-no-dob`: dates and times are kept intact; emails, URLs, and
   hexadecimal numbers are still masked.
@@ -247,19 +247,19 @@ profile emits follow from its configuration:
 
 | Code value | Code meaning | Emitted |
 |------------|--------------|---------|
-| `113100` | Basic Application Confidentiality Profile | When the profile sets `emits_basic_profile` (`default`, `lds`, `lds-no-dob`); not for `pixels-only` |
+| `113100` | Basic Application Confidentiality Profile | When the profile sets `emits_basic_profile` (`default`, `lds`, `lds-no-dob`); not for `strict` |
 | `113101` | Clean Pixel Data Option | When the pixel blanker scrubs burned-in text from the instance |
 | `113107` | Retain Longitudinal Temporal Information With Modified Dates | For date-shifting profiles (`default`) |
 | `113106` | Retain Longitudinal Temporal Information With Full Dates | For date-preserving profiles (`lds`, `lds-no-dob`) |
 | `113105` | Clean Descriptors Option | Declared in `deid_options` (`default`, `lds`, `lds-no-dob`) |
 | `113108` | Retain Patient Characteristics Option | Declared in `deid_options` (`default`, `lds`, `lds-no-dob`) |
-| `113103` | Clean Graphics Option | Declared in `deid_options` (`pixels-only`) |
-| `113104` | Clean Structured Content Option | Declared in `deid_options` (`default`, `pixels-only`) |
+| `113103` | Clean Graphics Option | Declared in `deid_options` (`strict`) |
+| `113104` | Clean Structured Content Option | Declared in `deid_options` (`default`, `strict`) |
 | `113111` | Retain Safe Private Option | Only when the instance retains device-approved private tags (see [Device Catalog](device-catalog.md)) |
 
 The temporal code is derived from the profile's date policy: `113107` for
 modified dates, `113106` for full dates, and neither when dates are removed
-(`pixels-only`). A profile emits no sequence when it declares no Basic Profile,
+(`strict`). A profile emits no sequence when it declares no Basic Profile,
 no temporal code, no options, and no preserved private tags.
 
 The profile leaves the existing `DeIdentificationMethod` `(0012,0063)` free-text

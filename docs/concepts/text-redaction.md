@@ -60,7 +60,7 @@ content.
 
 The `preserve_dates` flag controls whether the redactor retains dates and times:
 
-- When `preserve_dates` is `False` (`default` and `pixels-only` profiles), the
+- When `preserve_dates` is `False` (`default` and `strict` profiles), the
   redactor masks date and time tokens along with everything else off the
   allowlist.
 - When `preserve_dates` is `True` (`lds` and `lds-no-dob` profiles), the

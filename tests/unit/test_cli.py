@@ -109,7 +109,7 @@ def test_deidentify_bad_parameter(signa_premier_file: Path, tmp_path: Path) -> N
     assert "KEY=VALUE" in result.output, f"Expected the KEY=VALUE usage hint, got: {result.output!r}"
 
 
-@pytest.mark.parametrize("profile_name", ["lds", "lds-no-dob", "pixels-only"])
+@pytest.mark.parametrize("profile_name", ["lds", "lds-no-dob", "strict"])
 def test_deidentify_jitter_rejected_for_date_preserving_profile(
     signa_premier_file: Path, tmp_path: Path, profile_name: str
 ) -> None:
@@ -162,7 +162,7 @@ def test_deidentify_zero_jitter_rejected_for_date_shifting_profile(signa_premier
     assert not out.exists(), f"No output should be written when the combination is rejected: {out}"
 
 
-@pytest.mark.parametrize("profile_name", ["lds", "lds-no-dob", "pixels-only"])
+@pytest.mark.parametrize("profile_name", ["lds", "lds-no-dob", "strict"])
 def test_deidentify_zero_jitter_accepted_for_date_preserving_profile(
     signa_premier_file: Path, tmp_path: Path, profile_name: str
 ) -> None:
@@ -802,7 +802,7 @@ def test_deidentify_quarantined_line_format(tmp_path: Path) -> None:
     assert line.endswith(")"), f"QUARANTINED line should end with the error in parentheses: {line!r}"
 
 
-@pytest.mark.parametrize("profile_name", ["lds", "lds-no-dob", "pixels-only"])
+@pytest.mark.parametrize("profile_name", ["lds", "lds-no-dob", "strict"])
 def test_deidentify_profile_writes_readable_output(signa_premier_file: Path, tmp_path: Path, profile_name: str) -> None:
     """Each non-default profile runs to completion and writes a readable output file."""
     import pydicom

@@ -27,7 +27,7 @@ directory. It prints one line per processed file, followed by a summary.
 - `-r, --recursive`: Recurse into subdirectories of directory sources.
 - `--glob PATTERN`: Filename pattern for directory scans. Repeatable and
   case-insensitive. Default: `*.dcm`, `*.dicom`.
-- `--profile [default|lds|lds-no-dob|pixels-only]`: De-identification profile
+- `--profile [default|lds|lds-no-dob|strict]`: De-identification profile
   to apply. Default: `default`. See
   [De-identification Profiles](../concepts/profiles.md).
 - `-p, --param KEY=VALUE`: A per-patient de-identification parameter,
@@ -37,7 +37,7 @@ directory. It prints one line per processed file, followed by a summary.
   other key is rejected. Build-time settings use their own flags below. A
   non-zero `JITTER` applies only to date-shifting profiles; combining a non-zero
   `JITTER` with a non-date-shifting profile (`lds` and `lds-no-dob`, which
-  preserve dates, and `pixels-only`, which removes them) is a usage error.
+  preserve dates, and `strict`, which removes them) is a usage error.
   `JITTER=0` requests no shift and is accepted by any profile.
 - `--study-id VALUE`: Study identifier scoping the identifier and UID hashes
   (the `STUDY_ID` parameter). Default: unset.

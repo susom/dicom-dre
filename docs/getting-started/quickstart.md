@@ -32,7 +32,7 @@ dicom-dre deidentify a.dcm b.dcm dir/ -o out/ \
 ```
 
 The `-j` option sets the number of parallel workers. The available profiles are
-`default`, `lds`, `lds-no-dob`, and `pixels-only`; see
+`default`, `lds`, `lds-no-dob`, and `strict`; see
 [De-identification Profiles](../concepts/profiles.md).
 
 When you omit `PATIENT_ID`, `ACCESSION_NUMBER`, or `PATIENT_NAME`, the engine

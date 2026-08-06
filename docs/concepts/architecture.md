@@ -116,7 +116,7 @@ See [Device Catalog](device-catalog.md#preserved-private-tags) and
 
 ## Profiles
 
-The `default`, `lds`, `lds-no-dob`, and `pixels-only` profiles each map to a
+The `default`, `lds`, `lds-no-dob`, and `strict` profiles each map to a
 factory function in {py:mod}`dicom_dre.profiles`. A profile name selects which
 tags the engine keeps, removes, or shifts. [Profiles](profiles.md) describes the
 behavior of each profile.
@@ -148,7 +148,7 @@ See [Testing](../about/testing.md).
 | {py:mod}`dicom_dre.result` | `DeidentifyResult` and `Outcome` result types |
 | {py:mod}`dicom_dre.profile` | `DeidProfile.apply()` metadata rewrite |
 | {py:mod}`dicom_dre.actions` | Tag-action factories (`remove`, `hash_uid`, `jitter_date`, ...) |
-| {py:mod}`dicom_dre.profiles` | `default`, `lds`, `lds-no-dob`, `pixels-only` factories and the profile builder |
+| {py:mod}`dicom_dre.profiles` | `default`, `lds`, `lds-no-dob`, `strict` factories and the profile builder |
 | {py:mod}`dicom_dre.catalog` | Catalog engine: `DeviceCatalog`, `CatalogDecision`, `DicomTags` |
 | {py:mod}`dicom_dre.default_catalog` | Device and exclusion rule data |
 | {py:mod}`dicom_dre.pixel_blanker` | `blank_regions()` pixel scrub dispatch |

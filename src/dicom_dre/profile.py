@@ -343,7 +343,7 @@ class DeidProfile:
                 tags_to_remove.append(tag)
                 continue
 
-            # Remove unspecified elements (pixels-only profile).
+            # Remove unspecified elements (strict profile).
             # Groups 0x0028 and 0x7FE0 plus SOPClassUID, SOPInstanceUID, and
             # StudyInstanceUID are always protected from this removal, as are
             # content-root sequences whose subtree carries retained labels.
@@ -414,7 +414,7 @@ class DeidProfile:
         per-instance codes the caller applied outside the rules); and 113111
         (Retain Safe Private Option) when private elements are preserved. Codes
         are de-duplicated before writing. Runs after global rules, since the
-        pixels-only profile removes any element without an explicit rule.
+        strict profile removes any element without an explicit rule.
         """
         from pydicom.dataset import Dataset as PydicomDataset
 

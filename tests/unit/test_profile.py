@@ -515,7 +515,7 @@ class TestDeidMethodCodeSequence:
         assert "113107" not in codes, f"113107 should be absent for date-preserving profile: {codes}"
 
     def test_modified_dates_code_absent_for_date_removing_profile(self):
-        """113107 is not emitted when dates are removed (pixels-only)."""
+        """113107 is not emitted when dates are removed (strict)."""
         ds = _signa_premier_dataset(block=0x10)
         profile = _minimal_profile(
             remove_private=True,
@@ -1717,8 +1717,8 @@ class TestKeyObjectSelectionProfile:
         assert str(retained[Tag(0x0008, 0x0102)].value) == "BL-S17-1", "private coding scheme should be retained"
 
 
-class TestPixelsOnlyContentRetention:
-    """pixels_only_profile retains and cleans KO/PR label subtrees.
+class TestStrictContentRetention:
+    """strict_profile retains and cleans KO/PR label subtrees.
 
     remove_unspecified is disabled below the content-root sequences, so the
     labels survive while the shared PHI, date, and free-text rules de-identify
@@ -1731,9 +1731,9 @@ class TestPixelsOnlyContentRetention:
 
     def _apply(self, ds: Dataset) -> None:
         from dicom_dre.profiles.config import ProfileSettings
-        from dicom_dre.profiles.pixels_only import pixels_only_profile
+        from dicom_dre.profiles.strict import strict_profile
 
-        pixels_only_profile(ProfileSettings(hash_salt="pepper")).apply(ds, DeidParameters(study_id="COHORT_A"))
+        strict_profile(ProfileSettings(hash_salt="pepper")).apply(ds, DeidParameters(study_id="COHORT_A"))
 
     def _ko_dataset(self) -> Dataset:
         from pydicom.sequence import Sequence
@@ -1827,7 +1827,7 @@ class TestPixelsOnlyContentRetention:
         assert "PRIVATE-PHI-VALUE" not in values, "private value should not survive"
 
     def test_ko_referenced_uids_hashed_without_salt(self):
-        """Referenced UIDs are hashed with the no-salt pixels-only function."""
+        """Referenced UIDs are hashed with the no-salt strict function."""
         ds = self._ko_dataset()
         self._apply(ds)
         values = _all_string_values(ds)

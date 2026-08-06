@@ -157,7 +157,7 @@ Select a de-identification profile with `--profile`:
 - `default`: full metadata scrub with re-derived UIDs.
 - `lds`: HIPAA limited data set (retains dates).
 - `lds-no-dob`: limited data set without date of birth.
-- `pixels-only`: pixel scrubbing with minimal metadata changes.
+- `strict`: allow-list scrub retaining minimal technical metadata; most aggressive.
 
 ### Free-text redaction tools
 

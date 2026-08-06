@@ -2,7 +2,7 @@
 
 Each test takes an ``expectation`` argument that ``conftest.pytest_generate_tests``
 parametrizes over every buildable profile (``default``, ``lds``, ``lds-no-dob``,
-``pixels-only``), with the profile name as the test ID. The canonical dataset and
+``strict``), with the profile name as the test ID. The canonical dataset and
 the harness helpers arrive through the ``canonical_dataset`` and
 ``profile_harness`` fixtures, so this module imports nothing from the tests
 package.

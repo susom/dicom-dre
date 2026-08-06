@@ -1,10 +1,11 @@
-"""Pixels-Only de-identification profile.
+"""Strict de-identification profile.
 
 The most aggressive redaction that still yields a DICOM file that opens in most
-DICOM viewers and libraries. Use only when the pixel data is the sole item of
-interest and study demographics or other metadata can be discarded. No UID
-salt, no date jitter, minimal retained elements; all unspecified elements are
-removed.
+DICOM viewers and libraries. It is an allow-list profile: it retains a fixed set
+of technical elements and removes every element without an explicit rule. Use
+only when the pixel data is the sole item of interest and study demographics or
+other metadata can be discarded. No UID salt, no date jitter, minimal retained
+elements; all unspecified elements are removed.
 
 Key Object Selection (KO) and Presentation State (PR) objects carry no pixel
 data but hold clinician-curated labels. Their structured-content and
@@ -36,8 +37,8 @@ from dicom_dre.profiles.default import redact_description
 from dicom_dre.profiles.default import redact_free_text
 
 
-# 16 UID tags re-hashed in the pixels-only profile, without a salt.
-PIXELS_ONLY_UID_TAGS: frozenset[BaseTag] = frozenset(
+# 16 UID tags re-hashed in the strict profile, without a salt.
+STRICT_UID_TAGS: frozenset[BaseTag] = frozenset(
     {
         Tag(0x0002, 0x0003),  # MediaStorageSOPInstanceUID
         Tag(0x0008, 0x0018),  # SOPInstanceUID
@@ -58,8 +59,8 @@ PIXELS_ONLY_UID_TAGS: frozenset[BaseTag] = frozenset(
     }
 )
 
-# 326 tags preserved unchanged in the pixels-only profile.
-PIXELS_ONLY_KEEP_TAGS: frozenset[BaseTag] = frozenset(
+# 326 tags preserved unchanged in the strict profile.
+STRICT_KEEP_TAGS: frozenset[BaseTag] = frozenset(
     {
         Tag(0x0008, 0x0005),  # SpecificCharacterSet
         Tag(0x0008, 0x0008),  # ImageType
@@ -397,7 +398,7 @@ PIXELS_ONLY_KEEP_TAGS: frozenset[BaseTag] = frozenset(
 # hashing) still de-identify every element within them. Structural and coded
 # members (Value Type, Concept Name/Code sequences, Graphic Data/Type, reference
 # SOP sequences) carry no PHI and are preserved.
-PIXELS_ONLY_CONTENT_ROOT_TAGS: frozenset[BaseTag] = frozenset(
+STRICT_CONTENT_ROOT_TAGS: frozenset[BaseTag] = frozenset(
     {
         Tag(0x0008, 0x2218),  # AnatomicRegionSequence
         Tag(0x0040, 0xA043),  # ConceptNameCodeSequence (KO document title)
@@ -410,8 +411,8 @@ PIXELS_ONLY_CONTENT_ROOT_TAGS: frozenset[BaseTag] = frozenset(
 )
 
 
-def pixels_only_profile(settings: ProfileSettings | None = None) -> DeidProfile:
-    """Construct a pixels-only profile.
+def strict_profile(settings: ProfileSettings | None = None) -> DeidProfile:
+    """Construct a strict profile.
 
     No jitter, minimal metadata. Removes all unspecified elements. UIDs are
     re-derived without the study-ID salt. Per-patient identity values are
@@ -429,7 +430,7 @@ def pixels_only_profile(settings: ProfileSettings | None = None) -> DeidProfile:
     so those retained subtrees are de-identified: dates are removed (not
     jittered, matching the profile's no-date posture), and the free-text label
     fields are redacted against the allowlist. Because the profile hashes UIDs
-    without the study salt, references resolve within a single pixels-only
+    without the study salt, references resolve within a single strict
     export but not against objects de-identified by another profile.
     """
     settings = settings or ProfileSettings()
@@ -447,10 +448,10 @@ def pixels_only_profile(settings: ProfileSettings | None = None) -> DeidProfile:
     rules.update(dict.fromkeys(DATE_TAGS, remove_action))
 
     # Preserve tags unchanged
-    rules.update({t: keep() for t in PIXELS_ONLY_KEEP_TAGS})
+    rules.update({t: keep() for t in STRICT_KEEP_TAGS})
 
     # Hash UID tags -- no salt
-    rules.update(dict.fromkeys(PIXELS_ONLY_UID_TAGS, uid_action))
+    rules.update(dict.fromkeys(STRICT_UID_TAGS, uid_action))
 
     # Identifier substitution -- caller value wins, else hash the original.
     # PatientName runs before the PatientID rule so it hashes the original
@@ -476,7 +477,7 @@ def pixels_only_profile(settings: ProfileSettings | None = None) -> DeidProfile:
     rules[Tag(0x0012, 0x0062)] = set_value("YES", create_if_missing=True)
 
     return DeidProfile(
-        name="Pixels-Only",
+        name="Strict",
         rules=rules,
         keep_groups=frozenset(),
         remove_private=True,
@@ -489,5 +490,5 @@ def pixels_only_profile(settings: ProfileSettings | None = None) -> DeidProfile:
         uid_use_study_salt=False,
         emits_basic_profile=False,
         deid_options=frozenset({"113103", "113104"}),
-        content_root_tags=PIXELS_ONLY_CONTENT_ROOT_TAGS,
+        content_root_tags=STRICT_CONTENT_ROOT_TAGS,
     )

@@ -2,7 +2,7 @@
 
 Covers the LDS keep-overrides (retained where the default profile caps or
 removes), the default profile's age cap and timezone removal, and the
-pixels-only retention of KO content-root subtrees with de-identification of the
+strict retention of KO content-root subtrees with de-identification of the
 PHI inside them. These use focused, purpose-built datasets applied through the
 ``profile_harness`` fixture.
 """
@@ -72,7 +72,7 @@ class TestLdsKeepOverrides:
 
 
 class TestPixelsOnlyContentRetention:
-    """pixels-only retains KO content-root subtrees while de-identifying PHI inside them."""
+    """strict retains KO content-root subtrees while de-identifying PHI inside them."""
 
     _TITLE_CODE = "113000"
     _TITLE_MEANING = "Of Interest"
@@ -104,10 +104,10 @@ class TestPixelsOnlyContentRetention:
         return ds
 
     def test_content_root_and_coded_title_retained(self, profile_harness):
-        """The Content Sequence and its coded document title survive pixels-only."""
+        """The Content Sequence and its coded document title survive strict."""
         from pydicom.tag import Tag
 
-        result = profile_harness.apply_profile("pixels-only", dataset=self._ko_dataset())
+        result = profile_harness.apply_profile("strict", dataset=self._ko_dataset())
         assert Tag(0x0040, 0xA730) in result, "Content Sequence should be retained"
         title = result[Tag(0x0040, 0xA043)].value[0]
         assert str(title[Tag(0x0008, 0x0100)].value) == self._TITLE_CODE, "document title code value retained"
@@ -115,7 +115,7 @@ class TestPixelsOnlyContentRetention:
 
     def test_phi_inside_content_removed(self, profile_harness):
         """PHI nested in the retained Content Sequence is de-identified."""
-        result = profile_harness.apply_profile("pixels-only", dataset=self._ko_dataset())
+        result = profile_harness.apply_profile("strict", dataset=self._ko_dataset())
         values = set(_scalar_strings(result))
         assert "SMITH^JOHN" not in values, "PersonName in content should be removed"
         assert "20240101120000" not in values, "ObservationDateTime in content should be removed"
