@@ -36,7 +36,7 @@ from dicom_dre.profiles.default import redact_description
 from dicom_dre.profiles.default import redact_free_text
 
 
-# 15 UID tags re-hashed in the pixels-only profile, without a salt.
+# 16 UID tags re-hashed in the pixels-only profile, without a salt.
 PIXELS_ONLY_UID_TAGS: frozenset[BaseTag] = frozenset(
     {
         Tag(0x0002, 0x0003),  # MediaStorageSOPInstanceUID
@@ -46,6 +46,7 @@ PIXELS_ONLY_UID_TAGS: frozenset[BaseTag] = frozenset(
         Tag(0x0020, 0x000E),  # SeriesInstanceUID
         Tag(0x0020, 0x0052),  # FrameOfReferenceUID
         Tag(0x0020, 0x0200),  # SynchronizationFrameOfReferenceUID
+        Tag(0x0020, 0x9164),  # DimensionOrganizationUID
         Tag(0x0028, 0x1199),  # PaletteColorLookupTableUID
         Tag(0x0028, 0x1214),  # LargePaletteColorLookupTableUID
         Tag(0x0040, 0xA124),  # UID
@@ -57,7 +58,7 @@ PIXELS_ONLY_UID_TAGS: frozenset[BaseTag] = frozenset(
     }
 )
 
-# 311 tags preserved unchanged in the pixels-only profile.
+# 326 tags preserved unchanged in the pixels-only profile.
 PIXELS_ONLY_KEEP_TAGS: frozenset[BaseTag] = frozenset(
     {
         Tag(0x0008, 0x0005),  # SpecificCharacterSet
@@ -75,6 +76,7 @@ PIXELS_ONLY_KEEP_TAGS: frozenset[BaseTag] = frozenset(
         Tag(0x0008, 0x1090),  # ManufacturerModelName
         Tag(0x0008, 0x2111),  # DerivationDescription
         Tag(0x0008, 0x2130),  # EventElapsedTime
+        Tag(0x0008, 0x3010),  # IrradiationEventUID
         Tag(0x0008, 0x9092),  # ReferencedImageEvidenceSequence
         Tag(0x0010, 0x0040),  # PatientSex
         Tag(0x0018, 0x0010),  # ContrastBolusAgent
@@ -256,14 +258,27 @@ PIXELS_ONLY_KEEP_TAGS: frozenset[BaseTag] = frozenset(
         Tag(0x0020, 0x0011),  # SeriesNumber
         Tag(0x0020, 0x0012),  # AcquisitionNumber
         Tag(0x0020, 0x0013),  # InstanceNumber
+        Tag(0x0020, 0x0020),  # PatientOrientation
         Tag(0x0020, 0x0032),  # ImagePositionPatient
         Tag(0x0020, 0x0037),  # ImageOrientationPatient
         Tag(0x0020, 0x0060),  # Laterality
+        Tag(0x0020, 0x0062),  # ImageLaterality
         Tag(0x0020, 0x1002),  # ImagesInAcquisition
         Tag(0x0020, 0x1040),  # PositionReferenceIndicator
         Tag(0x0020, 0x1041),  # SliceLocation
+        Tag(0x0020, 0x9056),  # StackID
+        Tag(0x0020, 0x9057),  # InStackPositionNumber
+        Tag(0x0020, 0x9111),  # FrameContentSequence
+        Tag(0x0020, 0x9113),  # PlanePositionSequence
         Tag(0x0020, 0x9116),  # PlaneOrientationSequence
+        Tag(0x0020, 0x9128),  # TemporalPositionIndex
         Tag(0x0020, 0x9153),  # TriggerDelayTime
+        Tag(0x0020, 0x9157),  # DimensionIndexValues
+        Tag(0x0020, 0x9165),  # DimensionIndexPointer
+        Tag(0x0020, 0x9167),  # FunctionalGroupPointer
+        Tag(0x0020, 0x9221),  # DimensionOrganizationSequence
+        Tag(0x0020, 0x9222),  # DimensionIndexSequence
+        Tag(0x0020, 0x9311),  # DimensionOrganizationType
         Tag(0x0022, 0x0001),  # LightPathFilterPassThroughWavelength
         Tag(0x0022, 0x0002),  # LightPathFilterPassBand
         Tag(0x0022, 0x0003),  # ImagePathFilterPassThroughWavelength
@@ -338,15 +353,22 @@ PIXELS_ONLY_KEEP_TAGS: frozenset[BaseTag] = frozenset(
         Tag(0x0040, 0x8302),  # EntranceDoseInmGy
         Tag(0x0040, 0xA122),  # Time
         Tag(0x0040, 0xA193),  # TrialObservationTime
+        Tag(0x0054, 0x0010),  # EnergyWindowVector
         Tag(0x0054, 0x0011),  # NumberOfEnergyWindows
         Tag(0x0054, 0x0016),  # RadiopharmaceuticalInformationSequence
+        Tag(0x0054, 0x0020),  # DetectorVector
+        Tag(0x0054, 0x0021),  # NumberOfDetectors
         Tag(0x0054, 0x0022),  # DetectorInformationSequence
+        Tag(0x0054, 0x0030),  # PhaseVector
+        Tag(0x0054, 0x0031),  # NumberOfPhases
         Tag(0x0054, 0x0050),  # RotationVector
         Tag(0x0054, 0x0051),  # NumberOfRotations
         Tag(0x0054, 0x0060),  # RRIntervalVector
         Tag(0x0054, 0x0061),  # NumberOfRRIntervals
         Tag(0x0054, 0x0070),  # TimeSlotVector
+        Tag(0x0054, 0x0071),  # NumberOfTimeSlots
         Tag(0x0054, 0x0080),  # SliceVector
+        Tag(0x0054, 0x0081),  # NumberOfSlices
         Tag(0x0054, 0x0090),  # AngularViewVector
         Tag(0x0054, 0x0100),  # TimeSliceVector
         Tag(0x0054, 0x0202),  # TypeOfDetectorMotion
@@ -361,16 +383,13 @@ PIXELS_ONLY_KEEP_TAGS: frozenset[BaseTag] = frozenset(
         Tag(0x0054, 0x1400),  # CountsIncluded
         Tag(0x0054, 0x1401),  # DeadTimeCorrectionFlag
         Tag(0x0062, 0x0002),  # SegmentSequence
+        Tag(0x2050, 0x0020),  # PresentationLUTShape
+        Tag(0x5200, 0x9229),  # SharedFunctionalGroupsSequence
+        Tag(0x5200, 0x9230),  # PerFrameFunctionalGroupsSequence
         Tag(0x7FE0, 0x0010),  # PixelData
     }
 )
 
-# Pixels-only: 1 tag removed -- IrradiationEventUID.
-PIXELS_ONLY_REMOVE_TAGS: frozenset[BaseTag] = frozenset(
-    {
-        Tag(0x0008, 0x3010),  # IrradiationEventUID
-    }
-)
 
 # Content-root sequences whose subtree is retained verbatim under
 # remove_unspecified. These carry the KO/PR labels and cross-object references;
@@ -433,24 +452,17 @@ def pixels_only_profile(settings: ProfileSettings | None = None) -> DeidProfile:
     # Hash UID tags -- no salt
     rules.update(dict.fromkeys(PIXELS_ONLY_UID_TAGS, uid_action))
 
-    # Remove tags
-    rules.update({t: remove() for t in PIXELS_ONLY_REMOVE_TAGS})
-
     # Identifier substitution -- caller value wins, else hash the original.
     # PatientName runs before the PatientID rule so it hashes the original
     # PatientID element and matches the value the PatientID rule then writes.
     rules[Tag(0x0010, 0x0010)] = hash_identifier_param(
         "patient_name", salt=settings.hash_salt, fallback_field="patient_id", source_tag=Tag(0x0010, 0x0020)
-    )  # PatientName
+    )
     rules[Tag(0x0010, 0x0020)] = hash_identifier_param("patient_id", salt=settings.hash_salt)  # PatientID
     rules[Tag(0x0008, 0x0050)] = hash_identifier_param("accession_number", salt=settings.hash_salt)  # AccessionNumber
-    rules[Tag(0x0008, 0x103E)] = redact_description(
-        "series_description", settings.allowlist_csv, False
-    )  # SeriesDescription
-    rules[Tag(0x0008, 0x1030)] = redact_description(
-        "study_description", settings.allowlist_csv, False
-    )  # StudyDescription
-    rules[Tag(0x0018, 0x1030)] = redact_description("protocol_name", settings.allowlist_csv, False)  # ProtocolName
+    rules[Tag(0x0008, 0x103E)] = redact_description("series_description", settings.allowlist_csv, False)
+    rules[Tag(0x0008, 0x1030)] = redact_description("study_description", settings.allowlist_csv, False)
+    rules[Tag(0x0018, 0x1030)] = redact_description("protocol_name", settings.allowlist_csv, False)
 
     # KO/PR free-text label redaction and identifier hashing inside retained
     # content subtrees.
