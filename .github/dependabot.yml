@@ -1,0 +1,44 @@
+# Dependabot configuration.
+#
+# Update PRs target the `development` integration branch and use
+# conventional-commit prefixes so they pass the PR title check in ci.yml.
+version: 2
+updates:
+  # Python dependencies managed by uv (pyproject.toml / uv.lock).
+  - package-ecosystem: "uv"
+    directory: "/"
+    target-branch: "development"
+    schedule:
+      interval: "weekly"
+    commit-message:
+      prefix: "chore"
+      prefix-development: "chore"
+      include: "scope"
+    groups:
+      python-dependencies:
+        patterns:
+          - "*"
+
+  # GitHub Actions used by the workflows in .github/workflows.
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    target-branch: "development"
+    schedule:
+      interval: "weekly"
+    commit-message:
+      prefix: "ci"
+      include: "scope"
+    groups:
+      github-actions:
+        patterns:
+          - "*"
+
+  # Dev container base image and features.
+  - package-ecosystem: "devcontainers"
+    directory: "/"
+    target-branch: "development"
+    schedule:
+      interval: "weekly"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
