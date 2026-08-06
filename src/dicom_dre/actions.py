@@ -243,6 +243,8 @@ def dummy_for_vr(uid_root: str, *, use_study_salt: bool = False) -> TagAction:
 
     - Text VRs -> ``"ANONYMIZED"`` (``UN`` receives the same token as bytes).
     - ``AS`` (Age String) -> ``"000Y"``.
+    - Date/time VRs -> a VR-valid sentinel (``DA`` -> ``"19000101"``,
+      ``TM`` -> ``"000000"``, ``DT`` -> ``"19000101000000"``).
     - Numeric VRs -> zero (``"0"`` for DS/IS; ``0``/``0.0`` for binary numerics).
     - ``UI`` -> hashed with ``uid_root`` and, when ``use_study_salt`` is True, the
       study identifier, matching the profile UID policy.
@@ -278,6 +280,12 @@ def dummy_for_vr(uid_root: str, *, use_study_salt: bool = False) -> TagAction:
             elem.value = hashuid(uid_root, combined)
         elif vr == "AS":
             elem.value = "000Y"
+        elif vr == "DA":
+            elem.value = "19000101"
+        elif vr == "TM":
+            elem.value = "000000"
+        elif vr == "DT":
+            elem.value = "19000101000000"
         elif vr in ("DS", "IS"):
             elem.value = "0"
         elif vr in ("FL", "FD"):

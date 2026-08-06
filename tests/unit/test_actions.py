@@ -467,15 +467,35 @@ class TestDummyForVr:
         dummy_for_vr("1.2.840.99")(ds, tag, DeidParameters())
         assert tag not in ds, "dummy_for_vr should not create an absent element"
 
-    def test_unhandled_vr_is_left_unchanged(self) -> None:
-        """A VR that matches no dummy branch (e.g. DA) is left unchanged."""
+    def test_date_vr_gets_sentinel(self) -> None:
+        """A DA element becomes the sentinel 19000101."""
         from dicom_dre.actions import dummy_for_vr
 
         ds = _dataset()
         tag = _tag(0x0008, 0x0020)  # StudyDate (DA)
         ds.add_new(tag, "DA", "20200101")
         dummy_for_vr("1.2.840.99")(ds, tag, DeidParameters())
-        assert ds[tag].value == "20200101", "A DA element should fall through the dummy branches unchanged"
+        assert ds[tag].value == "19000101", "A DA element should become the sentinel date"
+
+    def test_time_vr_gets_sentinel(self) -> None:
+        """A TM element becomes the sentinel 000000."""
+        from dicom_dre.actions import dummy_for_vr
+
+        ds = _dataset()
+        tag = _tag(0x0008, 0x0030)  # StudyTime (TM)
+        ds.add_new(tag, "TM", "131415")
+        dummy_for_vr("1.2.840.99")(ds, tag, DeidParameters())
+        assert ds[tag].value == "000000", "A TM element should become the sentinel time"
+
+    def test_datetime_vr_gets_sentinel(self) -> None:
+        """A DT element becomes the sentinel 19000101000000."""
+        from dicom_dre.actions import dummy_for_vr
+
+        ds = _dataset()
+        tag = _tag(0x0072, 0x0063)  # SelectorDTValue (DT)
+        ds.add_new(tag, "DT", "20200101131415")
+        dummy_for_vr("1.2.840.99")(ds, tag, DeidParameters())
+        assert ds[tag].value == "19000101000000", "A DT element should become the sentinel datetime"
 
 
 class TestJitterDate:
