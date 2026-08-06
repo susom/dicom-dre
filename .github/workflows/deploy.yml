@@ -175,7 +175,20 @@ jobs:
         with:
           packages-dir: dist
 
+      - name: Sign distributions with Sigstore
+        # Keyless signing via the workflow's OIDC identity (id-token: write).
+        # Produces a <artifact>.sigstore.json bundle next to each wheel and the
+        # sdist.
+        if: steps.release.outputs.released == 'true'
+        uses: sigstore/gh-action-sigstore-python@790bc6befb9d733738f18d8f895854b453640ec9 # v3.5.0
+        with:
+          inputs: ./dist/*.tar.gz ./dist/*.whl
+          # This is a push event, not a release event; sign the explicit inputs
+          # only and do not attach to the auto-generated source archives.
+          release-signing-artifacts: false
+
       - name: Upload distributions to the GitHub Release
+        # Uploads the wheels, sdist, and the Sigstore .sigstore.json bundles.
         if: steps.release.outputs.released == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
