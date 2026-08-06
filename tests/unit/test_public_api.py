@@ -4,14 +4,26 @@ import dicom_dre
 
 
 def test_public_names_importable_from_package_root():
-    """The three promoted symbols are importable from the package root."""
+    """The promoted symbols are importable and behave as their exported contract."""
+    from pydicom import Dataset
+    from pydicom.tag import Tag
+
     from dicom_dre import DATE_TAGS
     from dicom_dre import UID_TAGS
     from dicom_dre import correct_implicit_vr_elements
 
-    assert callable(correct_implicit_vr_elements), "correct_implicit_vr_elements should be callable"
-    assert isinstance(DATE_TAGS, frozenset), f"DATE_TAGS should be a frozenset, got {type(DATE_TAGS)}"
-    assert isinstance(UID_TAGS, frozenset), f"UID_TAGS should be a frozenset, got {type(UID_TAGS)}"
+    # DATE_TAGS and UID_TAGS advertise the tags the pipeline treats specially.
+    assert Tag(0x0008, 0x0020) in DATE_TAGS, f"StudyDate should be a recognized date tag, got {DATE_TAGS}"
+    assert Tag(0x0020, 0x000D) in UID_TAGS, f"StudyInstanceUID should be a recognized UID tag, got {UID_TAGS}"
+
+    # correct_implicit_vr_elements rewrites an Implicit-VR-decoded UN element to
+    # its dictionary VR so downstream rules match on VR.
+    ds = Dataset()
+    ds.add_new(Tag(0x0010, 0x0020), "UN", b"MRN123")
+    correct_implicit_vr_elements(ds)
+    assert ds[Tag(0x0010, 0x0020)].VR == "LO", (
+        f"PatientID should be corrected from UN to its dictionary VR LO, got {ds[Tag(0x0010, 0x0020)].VR}"
+    )
 
 
 def test_private_alias_identity_holds():

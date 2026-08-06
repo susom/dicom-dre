@@ -9,9 +9,17 @@ import pytest
 
 from dicom_dre.text_redactor import TextRedactor
 from dicom_dre.text_redactor import extract_unique_tokens
+from dicom_dre.text_redactor import interactive_quality_check_csv_file
 from dicom_dre.text_redactor import print_redacted_tokens
 from dicom_dre.text_redactor import process_csv_file
 from dicom_dre.text_redactor import quality_check_csv_file
+from dicom_dre.text_redactor import save_allowlist_to_csv
+
+
+@pytest.fixture
+def temp_dir(tmp_path):
+    """Module-level temporary directory for tests outside TestTextRedactor."""
+    return tmp_path
 
 
 class TestTextRedactor:
@@ -885,3 +893,265 @@ class TestPreserveDates:
         text = "Scan at 14:30 EST"
         result = redactor.redact_text(text)
         assert "EST" in result, f"timezone 'EST' should be preserved, got: {result}"
+
+
+class TestGetTextRedactorMissingFile:
+    """Tests for get_text_redactor allowlist resolution."""
+
+    def test_missing_allowlist_raises_value_error(self):
+        """Requesting a non-existent allowlist file raises ValueError."""
+        from dicom_dre.text_redactor import get_text_redactor
+
+        with pytest.raises(ValueError, match="does not exist"):
+            get_text_redactor("this_allowlist_does_not_exist.csv")
+
+
+class TestRedactTextTokenPairs:
+    """Tests for the return_token_pairs mode of redact_text."""
+
+    def test_pairs_cover_deny_delimiter_allow_and_redact(self):
+        """Token pairs classify deny-pattern, delimiter, allowlist, and redacted tokens."""
+        redactor = TextRedactor(allowlist={"report"})
+        text = "Report Rodriguez test@example.com"
+        result, pairs = cast_pairs(redactor.redact_text(text, return_token_pairs=True))
+
+        pair_map = dict(pairs)
+
+        assert pair_map["Report"] == "Report", (
+            f"Allowlisted token 'Report' should be unchanged, got {pair_map['Report']!r}"
+        )
+        assert pair_map[" "] == " ", "Delimiter tokens should be preserved verbatim in pairs"
+        assert pair_map["Rodriguez"] == "X" * len("Rodriguez"), (
+            f"Non-allowlisted name should be fully masked, got {pair_map['Rodriguez']!r}"
+        )
+        assert "@" in pair_map, "Email token pair should be present in the token pairs list"
+        assert "example.com" not in result, f"Email domain should be redacted, got {result!r}"
+
+    def test_pairs_preserve_dates_when_enabled(self):
+        """Date tokens pass through unchanged as identity pairs when preserve_dates is True.
+
+        Custom whitespace-only delimiters keep the date as a single token so the
+        date branch of the token-pairs path is exercised.
+        """
+        redactor = TextRedactor(delimiters=[" "], preserve_dates=True)
+        result, pairs = cast_pairs(redactor.redact_text("2022-09-07", return_token_pairs=True))
+
+        assert result == "2022-09-07", f"Date should be preserved verbatim, got {result!r}"
+        assert ("2022-09-07", "2022-09-07") in pairs, f"Preserved date should appear as an identity pair, got {pairs!r}"
+
+    def test_pairs_redact_date_when_not_preserving(self):
+        """Date tokens are masked (digits to X) as a pair when preserve_dates is False."""
+        redactor = TextRedactor(delimiters=[" "])
+        result, pairs = cast_pairs(redactor.redact_text("2022-09-07", return_token_pairs=True))
+
+        assert result == "XXXX-XX-XX", f"Date digits should be masked, got {result!r}"
+        assert ("2022-09-07", "XXXX-XX-XX") in pairs, f"Masked date should appear as a redaction pair, got {pairs!r}"
+
+    def test_pairs_preserve_already_masked_token(self):
+        """A token that is already all-X is preserved unchanged."""
+        redactor = TextRedactor()
+        _, pairs = cast_pairs(redactor.redact_text("XXXX", return_token_pairs=True))
+        assert ("XXXX", "XXXX") in pairs, f"An all-X token should be preserved, got {pairs!r}"
+
+
+class TestPrintRedactedTokensNone:
+    """Tests for the no-tokens branch of print_redacted_tokens."""
+
+    def test_only_deny_pattern_tokens_reports_none(self, temp_dir, capsys):
+        """When every redacted token matches a deny pattern, the summary reports none."""
+        redactor = TextRedactor()
+        input_file = temp_dir / "input.csv"
+        with open(input_file, "w", newline="", encoding="utf-8") as f:
+            writer = csv.writer(f)
+            writer.writerow(["test@example.com"])
+
+        print_redacted_tokens(redactor, str(input_file))
+
+        captured = capsys.readouterr()
+        assert "No tokens were redacted." in captured.out, f"Expected the no-tokens summary, got {captured.out!r}"
+
+
+class TestQualityCheckRedactedOnly:
+    """Tests for the redacted_only display branch of quality_check_csv_file."""
+
+    def test_unredacted_cells_suppressed(self, temp_dir, capsys):
+        """With redacted_only, an unmodified cell is not printed but a modified one is."""
+        redactor = TextRedactor(allowlist={"report"})
+        input_file = temp_dir / "input.csv"
+        with open(input_file, "w", newline="", encoding="utf-8") as f:
+            writer = csv.writer(f)
+            writer.writerow(["report", "Rodriguez"])
+
+        quality_check_csv_file(redactor, str(input_file), redacted_only=True)
+
+        captured = capsys.readouterr()
+        assert "Rodriguez" in captured.out, f"Modified cell 'Rodriguez' should be printed, got {captured.out!r}"
+        assert "report\n" not in captured.out, (
+            f"Unmodified cell 'report' should be suppressed with redacted_only, got {captured.out!r}"
+        )
+
+
+class TestSaveAllowlistToCsv:
+    """Tests for save_allowlist_to_csv atomic write and duplicate handling."""
+
+    def test_adds_tokens_sorted_case_insensitive(self, temp_dir):
+        """New tokens are merged with existing ones and written case-insensitively sorted."""
+        allowlist_path = temp_dir / "allow.csv"
+        with open(allowlist_path, "w", newline="", encoding="utf-8") as f:
+            writer = csv.writer(f)
+            writer.writerow(["banana"])
+            writer.writerow(["apple"])
+
+        save_allowlist_to_csv(allowlist_path, ["Cherry", "date"])
+
+        with open(allowlist_path, newline="", encoding="utf-8") as f:
+            rows = [row[0] for row in csv.reader(f) if row]
+
+        assert rows == ["apple", "banana", "Cherry", "date"], (
+            f"Tokens should be merged and case-insensitively sorted, got {rows}"
+        )
+        assert not (allowlist_path.with_suffix(".tmp")).exists(), (
+            "The temporary file should be removed after the atomic replace"
+        )
+
+    def test_duplicate_tokens_not_added_twice(self, temp_dir):
+        """Adding a token already present does not create a duplicate row."""
+        allowlist_path = temp_dir / "allow.csv"
+        with open(allowlist_path, "w", newline="", encoding="utf-8") as f:
+            writer = csv.writer(f)
+            writer.writerow(["apple"])
+
+        save_allowlist_to_csv(allowlist_path, ["apple", " apple "])
+
+        with open(allowlist_path, newline="", encoding="utf-8") as f:
+            rows = [row[0] for row in csv.reader(f) if row]
+
+        assert rows == ["apple"], f"Duplicate token should collapse to one row, got {rows}"
+
+    def test_unreadable_path_raises_value_error(self, temp_dir):
+        """A path that cannot be read raises ValueError."""
+        missing_path = temp_dir / "does_not_exist.csv"
+        with pytest.raises(ValueError, match="Failed to save allowlist"):
+            save_allowlist_to_csv(missing_path, ["token"])
+
+
+class TestInteractiveQualityCheck:
+    """Tests for interactive_quality_check_csv_file using a mocked keyboard.
+
+    interactive_quality_check_csv_file reads single keypresses via readchar.
+    These tests replace readchar.readkey with a scripted key sequence to drive
+    the review loop deterministically.
+    """
+
+    @staticmethod
+    def _write_csv(path, rows):
+        """Write the given rows to a CSV file."""
+        with open(path, "w", newline="", encoding="utf-8") as f:
+            writer = csv.writer(f)
+            for row in rows:
+                writer.writerow(row)
+
+    @staticmethod
+    def _script_keys(monkeypatch, keys):
+        """Patch readchar.readkey to return the scripted keys in order."""
+        sequence = list(keys)
+
+        def fake_readkey():
+            if not sequence:
+                return "q"
+            return sequence.pop(0)
+
+        monkeypatch.setattr("dicom_dre.text_redactor.readchar.readkey", fake_readkey)
+
+    def test_add_and_skip_tokens(self, temp_dir, monkeypatch):
+        """Pressing 'a' queues a token and 's' skips the next reviewable token."""
+        redactor = TextRedactor()
+        input_file = temp_dir / "input.csv"
+        allowlist_path = temp_dir / "allow.csv"
+        self._write_csv(input_file, [["Rodriguez Smith"]])
+        self._script_keys(monkeypatch, ["a", "s"])
+
+        result = interactive_quality_check_csv_file(redactor, str(input_file), allowlist_path)
+
+        assert "Rodriguez" in result, f"'Rodriguez' should be queued after pressing 'a', got {result}"
+        assert "Smith" not in result, f"'Smith' should be skipped after pressing 's', got {result}"
+
+    def test_predicate_tokens_are_not_reviewed(self, temp_dir, monkeypatch):
+        """Digit, month, timezone, date, and deny-pattern tokens are never presented."""
+        redactor = TextRedactor()
+        input_file = temp_dir / "input.csv"
+        allowlist_path = temp_dir / "allow.csv"
+        # 1234567: redacted digit run; January: month; EST: timezone;
+        # ABCDEF12: hex deny pattern; Rodriguez: the only reviewable name. Tokens
+        # are space-separated so none fragment on internal delimiters.
+        self._write_csv(input_file, [["1234567 January EST ABCDEF12 Rodriguez"]])
+        self._script_keys(monkeypatch, ["a"])
+
+        result = interactive_quality_check_csv_file(redactor, str(input_file), allowlist_path)
+
+        assert result == ["Rodriguez"], (
+            f"Only the reviewable name should be queued; predicate tokens must be skipped, got {result}"
+        )
+
+    def test_quit_with_q(self, temp_dir, monkeypatch):
+        """Pressing 'q' stops the review and returns the tokens queued so far."""
+        redactor = TextRedactor()
+        input_file = temp_dir / "input.csv"
+        allowlist_path = temp_dir / "allow.csv"
+        self._write_csv(input_file, [["Rodriguez Smith"]])
+        self._script_keys(monkeypatch, ["q"])
+
+        result = interactive_quality_check_csv_file(redactor, str(input_file), allowlist_path)
+
+        assert result == [], f"Quitting on the first token should return no queued tokens, got {result}"
+
+    def test_quit_with_escape(self, temp_dir, monkeypatch):
+        """Pressing ESC stops the review and returns queued tokens."""
+        import readchar
+
+        redactor = TextRedactor()
+        input_file = temp_dir / "input.csv"
+        allowlist_path = temp_dir / "allow.csv"
+        self._write_csv(input_file, [["Rodriguez Smith"]])
+        self._script_keys(monkeypatch, ["a", readchar.key.ESC])
+
+        result = interactive_quality_check_csv_file(redactor, str(input_file), allowlist_path)
+
+        assert result == ["Rodriguez"], f"ESC after adding one token should return that token, got {result}"
+
+    def test_keyboard_interrupt_returns_queued(self, temp_dir, monkeypatch):
+        """A KeyboardInterrupt during review returns the tokens queued so far."""
+        redactor = TextRedactor()
+        input_file = temp_dir / "input.csv"
+        allowlist_path = temp_dir / "allow.csv"
+        self._write_csv(input_file, [["Rodriguez"]])
+
+        def fake_readkey():
+            raise KeyboardInterrupt
+
+        monkeypatch.setattr("dicom_dre.text_redactor.readchar.readkey", fake_readkey)
+
+        result = interactive_quality_check_csv_file(redactor, str(input_file), allowlist_path)
+
+        assert result == [], f"KeyboardInterrupt should return the empty queue, got {result}"
+
+    def test_reaches_end_of_file(self, temp_dir, monkeypatch, capsys):
+        """Reviewing every token to the end prints the end-of-file notice."""
+        redactor = TextRedactor()
+        input_file = temp_dir / "input.csv"
+        allowlist_path = temp_dir / "allow.csv"
+        self._write_csv(input_file, [["Rodriguez"]])
+        self._script_keys(monkeypatch, ["s"])
+
+        interactive_quality_check_csv_file(redactor, str(input_file), allowlist_path)
+
+        captured = capsys.readouterr()
+        assert "Reached end of file" in captured.out, (
+            f"Completing the review should print the end-of-file notice, got {captured.out!r}"
+        )
+
+
+def cast_pairs(result):
+    """Narrow a redact_text return value to a (text, pairs) tuple for tests."""
+    text, pairs = result
+    return text, pairs

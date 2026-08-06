@@ -18,6 +18,9 @@ from pydicom.uid import UID
 from pydicom.uid import ExplicitVRLittleEndian
 from pydicom.uid import generate_uid
 
+from dicom_dre.pixel_blanker import _blank_general
+from dicom_dre.pixel_blanker import _blank_jpeg_baseline
+from dicom_dre.pixel_blanker import _fill_region
 from dicom_dre.pixel_blanker import blank_regions
 from dicom_dre.scrub_region import ScrubRegion
 
@@ -712,3 +715,64 @@ class TestHighlight:
         assert np.all(arr[5:25, 5:25, 0] == 255), "Highlighted RGB region red channel should be 255"  # R
         assert np.all(arr[5:25, 5:25, 1] == 0), "Highlighted RGB region green channel should be 0"  # G
         assert np.all(arr[5:25, 5:25, 2] == 255), "Highlighted RGB region blue channel should be 255"  # B
+
+
+class TestEdgeBranches:
+    """Coverage for defensive branches not reached through blank_regions."""
+
+    def test_string_number_of_frames_is_coerced(self):
+        """_blank_jpeg_baseline converts a string NumberOfFrames to int.
+
+        A real pydicom dataset always coerces NumberOfFrames to an IS (int
+        subclass), so the string branch is driven with a minimal stand-in that
+        exposes the attributes _blank_jpeg_baseline reads and writes.
+        """
+        import types
+
+        source = pydicom.dcmread(_testdata_path("SC_jpeg_no_color_transform.dcm"))
+        pixel_data = source.PixelData
+
+        class _StrFramesDataset:
+            """Minimal dataset stand-in with a string NumberOfFrames."""
+
+            def __init__(self, data):
+                self.NumberOfFrames = "1"
+                self.PixelData = data
+                self._pixel_element = types.SimpleNamespace(is_undefined_length=False)
+
+            def __getitem__(self, key):
+                if key == "PixelData":
+                    return self._pixel_element
+                raise KeyError(key)
+
+        ds = _StrFramesDataset(pixel_data)
+        _blank_jpeg_baseline(ds, [ScrubRegion(0, 0, 16, 16)])  # type: ignore[bad-argument-type]
+
+        assert isinstance(ds.PixelData, (bytes, bytearray)), (
+            f"PixelData should be re-encapsulated bytes, got {type(ds.PixelData).__name__}"
+        )
+        assert ds._pixel_element.is_undefined_length is True, (
+            "The re-encapsulated PixelData element should be marked undefined length"
+        )
+        assert ds.PixelData != pixel_data, "Scrubbing should change the encapsulated pixel data"
+
+    def test_general_blank_adds_missing_file_meta(self):
+        """_blank_general creates a FileMetaDataset when the input has none."""
+        ds = pydicom.dcmread(_testdata_path("CT_small.dcm"))
+        # Cache the decoded array so the later pixel_array access inside
+        # _blank_general does not require file_meta.
+        _ = ds.pixel_array
+        ds.file_meta = None  # type: ignore[bad-assignment]
+
+        _blank_general(ds, [ScrubRegion(0, 0, 10, 10)], highlight=False)
+
+        assert ds.file_meta is not None, "A missing file_meta should be created during general blanking"
+        assert ds.file_meta.TransferSyntaxUID == ExplicitVRLittleEndian, (
+            f"Created file_meta should use Explicit VR Little Endian, got {ds.file_meta.TransferSyntaxUID}"
+        )
+
+    def test_fill_region_rejects_unsupported_ndim(self):
+        """_fill_region raises ValueError for an array that is not 2/3/4-D."""
+        arr = np.zeros((4,), dtype=np.uint8)
+        with pytest.raises(ValueError, match="Unsupported pixel array with 1 dimensions"):
+            _fill_region(arr, 0, 1, 0, 1, 0, samples_per_pixel=1)

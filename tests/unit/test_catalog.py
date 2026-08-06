@@ -170,6 +170,143 @@ class TestDicomTags:
             "evidence sequence without a referenced SOP instance UID should not be marked present"
         )
 
+    def test_as_dict_returns_copy(self):
+        """as_dict() returns a plain dict copy of the stored values."""
+        original = {"Modality": "CT", "Manufacturer": "GE"}
+        tags = DicomTags(original)
+        copied = tags.as_dict()
+        assert copied == original, f"as_dict should mirror the stored values, got {copied!r}"
+        copied["Modality"] = "MR"
+        assert tags.get("Modality") == "CT", "Mutating the copy should not affect the wrapper's values"
+
+    def test_from_dataset_skips_none_valued_element(self):
+        """from_dataset skips elements whose value is None."""
+        from pydicom.dataset import Dataset
+        from pydicom.tag import Tag
+
+        ds = Dataset()
+        ds.add_new(Tag(0x0008, 0x0070), "LO", None)  # Manufacturer with a None value
+        ds.add_new(Tag(0x0008, 0x0060), "CS", "CT")  # Modality
+
+        tags = DicomTags.from_dataset(ds)
+        assert tags.get("Manufacturer") == "", "A None-valued element should be skipped, leaving the tag empty"
+        assert tags.get("Modality") == "CT", "A populated element should still be read"
+
+    def test_from_dataset_marks_ultrasound_regions_present(self):
+        """from_dataset marks SequenceOfUltrasoundRegions present when a region has a data type."""
+        from pydicom.dataset import Dataset
+        from pydicom.sequence import Sequence
+
+        region = Dataset()
+        region.RegionDataType = 1
+        ds = Dataset()
+        ds.SequenceOfUltrasoundRegions = Sequence([region])
+
+        tags = DicomTags.from_dataset(ds)
+        assert tags.get("SequenceOfUltrasoundRegions") == "present", (
+            "an ultrasound regions sequence with a RegionDataType should be marked present"
+        )
+
+    def test_from_dataset_ultrasound_regions_without_data_type_absent(self):
+        """from_dataset leaves the ultrasound marker absent when no region carries a data type."""
+        from pydicom.dataset import Dataset
+        from pydicom.sequence import Sequence
+
+        region = Dataset()
+        ds = Dataset()
+        ds.SequenceOfUltrasoundRegions = Sequence([region])
+
+        tags = DicomTags.from_dataset(ds)
+        assert tags.get("SequenceOfUltrasoundRegions") == "", (
+            "an ultrasound regions sequence without a RegionDataType should not be marked present"
+        )
+
+    def test_from_dataset_marks_graphic_annotation_present(self):
+        """from_dataset marks GraphicAnnotationSequence present when the sequence is non-empty."""
+        from pydicom.dataset import Dataset
+        from pydicom.sequence import Sequence
+
+        ds = Dataset()
+        ds.GraphicAnnotationSequence = Sequence([Dataset()])
+
+        tags = DicomTags.from_dataset(ds)
+        assert tags.get("GraphicAnnotationSequence") == "present", (
+            "a non-empty graphic annotation sequence should be marked present"
+        )
+
+    def test_from_dataset_empty_graphic_annotation_absent(self):
+        """from_dataset leaves the graphic annotation marker absent for an empty sequence."""
+        from pydicom.dataset import Dataset
+        from pydicom.sequence import Sequence
+
+        ds = Dataset()
+        ds.GraphicAnnotationSequence = Sequence([])
+
+        tags = DicomTags.from_dataset(ds)
+        assert tags.get("GraphicAnnotationSequence") == "", (
+            "an empty graphic annotation sequence should not be marked present"
+        )
+
+    def test_from_file_reads_catalog_tags(self, signa_premier_file):
+        """from_file reads a DICOM file and extracts catalog-relevant tags."""
+        tags = DicomTags.from_file(signa_premier_file)
+        assert tags.get("Modality") == "MR", f"Expected Modality 'MR' from the file, got {tags.get('Modality')!r}"
+        assert tags.get("Manufacturer") == "GE MEDICAL SYSTEMS", (
+            f"Expected the file's Manufacturer, got {tags.get('Manufacturer')!r}"
+        )
+
+
+# ---------------------------------------------------------------------------
+# _has_referenced_instance
+# ---------------------------------------------------------------------------
+
+
+class TestHasReferencedInstance:
+    """The evidence-sequence walk that detects a nested Referenced SOP Instance UID."""
+
+    def test_study_item_without_series_sequence_skipped(self):
+        """A study item lacking a Referenced Series Sequence contributes no reference."""
+        from pydicom.dataset import Dataset
+        from pydicom.sequence import Sequence
+
+        from dicom_dre.catalog import _has_referenced_instance
+
+        result = _has_referenced_instance(Sequence([Dataset()]))
+        assert result is False, "A study item with no series sequence should yield no referenced instance"
+
+    def test_series_item_without_sop_sequence_skipped(self):
+        """A series item lacking a Referenced SOP Sequence contributes no reference."""
+        from pydicom.dataset import Dataset
+        from pydicom.sequence import Sequence
+
+        from dicom_dre.catalog import _has_referenced_instance
+
+        study_item = Dataset()
+        study_item.ReferencedSeriesSequence = Sequence([Dataset()])
+        result = _has_referenced_instance(Sequence([study_item]))
+        assert result is False, "A series item with no SOP sequence should yield no referenced instance"
+
+    def test_empty_sop_sequence_yields_no_reference(self):
+        """An empty Referenced SOP Sequence yields no reference."""
+        from pydicom.dataset import Dataset
+        from pydicom.sequence import Sequence
+
+        from dicom_dre.catalog import _has_referenced_instance
+
+        series_item = Dataset()
+        series_item.ReferencedSOPSequence = Sequence([])
+        study_item = Dataset()
+        study_item.ReferencedSeriesSequence = Sequence([series_item])
+        result = _has_referenced_instance(Sequence([study_item]))
+        assert result is False, "An empty SOP sequence should yield no referenced instance"
+
+    def test_non_iterable_evidence_returns_false(self):
+        """A non-iterable evidence value is handled as no reference."""
+        from dicom_dre.catalog import _has_referenced_instance
+
+        result = _has_referenced_instance(42)  # type: ignore[arg-type]
+        assert result is False, "A non-iterable evidence value should return False rather than raise"
+
 
 # ---------------------------------------------------------------------------
 # device() factory
@@ -195,6 +332,16 @@ class TestDeviceFactory:
             f"Expected manufacturer_model_name None, got {rule.manufacturer_model_name!r}"
         )
         assert rule.variants is None, f"Expected variants None, got {rule.variants!r}"
+
+    def test_variants_with_rows_conflict_raises(self):
+        """Supplying both variants and rows/cols/scrub is rejected."""
+        with pytest.raises(ValueError, match="cannot specify both 'variants'"):
+            device("Test", "allow", variants=[variant(rows=512)], rows=256)
+
+    def test_variants_with_scrub_conflict_raises(self):
+        """Supplying both variants and the scrub shorthand is rejected."""
+        with pytest.raises(ValueError, match="cannot specify both 'variants'"):
+            device("Test", "allow", variants=[variant(rows=512)], scrub=[(0, 0, 10, 10)])
 
 
 # ---------------------------------------------------------------------------
@@ -647,3 +794,276 @@ class TestExplicitFieldMatching:
         tags = DicomTags({"ConversionType": "WSD"})
         catalog = DeviceCatalog([rule], [])
         assert catalog.evaluate(tags).action == "deny", "conversion_type mismatch should deny"
+
+    def test_study_description_no_match(self):
+        """study_description rejects the device when the value mismatches."""
+        rule = device("Custom", "allow", study_description="=BRAIN")
+        tags = DicomTags({"StudyDescription": "CHEST"})
+        catalog = DeviceCatalog([rule], [])
+        assert catalog.evaluate(tags).action == "deny", "study_description mismatch should deny"
+
+    def test_body_part_examined_no_match(self):
+        """body_part_examined rejects the device when the value mismatches."""
+        rule = device("Custom", "allow", body_part_examined="=HEAD")
+        tags = DicomTags({"BodyPartExamined": "CHEST"})
+        catalog = DeviceCatalog([rule], [])
+        assert catalog.evaluate(tags).action == "deny", "body_part_examined mismatch should deny"
+
+    def test_image_type_any_no_match(self):
+        """image_type_any rejects the device when no component matches."""
+        rule = device("Custom", "allow", image_type_any=["LOCALIZER", "SCOUT"])
+        tags = DicomTags({"ImageType": "ORIGINAL\\PRIMARY\\AXIAL"})
+        catalog = DeviceCatalog([rule], [])
+        assert catalog.evaluate(tags).action == "deny", "image_type_any with no matching component should deny"
+
+
+# ---------------------------------------------------------------------------
+# Variant no-match narrowing
+# ---------------------------------------------------------------------------
+
+
+class TestVariantNoMatch:
+    """Variant-level image type narrowing that rejects a variant."""
+
+    def test_variant_image_type_any_no_match_skips_variant(self):
+        """A variant whose image_type_any matches nothing is skipped."""
+        rule = device(
+            "Typed",
+            "allow",
+            manufacturer="GE",
+            variants=[variant(image_type_any=["LOCALIZER"], scrub=[(0, 0, 10, 10)])],
+        )
+        tags = DicomTags({"Manufacturer": "GE", "ImageType": "ORIGINAL\\PRIMARY\\AXIAL"})
+        catalog = DeviceCatalog([rule], [])
+        assert catalog.evaluate(tags).action == "deny", "an unmatched variant image_type_any should skip the device"
+
+    def test_variant_image_type_exclude_no_match_skips_variant(self):
+        """A variant whose image_type_exclude component appears is skipped."""
+        rule = device(
+            "Typed",
+            "allow",
+            manufacturer="GE",
+            variants=[variant(image_type_exclude=["SECONDARY"], scrub=[(0, 0, 10, 10)])],
+        )
+        tags = DicomTags({"Manufacturer": "GE", "ImageType": "ORIGINAL\\SECONDARY"})
+        catalog = DeviceCatalog([rule], [])
+        assert catalog.evaluate(tags).action == "deny", "a matched variant image_type_exclude should skip the device"
+
+
+# ---------------------------------------------------------------------------
+# Exclusion field matching (deny_when)
+# ---------------------------------------------------------------------------
+
+
+class TestExclusionFieldMatching:
+    """Isolated match and no-match evaluation for each deny_when field."""
+
+    def _deny_reason(self, name: str) -> str:
+        """Return the reason string deny_when produces for a matched rule."""
+        return f"Denied by rule: {name}"
+
+    def test_sop_class_match_and_no_match(self):
+        """sop_class denies a matching SOP class and passes a mismatching one."""
+        excl = deny_when("sop", sop_class="=1.2.3")
+        catalog = DeviceCatalog([], [excl])
+        match = catalog.evaluate(DicomTags({"SOPClassUID": "1.2.3"}))
+        no_match = catalog.evaluate(DicomTags({"SOPClassUID": "9.9.9"}))
+        assert match.reason == self._deny_reason("sop"), f"sop_class match should deny, got {match.reason!r}"
+        assert no_match.reason == "No matching device or exclusion rule", (
+            f"sop_class mismatch should fall through, got {no_match.reason!r}"
+        )
+
+    def test_image_type_any_match_and_no_match(self):
+        """image_type_any denies when a component appears and passes otherwise."""
+        excl = deny_when("itany", image_type_any=["SCREEN SAVE"])
+        catalog = DeviceCatalog([], [excl])
+        match = catalog.evaluate(DicomTags({"ImageType": "DERIVED\\SCREEN SAVE"}))
+        no_match = catalog.evaluate(DicomTags({"ImageType": "ORIGINAL\\PRIMARY"}))
+        assert match.reason == self._deny_reason("itany"), f"image_type_any match should deny, got {match.reason!r}"
+        assert no_match.reason == "No matching device or exclusion rule", (
+            f"image_type_any with no matching component should fall through, got {no_match.reason!r}"
+        )
+
+    def test_manufacturer_match_and_no_match(self):
+        """The manufacturer field denies a matching manufacturer and passes a mismatching one."""
+        excl = deny_when("mfr", manufacturer="ACME")
+        catalog = DeviceCatalog([], [excl])
+        match = catalog.evaluate(DicomTags({"Manufacturer": "ACME CORP"}))
+        no_match = catalog.evaluate(DicomTags({"Manufacturer": "OTHER"}))
+        assert match.reason == self._deny_reason("mfr"), f"manufacturer match should deny, got {match.reason!r}"
+        assert no_match.reason == "No matching device or exclusion rule", (
+            f"manufacturer mismatch should fall through, got {no_match.reason!r}"
+        )
+
+    def test_manufacturer_model_name_match_and_no_match(self):
+        """manufacturer_model_name denies a matching model and passes a mismatching one."""
+        excl = deny_when("model", manufacturer_model_name="SCANBOX")
+        catalog = DeviceCatalog([], [excl])
+        match = catalog.evaluate(DicomTags({"ManufacturerModelName": "SCANBOX 3000"}))
+        no_match = catalog.evaluate(DicomTags({"ManufacturerModelName": "OTHER"}))
+        assert match.reason == self._deny_reason("model"), f"model match should deny, got {match.reason!r}"
+        assert no_match.reason == "No matching device or exclusion rule", (
+            f"model mismatch should fall through, got {no_match.reason!r}"
+        )
+
+    def test_series_number_match_and_no_match(self):
+        """series_number denies a matching series number and passes a mismatching one."""
+        excl = deny_when("series", series_number="=99")
+        catalog = DeviceCatalog([], [excl])
+        match = catalog.evaluate(DicomTags({"SeriesNumber": "99"}))
+        no_match = catalog.evaluate(DicomTags({"SeriesNumber": "1"}))
+        assert match.reason == self._deny_reason("series"), f"series_number match should deny, got {match.reason!r}"
+        assert no_match.reason == "No matching device or exclusion rule", (
+            f"series_number mismatch should fall through, got {no_match.reason!r}"
+        )
+
+    def test_image_type_exclude_match_and_no_match(self):
+        """image_type_exclude passes when a component appears and denies otherwise."""
+        excl = deny_when("itexcl", image_type_exclude=["SECONDARY"])
+        catalog = DeviceCatalog([], [excl])
+        # The excluded component is present, so the exclusion does NOT match.
+        present = catalog.evaluate(DicomTags({"ImageType": "ORIGINAL\\SECONDARY"}))
+        # The excluded component is absent, so the exclusion matches and denies.
+        absent = catalog.evaluate(DicomTags({"ImageType": "ORIGINAL\\PRIMARY"}))
+        assert present.reason == "No matching device or exclusion rule", (
+            f"an excluded component present should stop the rule matching, got {present.reason!r}"
+        )
+        assert absent.reason == self._deny_reason("itexcl"), (
+            f"an absent excluded component should let the rule deny, got {absent.reason!r}"
+        )
+
+    def test_sop_class_not_match_and_no_match(self):
+        """sop_class_not denies when no listed SOP class appears and passes otherwise."""
+        excl = deny_when("allowlist", sop_class_not="=1.2.3")
+        catalog = DeviceCatalog([], [excl])
+        # The allowed SOP class is present, so the exclusion does NOT match.
+        allowed = catalog.evaluate(DicomTags({"SOPClassUID": "1.2.3"}))
+        # A different SOP class is present, so the exclusion matches and denies.
+        other = catalog.evaluate(DicomTags({"SOPClassUID": "9.9.9"}))
+        assert allowed.reason == "No matching device or exclusion rule", (
+            f"a listed SOP class should stop the rule matching, got {allowed.reason!r}"
+        )
+        assert other.reason == self._deny_reason("allowlist"), (
+            f"an unlisted SOP class should let the rule deny, got {other.reason!r}"
+        )
+
+    def test_graphic_annotation_absent_match_and_no_match(self):
+        """graphic_annotation_absent denies when the sequence is absent and passes when present."""
+        from pydicom.dataset import Dataset
+        from pydicom.sequence import Sequence
+
+        excl = deny_when("no-annotation", graphic_annotation_absent=True)
+        catalog = DeviceCatalog([], [excl])
+        absent = catalog.evaluate(DicomTags({"Modality": "OT"}))
+        ds = Dataset()
+        ds.GraphicAnnotationSequence = Sequence([Dataset()])
+        present = catalog.evaluate(DicomTags.from_dataset(ds))
+        assert absent.reason == self._deny_reason("no-annotation"), (
+            f"an absent graphic annotation should let the rule deny, got {absent.reason!r}"
+        )
+        assert present.reason == "No matching device or exclusion rule", (
+            f"a present graphic annotation should stop the rule matching, got {present.reason!r}"
+        )
+
+    def test_referenced_instance_absent_match_and_no_match(self):
+        """referenced_instance_absent denies when no reference nests and passes when one does."""
+        from pydicom.dataset import Dataset
+        from pydicom.sequence import Sequence
+
+        excl = deny_when("no-reference", referenced_instance_absent=True)
+        catalog = DeviceCatalog([], [excl])
+        absent = catalog.evaluate(DicomTags({"Modality": "OT"}))
+        sop_item = Dataset()
+        sop_item.ReferencedSOPInstanceUID = "1.2.3.4"
+        series_item = Dataset()
+        series_item.ReferencedSOPSequence = Sequence([sop_item])
+        study_item = Dataset()
+        study_item.ReferencedSeriesSequence = Sequence([series_item])
+        ds = Dataset()
+        ds.CurrentRequestedProcedureEvidenceSequence = Sequence([study_item])
+        present = catalog.evaluate(DicomTags.from_dataset(ds))
+        assert absent.reason == self._deny_reason("no-reference"), (
+            f"an absent reference should let the rule deny, got {absent.reason!r}"
+        )
+        assert present.reason == "No matching device or exclusion rule", (
+            f"a present reference should stop the rule matching, got {present.reason!r}"
+        )
+
+    def test_manufacturer_model_name_fallback_used_when_primary_empty(self):
+        """manufacturer_model_name_fallback is evaluated only when the primary model is empty."""
+        excl = deny_when("fallback", manufacturer_model_name_fallback="=")
+        catalog = DeviceCatalog([], [excl])
+        # Primary model empty -> fallback matches the empty value and denies.
+        empty = catalog.evaluate(DicomTags({"Modality": "OT"}))
+        assert empty.reason == self._deny_reason("fallback"), (
+            f"an empty primary model should let the fallback deny, got {empty.reason!r}"
+        )
+
+    def test_manufacturer_model_name_fallback_skipped_when_primary_present(self):
+        """manufacturer_model_name_fallback is skipped when the primary model is non-empty."""
+        excl = deny_when("fallback", manufacturer_model_name_fallback="=SPECIFIC")
+        catalog = DeviceCatalog([], [excl])
+        present = catalog.evaluate(DicomTags({"ManufacturerModelName": "ANY MODEL"}))
+        assert present.reason == self._deny_reason("fallback"), (
+            f"a non-empty primary model should bypass the fallback and let the rule deny, got {present.reason!r}"
+        )
+
+
+# ---------------------------------------------------------------------------
+# Near-miss and modality denial reasons
+# ---------------------------------------------------------------------------
+
+
+class TestModalityDenialReasons:
+    """The modality-denial reason strings surfaced by evaluate()."""
+
+    def test_unsupported_resolution_reason_for_resolution_near_miss(self):
+        """A resolution near-miss on a supported device yields an unsupported-resolution reason."""
+        dev = device(
+            "GE CT",
+            "allow",
+            manufacturer="GE",
+            modality="=CT",
+            variants=[variant(rows=512, cols=512, scrub=[(0, 0, 10, 10)])],
+        )
+        excl = deny_modalities(exact=["CT"])
+        tags = DicomTags({"Manufacturer": "GE", "Modality": "CT", "Rows": "1024", "Columns": "1024"})
+        catalog = DeviceCatalog([dev], [excl])
+        decision = catalog.evaluate(tags)
+        assert decision.action == "deny", f"Expected deny for the near-miss, got {decision.action!r}"
+        assert decision.reason == "Unsupported resolution 1024x1024 for device 'GE CT'", (
+            f"Expected an unsupported-resolution reason, got {decision.reason!r}"
+        )
+
+    def test_unsupported_device_reason_when_modality_has_devices(self):
+        """A denied modality the catalog otherwise supports yields an unsupported-device reason."""
+        dev = device("GE CT", "allow", manufacturer="GE", modality="=CT")
+        excl = deny_modalities(exact=["CT"])
+        # Same modality, different manufacturer, so no device matches but the
+        # modality is supported by the catalog.
+        tags = DicomTags(
+            {
+                "Manufacturer": "SIEMENS",
+                "Modality": "CT",
+                "ManufacturerModelName": "SOMATOM",
+                "Rows": "256",
+                "Columns": "256",
+            }
+        )
+        catalog = DeviceCatalog([dev], [excl])
+        decision = catalog.evaluate(tags)
+        assert decision.action == "deny", f"Expected deny, got {decision.action!r}"
+        assert decision.reason == ("Unsupported CT device: manufacturer='SIEMENS', model='SOMATOM', 256x256"), (
+            f"Expected an unsupported-device reason, got {decision.reason!r}"
+        )
+
+    def test_denied_modality_reason_when_no_device_supports_modality(self):
+        """A denied modality with no supporting device yields a plain denied-modality reason."""
+        excl = deny_modalities(exact=["PR"])
+        tags = DicomTags({"Modality": "PR"})
+        catalog = DeviceCatalog([], [excl])
+        decision = catalog.evaluate(tags)
+        assert decision.action == "deny", f"Expected deny, got {decision.action!r}"
+        assert decision.reason == "Denied modality: PR", (
+            f"Expected a plain denied-modality reason, got {decision.reason!r}"
+        )
