@@ -1,3 +1,11 @@
+[![Python versions](https://img.shields.io/pypi/pyversions/dicom-dre)](https://pypi.org/project/dicom-dre/)
+[![License](https://img.shields.io/pypi/l/dicom-dre)](LICENSE)
+[![PyPI version](https://img.shields.io/pypi/v/dicom-dre)](https://pypi.org/project/dicom-dre/)
+[![CI](https://github.com/susom/dicom-dre/actions/workflows/ci.yml/badge.svg)](https://github.com/susom/dicom-dre/actions/workflows/ci.yml)
+[![Docs](https://github.com/susom/dicom-dre/actions/workflows/docs.yml/badge.svg)](https://susom.github.io/dicom-dre/)
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/susom/dicom-dre/badge)](https://scorecard.dev/viewer/?uri=github.com/susom/dicom-dre)
+[![codecov](https://codecov.io/gh/susom/dicom-dre/branch/main/graph/badge.svg)](https://codecov.io/gh/susom/dicom-dre)
+
 # dicom-dre
 
 DICOM de-identification for both metadata and burned-in pixel text.
