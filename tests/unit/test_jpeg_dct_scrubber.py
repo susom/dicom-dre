@@ -474,3 +474,33 @@ class TestPureFallback:
         assert np.array_equal(orig_pixels, anon_pixels), (
             "Fallback with an empty region list should reproduce the input image"
         )
+
+
+class TestFuzzCrashRegressions:
+    """Regression tests for inputs that previously crashed the fuzz harness."""
+
+    @staticmethod
+    def _load_corpus(name: str) -> bytes:
+        """Read a committed fuzz corpus input by file name."""
+        from pathlib import Path
+
+        corpus_dir = Path(__file__).resolve().parents[2] / "fuzz" / "corpus" / "fuzz_jpeg_dct"
+        return (corpus_dir / name).read_bytes()
+
+    def test_huffman_table_oob_rejected_c_path(self):
+        """A scan referencing an undefined Huffman table is rejected, not crashed.
+
+        Regression for crash-huffman-table-oob-c1bb2643: the C entropy codec read
+        past the fixed-size huffval array, raising SIGSEGV. The scan now fails
+        structural validation with a ValueError instead of crashing the process.
+        """
+        data = self._load_corpus("crash-huffman-table-oob-c1bb2643")
+        with pytest.raises(ValueError):
+            scrub_jpeg_bytes(data, [ScrubRegion(0, 0, 65535, 65535)])
+
+    def test_huffman_table_oob_rejected_python_path(self, monkeypatch):
+        """The pure-Python fallback rejects the same input with a ValueError."""
+        data = self._load_corpus("crash-huffman-table-oob-c1bb2643")
+        monkeypatch.setattr(jpeg_dct_scrubber, "_HAS_C_ACCEL", False)
+        with pytest.raises(ValueError):
+            scrub_jpeg_bytes(data, [ScrubRegion(0, 0, 65535, 65535)])

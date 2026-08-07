@@ -254,6 +254,11 @@ static inline int huff_decode(BitReader *br, const HuffTable *ht) {
         code = (code << 1) | br_get_bit(br);
         if (code <= ht->maxcode[length] && ht->maxcode[length] >= 0) {
             int idx = ht->valptr[length] + code - ht->mincode[length];
+            /* A malformed table can yield an index outside huffval; reject it
+               instead of reading out of bounds. */
+            if (idx < 0 || idx >= ht->huffval_count || idx >= 256) {
+                return 0;
+            }
             return ht->huffval[idx];
         }
     }
@@ -261,7 +266,7 @@ static inline int huff_decode(BitReader *br, const HuffTable *ht) {
 }
 
 static inline void huff_encode(BitWriter *bw, const HuffTable *ht, int symbol) {
-    if (symbol < ht->efuf_len) {
+    if (symbol >= 0 && symbol < ht->efuf_len && symbol < 256) {
         bw_write_bits(bw, ht->efufco[symbol], ht->efufsi[symbol]);
     }
 }
@@ -432,6 +437,18 @@ int process_entropy_segment(
         if (comp_h_sampling[i] > max_h) max_h = comp_h_sampling[i];
         if (comp_v_sampling[i] > max_v) max_v = comp_v_sampling[i];
     }
+
+    /* Reject structurally invalid scans that would divide by zero or index
+       fixed-size tables out of bounds. The Python caller validates these too;
+       these guards keep the accelerator memory-safe if it is called directly. */
+    if (max_h < 1 || max_v < 1) return 2;
+    if (num_scan_components < 1 || num_scan_components > 4) return 2;
+    for (int ci = 0; ci < num_scan_components; ci++) {
+        if (scan_dc_table_idx[ci] < 0 || scan_dc_table_idx[ci] > 3) return 2;
+        if (scan_ac_table_idx[ci] < 0 || scan_ac_table_idx[ci] > 3) return 2;
+        if (scan_h_blocks[ci] < 1 || scan_v_blocks[ci] < 1) return 2;
+    }
+
     int mcu_width = max_h * 8;
     int mcu_height = max_v * 8;
     int mcus_per_row = (image_width + mcu_width - 1) / mcu_width;
