@@ -190,6 +190,11 @@ jobs:
           github_token: ${{ steps.get_workflow_token.outputs.token }}
           git_committer_name: "github-actions"
           git_committer_email: "actions@users.noreply.github.com"
+          # Prerelease builds on `development` must not write CHANGELOG.md;
+          # only stable releases on `main` update the changelog. Combined with
+          # squash-merging `development` into `main`, this keeps prerelease tags
+          # off `main`'s history so each stable release section is populated.
+          changelog: ${{ github.ref_name == 'development' && 'false' || 'true' }}
 
       - name: Publish to PyPI
         # Uses PyPI Trusted Publishing (OIDC); configure a trusted publisher for
