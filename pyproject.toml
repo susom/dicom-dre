@@ -219,7 +219,10 @@ show_missing = true
 [tool.pytest.ini_options]
 testpaths = ["tests/unit"]
 addopts = """
-    --cov-fail-under=20
+    --cov
+    --cov-report=term-missing
+    --cov-report=xml
+    --cov-fail-under=80
 """
 timeout = 90
 tmp_path_retention_policy = "none"

@@ -31,3 +31,11 @@ jobs:
 
       - name: Run tests
         run: uv run pytest
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@0565863a31f2c772f9f0395002a31e3f06189574 # v5.4.3
+        with:
+          files: ./coverage.xml
+          fail_ci_if_error: false
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
