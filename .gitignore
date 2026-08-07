@@ -68,3 +68,9 @@ db.sqlite3
 *.dicom
 *.ima
 *.DCM
+
+# Fuzzing crash artifacts
+crashes/
+
+# Hypothesis example database
+.hypothesis/

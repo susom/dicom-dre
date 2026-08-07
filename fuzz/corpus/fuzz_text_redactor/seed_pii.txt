@@ -1,0 +1,3 @@
+ Patient TESTPATIENT seen 2000-01-01 in TESTCITY, TS 00000.
+ Contact test@example.com or (555) 010-0000. SSN 123-45-6789.
+ Study TEST STUDY at 00:00 UTC, accession AC0000.

@@ -66,6 +66,7 @@ dev = [
     "coverage[toml]",
     "hatch-vcs",
     "hatchling",
+    "hypothesis>=6",
     "pre-commit",
     "pyrefly",
     "pillow",
@@ -234,6 +235,7 @@ filterwarnings = [
 norecursedirs = [
     "*.egg-info",
     ".git",
+    ".hypothesis",
     ".mypy_cache",
     ".pytest_cache",
     ".vscode",

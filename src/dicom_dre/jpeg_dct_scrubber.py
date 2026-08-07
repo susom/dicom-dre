@@ -380,6 +380,10 @@ def _parse_dht(data: bytes) -> list[HuffmanTable]:
         tc_th = data[pos]
         tc = (tc_th >> 4) & 0x0F  # table class
         th = tc_th & 0x0F  # table id
+        if tc > 1:
+            raise ValueError(f"Invalid Huffman table class {tc}; must be 0 (DC) or 1 (AC)")
+        if th > 3:
+            raise ValueError(f"Invalid Huffman table id {th}; must be 0-3")
         pos += 1
         bits = [0] + list(data[pos : pos + 16])
         pos += 16
@@ -747,11 +751,12 @@ def _process_entropy_segment(
                             rrrr = (rs >> 4) & 0x0F
                             ssss = rs & 0x0F
                             if ssss == 0:
-                                if rrrr == 0:
-                                    break  # EOB
-                                elif rrrr == 0x0F:
+                                if rrrr == 0x0F:
                                     k += 16  # ZRL
                                     continue
+                                # EOB (rrrr == 0) or an invalid SSSS==0 run/size
+                                # code; stop the block to guarantee progress.
+                                break
                             else:
                                 _receive_extend(reader, ssss)  # discard
                                 k += rrrr + 1
@@ -766,11 +771,12 @@ def _process_entropy_segment(
                             ssss = rs & 0x0F
                             _encode_huffman(writer, ac_table, rs)
                             if ssss == 0:
-                                if rrrr == 0:
-                                    break  # EOB
-                                elif rrrr == 0x0F:
+                                if rrrr == 0x0F:
                                     k += 16
                                     continue
+                                # EOB (rrrr == 0) or an invalid SSSS==0 run/size
+                                # code; stop the block to guarantee progress.
+                                break
                             else:
                                 val = _receive_extend(reader, ssss)
                                 _, amp = _size_and_amplitude(val)
@@ -803,6 +809,30 @@ def _process_entropy_segment(
 
     writer.flush()
     return writer.get_bytes()
+
+
+def _validate_scan(sof: "SOFInfo", sos: "SOSInfo", dc_tables: dict, ac_tables: dict) -> None:
+    """Reject structurally invalid scans before they reach the entropy codec.
+
+    The entropy codec (both the C accelerator and the Python fallback) divides by
+    each component's sampling factors and indexes fixed-size Huffman table arrays
+    by selector. A zero sampling factor or an undefined table selector would
+    divide by zero or index out of bounds in native code, so both are rejected
+    here as ValueError.
+    """
+    if not sof.components:
+        raise ValueError("SOF0 declares no components")
+    for comp_id, h_samp, v_samp, _qt_id in sof.components:
+        if h_samp < 1 or v_samp < 1:
+            raise ValueError(f"Component {comp_id} has invalid sampling factors {h_samp}x{v_samp}")
+    sof_ids = {comp_id for comp_id, _h, _v, _qt in sof.components}
+    for cs, dc_sel, ac_sel in sos.components:
+        if cs not in sof_ids:
+            raise ValueError(f"Scan references component {cs} not present in SOF0")
+        if dc_sel not in dc_tables:
+            raise ValueError(f"Scan component {cs} references undefined DC Huffman table {dc_sel}")
+        if ac_sel not in ac_tables:
+            raise ValueError(f"Scan component {cs} references undefined AC Huffman table {ac_sel}")
 
 
 def _scrub_jpeg_stream(stream: io.BytesIO, regions: list[tuple[int, int, int, int]]) -> bytes:
@@ -863,6 +893,8 @@ def _scrub_jpeg_stream(stream: io.BytesIO, regions: list[tuple[int, int, int, in
 
             if sof is None:
                 raise ValueError("SOS marker encountered before SOF0")
+
+            _validate_scan(sof, sos, dc_tables, ac_tables)
 
             # Process it
             new_entropy = _process_entropy_segment(
