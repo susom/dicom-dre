@@ -4,7 +4,7 @@ description: 'Generate GitHub-flavored markdown for a pull request against the d
 argument-hint: 'against development; optional JIRA ticket'
 ---
 
-# Skill Instructions
+# Pull Request Template
 
 This skill generates a pull request description in GitHub-flavored markdown format
 for the current branch against the development branch. The description is written as
@@ -20,7 +20,7 @@ squash/merge commit that feeds python-semantic-release.
 ## Output
 
 The skill produces a markdown template containing:
-- A conventional commit header line (`<type>[scope]: <description> (STAR-12345)`)
+- A conventional commit header line (`<type>[scope]: <description> (PROJ-12345)`)
 - A short summary paragraph
 - Change groups organized by conventional commit type (Features, Bug Fixes,
   Performance, Refactoring, Documentation, Tests), each as a bullet list
@@ -104,7 +104,7 @@ A change is only an interface or behavior change when it affects code that exist
 
 ### Step 3: Identify JIRA Ticket
 
-Extract the JIRA ticket number from the branch name or commits (e.g., STAR-12345).
+Extract the JIRA ticket number from the branch name or commits (e.g., PROJ-12345).
 
 ### Step 4: Generate Release Notes
 
@@ -112,10 +112,10 @@ Write the description as conventional-commit release notes.
 
 #### Header
 Single conventional commit header line:
-- `feat: add capability (STAR-12345)`
-- `fix: resolve issue (STAR-12345)`
-- `feat: replace ctp CLI with anonymize CLI (STAR-12345)`
-- `refactor: move result models (STAR-12345)`
+- `feat: add capability (PROJ-12345)`
+- `fix: resolve issue (PROJ-12345)`
+- `feat: replace legacy CLI with anonymize CLI (PROJ-12345)`
+- `refactor: move result models (PROJ-12345)`
 
 Use the type of the dominant change on the branch. If several types are present,
 choose the highest-impact type (`feat` > `fix` > others).
@@ -148,26 +148,24 @@ When the branch changes existing behavior or removes a public interface, add a
 `### Interface and behavior changes` section with one bullet per change. Do not add a
 footer token.
 
-#### CTP script and native anonymizer changes
-Do not compress CTP script or native anonymizer edits into a single dense bullet. Give
+#### De-identification rule and anonymizer changes
+Do not compress de-identification rule or anonymizer edits into a single dense bullet. Give
 each its own section and show the actual code so the reader can see exactly what changed.
 
-- Changes to CTP scripts (`resources/dicom/scripts/**/*.xml`) go under a
-  `### CTP script changes` section. Show the affected rule text in an `xml` fenced code
+- Changes to de-identification rules or profiles go under a
+  `### De-identification rule changes` section. Show the affected rule text in a fenced code
   block, then describe each element's old -> new effect as bullets keyed by tag.
-- Changes to the native (dicom-dre) engine adapter or profile policy
-  (`core/dre_engine.py`, `core/deid_profile.py`) go under a `### Native anonymizer changes`
+- Changes to the engine adapter or profile policy go under a `### Anonymizer changes`
   section. Show the relevant Python in a `python` fenced code block, then describe what
-  each entry changes. (Catalog, tag, and action changes now live in the external
-  `dicom-dre` package, not this repository.)
+  each entry changes.
 
 Gather the exact lines with scoped diffs, and render the resulting rule/catalog text in
 the code block rather than the raw `+/-` diff:
 ```bash
-git diff development...HEAD -- src/starr_imaging/resources/dicom/scripts
-git diff development...HEAD -- src/starr_imaging/core/dre_engine.py src/starr_imaging/core/deid_profile.py
+git diff development...HEAD -- <path/to/rules>
+git diff development...HEAD -- <path/to/engine> <path/to/profile>
 ```
-Show only the elements that changed, one code block per script family or catalog area,
+Show only the elements that changed, one code block per rule family or catalog area,
 with the prose description immediately beneath the block.
 
 In each of these sections, also list the tests and regression-flow changes introduced
@@ -175,7 +173,7 @@ for the rule change, so the validation lives next to the rule it covers. Find th
 scoped diffs and name the specific test or flow behavior:
 ```bash
 git diff development...HEAD --name-status -- tests
-git diff development...HEAD -- src/starr_imaging/flows/regression
+git diff development...HEAD -- <path/to/regression>
 ```
 For example, note a new cross-reference test asserting a tag's action, a regression
 comparison that now checks the tag, or a regression-flow change that exercises the rule.
@@ -189,7 +187,7 @@ GitHub PR field and a commit message:
 
 ````markdown
 ```markdown
-feat: <short description> (STAR-12345)
+feat: <short description> (PROJ-12345)
 
 <one short summary paragraph>
 
@@ -209,115 +207,28 @@ feat: <short description> (STAR-12345)
 ### Interface and behavior changes
 - change description
 
-### CTP script changes
-```xml
+### De-identification rule changes
+```
 <rule text that changed>
 ```
 - (gggg,eeee) TagName: old -> new, and the effect on output
 - Coverage: test or regression-flow change that validates this rule
 
-### Native anonymizer changes
+### Anonymizer changes
 ```python
-# catalog / profile / action code that changed
+# profile / action code that changed
 ```
 - description of what this entry changes
 - Coverage: test or regression-flow change that validates this rule
 ```
 ````
 
-## Example Output
-
-For a branch that adds a native de-identification engine and replaces a CLI:
-
-````markdown
-```markdown
-feat: add native Python de-identification engine and no-deid profile (STAR-11973)
-
-Adds a native Python DICOM de-identification engine that runs alongside the existing
-CTP engine, selected per run via a new `deid_engine` setting that defaults to `ctp`.
-A native engine removes the runtime dependency on the CTP Java process, gives direct
-control over the anonymization pipeline, and enables device-specific private-tag
-handling. Regression runs both engines end-to-end and compares native output against
-CTP tag-by-tag.
-
-### Features
-- **anonymizer**: add native engine with rule catalog, tag definitions, profiles
-  (default, lds, lds-no-dob, pre-scrub), pixel blanker, and JPEG DCT annotation removal
-- **settings**: add `deid_engine` setting (`STARR_IMAGING__DEID_ENGINE`), defaulting to `ctp`
-- **processor/flows**: add per-run engine-selection parameter to the DICOM processor
-  and Stetson flows
-- **profiles**: add `no-deid` pass-through profile that emits source DICOM unchanged;
-  engine-independent and byte-identical across `ctp` and `native`
-- **robustness**: enable `convert_wrong_length_to_UN` and tolerate `BytesLengthException`
-  so malformed vendor private elements are preserved as `UN`
-
-### Documentation
-- add native anonymizer, de-identification, device catalog, and JPEG DCT anonymizer docs
-
-### Tests
-- add unit tests for catalog, profiles, pixel blanker, JPEG DCT anonymizer, per-engine
-  worker selection, and no-deid pass-through
-- add integration test asserting `no-deid` output is byte-identical to source on both engines
-
-### Interface and behavior changes
-- **CLI**: remove the `ctp` CLI in favor of the new `anonymize` CLI
-- **models**: move `AnonymizerResult` and outcome models to `core/models/anonymizer_models.py`;
-  replace `AnonymizedOutcome.was_scrubbed: bool` with `scrub_regions: frozenset[ScrubRegion]`
-
-### CTP script changes
-The metadata scripts (`resources/dicom/scripts/metadata.xml` and the `lds/` and
-`lds-no-dob/` variants) change to reach parity with the native engine:
-
-```xml
-<e t="00120063" n="DeIdentificationMethod">@always()</e>
-<e t="00180015" n="BodyPartExamined">@keep()</e>
-<e t="00540016" n="RadiopharmaceuticalInformationSequence">@process()</e>
-<e t="30060008" n="StructureSetDate">@incrementdate(this,@JITTER)</e>
-```
-
-- (0012,0063) DeIdentificationMethod: add `@always()` so the tag is written even when
-  the source omits it.
-- (0018,0015) BodyPartExamined: `@require()` -> `@keep()`, retaining the original value.
-- (0054,0016) RadiopharmaceuticalInformationSequence: drop `@always()`; the sequence is
-  processed in place.
-- (3006,0008) StructureSetDate: `@incrementdate(this,@DATEINC)` ->
-  `@incrementdate(this,@JITTER)`, fixing an undefined parameter so RTSTRUCT dates jitter
-  consistently.
-- Coverage: the CTP cross-reference test asserts these four tag actions, and the
-  regression engine comparison now includes (3006,0008) so CTP and native output match.
-
-### Native anonymizer changes
-The native catalog encodes the same rules as the CTP scripts so both engines agree:
-
-```python
-TagRule(Tag(0x0012, 0x0063), Action.ALWAYS),   # DeIdentificationMethod
-TagRule(Tag(0x0018, 0x0015), Action.KEEP),      # BodyPartExamined
-TagRule(Tag(0x0054, 0x0016), Action.PROCESS),   # RadiopharmaceuticalInformationSequence
-TagRule(Tag(0x3006, 0x0008), Action.JITTER_DATE),  # StructureSetDate
-```
-
-- Each rule mirrors the CTP element above; regression compares the resulting output
-  tag-by-tag to confirm the two engines match.
-- Coverage: the catalog unit test asserts each `TagRule` action, and the regression
-  flow runs both engines end-to-end and diffs these tags.
-```
-````
-
-This branch is a pure feature addition, so there is no Bug Fixes section. Intra-branch
-corrections to the new native engine (for example, fixing the pixel blanker no-op path,
-making `=` matching case-insensitive, or regenerating `file_meta` to avoid PHI leakage)
-are part of building the native engine and are represented by the native-engine Features
-bullet, not listed as Bug Fixes. The CLI and model changes touch code that exists on
-`development`, so they appear under Interface and behavior changes. The CTP script and
-native catalog edits get their own sections with the actual rule text shown as code
-blocks, rather than a single dense bullet.
-
 ## Tips
 
 - Keep the summary paragraph short; put detail in the grouped bullet lists
 - Use present tense ("adds feature" not "added feature")
 - Group every change under the matching conventional commit type; omit empty groups
-- Give CTP script changes and native anonymizer profile/catalog changes their own
+- Give de-identification rule changes and profile/catalog changes their own
   sections with the actual rule or catalog code in fenced code blocks and a per-item
   description; never compress them into one dense bullet, and list the tests or
   regression-flow changes that validate each rule alongside it
@@ -332,7 +243,7 @@ blocks, rather than a single dense bullet.
 - Only include the `### Interface and behavior changes` section when the branch actually
   changes existing behavior or removes a public interface
 - Follow conventional commits format for the header
-- Extract JIRA ticket numbers from branch names (e.g., feat/STAR-12345-description)
+- Extract JIRA ticket numbers from branch names (e.g., feat/PROJ-12345-description)
 
 ## Notes
 

@@ -6,7 +6,7 @@ determines which attributes the engine keeps, removes, empties, date-shifts, or
 re-derives, and how it redacts free-text description fields.
 
 `dicom-dre` includes four profiles: `default`, `lds`, `lds-no-dob`, and
-`pixels-only`. {py:func}`dicom_dre.profiles.builder.list_profiles` returns the
+`strict`. {py:func}`dicom_dre.profiles.builder.list_profiles` returns the
 authoritative list.
 
 | Profile | Preserve dates | Use case |
@@ -14,7 +14,7 @@ authoritative list.
 | `default` | No (dates shifted) | Standard full de-identification |
 | `lds` | Yes | HIPAA limited data set with date/time retention |
 | `lds-no-dob` | Yes, except birth date | Limited data set without patient date of birth |
-| `pixels-only` | No (dates removed) | Pixel data only, minimal retained metadata |
+| `strict` | No (dates removed) | Most aggressive; minimal retained technical metadata |
 
 {py:func}`dicom_dre.profiles.builder.build_profile` constructs a
 patient-invariant profile from a profile name and an optional
@@ -51,6 +51,28 @@ It redacts free-text description fields against the allowlist, which also masks
 dates, times, emails, URLs, and hexadecimal numbers. See
 [Text redaction](text-redaction.md).
 
+Reference sequences (Referenced Series Sequence `(0008,1115)`, Referenced
+Image Sequence `(0008,1140)`, and Referenced Instance Sequence `(0008,114A)`)
+are retained rather than removed. The engine applies the tag rules recursively
+into the item datasets of every sequence at every depth, so a nested UID that is
+in the UID-hash set (for example `ReferencedSOPInstanceUID` or
+`SeriesInstanceUID`) is hashed while a UID that is not (for example
+`ReferencedSOPClassUID (0008,1150)` and Transfer Syntax UID) is left unchanged.
+Hashing is keyed on the tag, not the VR, so registered class and transfer-syntax
+UIDs are never hashed. Recursion into every sequence is engine behavior shared by
+all profiles; retaining the reference sequences (omitting them from the removal
+set) is a property of the `default`, `lds`, and `lds-no-dob` profiles.
+
+A UID fallback catches identifier UIDs that no explicit rule covers. For a `UI`
+element with no more-specific rule, the value is hashed unless it is under the
+DICOM root `1.2.840.10008.`, which is reserved for registered values (SOP Class,
+Transfer Syntax, coding scheme, well-known SOP instance) and is left unchanged.
+The fallback uses the same UID root and study-salt policy as the explicit UID
+rules, so a UID that appears both under an explicit rule and an unruled tag maps
+to the same replacement and cross-references stay consistent. The `default`,
+`lds`, and `lds-no-dob` profiles hash with the study salt; the `strict`
+profile hashes without it.
+
 | Attribute | Action |
 |-----------|--------|
 | StudyDate, SeriesDate, AcquisitionDate, ContentDate | Shifted by the jitter (`JITTER`, or the derived per-patient/study shift) |
@@ -77,6 +99,11 @@ inspects each element's value representation: it skips and leaves intact element
 with VR `DA`, `DT`, or `TM`. It keeps patient birth date. It keeps patient age
 without the 89-year cap. It configures the redactor with `preserve_dates=True`,
 so dates and times embedded in free-text fields are also kept.
+
+Because the profile preserves dates, it rejects a non-zero `JITTER`: supplying
+a non-zero `JITTER` with `lds` (or any date-preserving profile) is a usage error
+rather than a silently ignored value. `JITTER=0` requests no shift and is
+accepted and inert.
 
 | Attribute | Action |
 |-----------|--------|
@@ -112,26 +139,42 @@ configures the redactor with `preserve_dates=True`.
 Use this profile when the downstream use case requires temporal information but
 the patient date of birth must not be included in the output.
 
-## Pixels-only
+## Strict
 
-Profile name: `pixels-only`
+Profile name: `strict`
 
-The pixels-only profile retains the least metadata while still yielding a file
-that most DICOM viewers and libraries can open. It retains a fixed set
-of technical elements, re-derives UIDs (no salt), and removes every element that
-has no explicit rule. It always protects groups `0028` (image pixel description)
-and `7FE0` (pixel data), plus `SOPClassUID`, `SOPInstanceUID`, and
-`StudyInstanceUID`, from the unspecified-element removal. It removes private
+The strict profile retains the least metadata while still yielding a file
+that most DICOM viewers and libraries can open. It is an allow-list profile: it
+retains a fixed set of technical elements, re-derives UIDs (no salt), and removes
+every element that has no explicit rule. It always protects groups `0028` (image
+pixel description) and `7FE0` (pixel data), plus `SOPClassUID`, `SOPInstanceUID`,
+and `StudyInstanceUID`, from the unspecified-element removal. It removes private
 groups, curves, and overlays.
 
-It removes dates entirely (neither kept nor shifted). It keeps times. It redacts
-free-text description fields with `preserve_dates=False`.
+It removes dates entirely (neither kept nor shifted). It keeps allow-listed time
+attributes. It redacts free-text description fields with `preserve_dates=False`.
 
 | Attribute | Action |
 |-----------|--------|
 | StudyTime, SeriesTime, AcquisitionTime, ContentTime | Kept |
 | Date and datetime attributes | Removed |
 | Free-text fields | Dates and times masked by the redactor |
+
+Key Object Selection (KO) and Presentation State (PR) objects carry no pixel
+data but hold clinician-curated labels. The profile designates their
+structured-content and graphic-annotation sequences as content roots
+(Content Sequence `(0040,A730)`, Concept Name Code Sequence `(0040,A043)`,
+Current Requested Procedure Evidence Sequence `(0040,A375)`, Identical Documents
+Sequence `(0040,A525)`, Referenced Request Sequence `(0040,A370)`, Anatomic
+Region Sequence `(0008,2218)`, and Graphic Annotation Sequence `(0070,0001)`).
+Unspecified-element removal is disabled below a content root, so the coded labels
+and cross-object references survive, while the shared PHI-removal, date-removal,
+and free-text redaction rules de-identify every element inside the subtree.
+Referenced UIDs are hashed without the study salt, so references resolve within a
+single strict export but not against objects de-identified by another
+profile. Each DICOM cohort is processed with a single profile. The profile
+declares the Clean Graphics Option (`113103`) and the Clean Structured Content
+Option (`113104`).
 
 Because the profile may remove required interchange elements, the output is
 likely not conformant to the DICOM specification. Use this profile only when the
@@ -141,7 +184,7 @@ pixel data is the sole item of interest.
 
 Each profile configures the redactor through its `preserve_dates` flag:
 
-- `default` / `pixels-only`: dates, times, emails, URLs, and hexadecimal numbers
+- `default` / `strict`: dates, times, emails, URLs, and hexadecimal numbers
   are masked in free-text fields.
 - `lds` / `lds-no-dob`: dates and times are kept intact; emails, URLs, and
   hexadecimal numbers are still masked.
@@ -151,20 +194,73 @@ The allowlist CSV is a property of each profile (`allowlist_csv`, default
 caller supplies an explicit description value, the engine writes it verbatim and
 runs no redaction for that field. See [Text redaction](text-redaction.md).
 
-## De-identification Method Code Sequence
+## Graphic annotation subtree
 
-When the pipeline preserves device-approved private tags (see
-[Device Catalog](device-catalog.md)), the profile stamps the De-identification
-Method Code Sequence `(0012,0064)`. The profile emits the sequence only for
-instances that actually retain private tags; other instances and profiles do not
-receive it. Each item contains a code value `(0008,0100)`, the `DCM` coding
-scheme designator `(0008,0102)`, and a code meaning `(0008,0104)`:
+The `default` profile admits 2D softcopy presentation states and retains their
+Graphic Annotation Sequence `(0070,0001)`. The sequence is absent from the
+removal set, so the engine keeps it and recurses into its items like any other
+sequence. Because the module is fully specified (DICOM PS3.3 C.10.5), every
+attribute is handled by an explicit rule or by the bulk rules:
+
+- The two free-text attributes, Unformatted Text Value `(0070,0006)` and Tick
+  Label `(0070,0289)`, are redacted against the allowlist. The redaction action
+  decodes raw bytes and resolves the dictionary VR for an implicit-VR (`UN`/`OB`)
+  element, so redaction is independent of encoding.
+- Identifiers are hashed by the bulk rules: Tracking UID `(0062,0021)`,
+  Referenced SOP Instance UID `(0008,1155)`, Series Instance UID `(0020,000E)`,
+  and any other UID under the UID-hash set. Tracking ID `(0062,0020)` is hashed
+  with the study-scoped identifier hash, matching the study-scoped Tracking UID
+  hash so the pair links consistently within a study.
+- Referenced SOP Class UID `(0008,1150)` and the font names Font Name
+  `(0070,0227)` and CSS Font Name `(0070,0229)` are kept. Graphic geometry
+  (Graphic Data, Graphic Type) and the technical/styling attributes are kept
+  because they carry no identity and have no removal rule.
+
+## Key Object Selection content
+
+The `default` profile admits Key Object Selection (KO) documents that reference
+at least one instance and retains and cleans their structured content under the
+Clean Structured Content Option (PS3.15 code `113104`). Content Sequence
+`(0040,A730)` is absent from the removal set, so the engine keeps it and
+recurses into its items like any other sequence:
+
+- Text Value `(0040,A160)`, the KO/SR free-text content attribute, is redacted
+  against the allowlist by the same redaction action used for the graphic
+  annotation free text.
+- Referenced UIDs in Content Sequence, Current Requested Procedure Evidence
+  Sequence `(0040,A375)`, Identical Documents Sequence `(0040,A525)`, and
+  Referenced Request Sequence `(0040,A370)` are hashed by the bulk UID rules:
+  Referenced SOP Instance UID `(0008,1155)`, Series Instance UID `(0020,000E)`,
+  and Study Instance UID `(0020,000D)`. Every UID is hashed with the
+  study-scoped hash, so a de-identified KO links to the de-identified referenced
+  objects included in the same export.
+- The document title (Concept Name Code Sequence `(0040,A043)`) and Anatomic
+  Region Sequence `(0008,2218)` are retained; their coded triples carry no
+  identity.
+- Issuer of Accession Number Sequence `(0008,0051)` is removed, so a retained
+  Referenced Request Sequence cannot carry an assigning-authority identifier.
+
+Every de-identified instance receives the De-identification Method Code Sequence
+`(0012,0064)`. Each item contains a code value `(0008,0100)`, the `DCM` coding
+scheme designator `(0008,0102)`, and a code meaning `(0008,0104)`. The items a
+profile emits follow from its configuration:
 
 | Code value | Code meaning | Emitted |
 |------------|--------------|---------|
-| `113100` | Basic Application Confidentiality Profile | Whenever preservation is active |
-| `113111` | Retain Safe Private Option | Whenever preservation is active |
-| `113107` | Retain Longitudinal Temporal Information With Modified Dates | Only for date-shifting profiles (`default`); not for `lds`, `lds-no-dob`, or `pixels-only` |
+| `113100` | Basic Application Confidentiality Profile | When the profile sets `emits_basic_profile` (`default`, `lds`, `lds-no-dob`); not for `strict` |
+| `113101` | Clean Pixel Data Option | When the pixel blanker scrubs burned-in text from the instance |
+| `113107` | Retain Longitudinal Temporal Information With Modified Dates | For date-shifting profiles (`default`) |
+| `113106` | Retain Longitudinal Temporal Information With Full Dates | For date-preserving profiles (`lds`, `lds-no-dob`) |
+| `113105` | Clean Descriptors Option | Declared in `deid_options` (`default`, `lds`, `lds-no-dob`) |
+| `113108` | Retain Patient Characteristics Option | Declared in `deid_options` (`default`, `lds`, `lds-no-dob`) |
+| `113103` | Clean Graphics Option | Declared in `deid_options` (`strict`) |
+| `113104` | Clean Structured Content Option | Declared in `deid_options` (`default`, `strict`) |
+| `113111` | Retain Safe Private Option | Only when the instance retains device-approved private tags (see [Device Catalog](device-catalog.md)) |
+
+The temporal code is derived from the profile's date policy: `113107` for
+modified dates, `113106` for full dates, and neither when dates are removed
+(`strict`). A profile emits no sequence when it declares no Basic Profile,
+no temporal code, no options, and no preserved private tags.
 
 The profile leaves the existing `DeIdentificationMethod` `(0012,0063)` free-text
 element intact.

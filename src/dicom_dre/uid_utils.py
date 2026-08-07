@@ -89,7 +89,7 @@ def hashuid(prefix: str, uid: str) -> str:
     if prefix and not prefix.endswith("."):
         prefix += "."
 
-    hash_string = hashlib.md5(uid.encode("utf-8")).hexdigest()  # noqa: S324
+    hash_string = hashlib.md5(uid.encode("utf-8"), usedforsecurity=False).hexdigest()  # noqa: S324
     hash_int = int(hash_string, 16)
     hash_string = str(hash_int)
 

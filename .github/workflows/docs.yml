@@ -1,11 +1,13 @@
 name: Deploy Documentation
 
-# Publishes the Sphinx documentation to GitHub Pages, versioned by branch.
+# Publishes the Sphinx documentation to GitHub Pages, versioned by release tag.
 #
-# Pushes to `development` publish under /development/ (pre-release docs).
-# Pushes to `main` publish under /stable/ (released docs).
+# Release tags (vX.Y.Z) publish under /stable/ (released docs).
+# Prerelease tags (vX.Y.Z-dev.N) publish under /development/ (pre-release docs).
+# Building at the tag lets hatch-vcs derive the exact release version, so the
+# docs title shows e.g. 1.0.1 instead of a 1.0.1.devN+g<hash> working version.
 #
-# Each version lives in its own subdirectory on the `gh-pages` branch. A run
+# Each version is stored in its own subdirectory on the `gh-pages` branch. A run
 # reconstructs the full tree (previously published versions plus the version it
 # just built), then force-publishes it, so removed pages do not linger and other
 # versions are preserved. The site root redirects to /stable/ when it exists and
@@ -15,22 +17,15 @@ name: Deploy Documentation
 
 on:
   push:
-    branches:
-      - main
-      - development
-    paths:
-      - "docs/**"
-      - "src/**"
-      - "pyproject.toml"
-      - ".github/workflows/docs.yml"
-      - "README.md"
+    tags:
+      - "v*"
   workflow_dispatch:
 
 permissions:
   contents: write
 
-# Serialize deployments so concurrent pushes to main and development do not race
-# when reconstructing and publishing the shared gh-pages tree.
+# Serialize deployments so concurrent release tag pushes do not race when
+# reconstructing and publishing the shared gh-pages tree.
 concurrency:
   group: docs-pages
   cancel-in-progress: false
@@ -40,12 +35,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           fetch-depth: 0
 
       - name: Set up uv
-        uses: astral-sh/setup-uv@v5
+        uses: astral-sh/setup-uv@d4b2f3b6ecc6e67c4457f6d3e41ec42d3d0fcb86 # v5
         with:
           python-version: "3.12"
 
@@ -55,17 +50,28 @@ jobs:
       - name: Determine version slug
         id: slug
         run: |
-          case "${GITHUB_REF_NAME}" in
-            main) echo "slug=stable" >> "$GITHUB_OUTPUT" ;;
-            development) echo "slug=development" >> "$GITHUB_OUTPUT" ;;
-            *) echo "slug=${GITHUB_REF_NAME}" >> "$GITHUB_OUTPUT" ;;
-          esac
+          # Tag pushes drive releases: release tags (vX.Y.Z) publish stable,
+          # prerelease tags (vX.Y.Z-dev.N, identified by the hyphen) publish
+          # development. A manual workflow_dispatch runs against a branch ref and
+          # falls back to the branch-name mapping.
+          if [ "${GITHUB_REF_TYPE}" = "tag" ]; then
+            case "${GITHUB_REF_NAME}" in
+              *-*) echo "slug=development" >> "$GITHUB_OUTPUT" ;;
+              *) echo "slug=stable" >> "$GITHUB_OUTPUT" ;;
+            esac
+          else
+            case "${GITHUB_REF_NAME}" in
+              main) echo "slug=stable" >> "$GITHUB_OUTPUT" ;;
+              development) echo "slug=development" >> "$GITHUB_OUTPUT" ;;
+              *) echo "slug=${GITHUB_REF_NAME}" >> "$GITHUB_OUTPUT" ;;
+            esac
+          fi
 
       - name: Build HTML documentation
         run: uv run --group docs sphinx-build -b html docs build/html
 
       - name: Checkout existing published docs
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         continue-on-error: true
         with:
           ref: gh-pages
@@ -115,7 +121,7 @@ jobs:
           EOF
 
       - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
+        uses: peaceiris/actions-gh-pages@84c30a85c19949d7eee79c4ff27748b70285e453 # v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_branch: gh-pages

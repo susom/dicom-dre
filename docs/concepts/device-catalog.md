@@ -265,7 +265,7 @@ rules.
 
 ```python
 deny_modalities(
-    exact=["PR", "KO", "SR"],          # exact modality match
+    exact=["SR", "RTPLAN", "RTDOSE"],  # exact modality match
     substring=["XA", "MG", "US"],      # substring modality match
 )
 ```
@@ -279,10 +279,79 @@ deny_when("INFINITT PACS", manufacturer="INFINITT", series_number="/[1-9]\\d{3,}
 ```
 
 All keyword arguments to `deny_when` are AND'd together. Available parameters
-are: `sop_class`, `burned_in_annotation`, `image_type_empty`, `image_type_any`,
-`image_type_exclude`, `manufacturer`, `manufacturer_model_name`,
+are: `sop_class`, `sop_class_not`, `burned_in_annotation`, `image_type_empty`,
+`image_type_any`, `image_type_exclude`, `manufacturer`, `manufacturer_model_name`,
 `manufacturer_model_name_fallback`, `modality`, `modality_not`,
-`series_number`, `conversion_type_present`.
+`series_number`, `conversion_type_present`, `graphic_annotation_absent`,
+`referenced_instance_absent`.
+
+`sop_class_not` matches when the SOP Class UID matches none of its patterns
+(an allowlist condition). `graphic_annotation_absent=True` matches when the
+Graphic Annotation Sequence `(0070,0001)` is absent or empty.
+`referenced_instance_absent=True` matches when the Current Requested Procedure
+Evidence Sequence `(0040,A375)` nests no Referenced SOP Instance UID
+`(0008,1155)`.
+
+### Presentation state admission
+
+Modality `PR` instances are admitted on the presence of a graphic annotation.
+Two ordered `deny_when` rules implement this:
+
+```python
+deny_when(
+    "unsupported presentation state",
+    modality="=PR",
+    sop_class_not=[
+        "=1.2.840.10008.5.1.4.1.1.11.1",   # Grayscale (GSPS)
+        "=1.2.840.10008.5.1.4.1.1.11.2",   # Color
+        "=1.2.840.10008.5.1.4.1.1.11.3",   # Pseudo-Color
+        "=1.2.840.10008.5.1.4.1.1.11.4",   # Blending
+        "=1.2.840.10008.5.1.4.1.1.11.5",   # XA/XRF Grayscale
+        "=1.2.840.10008.5.1.4.1.1.11.12",  # Variable Modality LUT
+    ],
+),
+deny_when(
+    "no annotation data",
+    modality="=PR",
+    graphic_annotation_absent=True,
+),
+```
+
+A `PR` instance whose SOP Class UID is outside the six admitted 2D softcopy
+presentation state classes is denied with reason `unsupported presentation
+state`. An admitted-class `PR` instance carrying no Graphic Annotation Sequence
+is denied with reason `no annotation data`. An admitted-class `PR` instance
+with a non-empty Graphic Annotation Sequence reaches the default `allow`
+action. The `Empty ImageType` exclusion is scoped with `modality_not=["=PR"]`
+so it does not reject presentation states, which carry no Image Type.
+
+### Key Object Selection admission
+
+Key Object Selection (KO) documents, SOP Class
+`1.2.840.10008.5.1.4.1.1.88.59`, are admitted on the presence of a referenced
+instance. Two ordered `deny_when` rules replace the former single SR/KO deny:
+
+```python
+deny_when(
+    "unsupported structured report",
+    sop_class="^1.2.840.10008.5.1.4.1.1.8",
+    sop_class_not=["=1.2.840.10008.5.1.4.1.1.88.59"],
+),
+deny_when(
+    "no referenced instances",
+    sop_class="=1.2.840.10008.5.1.4.1.1.88.59",
+    referenced_instance_absent=True,
+),
+```
+
+The first rule denies the SR family and the three non-SR classes caught by the
+`^1.2.840.10008.5.1.4.1.1.8` prefix (Ophthalmic Visual Field, Ophthalmic
+Thickness Map, Corneal Topography Map), while exempting KO. The second denies a
+KO that references no instance with reason `no referenced instances`. A KO that
+references at least one instance reaches the default `allow` action. The
+`Empty ImageType` exclusion is scoped with `modality_not=["=PR", "=KO"]` so it
+does not reject KO, which carries no Image Type.
+
 
 ## Evaluation order
 

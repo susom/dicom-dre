@@ -37,6 +37,10 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 SOP_INSTANCE_UID_TAG = 0x00080018
+BURNED_IN_ANNOTATION_TAG = 0x00280301
+# CID 7050 code for the Clean Pixel Data Option, recorded when the pixel blanker
+# removes burned-in identification.
+CLEAN_PIXEL_DATA_CODE = "113101"
 
 
 def _regenerate_file_meta(ds: pydicom.Dataset) -> None:
@@ -161,7 +165,13 @@ def deidentify_file(
                 anon_profile,
                 preserved_private_specs=frozenset(decision.preserved_private_tags),
             )
-        anon_profile.apply(ds, parameters)
+        # Clean Pixel Data (113101) is a per-instance outcome, so it is passed to
+        # apply() rather than mutated onto the profile's declared options.
+        applied_options = frozenset({CLEAN_PIXEL_DATA_CODE}) if was_scrubbed else frozenset()
+        anon_profile.apply(ds, parameters, applied_options=applied_options)
+        if was_scrubbed:
+            # Burned-in identification was removed from the pixel data.
+            ds.add_new(BURNED_IN_ANNOTATION_TAG, "CS", "NO")
         _regenerate_file_meta(ds)
         # Snapshot the final in-memory dataset before writing so transfer_syntax_uid
         # reads from the regenerated file_meta; this is an in-memory read only.

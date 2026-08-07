@@ -1,10 +1,19 @@
-"""Pixels-Only de-identification profile.
+"""Strict de-identification profile.
 
 The most aggressive redaction that still yields a DICOM file that opens in most
-DICOM viewers and libraries. Use only when the pixel data is the sole item of
-interest and study demographics or other metadata can be discarded. No UID
-salt, no date jitter, minimal retained elements; all unspecified elements are
-removed.
+DICOM viewers and libraries. It is an allow-list profile: it retains a fixed set
+of technical elements and removes every element without an explicit rule. Use
+only when the pixel data is the sole item of interest and study demographics or
+other metadata can be discarded. No UID salt and minimal retained elements; all
+unspecified elements are removed. Date and datetime elements are removed entirely
+rather than date-shifted, so no jitter is applied; allow-listed time elements
+(for example StudyTime, SeriesTime, AcquisitionTime, ContentTime) are retained.
+
+Key Object Selection (KO) and Presentation State (PR) objects carry no pixel
+data but hold clinician-curated labels. Their structured-content and
+graphic-annotation subtrees are retained through ``content_root_tags`` so the
+labels survive, while the shared PHI-removal, date-removal, and free-text
+redaction rules de-identify every element inside those subtrees.
 
 The resulting file is likely not conformant to the DICOM specification, since
 required elements may be removed; it is intended only for pixel-data use, not
@@ -17,16 +26,21 @@ from pydicom.tag import Tag
 from dicom_dre.actions import TagAction
 from dicom_dre.actions import hash_identifier_param
 from dicom_dre.actions import hash_uid
+from dicom_dre.actions import hash_value_identifier
 from dicom_dre.actions import keep
 from dicom_dre.actions import remove
 from dicom_dre.actions import set_value
 from dicom_dre.profile import DeidProfile
 from dicom_dre.profiles.config import ProfileSettings
-from dicom_dre.profiles.default import description_action
+from dicom_dre.profiles.default import DATE_TAGS
+from dicom_dre.profiles.default import EMPTY_TAGS
+from dicom_dre.profiles.default import PHI_REMOVE_TAGS
+from dicom_dre.profiles.default import redact_description
+from dicom_dre.profiles.default import redact_free_text
 
 
-# 15 UID tags re-hashed in the pixels-only profile, without a salt.
-PIXELS_ONLY_UID_TAGS: frozenset[BaseTag] = frozenset(
+# 16 UID tags re-hashed in the strict profile, without a salt.
+STRICT_UID_TAGS: frozenset[BaseTag] = frozenset(
     {
         Tag(0x0002, 0x0003),  # MediaStorageSOPInstanceUID
         Tag(0x0008, 0x0018),  # SOPInstanceUID
@@ -35,6 +49,7 @@ PIXELS_ONLY_UID_TAGS: frozenset[BaseTag] = frozenset(
         Tag(0x0020, 0x000E),  # SeriesInstanceUID
         Tag(0x0020, 0x0052),  # FrameOfReferenceUID
         Tag(0x0020, 0x0200),  # SynchronizationFrameOfReferenceUID
+        Tag(0x0020, 0x9164),  # DimensionOrganizationUID
         Tag(0x0028, 0x1199),  # PaletteColorLookupTableUID
         Tag(0x0028, 0x1214),  # LargePaletteColorLookupTableUID
         Tag(0x0040, 0xA124),  # UID
@@ -46,8 +61,8 @@ PIXELS_ONLY_UID_TAGS: frozenset[BaseTag] = frozenset(
     }
 )
 
-# 311 tags preserved unchanged in the pixels-only profile.
-PIXELS_ONLY_KEEP_TAGS: frozenset[BaseTag] = frozenset(
+# 326 tags preserved unchanged in the strict profile.
+STRICT_KEEP_TAGS: frozenset[BaseTag] = frozenset(
     {
         Tag(0x0008, 0x0005),  # SpecificCharacterSet
         Tag(0x0008, 0x0008),  # ImageType
@@ -64,6 +79,7 @@ PIXELS_ONLY_KEEP_TAGS: frozenset[BaseTag] = frozenset(
         Tag(0x0008, 0x1090),  # ManufacturerModelName
         Tag(0x0008, 0x2111),  # DerivationDescription
         Tag(0x0008, 0x2130),  # EventElapsedTime
+        Tag(0x0008, 0x3010),  # IrradiationEventUID
         Tag(0x0008, 0x9092),  # ReferencedImageEvidenceSequence
         Tag(0x0010, 0x0040),  # PatientSex
         Tag(0x0018, 0x0010),  # ContrastBolusAgent
@@ -245,14 +261,27 @@ PIXELS_ONLY_KEEP_TAGS: frozenset[BaseTag] = frozenset(
         Tag(0x0020, 0x0011),  # SeriesNumber
         Tag(0x0020, 0x0012),  # AcquisitionNumber
         Tag(0x0020, 0x0013),  # InstanceNumber
+        Tag(0x0020, 0x0020),  # PatientOrientation
         Tag(0x0020, 0x0032),  # ImagePositionPatient
         Tag(0x0020, 0x0037),  # ImageOrientationPatient
         Tag(0x0020, 0x0060),  # Laterality
+        Tag(0x0020, 0x0062),  # ImageLaterality
         Tag(0x0020, 0x1002),  # ImagesInAcquisition
         Tag(0x0020, 0x1040),  # PositionReferenceIndicator
         Tag(0x0020, 0x1041),  # SliceLocation
+        Tag(0x0020, 0x9056),  # StackID
+        Tag(0x0020, 0x9057),  # InStackPositionNumber
+        Tag(0x0020, 0x9111),  # FrameContentSequence
+        Tag(0x0020, 0x9113),  # PlanePositionSequence
         Tag(0x0020, 0x9116),  # PlaneOrientationSequence
+        Tag(0x0020, 0x9128),  # TemporalPositionIndex
         Tag(0x0020, 0x9153),  # TriggerDelayTime
+        Tag(0x0020, 0x9157),  # DimensionIndexValues
+        Tag(0x0020, 0x9165),  # DimensionIndexPointer
+        Tag(0x0020, 0x9167),  # FunctionalGroupPointer
+        Tag(0x0020, 0x9221),  # DimensionOrganizationSequence
+        Tag(0x0020, 0x9222),  # DimensionIndexSequence
+        Tag(0x0020, 0x9311),  # DimensionOrganizationType
         Tag(0x0022, 0x0001),  # LightPathFilterPassThroughWavelength
         Tag(0x0022, 0x0002),  # LightPathFilterPassBand
         Tag(0x0022, 0x0003),  # ImagePathFilterPassThroughWavelength
@@ -327,15 +356,22 @@ PIXELS_ONLY_KEEP_TAGS: frozenset[BaseTag] = frozenset(
         Tag(0x0040, 0x8302),  # EntranceDoseInmGy
         Tag(0x0040, 0xA122),  # Time
         Tag(0x0040, 0xA193),  # TrialObservationTime
+        Tag(0x0054, 0x0010),  # EnergyWindowVector
         Tag(0x0054, 0x0011),  # NumberOfEnergyWindows
         Tag(0x0054, 0x0016),  # RadiopharmaceuticalInformationSequence
+        Tag(0x0054, 0x0020),  # DetectorVector
+        Tag(0x0054, 0x0021),  # NumberOfDetectors
         Tag(0x0054, 0x0022),  # DetectorInformationSequence
+        Tag(0x0054, 0x0030),  # PhaseVector
+        Tag(0x0054, 0x0031),  # NumberOfPhases
         Tag(0x0054, 0x0050),  # RotationVector
         Tag(0x0054, 0x0051),  # NumberOfRotations
         Tag(0x0054, 0x0060),  # RRIntervalVector
         Tag(0x0054, 0x0061),  # NumberOfRRIntervals
         Tag(0x0054, 0x0070),  # TimeSlotVector
+        Tag(0x0054, 0x0071),  # NumberOfTimeSlots
         Tag(0x0054, 0x0080),  # SliceVector
+        Tag(0x0054, 0x0081),  # NumberOfSlices
         Tag(0x0054, 0x0090),  # AngularViewVector
         Tag(0x0054, 0x0100),  # TimeSliceVector
         Tag(0x0054, 0x0202),  # TypeOfDetectorMotion
@@ -350,23 +386,41 @@ PIXELS_ONLY_KEEP_TAGS: frozenset[BaseTag] = frozenset(
         Tag(0x0054, 0x1400),  # CountsIncluded
         Tag(0x0054, 0x1401),  # DeadTimeCorrectionFlag
         Tag(0x0062, 0x0002),  # SegmentSequence
+        Tag(0x2050, 0x0020),  # PresentationLUTShape
+        Tag(0x5200, 0x9229),  # SharedFunctionalGroupsSequence
+        Tag(0x5200, 0x9230),  # PerFrameFunctionalGroupsSequence
         Tag(0x7FE0, 0x0010),  # PixelData
     }
 )
 
-# Pixels-only: 1 tag removed -- IrradiationEventUID.
-PIXELS_ONLY_REMOVE_TAGS: frozenset[BaseTag] = frozenset(
+
+# Content-root sequences whose subtree is retained verbatim under
+# remove_unspecified. These carry the KO/PR labels and cross-object references;
+# the shared element rules (PHI removal, date removal, free-text redaction, UID
+# hashing) still de-identify every element within them. Structural and coded
+# members (Value Type, Concept Name/Code sequences, Graphic Data/Type, reference
+# SOP sequences) carry no PHI and are preserved.
+STRICT_CONTENT_ROOT_TAGS: frozenset[BaseTag] = frozenset(
     {
-        Tag(0x0008, 0x3010),  # IrradiationEventUID
+        Tag(0x0008, 0x2218),  # AnatomicRegionSequence
+        Tag(0x0040, 0xA043),  # ConceptNameCodeSequence (KO document title)
+        Tag(0x0040, 0xA370),  # ReferencedRequestSequence
+        Tag(0x0040, 0xA375),  # CurrentRequestedProcedureEvidenceSequence
+        Tag(0x0040, 0xA525),  # IdenticalDocumentsSequence
+        Tag(0x0040, 0xA730),  # ContentSequence
+        Tag(0x0070, 0x0001),  # GraphicAnnotationSequence
     }
 )
 
 
-def pixels_only_profile(settings: ProfileSettings | None = None) -> DeidProfile:
-    """Construct a pixels-only profile.
+def strict_profile(settings: ProfileSettings | None = None) -> DeidProfile:
+    """Construct a strict profile.
 
-    No jitter, minimal metadata. Removes all unspecified elements. UIDs are
-    re-derived without the study-ID salt. Per-patient identity values are
+    Minimal metadata. Removes all unspecified elements. Date and datetime
+    elements are removed entirely rather than date-shifted, so no jitter is
+    applied; allow-listed time elements are retained. UIDs are re-derived
+    without the study-ID salt.
+    Per-patient identity values are
     supplied at apply time via :class:`DeidParameters`. When PatientID,
     PatientName, or AccessionNumber are not supplied, the original element value
     is hashed with ``settings.hash_salt`` and the study identifier;
@@ -375,42 +429,60 @@ def pixels_only_profile(settings: ProfileSettings | None = None) -> DeidProfile:
     The free-text description fields take a per-patient value verbatim; when it
     is ``None`` they are redacted from the dataset using
     ``settings.allowlist_csv`` at apply time.
+
+    KO and PR label subtrees are retained through ``content_root_tags``. The
+    shared PHI-removal, date-removal, and free-text redaction rules are applied
+    so those retained subtrees are de-identified: dates are removed entirely
+    (not date-shifted), and the free-text label
+    fields are redacted against the allowlist. Because the profile hashes UIDs
+    without the study salt, references resolve within a single strict
+    export but not against objects de-identified by another profile.
     """
     settings = settings or ProfileSettings()
     uid_action = hash_uid(settings.uid_root)  # no study-ID salt
 
     rules: dict[BaseTag, TagAction] = {}
 
+    # PHI removal shared with the default profile, applied first so the
+    # image-technical keep rules below win on the few overlapping tags. These
+    # remove PHI wherever it appears, including inside the retained KO/PR
+    # content subtrees. Dates are removed rather than jittered.
+    remove_action = remove()
+    rules.update(dict.fromkeys(PHI_REMOVE_TAGS, remove_action))
+    rules.update(dict.fromkeys(EMPTY_TAGS, remove_action))
+    rules.update(dict.fromkeys(DATE_TAGS, remove_action))
+
     # Preserve tags unchanged
-    rules.update({t: keep() for t in PIXELS_ONLY_KEEP_TAGS})
+    rules.update({t: keep() for t in STRICT_KEEP_TAGS})
 
     # Hash UID tags -- no salt
-    rules.update(dict.fromkeys(PIXELS_ONLY_UID_TAGS, uid_action))
-
-    # Remove tags
-    rules.update({t: remove() for t in PIXELS_ONLY_REMOVE_TAGS})
+    rules.update(dict.fromkeys(STRICT_UID_TAGS, uid_action))
 
     # Identifier substitution -- caller value wins, else hash the original.
     # PatientName runs before the PatientID rule so it hashes the original
     # PatientID element and matches the value the PatientID rule then writes.
     rules[Tag(0x0010, 0x0010)] = hash_identifier_param(
         "patient_name", salt=settings.hash_salt, fallback_field="patient_id", source_tag=Tag(0x0010, 0x0020)
-    )  # PatientName
+    )
     rules[Tag(0x0010, 0x0020)] = hash_identifier_param("patient_id", salt=settings.hash_salt)  # PatientID
     rules[Tag(0x0008, 0x0050)] = hash_identifier_param("accession_number", salt=settings.hash_salt)  # AccessionNumber
-    rules[Tag(0x0008, 0x103E)] = description_action(
-        "series_description", settings.allowlist_csv, False
-    )  # SeriesDescription
-    rules[Tag(0x0008, 0x1030)] = description_action(
-        "study_description", settings.allowlist_csv, False
-    )  # StudyDescription
-    rules[Tag(0x0018, 0x1030)] = description_action("protocol_name", settings.allowlist_csv, False)  # ProtocolName
+    rules[Tag(0x0008, 0x103E)] = redact_description("series_description", settings.allowlist_csv, False)
+    rules[Tag(0x0008, 0x1030)] = redact_description("study_description", settings.allowlist_csv, False)
+    rules[Tag(0x0018, 0x1030)] = redact_description("protocol_name", settings.allowlist_csv, False)
+
+    # KO/PR free-text label redaction and identifier hashing inside retained
+    # content subtrees.
+    redact = redact_free_text(settings.allowlist_csv, False)
+    rules[Tag(0x0070, 0x0006)] = redact  # UnformattedTextValue (ST)
+    rules[Tag(0x0070, 0x0289)] = redact  # TickLabel (SH)
+    rules[Tag(0x0040, 0xA160)] = redact  # TextValue (UT), KO/SR content free text
+    rules[Tag(0x0062, 0x0020)] = hash_value_identifier(salt=settings.hash_salt)  # TrackingID (UT)
 
     # PatientIdentityRemoved -- created if missing and set to YES
     rules[Tag(0x0012, 0x0062)] = set_value("YES", create_if_missing=True)
 
     return DeidProfile(
-        name="Pixels-Only",
+        name="Strict",
         rules=rules,
         keep_groups=frozenset(),
         remove_private=True,
@@ -419,4 +491,9 @@ def pixels_only_profile(settings: ProfileSettings | None = None) -> DeidProfile:
         remove_unspecified=True,
         allowlist_csv=settings.allowlist_csv,
         hash_salt=settings.hash_salt,
+        uid_root=settings.uid_root,
+        uid_use_study_salt=False,
+        emits_basic_profile=False,
+        deid_options=frozenset({"113103", "113104"}),
+        content_root_tags=STRICT_CONTENT_ROOT_TAGS,
     )

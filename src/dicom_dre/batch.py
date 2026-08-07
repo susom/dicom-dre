@@ -342,6 +342,12 @@ def _run_parallel(
     creation failure becomes a ``QUARANTINED`` result without starting a worker.
     A worker that dies (for example a native crash) surfaces as a
     ``QUARANTINED`` result for the affected input rather than aborting the run.
+
+    Empty mirrored directories left by non-DEIDENTIFIED outcomes are pruned only
+    after every task has completed. Pruning during the completion loop would
+    race with still-running workers whose output paths share a directory: a
+    directory that is momentarily empty could be removed before a sibling task
+    writes into it, causing that write to fail.
     """
     with ProcessPoolExecutor(
         max_workers=workers,
@@ -366,6 +372,7 @@ def _run_parallel(
             future = executor.submit(_process_one, input_file, output_file)
             futures[future] = (input_file, output_file)
 
+        cleanup_dirs: set[Path] = set()
         for future in as_completed(futures):
             input_file, output_file = futures[future]
             try:
@@ -378,9 +385,12 @@ def _run_parallel(
                 )
 
             if result.outcome is not Outcome.DEIDENTIFIED:
-                _remove_empty_dir(output_file.parent, output_dir)
+                cleanup_dirs.add(output_file.parent)
 
             yield BatchItemResult(input_file=input_file, result=result)
+
+    for directory in cleanup_dirs:
+        _remove_empty_dir(directory, output_dir)
 
 
 _WORKER_PROFILE: DeidProfile | None = None

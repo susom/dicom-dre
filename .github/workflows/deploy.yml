@@ -8,7 +8,8 @@ name: Deploy
 # The version, tag format, and branch/prerelease rules are configured under
 # [tool.semantic_release] in pyproject.toml.
 #
-# Release gating: nothing is tagged, committed, or released until every
+# Release gating: nothing is tagged, committed, or released until the test
+# suite passes, the dependency vulnerability scan passes, and every
 # distribution builds successfully. The `version` job computes the next version
 # without side effects; the build jobs stamp that version into the artifacts via
 # hatch-vcs's pretend-version mechanism (no tag exists yet); and only after all
@@ -29,29 +30,27 @@ concurrency:
 
 jobs:
   test:
+    uses: ./.github/workflows/tests.yml
+    permissions:
+      contents: read
+
+  osv-scan:
+    name: Scan dependencies for vulnerabilities
     runs-on: ubuntu-latest
     permissions:
       contents: read
-    env:
-      # Exclude the docs group (a default group locally) from CI installs.
-      UV_NO_GROUP: docs
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
-      - name: Set up uv
-        uses: astral-sh/setup-uv@v5
+      - name: Run osv-scanner
+        uses: google/osv-scanner-action/osv-scanner-action@9a498708959aeaef5ef730655706c5a1df1edbc2 # v2.3.8
         with:
-          python-version: "3.12"
-
-      - name: Install dependencies
-        run: uv sync
-
-      - name: Run tests
-        run: uv run pytest
+          scan-args: |-
+            --lockfile=uv.lock
 
   version:
-    needs: test
+    needs: [test, osv-scan]
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -61,14 +60,14 @@ jobs:
       tag: ${{ steps.compute.outputs.tag }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           # Full history and tags are required for commit parsing and version
           # derivation.
           fetch-depth: 0
 
       - name: Set up uv
-        uses: astral-sh/setup-uv@v5
+        uses: astral-sh/setup-uv@d4b2f3b6ecc6e67c4457f6d3e41ec42d3d0fcb86 # v5
         with:
           python-version: "3.12"
 
@@ -115,19 +114,19 @@ jobs:
       CIBW_ENVIRONMENT_PASS_LINUX: SETUPTOOLS_SCM_PRETEND_VERSION SETUPTOOLS_SCM_PRETEND_VERSION_FOR_DICOM_DRE
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
       - name: Set up uv
         # The build[uv] frontend needs uv on PATH. cibuildwheel provisions it
         # inside the Linux build containers automatically, but on the macOS and
         # Windows host runners it must be installed explicitly.
-        uses: astral-sh/setup-uv@v5
+        uses: astral-sh/setup-uv@d4b2f3b6ecc6e67c4457f6d3e41ec42d3d0fcb86 # v5
 
       - name: Build wheels
-        uses: pypa/cibuildwheel@v3.4.1
+        uses: pypa/cibuildwheel@8d2b08b68458a16aeb24b64e68a09ab1c8e82084 # v3.4.1
 
       - name: Upload wheel artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: wheels-${{ matrix.os }}
           path: ./wheelhouse/*.whl
@@ -141,10 +140,10 @@ jobs:
       SETUPTOOLS_SCM_PRETEND_VERSION_FOR_DICOM_DRE: ${{ needs.version.outputs.version }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
       - name: Set up uv
-        uses: astral-sh/setup-uv@v5
+        uses: astral-sh/setup-uv@d4b2f3b6ecc6e67c4457f6d3e41ec42d3d0fcb86 # v5
         with:
           python-version: "3.12"
 
@@ -152,7 +151,7 @@ jobs:
         run: uv build --sdist
 
       - name: Upload sdist artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: sdist
           path: ./dist/*.tar.gz
@@ -166,33 +165,54 @@ jobs:
       id-token: write   # PyPI trusted publishing (OIDC)
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
-          # Full history and tags are required for commit parsing and version
-          # derivation.
           fetch-depth: 0
+          persist-credentials: false
+
+      - name: Get Token
+        id: get_workflow_token
+        uses: peter-murray/workflow-application-token-action@d17e3a9a36850ea89f35db16c1067dd2b68ee343 # v4.0.1
+        with:
+          application_id: ${{ secrets.APP_ID }}
+          application_private_key: ${{ secrets.APP_PRIVATE_KEY }}
 
       - name: Download all distributions
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
           path: dist
           merge-multiple: true
 
       - name: Python Semantic Release
         id: release
-        uses: python-semantic-release/python-semantic-release@v10
+        uses: python-semantic-release/python-semantic-release@39dd2052f2ce8282a5d932c31d58a2ca06d2550e # v10
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ steps.get_workflow_token.outputs.token }}
+          git_committer_name: "github-actions"
+          git_committer_email: "actions@users.noreply.github.com"
 
       - name: Publish to PyPI
         # Uses PyPI Trusted Publishing (OIDC); configure a trusted publisher for
         # this repository/workflow on PyPI (no API token secret required).
         if: steps.release.outputs.released == 'true'
-        uses: pypa/gh-action-pypi-publish@release/v1
+        uses: pypa/gh-action-pypi-publish@dc37677b2e1c63e2034f94d8a5b11f265b73ba33 # release/v1
         with:
           packages-dir: dist
 
+      - name: Sign distributions with Sigstore
+        # Keyless signing via the workflow's OIDC identity (id-token: write).
+        # Produces a <artifact>.sigstore.json bundle next to each wheel and the
+        # sdist.
+        if: steps.release.outputs.released == 'true'
+        uses: sigstore/gh-action-sigstore-python@790bc6befb9d733738f18d8f895854b453640ec9 # v3.5.0
+        with:
+          inputs: ./dist/*.tar.gz ./dist/*.whl
+          # This is a push event, not a release event; sign the explicit inputs
+          # only and do not attach to the auto-generated source archives.
+          release-signing-artifacts: false
+
       - name: Upload distributions to the GitHub Release
+        # Uploads the wheels, sdist, and the Sigstore .sigstore.json bundles.
         if: steps.release.outputs.released == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
