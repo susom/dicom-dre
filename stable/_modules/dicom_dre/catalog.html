@@ -1,0 +1,1626 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../../">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex.html"><link rel="search" title="Search" href="../../search.html">
+
+    <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
+        <title>dicom_dre.catalog - dicom-dre 1.1.1.dev2+g26a9d42ef</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=d111a655" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../index.html"><div class="brand">dicom-dre 1.1.1.dev2+g26a9d42ef</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
+  
+  <span class="sidebar-brand-text">dicom-dre 1.1.1.dev2+g26a9d42ef</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting-started/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting-started/quickstart.html">Quickstart</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Concepts</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../concepts/architecture.html">Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../concepts/device-catalog.html">Device Catalog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../concepts/jpeg-dct.html">JPEG DCT Scrubbing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../concepts/profiles.html">De-identification Profiles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../concepts/text-redaction.html">Text Redaction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../concepts/reproducibility.html">Reproducibility</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../guides/cli.html">Command-line Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../guides/redactor.html">Redactor Commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../guides/extending-the-catalog.html">Extending the Catalog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../guides/local-validation.html">Local Validation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/api.html">API Reference</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">About</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about/limitations.html">Limitations and Portability</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/testing.html">Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about/changelog.html">Changelog</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <h1>Source code for dicom_dre.catalog</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Device catalog for DICOM filtering and pixel scrubbing.</span>
+
+<span class="sd">Evaluates DICOM instances against declarative device and exclusion rules to</span>
+<span class="sd">decide whether an instance is allowed, denied, or scrubbed, and returns the</span>
+<span class="sd">pixel regions to blank for scrub decisions.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Iterable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">field</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">cast</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">dicom_dre.scrub_region</span><span class="w"> </span><span class="kn">import</span> <span class="n">ScrubRegion</span>
+
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">pydicom</span>
+
+
+<div class="viewcode-block" id="Variant">
+<a class="viewcode-back" href="../../reference/api.html#dicom_dre.Variant">[docs]</a>
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">slots</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Variant</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A resolution or version variant within a device rule.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        rows: Required image row count, or None if unconstrained.</span>
+<span class="sd">        cols: Required image column count, or None if unconstrained.</span>
+<span class="sd">        sop_class_uid: SOPClassUID pattern(s) for narrowing, or None if unconstrained.</span>
+<span class="sd">        software_versions: Software version pattern(s) for narrowing.</span>
+<span class="sd">        image_type: ImageType component(s) that all must appear.</span>
+<span class="sd">        image_type_any: ImageType component(s) where at least one must appear.</span>
+<span class="sd">        image_type_exclude: ImageType component(s) where none may appear.</span>
+<span class="sd">        scrub_regions: Pixel regions to blank, as ScrubRegion instances.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">rows</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">cols</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">sop_class_uid</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">software_versions</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">image_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">image_type_any</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">image_type_exclude</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">scrub_regions</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ScrubRegion</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_normalize_scrub</span><span class="p">(</span>
+    <span class="n">scrub</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="n">ScrubRegion</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">ScrubRegion</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Normalize scrub region inputs to a list of ScrubRegion instances.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">scrub</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[]</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">region</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">region</span><span class="p">,</span> <span class="n">ScrubRegion</span><span class="p">)</span> <span class="k">else</span> <span class="n">ScrubRegion</span><span class="o">.</span><span class="n">from_tuple</span><span class="p">(</span><span class="n">region</span><span class="p">)</span> <span class="k">for</span> <span class="n">region</span> <span class="ow">in</span> <span class="n">scrub</span><span class="p">]</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">variant</span><span class="p">(</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">rows</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">cols</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">sop_class_uid</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">software_versions</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">image_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">image_type_any</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">image_type_exclude</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">scrub</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="n">ScrubRegion</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Variant</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a variant for a device rule.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        rows: Required image row count.</span>
+<span class="sd">        cols: Required image column count.</span>
+<span class="sd">        sop_class_uid: SOPClassUID pattern(s).</span>
+<span class="sd">        software_versions: Software version pattern(s).</span>
+<span class="sd">        image_type: ImageType component(s) that all must appear.</span>
+<span class="sd">        image_type_any: ImageType component(s) where at least one must appear.</span>
+<span class="sd">        image_type_exclude: ImageType component(s) where none may appear.</span>
+<span class="sd">        scrub: Pixel regions to blank, as (x, y, width, height) tuples or</span>
+<span class="sd">            ScrubRegion instances.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        A frozen Variant instance.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">Variant</span><span class="p">(</span>
+        <span class="n">rows</span><span class="o">=</span><span class="n">rows</span><span class="p">,</span>
+        <span class="n">cols</span><span class="o">=</span><span class="n">cols</span><span class="p">,</span>
+        <span class="n">sop_class_uid</span><span class="o">=</span><span class="n">sop_class_uid</span><span class="p">,</span>
+        <span class="n">software_versions</span><span class="o">=</span><span class="n">software_versions</span><span class="p">,</span>
+        <span class="n">image_type</span><span class="o">=</span><span class="n">image_type</span><span class="p">,</span>
+        <span class="n">image_type_any</span><span class="o">=</span><span class="n">image_type_any</span><span class="p">,</span>
+        <span class="n">image_type_exclude</span><span class="o">=</span><span class="n">image_type_exclude</span><span class="p">,</span>
+        <span class="n">scrub_regions</span><span class="o">=</span><span class="n">_normalize_scrub</span><span class="p">(</span><span class="n">scrub</span><span class="p">),</span>
+    <span class="p">)</span>
+
+
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">slots</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">PrivateTagSpec</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A device-approved private element to preserve verbatim.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        group: Private group number (odd), e.g. 0x0019.</span>
+<span class="sd">        creator: Private creator string, e.g. &quot;GEMS_ACQU_01&quot;.</span>
+<span class="sd">        offsets: Element offsets (low byte) to preserve within the</span>
+<span class="sd">            creator&#39;s resolved block, e.g. (0xBB, 0xBC, 0xBD).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">group</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">creator</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">offsets</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="CatalogDecision">
+<a class="viewcode-back" href="../../reference/api.html#dicom_dre.CatalogDecision">[docs]</a>
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">slots</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">CatalogDecision</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Result of evaluating a DICOM instance against the device catalog.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        action: One of &quot;allow&quot;, &quot;deny&quot;, or &quot;scrub&quot;.</span>
+<span class="sd">        reason: Human-readable explanation for the decision.</span>
+<span class="sd">        scrub_regions: Pixel regions to blank, as ScrubRegion instances.</span>
+<span class="sd">        matched_variant: The Variant that matched, if any.</span>
+<span class="sd">        preserved_private_tags: Private-element specs to preserve verbatim.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">action</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">reason</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">scrub_regions</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ScrubRegion</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>
+    <span class="n">matched_variant</span><span class="p">:</span> <span class="n">Variant</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">preserved_private_tags</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">PrivateTagSpec</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">()</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">match_string</span><span class="p">(</span><span class="n">pattern</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Match a pattern against a DICOM tag value.</span>
+
+<span class="sd">    Prefix dispatch:</span>
+<span class="sd">      - bare string: case-insensitive substring match</span>
+<span class="sd">      - ``=`` prefix: case-insensitive exact match; ``&quot;=&quot;`` alone matches</span>
+<span class="sd">        when the tag is missing or blank</span>
+<span class="sd">      - ``^`` prefix: case-insensitive starts-with</span>
+<span class="sd">      - ``/pattern/``: regex search (``re.search``)</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        pattern: The match pattern with optional prefix.</span>
+<span class="sd">        value: The string value of the DICOM tag.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        True when the pattern matches *value*.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">pattern</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">pattern</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">pattern</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">regex</span> <span class="o">=</span> <span class="n">pattern</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">regex</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+
+    <span class="k">if</span> <span class="n">pattern</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;=&quot;</span><span class="p">):</span>
+        <span class="n">expected</span> <span class="o">=</span> <span class="n">pattern</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="k">if</span> <span class="n">expected</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">value</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">value</span><span class="o">.</span><span class="n">casefold</span><span class="p">()</span> <span class="o">==</span> <span class="n">expected</span><span class="o">.</span><span class="n">casefold</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">pattern</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;^&quot;</span><span class="p">):</span>
+        <span class="n">prefix</span> <span class="o">=</span> <span class="n">pattern</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="k">return</span> <span class="n">value</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">prefix</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
+
+    <span class="c1"># bare string — case-insensitive substring</span>
+    <span class="k">return</span> <span class="n">pattern</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">value</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_has_referenced_instance</span><span class="p">(</span><span class="n">evidence_seq</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return True if the evidence sequence nests a Referenced SOP Instance UID.</span>
+
+<span class="sd">    Walks Current Requested Procedure Evidence Sequence (0040,A375) -&gt;</span>
+<span class="sd">    Referenced Series Sequence (0008,1115) -&gt; Referenced SOP Sequence</span>
+<span class="sd">    (0008,1199) and reports whether any item carries a non-empty Referenced SOP</span>
+<span class="sd">    Instance UID (0008,1155).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">study_item</span> <span class="ow">in</span> <span class="n">evidence_seq</span><span class="p">:</span>
+            <span class="n">series_seq</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">study_item</span><span class="p">,</span> <span class="s2">&quot;ReferencedSeriesSequence&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">series_seq</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">for</span> <span class="n">series_item</span> <span class="ow">in</span> <span class="n">series_seq</span><span class="p">:</span>
+                <span class="n">sop_seq</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">series_item</span><span class="p">,</span> <span class="s2">&quot;ReferencedSOPSequence&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">sop_seq</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="k">for</span> <span class="n">sop_item</span> <span class="ow">in</span> <span class="n">sop_seq</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">sop_item</span><span class="p">,</span> <span class="s2">&quot;ReferencedSOPInstanceUID&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">))</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+                        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">return</span> <span class="kc">False</span>
+
+
+<div class="viewcode-block" id="DicomTags">
+<a class="viewcode-back" href="../../reference/api.html#dicom_dre.DicomTags">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">DicomTags</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Lightweight wrapper for reading DICOM attributes needed by the catalog.</span>
+
+<span class="sd">    Normalizes access so the matching engine does not interact with pydicom</span>
+<span class="sd">    directly.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize with a keyword-to-string-value mapping.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_values</span> <span class="o">=</span> <span class="n">values</span>
+
+<div class="viewcode-block" id="DicomTags.get">
+<a class="viewcode-back" href="../../reference/api.html#dicom_dre.DicomTags.get">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keyword</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the string value for *keyword*, or ``&quot;&quot;`` if absent.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_values</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">keyword</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DicomTags.as_dict">
+<a class="viewcode-back" href="../../reference/api.html#dicom_dre.DicomTags.as_dict">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">as_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the tag values as a plain dict copy.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_values</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DicomTags.get_list">
+<a class="viewcode-back" href="../../reference/api.html#dicom_dre.DicomTags.get_list">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keyword</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the multi-valued tag as a list of strings.</span>
+
+<span class="sd">        Image Type, for example, is stored as ``&quot;ORIGINAL\\PRIMARY\\AXIAL&quot;``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">raw</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">keyword</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">raw</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[]</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">v</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">raw</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">&quot;</span><span class="p">)]</span></div>
+
+
+<div class="viewcode-block" id="DicomTags.get_int">
+<a class="viewcode-back" href="../../reference/api.html#dicom_dre.DicomTags.get_int">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_int</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keyword</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the integer value for *keyword*, or None if absent/non-numeric.&quot;&quot;&quot;</span>
+        <span class="n">raw</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">keyword</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">raw</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">raw</span><span class="p">)</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="DicomTags.from_dataset">
+<a class="viewcode-back" href="../../reference/api.html#dicom_dre.DicomTags.from_dataset">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_dataset</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">ds</span><span class="p">:</span> <span class="n">pydicom</span><span class="o">.</span><span class="n">Dataset</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DicomTags</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Build from an existing pydicom Dataset.&quot;&quot;&quot;</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">pydicom.multival</span><span class="w"> </span><span class="kn">import</span> <span class="n">MultiValue</span>
+
+        <span class="n">keywords</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s2">&quot;Manufacturer&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;ManufacturerModelName&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Modality&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;SoftwareVersions&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;ImageType&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Rows&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Columns&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;BurnedInAnnotation&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;SOPClassUID&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;SeriesNumber&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;ConversionType&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;SeriesDescription&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;StudyDescription&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;BodyPartExamined&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;PixelSpacing&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;SecondaryCaptureDeviceManufacturerModelName&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;CodeMeaning&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;CommentsOnRadiationDose&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;SequenceOfUltrasoundRegions&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;GraphicAnnotationSequence&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;CurrentRequestedProcedureEvidenceSequence&quot;</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="n">values</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">kw</span> <span class="ow">in</span> <span class="n">keywords</span><span class="p">:</span>
+            <span class="n">elem</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">kw</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">elem</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">kw</span><span class="p">]</span><span class="o">.</span><span class="n">value</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="n">kw</span><span class="p">],</span> <span class="s2">&quot;value&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="n">ds</span><span class="p">[</span><span class="n">kw</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">val</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="n">MultiValue</span><span class="p">)):</span>
+                <span class="n">parts</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">cast</span><span class="p">(</span><span class="n">Iterable</span><span class="p">,</span> <span class="n">val</span><span class="p">))</span>
+                <span class="n">values</span><span class="p">[</span><span class="n">kw</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">parts</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">kw</span> <span class="o">==</span> <span class="s2">&quot;SequenceOfUltrasoundRegions&quot;</span><span class="p">:</span>
+                <span class="c1"># Sequence presence: store &quot;present&quot; if the sequence exists</span>
+                <span class="c1"># and has at least one item with a non-empty RegionDataType.</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">seq</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">cast</span><span class="p">(</span><span class="n">Iterable</span><span class="p">,</span> <span class="n">val</span><span class="p">))</span>
+                    <span class="n">has_region</span> <span class="o">=</span> <span class="nb">any</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="s2">&quot;RegionDataType&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">))</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">seq</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">has_region</span><span class="p">:</span>
+                        <span class="n">values</span><span class="p">[</span><span class="n">kw</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;present&quot;</span>
+                <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">StopIteration</span><span class="p">):</span>
+                    <span class="k">pass</span>
+            <span class="k">elif</span> <span class="n">kw</span> <span class="o">==</span> <span class="s2">&quot;GraphicAnnotationSequence&quot;</span><span class="p">:</span>
+                <span class="c1"># Sequence presence: store &quot;present&quot; if the sequence is a</span>
+                <span class="c1"># non-empty SQ. A pydicom Sequence is neither list nor</span>
+                <span class="c1"># MultiValue, so this dedicated branch is required.</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">cast</span><span class="p">(</span><span class="n">Iterable</span><span class="p">,</span> <span class="n">val</span><span class="p">)))</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">values</span><span class="p">[</span><span class="n">kw</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;present&quot;</span>
+                <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+                    <span class="k">pass</span>
+            <span class="k">elif</span> <span class="n">kw</span> <span class="o">==</span> <span class="s2">&quot;CurrentRequestedProcedureEvidenceSequence&quot;</span><span class="p">:</span>
+                <span class="c1"># Reference presence: store &quot;present&quot; if the evidence sequence</span>
+                <span class="c1"># nests at least one Referenced SOP Instance UID (0008,1155)</span>
+                <span class="c1"># under Referenced Series Sequence (0008,1115) -&gt; Referenced</span>
+                <span class="c1"># SOP Sequence (0008,1199). Requires an explicit nested walk.</span>
+                <span class="k">if</span> <span class="n">_has_referenced_instance</span><span class="p">(</span><span class="n">cast</span><span class="p">(</span><span class="n">Iterable</span><span class="p">,</span> <span class="n">val</span><span class="p">)):</span>
+                    <span class="n">values</span><span class="p">[</span><span class="n">kw</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;present&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">values</span><span class="p">[</span><span class="n">kw</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">values</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DicomTags.from_file">
+<a class="viewcode-back" href="../../reference/api.html#dicom_dre.DicomTags.from_file">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_file</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DicomTags</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Read a DICOM file and extract catalog-relevant tags.&quot;&quot;&quot;</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">pydicom</span>
+
+        <span class="n">ds</span> <span class="o">=</span> <span class="n">pydicom</span><span class="o">.</span><span class="n">dcmread</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="p">),</span> <span class="n">stop_before_pixels</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_dataset</span><span class="p">(</span><span class="n">ds</span><span class="p">)</span></div>
+</div>
+
+
+
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">slots</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">DeviceRule</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A single device entry in the catalog.</span>
+
+<span class="sd">    All keyword fields default to ``None`` (unconstrained). Lists use OR</span>
+<span class="sd">    semantics across elements; all specified fields on a device are AND&#39;d.</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">        Prefer matching on structured tags (manufacturer, model, modality,</span>
+<span class="sd">        resolution, SOP class, image type) over the free-text</span>
+<span class="sd">        ``series_description`` and ``study_description``. Matching on those</span>
+<span class="sd">        description fields should be a last resort: the regression fixtures</span>
+<span class="sd">        retain a description value only for cases where it currently drives a</span>
+<span class="sd">        decision, so adding or changing a description-based rule has limited</span>
+<span class="sd">        regression coverage for values that did not previously match.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">action</span><span class="p">:</span> <span class="nb">str</span>
+
+    <span class="n">manufacturer</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">modality</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">manufacturer_model_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">software_versions</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">image_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">image_type_any</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">image_type_exclude</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">burned_in_annotation</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">sop_class_uid</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">secondary_capture_device_manufacturer_model_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="c1"># Free-text match; use only as a last resort (see class note on regression coverage).</span>
+    <span class="n">series_description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">code_meaning</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">comments_on_radiation_dose</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="c1"># Free-text match; use only as a last resort (see class note on regression coverage).</span>
+    <span class="n">study_description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">conversion_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">pixel_spacing</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">body_part_examined</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">requires_ultrasound_regions</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">variants</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Variant</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">preserved_private_tags</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">PrivateTagSpec</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">()</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">device</span><span class="p">(</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">action</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">manufacturer</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">modality</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">manufacturer_model_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">software_versions</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">image_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">image_type_any</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">image_type_exclude</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">burned_in_annotation</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">sop_class_uid</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">secondary_capture_device_manufacturer_model_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">series_description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">code_meaning</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">comments_on_radiation_dose</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">study_description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">conversion_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">pixel_spacing</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">body_part_examined</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">requires_ultrasound_regions</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">variants</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Variant</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">preserved_private_tags</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">PrivateTagSpec</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">(),</span>
+    <span class="n">rows</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">cols</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">scrub</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="n">ScrubRegion</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DeviceRule</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a device rule for the catalog.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        name: Human-readable device identifier.</span>
+<span class="sd">        action: One of &quot;allow&quot;, &quot;deny&quot;, or &quot;scrub&quot;.</span>
+<span class="sd">        manufacturer: Manufacturer pattern(s).</span>
+<span class="sd">        modality: Modality pattern(s).</span>
+<span class="sd">        manufacturer_model_name: Model name pattern(s).</span>
+<span class="sd">        software_versions: Software version pattern(s).</span>
+<span class="sd">        image_type: Required Image Type component(s) — all must appear.</span>
+<span class="sd">        image_type_any: Image Type component(s) — at least one must appear.</span>
+<span class="sd">        image_type_exclude: Image Type component(s) — none may appear.</span>
+<span class="sd">        burned_in_annotation: BurnedInAnnotation value pattern.</span>
+<span class="sd">        sop_class_uid: SOPClassUID pattern(s).</span>
+<span class="sd">        secondary_capture_device_manufacturer_model_name: SecondaryCaptureDeviceManufacturerModelName pattern(s).</span>
+<span class="sd">        series_description: SeriesDescription pattern(s).</span>
+<span class="sd">        code_meaning: CodeMeaning pattern(s).</span>
+<span class="sd">        comments_on_radiation_dose: CommentsOnRadiationDose pattern(s).</span>
+<span class="sd">        study_description: StudyDescription pattern(s).</span>
+<span class="sd">        conversion_type: ConversionType pattern(s).</span>
+<span class="sd">        pixel_spacing: PixelSpacing pattern(s).</span>
+<span class="sd">        body_part_examined: BodyPartExamined pattern(s).</span>
+<span class="sd">        requires_ultrasound_regions: When True, the image must contain a</span>
+<span class="sd">            non-empty SequenceOfUltrasoundRegions to match this device.</span>
+<span class="sd">        variants: Resolution/version variants with optional scrub regions.</span>
+<span class="sd">        preserved_private_tags: Private-element specs to preserve verbatim.</span>
+<span class="sd">        rows: Shorthand for a single variant row count.</span>
+<span class="sd">        cols: Shorthand for a single variant column count.</span>
+<span class="sd">        scrub: Shorthand for a single variant&#39;s scrub regions.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        A frozen DeviceRule instance.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">variants</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="p">(</span><span class="n">rows</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">cols</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">scrub</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Device &#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39;: cannot specify both &#39;variants&#39; and &#39;rows&#39;/&#39;cols&#39;/&#39;scrub&#39;. Use one or the other.&quot;</span>
+        <span class="p">)</span>
+    <span class="k">if</span> <span class="n">variants</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="p">(</span><span class="n">rows</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">cols</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">scrub</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="n">variants</span> <span class="o">=</span> <span class="p">[</span><span class="n">Variant</span><span class="p">(</span><span class="n">rows</span><span class="o">=</span><span class="n">rows</span><span class="p">,</span> <span class="n">cols</span><span class="o">=</span><span class="n">cols</span><span class="p">,</span> <span class="n">scrub_regions</span><span class="o">=</span><span class="n">_normalize_scrub</span><span class="p">(</span><span class="n">scrub</span><span class="p">))]</span>
+    <span class="k">return</span> <span class="n">DeviceRule</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="n">action</span><span class="p">,</span>
+        <span class="n">manufacturer</span><span class="o">=</span><span class="n">manufacturer</span><span class="p">,</span>
+        <span class="n">modality</span><span class="o">=</span><span class="n">modality</span><span class="p">,</span>
+        <span class="n">manufacturer_model_name</span><span class="o">=</span><span class="n">manufacturer_model_name</span><span class="p">,</span>
+        <span class="n">software_versions</span><span class="o">=</span><span class="n">software_versions</span><span class="p">,</span>
+        <span class="n">image_type</span><span class="o">=</span><span class="n">image_type</span><span class="p">,</span>
+        <span class="n">image_type_any</span><span class="o">=</span><span class="n">image_type_any</span><span class="p">,</span>
+        <span class="n">image_type_exclude</span><span class="o">=</span><span class="n">image_type_exclude</span><span class="p">,</span>
+        <span class="n">burned_in_annotation</span><span class="o">=</span><span class="n">burned_in_annotation</span><span class="p">,</span>
+        <span class="n">sop_class_uid</span><span class="o">=</span><span class="n">sop_class_uid</span><span class="p">,</span>
+        <span class="n">secondary_capture_device_manufacturer_model_name</span><span class="o">=</span><span class="n">secondary_capture_device_manufacturer_model_name</span><span class="p">,</span>
+        <span class="n">series_description</span><span class="o">=</span><span class="n">series_description</span><span class="p">,</span>
+        <span class="n">code_meaning</span><span class="o">=</span><span class="n">code_meaning</span><span class="p">,</span>
+        <span class="n">comments_on_radiation_dose</span><span class="o">=</span><span class="n">comments_on_radiation_dose</span><span class="p">,</span>
+        <span class="n">study_description</span><span class="o">=</span><span class="n">study_description</span><span class="p">,</span>
+        <span class="n">conversion_type</span><span class="o">=</span><span class="n">conversion_type</span><span class="p">,</span>
+        <span class="n">pixel_spacing</span><span class="o">=</span><span class="n">pixel_spacing</span><span class="p">,</span>
+        <span class="n">body_part_examined</span><span class="o">=</span><span class="n">body_part_examined</span><span class="p">,</span>
+        <span class="n">requires_ultrasound_regions</span><span class="o">=</span><span class="n">requires_ultrasound_regions</span><span class="p">,</span>
+        <span class="n">variants</span><span class="o">=</span><span class="n">variants</span><span class="p">,</span>
+        <span class="n">preserved_private_tags</span><span class="o">=</span><span class="n">preserved_private_tags</span><span class="p">,</span>
+    <span class="p">)</span>
+
+
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">slots</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ExclusionRule</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A deny-list rule that rejects DICOM instances by tag criteria.&quot;&quot;&quot;</span>
+
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">reason</span><span class="p">:</span> <span class="nb">str</span>
+
+    <span class="c1"># deny_modalities fields</span>
+    <span class="n">exact_modalities</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">substring_modalities</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="c1"># deny_when fields</span>
+    <span class="n">sop_class</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">burned_in_annotation</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">image_type_empty</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">image_type_any</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">manufacturer</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">manufacturer_model_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">manufacturer_model_name_fallback</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">modality</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">modality_not</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">series_number</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">conversion_type_present</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">image_type_exclude</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">sop_class_not</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">graphic_annotation_absent</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">referenced_instance_absent</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">deny_modalities</span><span class="p">(</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">exact</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">substring</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ExclusionRule</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a modality-based exclusion rule.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        exact: Modalities matched with case-insensitive equality.</span>
+<span class="sd">        substring: Modalities matched with case-insensitive contains.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        An ExclusionRule that denies matching modalities.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">parts</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="n">exact</span><span class="p">:</span>
+        <span class="n">parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;modality in [</span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exact</span><span class="p">)</span><span class="si">}</span><span class="s2">]&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">substring</span><span class="p">:</span>
+        <span class="n">parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;modality contains [</span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">substring</span><span class="p">)</span><span class="si">}</span><span class="s2">]&quot;</span><span class="p">)</span>
+    <span class="n">reason</span> <span class="o">=</span> <span class="s2">&quot;Denied modality: &quot;</span> <span class="o">+</span> <span class="s2">&quot;; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ExclusionRule</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;deny_modalities&quot;</span><span class="p">,</span>
+        <span class="n">reason</span><span class="o">=</span><span class="n">reason</span><span class="p">,</span>
+        <span class="n">exact_modalities</span><span class="o">=</span><span class="n">exact</span><span class="p">,</span>
+        <span class="n">substring_modalities</span><span class="o">=</span><span class="n">substring</span><span class="p">,</span>
+    <span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">deny_when</span><span class="p">(</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">sop_class</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">burned_in_annotation</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">image_type_empty</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">image_type_any</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">manufacturer</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">manufacturer_model_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">manufacturer_model_name_fallback</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">modality</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">modality_not</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">series_number</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">conversion_type_present</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">image_type_exclude</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">sop_class_not</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">graphic_annotation_absent</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">referenced_instance_absent</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ExclusionRule</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a conditional exclusion rule.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        name: Human-readable identifier for the exclusion.</span>
+<span class="sd">        sop_class: SOP Class UID pattern(s).</span>
+<span class="sd">        burned_in_annotation: BurnedInAnnotation value pattern.</span>
+<span class="sd">        image_type_empty: If True, matches when ImageType is absent/empty.</span>
+<span class="sd">        image_type_any: ImageType component(s) — at least one must appear.</span>
+<span class="sd">        manufacturer: Manufacturer pattern(s).</span>
+<span class="sd">        manufacturer_model_name: Model name pattern(s).</span>
+<span class="sd">        manufacturer_model_name_fallback: Model pattern(s) if primary model field is empty.</span>
+<span class="sd">        modality: Modality pattern(s) that must match.</span>
+<span class="sd">        modality_not: Modality pattern(s) that must NOT match.</span>
+<span class="sd">        series_number: SeriesNumber pattern.</span>
+<span class="sd">        conversion_type_present: If True, matches when ConversionType is present.</span>
+<span class="sd">        image_type_exclude: ImageType component(s) — none may appear.</span>
+<span class="sd">        sop_class_not: SOP Class UID pattern(s); matches when none appear (allowlist).</span>
+<span class="sd">        graphic_annotation_absent: If True, matches when GraphicAnnotationSequence is absent/empty.</span>
+<span class="sd">        referenced_instance_absent: If True, matches when no referenced SOP instance is present.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        An ExclusionRule for conditional denial.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">ExclusionRule</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+        <span class="n">reason</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Denied by rule: </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="n">sop_class</span><span class="o">=</span><span class="n">sop_class</span><span class="p">,</span>
+        <span class="n">burned_in_annotation</span><span class="o">=</span><span class="n">burned_in_annotation</span><span class="p">,</span>
+        <span class="n">image_type_empty</span><span class="o">=</span><span class="n">image_type_empty</span><span class="p">,</span>
+        <span class="n">image_type_any</span><span class="o">=</span><span class="n">image_type_any</span><span class="p">,</span>
+        <span class="n">manufacturer</span><span class="o">=</span><span class="n">manufacturer</span><span class="p">,</span>
+        <span class="n">manufacturer_model_name</span><span class="o">=</span><span class="n">manufacturer_model_name</span><span class="p">,</span>
+        <span class="n">manufacturer_model_name_fallback</span><span class="o">=</span><span class="n">manufacturer_model_name_fallback</span><span class="p">,</span>
+        <span class="n">modality</span><span class="o">=</span><span class="n">modality</span><span class="p">,</span>
+        <span class="n">modality_not</span><span class="o">=</span><span class="n">modality_not</span><span class="p">,</span>
+        <span class="n">series_number</span><span class="o">=</span><span class="n">series_number</span><span class="p">,</span>
+        <span class="n">conversion_type_present</span><span class="o">=</span><span class="n">conversion_type_present</span><span class="p">,</span>
+        <span class="n">image_type_exclude</span><span class="o">=</span><span class="n">image_type_exclude</span><span class="p">,</span>
+        <span class="n">sop_class_not</span><span class="o">=</span><span class="n">sop_class_not</span><span class="p">,</span>
+        <span class="n">graphic_annotation_absent</span><span class="o">=</span><span class="n">graphic_annotation_absent</span><span class="p">,</span>
+        <span class="n">referenced_instance_absent</span><span class="o">=</span><span class="n">referenced_instance_absent</span><span class="p">,</span>
+    <span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_match_field</span><span class="p">(</span>
+    <span class="n">patterns</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Match a field constraint against a tag value.</span>
+
+<span class="sd">    Returns True when *patterns* is None (unconstrained). Otherwise, OR across</span>
+<span class="sd">    list elements — at least one pattern must match.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">patterns</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">patterns</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">patterns</span> <span class="o">=</span> <span class="p">[</span><span class="n">patterns</span><span class="p">]</span>
+    <span class="k">return</span> <span class="nb">any</span><span class="p">(</span><span class="n">match_string</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">patterns</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_match_image_type_all</span><span class="p">(</span>
+    <span class="n">patterns</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">image_type_parts</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;All patterns must appear somewhere in the ImageType components.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">patterns</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">patterns</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">patterns</span> <span class="o">=</span> <span class="p">[</span><span class="n">patterns</span><span class="p">]</span>
+    <span class="n">joined</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">image_type_parts</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">patterns</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">match_string</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">part</span><span class="p">)</span> <span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="n">image_type_parts</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">match_string</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">joined</span><span class="p">):</span>
+                <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">return</span> <span class="kc">True</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_match_image_type_any</span><span class="p">(</span>
+    <span class="n">patterns</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">image_type_parts</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;At least one pattern must appear in the ImageType components.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">patterns</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">patterns</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">patterns</span> <span class="o">=</span> <span class="p">[</span><span class="n">patterns</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">patterns</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">match_string</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">part</span><span class="p">)</span> <span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="n">image_type_parts</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">return</span> <span class="kc">False</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_match_image_type_exclude</span><span class="p">(</span>
+    <span class="n">patterns</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">image_type_parts</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;None of the patterns may appear in the ImageType components.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">patterns</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">patterns</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">patterns</span> <span class="o">=</span> <span class="p">[</span><span class="n">patterns</span><span class="p">]</span>
+    <span class="n">joined</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">image_type_parts</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">patterns</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">match_string</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">part</span><span class="p">)</span> <span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="n">image_type_parts</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="n">match_string</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">joined</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">return</span> <span class="kc">True</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_match_device</span><span class="p">(</span><span class="n">rule</span><span class="p">:</span> <span class="n">DeviceRule</span><span class="p">,</span> <span class="n">tags</span><span class="p">:</span> <span class="n">DicomTags</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return True when all constrained fields on *rule* match *tags*.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">_match_field</span><span class="p">(</span><span class="n">rule</span><span class="o">.</span><span class="n">manufacturer</span><span class="p">,</span> <span class="n">tags</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Manufacturer&quot;</span><span class="p">)):</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">_match_field</span><span class="p">(</span><span class="n">rule</span><span class="o">.</span><span class="n">modality</span><span class="p">,</span> <span class="n">tags</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Modality&quot;</span><span class="p">)):</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">_match_field</span><span class="p">(</span><span class="n">rule</span><span class="o">.</span><span class="n">manufacturer_model_name</span><span class="p">,</span> <span class="n">tags</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ManufacturerModelName&quot;</span><span class="p">)):</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">_match_field</span><span class="p">(</span><span class="n">rule</span><span class="o">.</span><span class="n">software_versions</span><span class="p">,</span> <span class="n">tags</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;SoftwareVersions&quot;</span><span class="p">)):</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">_match_field</span><span class="p">(</span><span class="n">rule</span><span class="o">.</span><span class="n">burned_in_annotation</span><span class="p">,</span> <span class="n">tags</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;BurnedInAnnotation&quot;</span><span class="p">)):</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">_match_field</span><span class="p">(</span><span class="n">rule</span><span class="o">.</span><span class="n">sop_class_uid</span><span class="p">,</span> <span class="n">tags</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;SOPClassUID&quot;</span><span class="p">)):</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">_match_field</span><span class="p">(</span>
+        <span class="n">rule</span><span class="o">.</span><span class="n">secondary_capture_device_manufacturer_model_name</span><span class="p">,</span>
+        <span class="n">tags</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;SecondaryCaptureDeviceManufacturerModelName&quot;</span><span class="p">),</span>
+    <span class="p">):</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">_match_field</span><span class="p">(</span><span class="n">rule</span><span class="o">.</span><span class="n">series_description</span><span class="p">,</span> <span class="n">tags</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;SeriesDescription&quot;</span><span class="p">)):</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">_match_field</span><span class="p">(</span><span class="n">rule</span><span class="o">.</span><span class="n">code_meaning</span><span class="p">,</span> <span class="n">tags</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;CodeMeaning&quot;</span><span class="p">)):</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">_match_field</span><span class="p">(</span><span class="n">rule</span><span class="o">.</span><span class="n">comments_on_radiation_dose</span><span class="p">,</span> <span class="n">tags</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;CommentsOnRadiationDose&quot;</span><span class="p">)):</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">_match_field</span><span class="p">(</span><span class="n">rule</span><span class="o">.</span><span class="n">study_description</span><span class="p">,</span> <span class="n">tags</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;StudyDescription&quot;</span><span class="p">)):</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">_match_field</span><span class="p">(</span><span class="n">rule</span><span class="o">.</span><span class="n">conversion_type</span><span class="p">,</span> <span class="n">tags</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ConversionType&quot;</span><span class="p">)):</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">_match_field</span><span class="p">(</span><span class="n">rule</span><span class="o">.</span><span class="n">pixel_spacing</span><span class="p">,</span> <span class="n">tags</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;PixelSpacing&quot;</span><span class="p">)):</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">_match_field</span><span class="p">(</span><span class="n">rule</span><span class="o">.</span><span class="n">body_part_examined</span><span class="p">,</span> <span class="n">tags</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;BodyPartExamined&quot;</span><span class="p">)):</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="n">image_type_parts</span> <span class="o">=</span> <span class="n">tags</span><span class="o">.</span><span class="n">get_list</span><span class="p">(</span><span class="s2">&quot;ImageType&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">_match_image_type_all</span><span class="p">(</span><span class="n">rule</span><span class="o">.</span><span class="n">image_type</span><span class="p">,</span> <span class="n">image_type_parts</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">_match_image_type_any</span><span class="p">(</span><span class="n">rule</span><span class="o">.</span><span class="n">image_type_any</span><span class="p">,</span> <span class="n">image_type_parts</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">_match_image_type_exclude</span><span class="p">(</span><span class="n">rule</span><span class="o">.</span><span class="n">image_type_exclude</span><span class="p">,</span> <span class="n">image_type_parts</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">if</span> <span class="n">rule</span><span class="o">.</span><span class="n">requires_ultrasound_regions</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">tags</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;SequenceOfUltrasoundRegions&quot;</span><span class="p">)</span> <span class="o">!=</span> <span class="s2">&quot;present&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">return</span> <span class="kc">True</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_match_variant</span><span class="p">(</span><span class="n">v</span><span class="p">:</span> <span class="n">Variant</span><span class="p">,</span> <span class="n">tags</span><span class="p">:</span> <span class="n">DicomTags</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return True when a Variant matches *tags*.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">rows</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">tags</span><span class="o">.</span><span class="n">get_int</span><span class="p">(</span><span class="s2">&quot;Rows&quot;</span><span class="p">)</span> <span class="o">!=</span> <span class="n">v</span><span class="o">.</span><span class="n">rows</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">cols</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">tags</span><span class="o">.</span><span class="n">get_int</span><span class="p">(</span><span class="s2">&quot;Columns&quot;</span><span class="p">)</span> <span class="o">!=</span> <span class="n">v</span><span class="o">.</span><span class="n">cols</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">_match_field</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">sop_class_uid</span><span class="p">,</span> <span class="n">tags</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;SOPClassUID&quot;</span><span class="p">)):</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">_match_field</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">software_versions</span><span class="p">,</span> <span class="n">tags</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;SoftwareVersions&quot;</span><span class="p">)):</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="n">image_type_parts</span> <span class="o">=</span> <span class="n">tags</span><span class="o">.</span><span class="n">get_list</span><span class="p">(</span><span class="s2">&quot;ImageType&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">_match_image_type_all</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">image_type</span><span class="p">,</span> <span class="n">image_type_parts</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">_match_image_type_any</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">image_type_any</span><span class="p">,</span> <span class="n">image_type_parts</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">_match_image_type_exclude</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">image_type_exclude</span><span class="p">,</span> <span class="n">image_type_parts</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">return</span> <span class="kc">True</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_match_exclusion</span><span class="p">(</span><span class="n">rule</span><span class="p">:</span> <span class="n">ExclusionRule</span><span class="p">,</span> <span class="n">tags</span><span class="p">:</span> <span class="n">DicomTags</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return True when the exclusion rule matches *tags*.&quot;&quot;&quot;</span>
+    <span class="c1"># deny_modalities path</span>
+    <span class="k">if</span> <span class="n">rule</span><span class="o">.</span><span class="n">exact_modalities</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">modality</span> <span class="o">=</span> <span class="n">tags</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Modality&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">modality</span> <span class="ow">in</span> <span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">rule</span><span class="o">.</span><span class="n">exact_modalities</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="k">if</span> <span class="n">rule</span><span class="o">.</span><span class="n">substring_modalities</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">modality</span> <span class="o">=</span> <span class="n">tags</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Modality&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">modality</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">rule</span><span class="o">.</span><span class="n">substring_modalities</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="c1"># deny_when path — return True only if ALL specified conditions match</span>
+    <span class="k">if</span> <span class="n">rule</span><span class="o">.</span><span class="n">exact_modalities</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">rule</span><span class="o">.</span><span class="n">substring_modalities</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># This was a deny_modalities rule; conditions above were evaluated.</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="c1"># For deny_when, all specified conditions must match.</span>
+    <span class="k">if</span> <span class="n">rule</span><span class="o">.</span><span class="n">sop_class</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">_match_field</span><span class="p">(</span><span class="n">rule</span><span class="o">.</span><span class="n">sop_class</span><span class="p">,</span> <span class="n">tags</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;SOPClassUID&quot;</span><span class="p">)):</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">if</span> <span class="n">rule</span><span class="o">.</span><span class="n">burned_in_annotation</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">_match_field</span><span class="p">(</span><span class="n">rule</span><span class="o">.</span><span class="n">burned_in_annotation</span><span class="p">,</span> <span class="n">tags</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;BurnedInAnnotation&quot;</span><span class="p">)):</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">if</span> <span class="n">rule</span><span class="o">.</span><span class="n">image_type_empty</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">image_type</span> <span class="o">=</span> <span class="n">tags</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ImageType&quot;</span><span class="p">)</span>
+        <span class="n">is_empty</span> <span class="o">=</span> <span class="n">image_type</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">rule</span><span class="o">.</span><span class="n">image_type_empty</span> <span class="o">!=</span> <span class="n">is_empty</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">if</span> <span class="n">rule</span><span class="o">.</span><span class="n">image_type_any</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">_match_image_type_any</span><span class="p">(</span><span class="n">rule</span><span class="o">.</span><span class="n">image_type_any</span><span class="p">,</span> <span class="n">tags</span><span class="o">.</span><span class="n">get_list</span><span class="p">(</span><span class="s2">&quot;ImageType&quot;</span><span class="p">)):</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">if</span> <span class="n">rule</span><span class="o">.</span><span class="n">manufacturer</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">_match_field</span><span class="p">(</span><span class="n">rule</span><span class="o">.</span><span class="n">manufacturer</span><span class="p">,</span> <span class="n">tags</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Manufacturer&quot;</span><span class="p">)):</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">if</span> <span class="n">rule</span><span class="o">.</span><span class="n">manufacturer_model_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">_match_field</span><span class="p">(</span><span class="n">rule</span><span class="o">.</span><span class="n">manufacturer_model_name</span><span class="p">,</span> <span class="n">tags</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ManufacturerModelName&quot;</span><span class="p">)):</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">if</span> <span class="n">rule</span><span class="o">.</span><span class="n">manufacturer_model_name_fallback</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">manufacturer_model_name</span> <span class="o">=</span> <span class="n">tags</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ManufacturerModelName&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">manufacturer_model_name</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">_match_field</span><span class="p">(</span><span class="n">rule</span><span class="o">.</span><span class="n">manufacturer_model_name_fallback</span><span class="p">,</span> <span class="n">manufacturer_model_name</span><span class="p">):</span>
+                <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">if</span> <span class="n">rule</span><span class="o">.</span><span class="n">modality</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">_match_field</span><span class="p">(</span><span class="n">rule</span><span class="o">.</span><span class="n">modality</span><span class="p">,</span> <span class="n">tags</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Modality&quot;</span><span class="p">)):</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">if</span> <span class="n">rule</span><span class="o">.</span><span class="n">modality_not</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">_match_field</span><span class="p">(</span><span class="n">rule</span><span class="o">.</span><span class="n">modality_not</span><span class="p">,</span> <span class="n">tags</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Modality&quot;</span><span class="p">)):</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">if</span> <span class="n">rule</span><span class="o">.</span><span class="n">series_number</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">_match_field</span><span class="p">(</span><span class="n">rule</span><span class="o">.</span><span class="n">series_number</span><span class="p">,</span> <span class="n">tags</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;SeriesNumber&quot;</span><span class="p">)):</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">if</span> <span class="n">rule</span><span class="o">.</span><span class="n">conversion_type_present</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">ct</span> <span class="o">=</span> <span class="n">tags</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ConversionType&quot;</span><span class="p">)</span>
+        <span class="n">is_present</span> <span class="o">=</span> <span class="n">ct</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">rule</span><span class="o">.</span><span class="n">conversion_type_present</span> <span class="o">!=</span> <span class="n">is_present</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">if</span> <span class="n">rule</span><span class="o">.</span><span class="n">image_type_exclude</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">_match_image_type_exclude</span><span class="p">(</span><span class="n">rule</span><span class="o">.</span><span class="n">image_type_exclude</span><span class="p">,</span> <span class="n">tags</span><span class="o">.</span><span class="n">get_list</span><span class="p">(</span><span class="s2">&quot;ImageType&quot;</span><span class="p">)):</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">if</span> <span class="n">rule</span><span class="o">.</span><span class="n">sop_class_not</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">_match_field</span><span class="p">(</span><span class="n">rule</span><span class="o">.</span><span class="n">sop_class_not</span><span class="p">,</span> <span class="n">tags</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;SOPClassUID&quot;</span><span class="p">)):</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">if</span> <span class="n">rule</span><span class="o">.</span><span class="n">graphic_annotation_absent</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">is_absent</span> <span class="o">=</span> <span class="n">tags</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;GraphicAnnotationSequence&quot;</span><span class="p">)</span> <span class="o">!=</span> <span class="s2">&quot;present&quot;</span>
+        <span class="k">if</span> <span class="n">rule</span><span class="o">.</span><span class="n">graphic_annotation_absent</span> <span class="o">!=</span> <span class="n">is_absent</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">if</span> <span class="n">rule</span><span class="o">.</span><span class="n">referenced_instance_absent</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">is_absent</span> <span class="o">=</span> <span class="n">tags</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;CurrentRequestedProcedureEvidenceSequence&quot;</span><span class="p">)</span> <span class="o">!=</span> <span class="s2">&quot;present&quot;</span>
+        <span class="k">if</span> <span class="n">rule</span><span class="o">.</span><span class="n">referenced_instance_absent</span> <span class="o">!=</span> <span class="n">is_absent</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">return</span> <span class="kc">True</span>
+
+
+<div class="viewcode-block" id="DeviceCatalog">
+<a class="viewcode-back" href="../../reference/api.html#dicom_dre.DeviceCatalog">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">DeviceCatalog</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Evaluates DICOM instances against a list of device rules and exclusions.</span>
+
+<span class="sd">    Devices are checked in declaration order; the first matching rule wins for</span>
+<span class="sd">    all actions (&quot;allow&quot;, &quot;deny&quot;, and &quot;scrub&quot;). A matching &quot;allow&quot; or &quot;scrub&quot;</span>
+<span class="sd">    device short-circuits evaluation and skips the exclusion rules, so its scrub</span>
+<span class="sd">    regions come only from the device that matched. Exclusion rules act as a</span>
+<span class="sd">    last-chance filter, applied only to instances that match no device rule.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        devices: Ordered list of DeviceRule entries.</span>
+<span class="sd">        exclusions: List of ExclusionRule entries.</span>
+<span class="sd">        default_action: Action when no device or exclusion matches.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">devices</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">DeviceRule</span><span class="p">],</span>
+        <span class="n">exclusions</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ExclusionRule</span><span class="p">],</span>
+        <span class="n">default_action</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;deny&quot;</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize with device rules, exclusions, and a default action.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_devices</span> <span class="o">=</span> <span class="n">devices</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_exclusions</span> <span class="o">=</span> <span class="n">exclusions</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_default_action</span> <span class="o">=</span> <span class="n">default_action</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">devices</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">DeviceRule</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The ordered device rules.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_devices</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">exclusions</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">ExclusionRule</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The exclusion rules.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exclusions</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_modality_has_devices</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">modality</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return True when any device rule explicitly targets *modality*.</span>
+
+<span class="sd">        Device rules with an unconstrained (None) modality are ignored, so this</span>
+<span class="sd">        reports whether the catalog has device support keyed to the modality.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">modality</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="nb">any</span><span class="p">(</span><span class="n">rule</span><span class="o">.</span><span class="n">modality</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">_match_field</span><span class="p">(</span><span class="n">rule</span><span class="o">.</span><span class="n">modality</span><span class="p">,</span> <span class="n">modality</span><span class="p">)</span> <span class="k">for</span> <span class="n">rule</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_devices</span><span class="p">)</span>
+
+<div class="viewcode-block" id="DeviceCatalog.evaluate">
+<a class="viewcode-back" href="../../reference/api.html#dicom_dre.DeviceCatalog.evaluate">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tags</span><span class="p">:</span> <span class="n">DicomTags</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CatalogDecision</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Evaluate a DICOM instance against the catalog.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            tags: Extracted DICOM tag values.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A CatalogDecision with action, reason, and scrub regions.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">near_miss_device</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">for</span> <span class="n">rule</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_devices</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">_match_device</span><span class="p">(</span><span class="n">rule</span><span class="p">,</span> <span class="n">tags</span><span class="p">):</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># Determine the matched variant (if the device has variants)</span>
+            <span class="n">matched_variant</span><span class="p">:</span> <span class="n">Variant</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">variant_scrub</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ScrubRegion</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+            <span class="k">if</span> <span class="n">rule</span><span class="o">.</span><span class="n">variants</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">found</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">rule</span><span class="o">.</span><span class="n">variants</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">_match_variant</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">tags</span><span class="p">):</span>
+                        <span class="n">matched_variant</span> <span class="o">=</span> <span class="n">v</span>
+                        <span class="n">variant_scrub</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">scrub_regions</span><span class="p">)</span>
+                        <span class="n">found</span> <span class="o">=</span> <span class="kc">True</span>
+                        <span class="k">break</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">found</span><span class="p">:</span>
+                    <span class="c1"># Device identity matched but no variant matched. When the</span>
+                    <span class="c1"># device&#39;s variants constrain resolution, record the first</span>
+                    <span class="c1"># such near-miss so a later modality-based denial can report</span>
+                    <span class="c1"># the specific cause instead of a generic modality reason.</span>
+                    <span class="k">if</span> <span class="n">near_miss_device</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">any</span><span class="p">(</span>
+                        <span class="n">v</span><span class="o">.</span><span class="n">rows</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">v</span><span class="o">.</span><span class="n">cols</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">rule</span><span class="o">.</span><span class="n">variants</span>
+                    <span class="p">):</span>
+                        <span class="n">near_miss_device</span> <span class="o">=</span> <span class="n">rule</span><span class="o">.</span><span class="n">name</span>
+                    <span class="k">continue</span>
+
+            <span class="k">if</span> <span class="n">rule</span><span class="o">.</span><span class="n">action</span> <span class="o">==</span> <span class="s2">&quot;allow&quot;</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">CatalogDecision</span><span class="p">(</span>
+                    <span class="n">action</span><span class="o">=</span><span class="s2">&quot;allow&quot;</span><span class="p">,</span>
+                    <span class="n">reason</span><span class="o">=</span><span class="n">rule</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                    <span class="n">scrub_regions</span><span class="o">=</span><span class="n">variant_scrub</span><span class="p">,</span>
+                    <span class="n">matched_variant</span><span class="o">=</span><span class="n">matched_variant</span><span class="p">,</span>
+                    <span class="n">preserved_private_tags</span><span class="o">=</span><span class="n">rule</span><span class="o">.</span><span class="n">preserved_private_tags</span><span class="p">,</span>
+                <span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">rule</span><span class="o">.</span><span class="n">action</span> <span class="o">==</span> <span class="s2">&quot;deny&quot;</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">CatalogDecision</span><span class="p">(</span>
+                    <span class="n">action</span><span class="o">=</span><span class="s2">&quot;deny&quot;</span><span class="p">,</span>
+                    <span class="n">reason</span><span class="o">=</span><span class="n">rule</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                    <span class="n">scrub_regions</span><span class="o">=</span><span class="p">[],</span>
+                    <span class="n">matched_variant</span><span class="o">=</span><span class="n">matched_variant</span><span class="p">,</span>
+                    <span class="n">preserved_private_tags</span><span class="o">=</span><span class="n">rule</span><span class="o">.</span><span class="n">preserved_private_tags</span><span class="p">,</span>
+                <span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">rule</span><span class="o">.</span><span class="n">action</span> <span class="o">==</span> <span class="s2">&quot;scrub&quot;</span><span class="p">:</span>
+                <span class="c1"># A scrub device short-circuits like an allow: the instance is</span>
+                <span class="c1"># kept and only this device&#39;s regions are blanked. Exclusion</span>
+                <span class="c1"># rules are skipped because a device explicitly matched.</span>
+                <span class="k">return</span> <span class="n">CatalogDecision</span><span class="p">(</span>
+                    <span class="n">action</span><span class="o">=</span><span class="s2">&quot;scrub&quot;</span><span class="p">,</span>
+                    <span class="n">reason</span><span class="o">=</span><span class="n">rule</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                    <span class="n">scrub_regions</span><span class="o">=</span><span class="n">variant_scrub</span><span class="p">,</span>
+                    <span class="n">matched_variant</span><span class="o">=</span><span class="n">matched_variant</span><span class="p">,</span>
+                    <span class="n">preserved_private_tags</span><span class="o">=</span><span class="n">rule</span><span class="o">.</span><span class="n">preserved_private_tags</span><span class="p">,</span>
+                <span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">exclusion</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exclusions</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">_match_exclusion</span><span class="p">(</span><span class="n">exclusion</span><span class="p">,</span> <span class="n">tags</span><span class="p">):</span>
+                <span class="n">reason</span> <span class="o">=</span> <span class="n">exclusion</span><span class="o">.</span><span class="n">reason</span>
+                <span class="n">is_modality_rule</span> <span class="o">=</span> <span class="n">exclusion</span><span class="o">.</span><span class="n">exact_modalities</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">exclusion</span><span class="o">.</span><span class="n">substring_modalities</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                <span class="k">if</span> <span class="n">is_modality_rule</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">near_miss_device</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="n">rows</span> <span class="o">=</span> <span class="n">tags</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Rows&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">&quot;?&quot;</span>
+                        <span class="n">cols</span> <span class="o">=</span> <span class="n">tags</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Columns&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">&quot;?&quot;</span>
+                        <span class="n">reason</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Unsupported resolution </span><span class="si">{</span><span class="n">rows</span><span class="si">}</span><span class="s2">x</span><span class="si">{</span><span class="n">cols</span><span class="si">}</span><span class="s2"> for device &#39;</span><span class="si">{</span><span class="n">near_miss_device</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">modality</span> <span class="o">=</span> <span class="n">tags</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Modality&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">&quot;(empty)&quot;</span>
+                        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_modality_has_devices</span><span class="p">(</span><span class="n">tags</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Modality&quot;</span><span class="p">)):</span>
+                            <span class="c1"># The catalog supports this modality family, but no</span>
+                            <span class="c1"># device rule matched this instance. Surface the</span>
+                            <span class="c1"># device identity so the cause is actionable.</span>
+                            <span class="n">mfr</span> <span class="o">=</span> <span class="n">tags</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Manufacturer&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">&quot;(none)&quot;</span>
+                            <span class="n">model</span> <span class="o">=</span> <span class="n">tags</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ManufacturerModelName&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">&quot;(none)&quot;</span>
+                            <span class="n">rows</span> <span class="o">=</span> <span class="n">tags</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Rows&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">&quot;?&quot;</span>
+                            <span class="n">cols</span> <span class="o">=</span> <span class="n">tags</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Columns&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">&quot;?&quot;</span>
+                            <span class="n">reason</span> <span class="o">=</span> <span class="p">(</span>
+                                <span class="sa">f</span><span class="s2">&quot;Unsupported </span><span class="si">{</span><span class="n">modality</span><span class="si">}</span><span class="s2"> device: manufacturer=&#39;</span><span class="si">{</span><span class="n">mfr</span><span class="si">}</span><span class="s2">&#39;, model=&#39;</span><span class="si">{</span><span class="n">model</span><span class="si">}</span><span class="s2">&#39;, </span><span class="si">{</span><span class="n">rows</span><span class="si">}</span><span class="s2">x</span><span class="si">{</span><span class="n">cols</span><span class="si">}</span><span class="s2">&quot;</span>
+                            <span class="p">)</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">reason</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Denied modality: </span><span class="si">{</span><span class="n">modality</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="k">return</span> <span class="n">CatalogDecision</span><span class="p">(</span>
+                    <span class="n">action</span><span class="o">=</span><span class="s2">&quot;deny&quot;</span><span class="p">,</span>
+                    <span class="n">reason</span><span class="o">=</span><span class="n">reason</span><span class="p">,</span>
+                    <span class="n">scrub_regions</span><span class="o">=</span><span class="p">[],</span>
+                <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">CatalogDecision</span><span class="p">(</span>
+            <span class="n">action</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_default_action</span><span class="p">,</span>
+            <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;No matching device or exclusion rule&quot;</span><span class="p">,</span>
+            <span class="n">scrub_regions</span><span class="o">=</span><span class="p">[],</span>
+        <span class="p">)</span></div>
+</div>
+
+</pre></div>
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          
+          
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2026 The Board of Trustees of The Leland Stanford Junior University
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer no-toc">
+      
+      
+      
+    </aside>
+  </div>
+</div><script src="../../_static/documentation_options.js?v=dc26443c"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/scripts/furo.js?v=46bd48cc"></script>
+    <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";
+
+
+
+const initStyles = () => {
+    const defaultStyle = document.createElement('style');
+    defaultStyle.textContent = "pre.mermaid {\n    /* Same as .mermaid-container > pre */\n    display: block;\n    width: 100%;\n}\n\npre.mermaid > svg {\n    /* Same as .mermaid-container > pre > svg */\n    height: 500px;\n    width: 100%;\n    max-width: 100% !important;\n}";
+    document.head.appendChild(defaultStyle);
+
+    const fullscreenStyle = document.createElement('style');
+    fullscreenStyle.textContent = ".mermaid-container {\n    position: relative;\n    display: flex;\n    flex-direction: row;\n    width: 100%;\n}\n\n.mermaid-container > pre {\n    display: block;\n    width: 100%;\n}\n\n.mermaid-container > pre > svg {\n    height: 500px;\n    width: 100%;\n    max-width: 100% !important;\n}\n\n.mermaid-fullscreen-btn {\n    position: absolute;\n    width: 28px;\n    height: 28px;\n    background: rgba(255, 255, 255, 0.95);\n    border: 1px solid rgba(0, 0, 0, 0.3);\n    border-radius: 4px;\n    cursor: pointer;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    transition: all 0.2s;\n    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);\n    font-size: 14px;\n    line-height: 1;\n    padding: 0;\n    color: #333;\n}\n\n.mermaid-fullscreen-btn:hover {\n    opacity: 100% !important;\n    background: rgba(255, 255, 255, 1);\n    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);\n    transform: scale(1.1);\n}\n\n.mermaid-fullscreen-btn.dark-theme {\n    background: rgba(50, 50, 50, 0.95);\n    border: 1px solid rgba(255, 255, 255, 0.3);\n    color: #e0e0e0;\n}\n\n.mermaid-fullscreen-btn.dark-theme:hover {\n    background: rgba(60, 60, 60, 1);\n    box-shadow: 0 3px 10px rgba(255, 255, 255, 0.2);\n}\n\n.mermaid-fullscreen-modal {\n    display: none;\n    position: fixed !important;\n    top: 0 !important;\n    left: 0 !important;\n    width: 95vw;\n    height: 100vh;\n    background: rgba(255, 255, 255, 0.98);\n    z-index: 9999;\n    padding: 20px;\n    overflow: auto;\n}\n\n.mermaid-fullscreen-modal.dark-theme {\n    background: rgba(0, 0, 0, 0.98);\n}\n\n.mermaid-fullscreen-modal.active {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n}\n\n.mermaid-container-fullscreen {\n    position: relative;\n    width: 95vw;\n    height: 90vh;\n    max-width: 95vw;\n    max-height: 90vh;\n    background: white;\n    border-radius: 8px;\n    padding: 20px;\n    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);\n    overflow: auto;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n}\n\n.mermaid-container-fullscreen.dark-theme {\n    background: #1a1a1a;\n    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);\n}\n\n.mermaid-container-fullscreen pre.mermaid {\n    width: 100%;\n    height: 100%;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n}\n\n.mermaid-container-fullscreen .mermaid svg {\n    height: 100% !important;\n    width: 100% !important;\n    cursor: grab;\n}\n\n.mermaid-fullscreen-close {\n    position: fixed !important;\n    top: 20px !important;\n    right: 20px !important;\n    width: 40px;\n    height: 40px;\n    background: rgba(255, 255, 255, 0.95);\n    border: 1px solid rgba(0, 0, 0, 0.2);\n    border-radius: 50%;\n    cursor: pointer;\n    z-index: 10000;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);\n    transition: all 0.2s;\n    font-size: 24px;\n    line-height: 1;\n    color: #333;\n}\n\n.mermaid-fullscreen-close:hover {\n    background: white;\n    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);\n    transform: scale(1.1);\n}\n\n.mermaid-fullscreen-close.dark-theme {\n    background: rgba(50, 50, 50, 0.95);\n    border: 1px solid rgba(255, 255, 255, 0.2);\n    color: #e0e0e0;\n}\n\n.mermaid-fullscreen-close.dark-theme:hover {\n    background: rgba(60, 60, 60, 1);\n    box-shadow: 0 6px 16px rgba(255, 255, 255, 0.2);\n}\n\n.mermaid-fullscreen-modal .mermaid-fullscreen-btn {\n    display: none !important;\n}";
+    document.head.appendChild(fullscreenStyle);
+}
+
+// Detect if page has dark background
+const isDarkTheme = () => {
+    // We use a set of heuristics:
+    // 1. Check for common dark mode classes or attributes
+    // 2. Check computed background color brightness
+    if (document.documentElement.classList.contains('dark') ||
+        document.documentElement.getAttribute('data-theme') === 'dark' ||
+        document.body.classList.contains('dark') ||
+        document.body.getAttribute('data-theme') === 'dark') {
+        // console.log("Dark theme detected via class/attribute");
+        return true;
+    }
+    if (document.documentElement.classList.contains('light') ||
+        document.documentElement.getAttribute('data-theme') === 'light' ||
+        document.body.classList.contains('light') ||
+        document.body.getAttribute('data-theme') === 'light') {
+        // console.log("Light theme detected via class/attribute");
+        return false;
+    }
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        // console.log("Dark theme detected via prefers-color-scheme");
+        return true;
+    }
+    const bgColor = window.getComputedStyle(document.body).backgroundColor;
+    const match = bgColor.match(/rgb\((\d+),\s*(\d+),\s*(\d+)/);
+    if (match) {
+        const r = parseInt(match[1]);
+        const g = parseInt(match[2]);
+        const b = parseInt(match[3]);
+        const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+        // console.log("Background color brightness:", brightness);
+        return brightness < 128;
+    }
+    // console.log("No dark or light theme detected, defaulting to light theme");
+    return false;
+};
+
+let darkTheme = isDarkTheme();
+let modal = null;
+let modalContent = null;
+let previousScrollOffset = [window.scrollX, window.scrollY];
+let _lazyObserver = null;
+let _renderQueue = Promise.resolve();
+let closeModal = () => {};
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal?.classList.contains('active')) {
+        closeModal();
+    }
+});
+
+// Apply d3 zoom to each SVG. Idempotent: an SVG already wrapped is skipped,
+// so this is safe to call both for the initial batch and for diagrams that
+// render lazily once they become visible.
+const addZoomToSvgs = (svgs) => {
+    svgs.each(function() {
+        if (this.getAttribute('data-zoom-applied') === 'true') return;
+        var svg = d3.select(this);
+        svg.html("<g class='wrapper'>" + svg.html() + "</g>");
+        var inner = svg.select("g");
+        var zoom = d3.zoom().on("zoom", function(event) {
+            inner.attr("transform", event.transform);
+        });
+        svg.call(zoom);
+        this.setAttribute('data-zoom-applied', 'true');
+    });
+};
+
+const runMermaid = async (rerun) => {
+    console.log("Running mermaid diagrams, rerun =", rerun);
+    // clear all existing mermaid charts
+    let all_mermaids = document.querySelectorAll(".mermaid");
+
+    if (rerun) {
+        // Disconnect any previous lazy rendering observer
+        if (_lazyObserver) {
+            _lazyObserver.disconnect();
+            _lazyObserver = null;
+        }
+
+        all_mermaids.forEach((el) => {
+            el.removeAttribute('data-mermaid-deferred');
+            el.removeAttribute('data-mermaid-render-failed');
+            if(!el.hasAttribute("data-original-code")) {
+                // store original code
+                // console.log(`Storing original code for first run: `, el.innerHTML);
+                el.setAttribute('data-original-code', el.innerHTML);
+            }
+            if(el.getAttribute("data-processed") === "true") {
+                // remove and restore original
+                el.removeAttribute("data-processed");
+                // console.log(`Restoring original code for re-run: `, el.getAttribute('data-original-code'));
+                el.innerHTML = el.getAttribute('data-original-code');
+            } else {
+                // store original code
+                // console.log(`Storing original code for re-run: `, el.innerHTML);
+                el.setAttribute('data-original-code', el.innerHTML);
+            }
+        });
+
+        // Separate visible and hidden elements. Mermaid's layout engine measures
+        // text dimensions via the DOM, which fails for elements hidden by a parent
+        // (e.g., Reveal.js non-active slides, sphinx-design unopened tabs),
+        // producing broken SVGs. Render visible elements now, defer hidden ones.
+        const visible = [];
+        const hidden = [];
+        all_mermaids.forEach((el) => {
+            // offsetParent is null for display:none ancestors.
+            // getClientRects().length > 0 catches position:fixed elements
+            // (which also have null offsetParent but are still visible).
+            if (el.offsetParent !== null || el.getClientRects().length > 0) {
+                visible.push(el);
+            } else {
+                hidden.push(el);
+                el.setAttribute('data-mermaid-deferred', 'true');
+            }
+        });
+
+        if (visible.length > 0) {
+            try {
+                await mermaid.run({ nodes: visible });
+            } catch (e) {
+                console.error("Mermaid rendering failed:", e);
+            }
+        }
+
+        // Lazily render hidden elements when they become visible.
+        // Uses a promise chain (_renderQueue) to serialize rendering,
+        // since IntersectionObserver may report multiple entries at once
+        // and mermaid.run() is not safe to call concurrently.
+        if (hidden.length > 0) {
+            if (typeof IntersectionObserver === 'undefined') {
+                console.warn("IntersectionObserver not available; hidden mermaid diagrams will not render.");
+            } else {
+                _renderQueue = Promise.resolve();
+                _lazyObserver = new IntersectionObserver((entries) => {
+                    for (const entry of entries) {
+                        if (entry.isIntersecting && entry.target.getAttribute("data-processed") !== "true") {
+                            _lazyObserver.unobserve(entry.target);
+                            const el = entry.target;
+                            _renderQueue = _renderQueue.then(async () => {
+                                try {
+                                    await mermaid.run({ nodes: [el] });
+                                    el.removeAttribute('data-mermaid-deferred');
+                                    // Apply zoom to the now-rendered diagram, matching
+                                    // the decoration visible diagrams receive.
+                                    if (false) {
+                                        addZoomToSvgs(d3.selectAll("").select(function() {
+                                            return this.querySelector("svg");
+                                        }));
+                                    }
+                                } catch (e) {
+                                    console.error("Mermaid deferred rendering failed:", e);
+                                    el.removeAttribute('data-mermaid-deferred');
+                                    el.setAttribute('data-mermaid-render-failed', 'true');
+                                }
+                            });
+                        }
+                    }
+                });
+                hidden.forEach((el) => _lazyObserver.observe(el));
+            }
+        }
+    }
+
+    all_mermaids = document.querySelectorAll(".mermaid");
+    // Exclude deferred (hidden) and render-failed elements from completion checks
+    const mermaids_active = document.querySelectorAll(".mermaid:not([data-mermaid-deferred]):not([data-mermaid-render-failed])");
+    const mermaids_processed = document.querySelectorAll(".mermaid:not([data-mermaid-deferred]):not([data-mermaid-render-failed])[data-processed='true']");
+
+    if (false) {
+        const mermaids_to_add_zoom = 0 === -1 ? mermaids_active.length : 0;
+        if(mermaids_to_add_zoom > 0) {
+            var svgs = d3.selectAll("").select(function() {
+                return this.querySelector("svg");
+            });
+            // Wait until every active (visible) diagram has rendered. Deferred
+            // diagrams are excluded, so a fixed d3_node_count that counts a
+            // hidden diagram no longer loops forever waiting for its SVG.
+            if(mermaids_active.length !== mermaids_processed.length) {
+                setTimeout(() => runMermaid(false), 200);
+                return;
+            }
+            addZoomToSvgs(svgs);
+        }
+    } else if(mermaids_active.length !== mermaids_processed.length) {
+        // Wait for mermaid to process all diagrams
+        setTimeout(() => runMermaid(false), 200);
+        return;
+    }
+
+    // Stop here if not adding fullscreen capability
+    if (!true) return;
+
+    if (modal !== null ) {
+        // Destroy existing modal
+        modal.remove();
+        modal = null;
+        modalContent = null;
+    }
+
+    modal = document.createElement('div');
+    modal.className = 'mermaid-fullscreen-modal' + (darkTheme ? ' dark-theme' : '');
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-modal', 'true');
+    modal.setAttribute('aria-label', 'Fullscreen diagram viewer');
+    modal.innerHTML = `
+        <button class="mermaid-fullscreen-close${darkTheme ? ' dark-theme' : ''}" aria-label="Close fullscreen">✕</button>
+        <div class="mermaid-container-fullscreen${darkTheme ? ' dark-theme' : ''}"></div>
+    `;
+    document.body.appendChild(modal);
+
+    modalContent = modal.querySelector('.mermaid-container-fullscreen');
+    const closeBtn = modal.querySelector('.mermaid-fullscreen-close');
+
+    closeModal = () => {
+        modal.classList.remove('active');
+        modalContent.innerHTML = '';
+        document.body.style.overflow = ''
+        window.scrollTo({left: previousScrollOffset[0], top: previousScrollOffset[1], behavior: 'instant'});
+    };
+
+    closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+    });
+    document.querySelectorAll('.mermaid').forEach((mermaidDiv) => {
+        if (mermaidDiv.parentNode.classList.contains('mermaid-container') ||
+            mermaidDiv.closest('.mermaid-fullscreen-modal')) {
+            // Already processed, adjust button class if needed
+            const existingBtn = mermaidDiv.parentNode.querySelector('.mermaid-fullscreen-btn');
+            if (existingBtn) {
+                existingBtn.className = 'mermaid-fullscreen-btn' + (darkTheme ? ' dark-theme' : '');
+            }
+            return;
+        }
+
+        const container = document.createElement('div');
+        container.className = 'mermaid-container';
+        mermaidDiv.parentNode.insertBefore(container, mermaidDiv);
+        container.appendChild(mermaidDiv);
+
+        const fullscreenBtn = document.createElement('button');
+        fullscreenBtn.className = 'mermaid-fullscreen-btn' + (darkTheme ? ' dark-theme' : '');
+        fullscreenBtn.setAttribute('aria-label', 'View diagram in fullscreen');
+        fullscreenBtn.textContent = "\u26f6";
+        fullscreenBtn.style.opacity = "50%";
+
+        // Calculate dynamic position based on diagram's margin and padding
+        const diagramStyle = window.getComputedStyle(mermaidDiv);
+        const marginTop = parseFloat(diagramStyle.marginTop) || 0;
+        const marginRight = parseFloat(diagramStyle.marginRight) || 0;
+        const paddingTop = parseFloat(diagramStyle.paddingTop) || 0;
+        const paddingRight = parseFloat(diagramStyle.paddingRight) || 0;
+        fullscreenBtn.style.top = `${marginTop + paddingTop + 4}px`;
+        fullscreenBtn.style.right = `${marginRight + paddingRight + 4}px`;
+
+        fullscreenBtn.addEventListener('click', () => {
+            previousScrollOffset = [window.scrollX, window.scrollY];
+            const clone = mermaidDiv.cloneNode(true);
+            modalContent.innerHTML = '';
+            modalContent.appendChild(clone);
+
+            const svg = clone.querySelector('svg');
+            if (svg) {
+                svg.removeAttribute('width');
+                svg.removeAttribute('height');
+                svg.style.width = '100%';
+                svg.style.height = 'auto';
+                svg.style.maxWidth = '100%';
+                svg.style.display = 'block';
+
+                if (false) {
+                    setTimeout(() => {
+                        const g = svg.querySelector('g');
+                        if (g) {
+                            var svgD3 = d3.select(svg);
+                            svgD3.html("<g class='wrapper'>" + svgD3.html() + "</g>");
+                            var inner = svgD3.select("g");
+                            var zoom = d3.zoom().on("zoom", function(event) {
+                                inner.attr("transform", event.transform);
+                            });
+                            svgD3.call(zoom);
+                        }
+                    }, 100);
+                }
+            }
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+        container.appendChild(fullscreenBtn);
+    });
+};
+
+
+
+const load = async () => {
+    initStyles();
+
+
+    await runMermaid(true);
+
+    const reRunIfThemeChanges = async () => {
+        const newDarkTheme = isDarkTheme();
+        if (newDarkTheme !== darkTheme) {
+            darkTheme = newDarkTheme;
+            console.log("Theme change detected, re-running mermaid with", darkTheme ? "dark" : "default", "theme");
+            await mermaid.initialize(
+                {...{"startOnLoad": false},
+                ...{ darkMode: darkTheme, theme: darkTheme ? "dark" : "default" },
+                }
+            );
+            await runMermaid(true);
+        }
+    };
+
+    // Update theme classes when theme changes
+    const themeObserver = new MutationObserver(reRunIfThemeChanges);
+    themeObserver.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['class', 'style', 'data-theme']
+    });
+    themeObserver.observe(document.body, {
+        attributes: true,
+        attributeFilter: ['class', 'style', 'data-theme']
+    });
+};
+
+
+
+
+
+console.log("Initializing mermaid with", darkTheme ? "dark" : "default", "theme");
+mermaid.initialize(
+    {...{"startOnLoad": false},
+    ...{ darkMode: darkTheme, theme: darkTheme ? "dark" : "default" },
+    }
+);
+
+window.addEventListener("load", load);
+window.runMermaid = runMermaid;</script>
+    </body>
+</html>
