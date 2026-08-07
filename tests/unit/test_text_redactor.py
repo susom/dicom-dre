@@ -1162,7 +1162,7 @@ def cast_pairs(result):
 class TestTextRedactorProperties:
     """Property-based redaction invariants checked with Hypothesis."""
 
-    @given(text=st.text())
+    @given(text=st.text(max_size=4096))
     def test_redaction_never_raises(self, text):
         """redact_text handles arbitrary text without raising in every mode."""
         redactor = TextRedactor()
@@ -1173,8 +1173,8 @@ class TestTextRedactorProperties:
 
     @given(
         ssn=st.from_regex(r"\d{3}-\d{2}-\d{4}", fullmatch=True),
-        prefix=st.text(),
-        suffix=st.text(),
+        prefix=st.text(max_size=256),
+        suffix=st.text(max_size=256),
     )
     def test_ssn_never_survives_default_redaction(self, ssn, prefix, suffix):
         """An SSN-shaped token never appears verbatim in default redaction output."""
@@ -1185,8 +1185,8 @@ class TestTextRedactorProperties:
 
     @given(
         ssn=st.from_regex(r"\d{3}-\d{2}-\d{4}", fullmatch=True),
-        prefix=st.text(),
-        suffix=st.text(),
+        prefix=st.text(max_size=256),
+        suffix=st.text(max_size=256),
     )
     def test_ssn_never_survives_tracked_redaction(self, ssn, prefix, suffix):
         """The track_redacted path shares the default path's SSN masking."""

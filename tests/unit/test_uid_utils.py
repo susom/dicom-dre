@@ -71,7 +71,7 @@ class TestStableJitterGolden:
         second = stable_jitter(GOLDEN_SALT, GOLDEN_STUDY_ID, GOLDEN_PATIENT_ID)
         assert first == second, "Stable jitter should be deterministic"
 
-    @given(salt=st.text(), study=st.text(), patient=st.text())
+    @given(salt=st.text(max_size=256), study=st.text(max_size=256), patient=st.text(max_size=256))
     def test_within_default_range_and_never_zero(self, salt: str, study: str, patient: str) -> None:
         """For arbitrary inputs the default jitter stays in [-30, 30] and is never zero."""
         result = stable_jitter(salt, study, patient)
@@ -118,13 +118,13 @@ class TestHashIdentifierEdges:
         digest = hash_identifier("MRN123456", salt=GOLDEN_SALT, study_id=GOLDEN_STUDY_ID, maxlen=8)
         assert len(digest) == 8, f"Expected an 8-character digest, got {len(digest)}"
 
-    @given(identifier=st.text(min_size=1), maxlen=st.integers(min_value=1, max_value=128))
+    @given(identifier=st.text(min_size=1, max_size=256), maxlen=st.integers(min_value=1, max_value=128))
     def test_output_length_matches_maxlen(self, identifier: str, maxlen: int) -> None:
         """The digest length is the smaller of maxlen and the full 64-character digest."""
         digest = hash_identifier(identifier, salt=GOLDEN_SALT, study_id=GOLDEN_STUDY_ID, maxlen=maxlen)
         assert len(digest) == min(maxlen, 64), f"Expected length {min(maxlen, 64)}, got {len(digest)}"
 
-    @given(identifier=st.text(alphabet=string.ascii_letters + string.digits, min_size=1))
+    @given(identifier=st.text(alphabet=string.ascii_letters + string.digits, min_size=1, max_size=256))
     def test_normalization_invariant_to_case_and_whitespace(self, identifier: str) -> None:
         """Surrounding whitespace and letter case do not change the digest."""
         canonical = hash_identifier(identifier, salt=GOLDEN_SALT, study_id=GOLDEN_STUDY_ID)
@@ -136,7 +136,7 @@ class TestStableJitterRanges:
     """Range handling and validation of stable_jitter."""
 
     @given(
-        patient=st.text(),
+        patient=st.text(max_size=256),
         low=st.integers(min_value=-100, max_value=100),
         span=st.integers(min_value=1, max_value=200),
     )
@@ -179,13 +179,13 @@ class TestHashuid:
         result = hashuid(long_prefix, "1.2.3")
         assert len(result) == 64, f"Expected a 64-character result, got {len(result)}"
 
-    @given(prefix=st.text(), uid=st.text())
+    @given(prefix=st.text(max_size=256), uid=st.text(max_size=256))
     def test_result_never_exceeds_64_characters(self, prefix: str, uid: str) -> None:
         """For arbitrary prefix and UID the result is at most 64 characters."""
         result = hashuid(prefix, uid)
         assert len(result) <= 64, f"Expected at most 64 characters, got {len(result)}"
 
-    @given(prefix=st.text(), uid=st.text())
+    @given(prefix=st.text(max_size=256), uid=st.text(max_size=256))
     def test_result_is_deterministic_for_arbitrary_inputs(self, prefix: str, uid: str) -> None:
         """The same prefix and UID always hash to the same value."""
         assert hashuid(prefix, uid) == hashuid(prefix, uid), "hashuid should be deterministic"

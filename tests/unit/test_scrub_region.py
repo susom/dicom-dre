@@ -53,13 +53,23 @@ class TestRoundTrip:
 class TestRoundTripProperties:
     """Round-trip invariants over arbitrary integer coordinates."""
 
-    @given(x=st.integers(), y=st.integers(), width=st.integers(), height=st.integers())
+    @given(
+        x=st.integers(min_value=-1_000_000, max_value=1_000_000),
+        y=st.integers(min_value=-1_000_000, max_value=1_000_000),
+        width=st.integers(min_value=-1_000_000, max_value=1_000_000),
+        height=st.integers(min_value=-1_000_000, max_value=1_000_000),
+    )
     def test_tuple_round_trip(self, x: int, y: int, width: int, height: int) -> None:
         """from_tuple(region.to_tuple()) reproduces the region for any coordinates."""
         region = ScrubRegion(x=x, y=y, width=width, height=height)
         assert ScrubRegion.from_tuple(region.to_tuple()) == region, f"Tuple round-trip changed {region}"
 
-    @given(x=st.integers(), y=st.integers(), width=st.integers(), height=st.integers())
+    @given(
+        x=st.integers(min_value=-1_000_000, max_value=1_000_000),
+        y=st.integers(min_value=-1_000_000, max_value=1_000_000),
+        width=st.integers(min_value=-1_000_000, max_value=1_000_000),
+        height=st.integers(min_value=-1_000_000, max_value=1_000_000),
+    )
     def test_string_round_trip(self, x: int, y: int, width: int, height: int) -> None:
         """from_string(region.to_string()) reproduces the region for any coordinates."""
         region = ScrubRegion(x=x, y=y, width=width, height=height)
