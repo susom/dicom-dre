@@ -513,8 +513,10 @@ int process_entropy_segment(
                             int rrrr = (rs >> 4) & 0x0F;
                             int ssss = rs & 0x0F;
                             if (ssss == 0) {
-                                if (rrrr == 0) break;       /* EOB */
                                 if (rrrr == 0x0F) { k += 16; continue; }  /* ZRL */
+                                /* EOB (rrrr==0) or an invalid SSSS==0 run/size
+                                   code; stop the block to guarantee progress. */
+                                break;
                             } else {
                                 receive_extend(&reader, ssss);  /* discard */
                                 k += rrrr + 1;
@@ -530,8 +532,10 @@ int process_entropy_segment(
                             int ssss = rs & 0x0F;
                             huff_encode(&writer, ac_ht, rs);
                             if (ssss == 0) {
-                                if (rrrr == 0) break;       /* EOB */
                                 if (rrrr == 0x0F) { k += 16; continue; }
+                                /* EOB (rrrr==0) or an invalid SSSS==0 run/size
+                                   code; stop the block to guarantee progress. */
+                                break;
                             } else {
                                 int val = receive_extend(&reader, ssss);
                                 int dummy_size, amp;

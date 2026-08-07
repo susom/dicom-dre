@@ -504,3 +504,29 @@ class TestFuzzCrashRegressions:
         monkeypatch.setattr(jpeg_dct_scrubber, "_HAS_C_ACCEL", False)
         with pytest.raises(ValueError):
             scrub_jpeg_bytes(data, [ScrubRegion(0, 0, 65535, 65535)])
+
+    def test_ac_runsize_infloop_terminates_c_path(self):
+        """An AC block that never reaches EOB terminates instead of hanging.
+
+        Regression for crash-ac-runsize-infloop-e827ebbe: an entropy stream that
+        runs out mid-block made the C AC loop decode a fixed run/size byte with
+        SSSS==0 and RRRR neither 0 (EOB) nor 15 (ZRL). Neither loop branch
+        advanced the coefficient index or broke, so the block loop spun forever
+        (libFuzzer reported a native-code timeout). The loop now breaks on any
+        SSSS==0 code that is not ZRL, so processing terminates.
+        """
+        data = self._load_corpus("crash-ac-runsize-infloop-e827ebbe")
+        result = scrub_jpeg_bytes(data, [ScrubRegion(0, 0, 65535, 65535)])
+        assert isinstance(result, bytes)
+
+    def test_ac_runsize_infloop_terminates_python_path(self, monkeypatch):
+        """The pure-Python fallback terminates on the same input.
+
+        The fallback exhausts the truncated entropy stream and raises EOFError,
+        which the fuzz harness treats as expected input rejection, rather than
+        looping forever.
+        """
+        data = self._load_corpus("crash-ac-runsize-infloop-e827ebbe")
+        monkeypatch.setattr(jpeg_dct_scrubber, "_HAS_C_ACCEL", False)
+        with pytest.raises(EOFError):
+            scrub_jpeg_bytes(data, [ScrubRegion(0, 0, 65535, 65535)])

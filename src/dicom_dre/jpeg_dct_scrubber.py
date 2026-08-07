@@ -751,11 +751,12 @@ def _process_entropy_segment(
                             rrrr = (rs >> 4) & 0x0F
                             ssss = rs & 0x0F
                             if ssss == 0:
-                                if rrrr == 0:
-                                    break  # EOB
-                                elif rrrr == 0x0F:
+                                if rrrr == 0x0F:
                                     k += 16  # ZRL
                                     continue
+                                # EOB (rrrr == 0) or an invalid SSSS==0 run/size
+                                # code; stop the block to guarantee progress.
+                                break
                             else:
                                 _receive_extend(reader, ssss)  # discard
                                 k += rrrr + 1
@@ -770,11 +771,12 @@ def _process_entropy_segment(
                             ssss = rs & 0x0F
                             _encode_huffman(writer, ac_table, rs)
                             if ssss == 0:
-                                if rrrr == 0:
-                                    break  # EOB
-                                elif rrrr == 0x0F:
+                                if rrrr == 0x0F:
                                     k += 16
                                     continue
+                                # EOB (rrrr == 0) or an invalid SSSS==0 run/size
+                                # code; stop the block to guarantee progress.
+                                break
                             else:
                                 val = _receive_extend(reader, ssss)
                                 _, amp = _size_and_amplitude(val)
