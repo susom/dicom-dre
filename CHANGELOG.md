@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.1.0-dev.2 (2026-08-07)
+
+### Bug Fixes
+
+- Upgrade gitpython to resolve known vulnerabilities
+  ([`313ec2a`](https://github.com/susom/dicom-dre/commit/313ec2aeffbb10fc6a8900055c9e6c6df5bfbebc))
+
+
 ## v1.1.0-dev.1 (2026-08-06)
 
 ### Features
