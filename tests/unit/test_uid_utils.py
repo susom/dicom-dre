@@ -8,7 +8,11 @@ random, so the expected digests stay stable across runs.
 
 from __future__ import annotations
 
+import string
+
 import pytest
+from hypothesis import given
+from hypothesis import strategies as st
 
 from dicom_dre.uid_utils import hash_identifier
 from dicom_dre.uid_utils import hashuid
@@ -67,12 +71,12 @@ class TestStableJitterGolden:
         second = stable_jitter(GOLDEN_SALT, GOLDEN_STUDY_ID, GOLDEN_PATIENT_ID)
         assert first == second, "Stable jitter should be deterministic"
 
-    def test_within_range_and_never_zero(self) -> None:
-        """Across many patients the jitter stays in [-30, 30] and is never zero."""
-        values = {stable_jitter(GOLDEN_SALT, GOLDEN_STUDY_ID, f"MRN-{i}") for i in range(5000)}
-        assert min(values) >= -30, f"Jitter fell below -30: {min(values)}"
-        assert max(values) <= 30, f"Jitter exceeded 30: {max(values)}"
-        assert 0 not in values, "Jitter must never be zero"
+    @given(salt=st.text(), study=st.text(), patient=st.text())
+    def test_within_default_range_and_never_zero(self, salt: str, study: str, patient: str) -> None:
+        """For arbitrary inputs the default jitter stays in [-30, 30] and is never zero."""
+        result = stable_jitter(salt, study, patient)
+        assert -30 <= result <= 30, f"Jitter outside [-30, 30]: {result}"
+        assert result != 0, f"Jitter must never be zero, got {result}"
 
     @pytest.mark.parametrize(
         "field",
@@ -114,27 +118,34 @@ class TestHashIdentifierEdges:
         digest = hash_identifier("MRN123456", salt=GOLDEN_SALT, study_id=GOLDEN_STUDY_ID, maxlen=8)
         assert len(digest) == 8, f"Expected an 8-character digest, got {len(digest)}"
 
+    @given(identifier=st.text(min_size=1), maxlen=st.integers(min_value=1, max_value=128))
+    def test_output_length_matches_maxlen(self, identifier: str, maxlen: int) -> None:
+        """The digest length is the smaller of maxlen and the full 64-character digest."""
+        digest = hash_identifier(identifier, salt=GOLDEN_SALT, study_id=GOLDEN_STUDY_ID, maxlen=maxlen)
+        assert len(digest) == min(maxlen, 64), f"Expected length {min(maxlen, 64)}, got {len(digest)}"
+
+    @given(identifier=st.text(alphabet=string.ascii_letters + string.digits, min_size=1))
+    def test_normalization_invariant_to_case_and_whitespace(self, identifier: str) -> None:
+        """Surrounding whitespace and letter case do not change the digest."""
+        canonical = hash_identifier(identifier, salt=GOLDEN_SALT, study_id=GOLDEN_STUDY_ID)
+        noisy = hash_identifier(f"  {identifier.lower()}  ", salt=GOLDEN_SALT, study_id=GOLDEN_STUDY_ID)
+        assert noisy == canonical, f"Normalization changed the digest: {noisy!r} != {canonical!r}"
+
 
 class TestStableJitterRanges:
     """Range handling and validation of stable_jitter."""
 
-    def test_positive_only_range(self) -> None:
-        """A range without zero yields values within that positive range."""
-        values = {stable_jitter(GOLDEN_SALT, GOLDEN_STUDY_ID, f"MRN-{i}", low=1, high=10) for i in range(500)}
-        assert min(values) >= 1, f"Value fell below 1: {min(values)}"
-        assert max(values) <= 10, f"Value exceeded 10: {max(values)}"
-
-    def test_negative_only_range(self) -> None:
-        """A negative-only range yields values within that range."""
-        values = {stable_jitter(GOLDEN_SALT, GOLDEN_STUDY_ID, f"MRN-{i}", low=-10, high=-1) for i in range(500)}
-        assert min(values) >= -10, f"Value fell below -10: {min(values)}"
-        assert max(values) <= -1, f"Value exceeded -1: {max(values)}"
-
-    def test_symmetric_boundary_range_excludes_zero(self) -> None:
-        """A [-1, 1] range yields only -1 and 1, never zero."""
-        values = {stable_jitter(GOLDEN_SALT, GOLDEN_STUDY_ID, f"MRN-{i}", low=-1, high=1) for i in range(500)}
-        assert values <= {-1, 1}, f"Boundary range produced unexpected values: {values}"
-        assert 0 not in values, "Zero must be excluded from the boundary range"
+    @given(
+        patient=st.text(),
+        low=st.integers(min_value=-100, max_value=100),
+        span=st.integers(min_value=1, max_value=200),
+    )
+    def test_arbitrary_range_stays_in_bounds_and_nonzero(self, patient: str, low: int, span: int) -> None:
+        """Any range spanning at least two integers keeps the jitter in bounds and non-zero."""
+        high = low + span
+        result = stable_jitter(GOLDEN_SALT, GOLDEN_STUDY_ID, patient, low=low, high=high)
+        assert low <= result <= high, f"Value {result} outside [{low}, {high}]"
+        assert result != 0, f"Value must never be zero, got {result}"
 
     def test_empty_range_raises(self) -> None:
         """A range containing only zero has no valid non-zero value and is rejected."""
@@ -167,6 +178,17 @@ class TestHashuid:
         long_prefix = "9" * 80
         result = hashuid(long_prefix, "1.2.3")
         assert len(result) == 64, f"Expected a 64-character result, got {len(result)}"
+
+    @given(prefix=st.text(), uid=st.text())
+    def test_result_never_exceeds_64_characters(self, prefix: str, uid: str) -> None:
+        """For arbitrary prefix and UID the result is at most 64 characters."""
+        result = hashuid(prefix, uid)
+        assert len(result) <= 64, f"Expected at most 64 characters, got {len(result)}"
+
+    @given(prefix=st.text(), uid=st.text())
+    def test_result_is_deterministic_for_arbitrary_inputs(self, prefix: str, uid: str) -> None:
+        """The same prefix and UID always hash to the same value."""
+        assert hashuid(prefix, uid) == hashuid(prefix, uid), "hashuid should be deterministic"
 
     def test_leading_zero_digest_gets_nine_prefix(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """A digest whose decimal form starts with zero gets a '9' inserted."""

@@ -7,6 +7,8 @@ and round-trip conversion back to tuple and string forms.
 from __future__ import annotations
 
 import pytest
+from hypothesis import given
+from hypothesis import strategies as st
 
 from dicom_dre.scrub_region import ScrubRegion
 
@@ -46,3 +48,19 @@ class TestRoundTrip:
         region = ScrubRegion.from_string("5,6,7,8")
         assert region.to_string() == "5,6,7,8", f"Expected '5,6,7,8', got {region.to_string()!r}"
         assert ScrubRegion.from_string(region.to_string()) == region, "String round-trip should be stable"
+
+
+class TestRoundTripProperties:
+    """Round-trip invariants over arbitrary integer coordinates."""
+
+    @given(x=st.integers(), y=st.integers(), width=st.integers(), height=st.integers())
+    def test_tuple_round_trip(self, x: int, y: int, width: int, height: int) -> None:
+        """from_tuple(region.to_tuple()) reproduces the region for any coordinates."""
+        region = ScrubRegion(x=x, y=y, width=width, height=height)
+        assert ScrubRegion.from_tuple(region.to_tuple()) == region, f"Tuple round-trip changed {region}"
+
+    @given(x=st.integers(), y=st.integers(), width=st.integers(), height=st.integers())
+    def test_string_round_trip(self, x: int, y: int, width: int, height: int) -> None:
+        """from_string(region.to_string()) reproduces the region for any coordinates."""
+        region = ScrubRegion(x=x, y=y, width=width, height=height)
+        assert ScrubRegion.from_string(region.to_string()) == region, f"String round-trip changed {region}"

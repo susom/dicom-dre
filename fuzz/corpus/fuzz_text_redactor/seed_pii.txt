@@ -1,0 +1,3 @@
+Patient JANE DOE seen 2021-03-14 in Springfield, IL 62704.
+Contact jane.doe@example.com or (555) 123-4567. SSN 123-45-6789.
+Study CHEST CT WITHOUT CONTRAST at 14:30 EST, accession AC0099123.

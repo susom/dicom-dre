@@ -80,6 +80,16 @@ test-fallback:
     fi
     uv run pytest -W ignore::UserWarning
 
+# Run a fuzz harness locally (needs `uv pip install atheris`).
+# Example: just fuzz fuzz_text_redactor 60
+fuzz HARNESS DURATION="60":
+    #!/usr/bin/env bash
+    set -euo pipefail
+    mkdir -p crashes "fuzz/corpus/{{ HARNESS }}"
+    uv run python "fuzz/{{ HARNESS }}.py" \
+        -max_total_time={{ DURATION }} -timeout=25 -artifact_prefix=crashes/ \
+        "fuzz/corpus/{{ HARNESS }}"
+
 # Build sdist and wheel (compiles the C extension first)
 build: build-ext
     uv run python -m build --no-isolation --wheel

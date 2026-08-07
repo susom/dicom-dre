@@ -6,6 +6,8 @@ import tempfile
 from pathlib import Path
 
 import pytest
+from hypothesis import given
+from hypothesis import strategies as st
 
 from dicom_dre.text_redactor import TextRedactor
 from dicom_dre.text_redactor import extract_unique_tokens
@@ -1155,3 +1157,39 @@ def cast_pairs(result):
     """Narrow a redact_text return value to a (text, pairs) tuple for tests."""
     text, pairs = result
     return text, pairs
+
+
+class TestTextRedactorProperties:
+    """Property-based redaction invariants checked with Hypothesis."""
+
+    @given(text=st.text())
+    def test_redaction_never_raises(self, text):
+        """redact_text handles arbitrary text without raising in every mode."""
+        redactor = TextRedactor()
+        plain = redactor.redact_text(text)
+        assert isinstance(plain, str), "Plain redaction must return a string"
+        redactor.redact_text(text, track_redacted=True)
+        redactor.redact_text(text, return_token_pairs=True)
+
+    @given(
+        ssn=st.from_regex(r"\d{3}-\d{2}-\d{4}", fullmatch=True),
+        prefix=st.text(),
+        suffix=st.text(),
+    )
+    def test_ssn_never_survives_default_redaction(self, ssn, prefix, suffix):
+        """An SSN-shaped token never appears verbatim in default redaction output."""
+        redactor = TextRedactor()
+        redacted = redactor.redact_text(f"{prefix} {ssn} {suffix}")
+        assert isinstance(redacted, str), "Plain redaction must return a string"
+        assert ssn not in redacted, f"SSN leaked through redaction: {ssn!r}"
+
+    @given(
+        ssn=st.from_regex(r"\d{3}-\d{2}-\d{4}", fullmatch=True),
+        prefix=st.text(),
+        suffix=st.text(),
+    )
+    def test_ssn_never_survives_tracked_redaction(self, ssn, prefix, suffix):
+        """The track_redacted path shares the default path's SSN masking."""
+        redactor = TextRedactor()
+        redacted, _tokens = redactor.redact_text(f"{prefix} {ssn} {suffix}", track_redacted=True)
+        assert ssn not in redacted, f"SSN leaked through tracked redaction: {ssn!r}"
