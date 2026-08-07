@@ -4,6 +4,12 @@
 
 ## v1.1.1 (2026-08-07)
 
+### Bug Fixes
+
+- Harden JPEG DCT scrubber against malformed input and add fuzzing suite
+  ([#8](https://github.com/susom/dicom-dre/pull/8),
+  [`e7c1d84`](https://github.com/susom/dicom-dre/commit/e7c1d84ff44ee8e4d0c80d7bf058c73203698a73))
+
 
 ## v1.1.0 (2026-08-07)
 
