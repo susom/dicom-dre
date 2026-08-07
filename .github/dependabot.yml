@@ -35,7 +35,7 @@ updates:
 
   # Dev container base image and features.
   - package-ecosystem: "devcontainers"
-    directory: "/.devcontainer"
+    directory: "/"
     target-branch: "development"
     schedule:
       interval: "weekly"

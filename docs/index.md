@@ -88,13 +88,6 @@ reference/api
 
 ```{toctree}
 :maxdepth: 2
-:caption: Notes
-
-notes/iso-2022-specific-character-set
-```
-
-```{toctree}
-:maxdepth: 2
 :caption: About
 
 about/limitations
