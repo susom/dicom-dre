@@ -8,7 +8,8 @@ name: Deploy
 # The version, tag format, and branch/prerelease rules are configured under
 # [tool.semantic_release] in pyproject.toml.
 #
-# Release gating: nothing is tagged, committed, or released until every
+# Release gating: nothing is tagged, committed, or released until the test
+# suite passes, the dependency vulnerability scan passes, and every
 # distribution builds successfully. The `version` job computes the next version
 # without side effects; the build jobs stamp that version into the artifacts via
 # hatch-vcs's pretend-version mechanism (no tag exists yet); and only after all
@@ -33,8 +34,23 @@ jobs:
     permissions:
       contents: read
 
+  osv-scan:
+    name: Scan dependencies for vulnerabilities
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+
+      - name: Run osv-scanner
+        uses: google/osv-scanner-action/osv-scanner-action@9a498708959aeaef5ef730655706c5a1df1edbc2 # v2.3.8
+        with:
+          scan-args: |-
+            --lockfile=uv.lock
+
   version:
-    needs: test
+    needs: [test, osv-scan]
     runs-on: ubuntu-latest
     permissions:
       contents: read
