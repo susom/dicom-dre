@@ -176,6 +176,6 @@ class TestHashuid:
             def hexdigest(self) -> str:
                 return "0" * 32
 
-        monkeypatch.setattr(uid_utils.hashlib, "md5", lambda _data: _FakeMd5())
+        monkeypatch.setattr(uid_utils.hashlib, "md5", lambda _data, **_kwargs: _FakeMd5())
         result = hashuid("1.2.840.99", "1.2.3")
         assert result == "1.2.840.99.90", f"Expected a '9' before the zero digit, got {result!r}"
