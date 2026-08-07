@@ -22,7 +22,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 # Serialize deployments so concurrent release tag pushes do not race when
 # reconstructing and publishing the shared gh-pages tree.
@@ -33,6 +33,8 @@ concurrency:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write   # push the assembled site to the gh-pages branch
     steps:
       - name: Checkout
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
