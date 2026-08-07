@@ -1,0 +1,84 @@
+name: Fuzz
+
+# Using the Atheris fuzzing framework as oss-fuzz is Python 3.11 only.
+# Pull requests run a short regression budget; the nightly schedule
+# runs longer and persists the grown corpus via actions/cache.
+
+on:
+  pull_request:
+    paths:
+      - "src/**"
+      - "fuzz/**"
+      - ".github/workflows/fuzz.yml"
+  schedule:
+    - cron: "0 7 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  fuzz:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    env:
+      UV_NO_GROUP: docs
+    strategy:
+      fail-fast: false
+      matrix:
+        harness:
+          - fuzz_text_redactor
+          - fuzz_jpeg_dct
+          - fuzz_catalog_match
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@d4b2f3b6ecc6e67c4457f6d3e41ec42d3d0fcb86 # v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: uv sync
+
+      - name: Install Atheris
+        run: uv pip install atheris
+
+      - name: Restore corpus
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        with:
+          path: fuzz/corpus/${{ matrix.harness }}
+          key: fuzz-corpus-${{ matrix.harness }}-${{ github.run_id }}
+          restore-keys: |
+            fuzz-corpus-${{ matrix.harness }}-
+
+      - name: Fuzz ${{ matrix.harness }}
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            duration=120
+          else
+            duration=900
+          fi
+          mkdir -p "fuzz/corpus/${{ matrix.harness }}" crashes
+          # -timeout flags a single input exceeding 25s as a crash, catching
+          # catastrophic regex backtracking (ReDoS) in the redaction/catalog paths.
+          uv run python "fuzz/${{ matrix.harness }}.py" \
+            -max_total_time="$duration" \
+            -timeout=25 \
+            -rss_limit_mb=4096 \
+            -artifact_prefix=crashes/ \
+            "fuzz/corpus/${{ matrix.harness }}"
+
+      - name: Upload crashes
+        if: failure()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: fuzz-crashes-${{ matrix.harness }}
+          path: crashes/
+          if-no-files-found: ignore

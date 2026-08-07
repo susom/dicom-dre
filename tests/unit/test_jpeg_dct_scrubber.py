@@ -16,9 +16,13 @@ from pydicom.data import get_testdata_file
 from pydicom.encaps import get_frame
 
 from dicom_dre import jpeg_dct_scrubber
+from dicom_dre.jpeg_dct_scrubber import SOFInfo
+from dicom_dre.jpeg_dct_scrubber import SOSInfo
 from dicom_dre.jpeg_dct_scrubber import _block_overlaps_any_region
+from dicom_dre.jpeg_dct_scrubber import _parse_dht
 from dicom_dre.jpeg_dct_scrubber import _parse_sof
 from dicom_dre.jpeg_dct_scrubber import _size_and_amplitude
+from dicom_dre.jpeg_dct_scrubber import _validate_scan
 from dicom_dre.jpeg_dct_scrubber import jpeg_dct_accelerator_available
 from dicom_dre.jpeg_dct_scrubber import jpeg_dct_accelerator_info
 from dicom_dre.jpeg_dct_scrubber import scrub_jpeg
@@ -334,6 +338,14 @@ class TestUnsupportedJpeg:
         with pytest.raises(ValueError, match="Not a JPEG file"):
             scrub_jpeg_bytes(b"\x00\x01not-a-jpeg", [ScrubRegion(0, 0, 8, 8)])
 
+    def test_rejects_sos_before_sof(self):
+        """An SOS scan encountered before any SOF0 raises ValueError."""
+        # SOI, then an SOS header (1 component, ss=0 se=63) followed immediately
+        # by EOI so the entropy segment is empty and no SOF0 is ever seen.
+        data = bytes([0xFF, 0xD8, 0xFF, 0xDA, 0x00, 0x08, 0x01, 0x01, 0x00, 0x00, 0x3F, 0x00, 0xFF, 0xD9])
+        with pytest.raises(ValueError, match="SOS marker encountered before SOF0"):
+            scrub_jpeg_bytes(data, [])
+
 
 def _make_gradient_jpeg(
     mode: str,
@@ -474,3 +486,157 @@ class TestPureFallback:
         assert np.array_equal(orig_pixels, anon_pixels), (
             "Fallback with an empty region list should reproduce the input image"
         )
+
+
+class TestPureFallbackZeroRunLength:
+    """The fallback AC loop must handle a ZRL (0xF0) run-of-16-zeros code.
+
+    Real gradient fixtures rarely emit a ZRL, so the run-length branch of both
+    AC loops is exercised here with a hand-built single-block scan whose entropy
+    stream decodes to DC, then ZRL, then EOB.
+    """
+
+    @staticmethod
+    def _single_block_scan():
+        """Build minimal tables, headers, and entropy for one DC/ZRL/EOB block."""
+        from dicom_dre.jpeg_dct_scrubber import BitWriter
+        from dicom_dre.jpeg_dct_scrubber import HuffmanTable
+        from dicom_dre.jpeg_dct_scrubber import SOFInfo
+        from dicom_dre.jpeg_dct_scrubber import SOSInfo
+        from dicom_dre.jpeg_dct_scrubber import _encode_huffman
+
+        # DC table: one 1-bit code for symbol 0x00 (DC category 0 -> zero diff).
+        dc_table = HuffmanTable(0, 0, [0, 1] + [0] * 15, [0x00])
+        # AC table: two 2-bit codes for EOB (0x00) and ZRL (0xF0).
+        ac_table = HuffmanTable(1, 0, [0, 0, 2] + [0] * 14, [0x00, 0xF0])
+
+        writer = BitWriter()
+        _encode_huffman(writer, dc_table, 0x00)  # DC size 0
+        _encode_huffman(writer, ac_table, 0xF0)  # ZRL: skip 16 zero coefficients
+        _encode_huffman(writer, ac_table, 0x00)  # EOB
+        writer.flush()
+        entropy = bytearray(writer.get_bytes())
+
+        sof = SOFInfo(8, 8, 8, [(0, 1, 1, 0)])
+        sos = SOSInfo([(0, 0, 0)], 0, 63, 0, 0)
+        return entropy, sof, sos, {0: dc_table}, {0: ac_table}
+
+    def test_zrl_non_blank_path_terminates(self, monkeypatch):
+        """A pass-through block containing a ZRL code re-encodes and terminates."""
+        from dicom_dre.jpeg_dct_scrubber import _process_entropy_segment
+
+        monkeypatch.setattr(jpeg_dct_scrubber, "_HAS_C_ACCEL", False)
+        entropy, sof, sos, dc_tables, ac_tables = self._single_block_scan()
+        result = _process_entropy_segment(entropy, sof, sos, dc_tables, ac_tables, 0, [])
+        assert isinstance(result, bytes)
+
+    def test_zrl_blank_path_terminates(self, monkeypatch):
+        """A blanked block containing a ZRL code advances past it and terminates."""
+        from dicom_dre.jpeg_dct_scrubber import _process_entropy_segment
+
+        monkeypatch.setattr(jpeg_dct_scrubber, "_HAS_C_ACCEL", False)
+        entropy, sof, sos, dc_tables, ac_tables = self._single_block_scan()
+        result = _process_entropy_segment(entropy, sof, sos, dc_tables, ac_tables, 0, [(0, 0, 8, 8)])
+        assert isinstance(result, bytes)
+
+
+class TestParseDhtValidation:
+    """_parse_dht rejects out-of-range Huffman table class and id fields."""
+
+    def test_invalid_table_class_rejected(self):
+        """A table class above 1 (neither DC nor AC) is rejected."""
+        with pytest.raises(ValueError, match="Invalid Huffman table class"):
+            _parse_dht(bytes([0x20]))  # tc=2, th=0
+
+    def test_invalid_table_id_rejected(self):
+        """A table id above 3 is rejected."""
+        with pytest.raises(ValueError, match="Invalid Huffman table id"):
+            _parse_dht(bytes([0x04]))  # tc=0, th=4
+
+
+class TestValidateScan:
+    """_validate_scan rejects structurally invalid SOF0/SOS combinations."""
+
+    def test_no_components_rejected(self):
+        """A SOF0 declaring no components is rejected."""
+        sof = SOFInfo(8, 8, 8, [])
+        sos = SOSInfo([(1, 0, 0)], 0, 63, 0, 0)
+        with pytest.raises(ValueError, match="SOF0 declares no components"):
+            _validate_scan(sof, sos, {0: object()}, {0: object()})
+
+    def test_zero_sampling_factor_rejected(self):
+        """A component with a zero sampling factor is rejected."""
+        sof = SOFInfo(8, 8, 8, [(1, 0, 1, 0)])
+        sos = SOSInfo([(1, 0, 0)], 0, 63, 0, 0)
+        with pytest.raises(ValueError, match="invalid sampling factors"):
+            _validate_scan(sof, sos, {0: object()}, {0: object()})
+
+    def test_scan_component_not_in_sof_rejected(self):
+        """A scan referencing a component absent from SOF0 is rejected."""
+        sof = SOFInfo(8, 8, 8, [(1, 1, 1, 0)])
+        sos = SOSInfo([(2, 0, 0)], 0, 63, 0, 0)
+        with pytest.raises(ValueError, match="not present in SOF0"):
+            _validate_scan(sof, sos, {0: object()}, {0: object()})
+
+    def test_undefined_ac_table_rejected(self):
+        """A scan referencing an undefined AC Huffman table is rejected."""
+        sof = SOFInfo(8, 8, 8, [(1, 1, 1, 0)])
+        sos = SOSInfo([(1, 0, 0)], 0, 63, 0, 0)
+        with pytest.raises(ValueError, match="undefined AC Huffman table"):
+            _validate_scan(sof, sos, {0: object()}, {})
+
+
+class TestFuzzCrashRegressions:
+    """Regression tests for inputs that previously crashed the fuzz harness."""
+
+    @staticmethod
+    def _load_corpus(name: str) -> bytes:
+        """Read a committed fuzz corpus input by file name."""
+        from pathlib import Path
+
+        corpus_dir = Path(__file__).resolve().parents[2] / "fuzz" / "corpus" / "fuzz_jpeg_dct"
+        return (corpus_dir / name).read_bytes()
+
+    def test_huffman_table_oob_rejected_c_path(self):
+        """A scan referencing an undefined Huffman table is rejected, not crashed.
+
+        Regression for crash-huffman-table-oob-c1bb2643: the C entropy codec read
+        past the fixed-size huffval array, raising SIGSEGV. The scan now fails
+        structural validation with a ValueError instead of crashing the process.
+        """
+        data = self._load_corpus("crash-huffman-table-oob-c1bb2643")
+        with pytest.raises(ValueError):
+            scrub_jpeg_bytes(data, [ScrubRegion(0, 0, 65535, 65535)])
+
+    def test_huffman_table_oob_rejected_python_path(self, monkeypatch):
+        """The pure-Python fallback rejects the same input with a ValueError."""
+        data = self._load_corpus("crash-huffman-table-oob-c1bb2643")
+        monkeypatch.setattr(jpeg_dct_scrubber, "_HAS_C_ACCEL", False)
+        with pytest.raises(ValueError):
+            scrub_jpeg_bytes(data, [ScrubRegion(0, 0, 65535, 65535)])
+
+    def test_ac_runsize_infloop_terminates_c_path(self):
+        """An AC block that never reaches EOB terminates instead of hanging.
+
+        Regression for crash-ac-runsize-infloop-e827ebbe: an entropy stream that
+        runs out mid-block made the C AC loop decode a fixed run/size byte with
+        SSSS==0 and RRRR neither 0 (EOB) nor 15 (ZRL). Neither loop branch
+        advanced the coefficient index or broke, so the block loop spun forever
+        (libFuzzer reported a native-code timeout). The loop now breaks on any
+        SSSS==0 code that is not ZRL, so processing terminates.
+        """
+        data = self._load_corpus("crash-ac-runsize-infloop-e827ebbe")
+        result = scrub_jpeg_bytes(data, [ScrubRegion(0, 0, 65535, 65535)])
+        assert isinstance(result, bytes)
+
+    def test_ac_runsize_infloop_terminates_python_path(self, monkeypatch):
+        """The pure-Python fallback terminates on the same input.
+
+        The fallback exhausts the truncated entropy stream and raises EOFError,
+        which the fuzz harness treats as expected input rejection, rather than
+        looping forever.
+        """
+        data = self._load_corpus("crash-ac-runsize-infloop-e827ebbe")
+        monkeypatch.setattr(jpeg_dct_scrubber, "_HAS_C_ACCEL", False)
+        with pytest.raises(EOFError):
+            scrub_jpeg_bytes(data, [ScrubRegion(0, 0, 65535, 65535)])
