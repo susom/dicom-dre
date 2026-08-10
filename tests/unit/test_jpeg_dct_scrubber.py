@@ -605,14 +605,14 @@ class TestFuzzCrashRegressions:
         structural validation with a ValueError instead of crashing the process.
         """
         data = self._load_corpus("crash-huffman-table-oob-c1bb2643")
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError, match="references undefined"):
             scrub_jpeg_bytes(data, [ScrubRegion(0, 0, 65535, 65535)])
 
     def test_huffman_table_oob_rejected_python_path(self, monkeypatch):
         """The pure-Python fallback rejects the same input with a ValueError."""
         data = self._load_corpus("crash-huffman-table-oob-c1bb2643")
         monkeypatch.setattr(jpeg_dct_scrubber, "_HAS_C_ACCEL", False)
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError, match="references undefined"):
             scrub_jpeg_bytes(data, [ScrubRegion(0, 0, 65535, 65535)])
 
     def test_ac_runsize_infloop_terminates_c_path(self):
@@ -622,12 +622,13 @@ class TestFuzzCrashRegressions:
         runs out mid-block made the C AC loop decode a fixed run/size byte with
         SSSS==0 and RRRR neither 0 (EOB) nor 15 (ZRL). Neither loop branch
         advanced the coefficient index or broke, so the block loop spun forever
-        (libFuzzer reported a native-code timeout). The loop now breaks on any
-        SSSS==0 code that is not ZRL, so processing terminates.
+        (libFuzzer reported a native-code timeout). The AC loop now breaks on any
+        SSSS==0 code that is not ZRL, and the reader signals end of input, so the
+        exhausted stream is rejected with a ValueError instead of looping.
         """
         data = self._load_corpus("crash-ac-runsize-infloop-e827ebbe")
-        result = scrub_jpeg_bytes(data, [ScrubRegion(0, 0, 65535, 65535)])
-        assert isinstance(result, bytes)
+        with pytest.raises(ValueError, match="C entropy segment processing failed"):
+            scrub_jpeg_bytes(data, [ScrubRegion(0, 0, 65535, 65535)])
 
     def test_ac_runsize_infloop_terminates_python_path(self, monkeypatch):
         """The pure-Python fallback terminates on the same input.
@@ -638,5 +639,30 @@ class TestFuzzCrashRegressions:
         """
         data = self._load_corpus("crash-ac-runsize-infloop-e827ebbe")
         monkeypatch.setattr(jpeg_dct_scrubber, "_HAS_C_ACCEL", False)
-        with pytest.raises(EOFError):
+        with pytest.raises(EOFError, match="end of entropy-coded data"):
+            scrub_jpeg_bytes(data, [ScrubRegion(0, 0, 65535, 65535)])
+
+    def test_oversized_dimensions_eof_rejected_c_path(self):
+        """An image declaring more MCUs than the coded data supports is rejected.
+
+        Regression for crash-dims-eof-34f1a47b: a mutated SOF0 declared a
+        65024x65279 image (about 66 million MCUs) with only ~1 KB of entropy
+        data. The C BitReader substituted zero bits past end of input instead of
+        signalling exhaustion, so the MCU loop decoded empty blocks for every
+        declared MCU (libFuzzer reported a native-code timeout). The reader now
+        records end of input and the MCU loop aborts with a ValueError.
+        """
+        data = self._load_corpus("crash-dims-eof-34f1a47b")
+        with pytest.raises(ValueError, match="C entropy segment processing failed"):
+            scrub_jpeg_bytes(data, [ScrubRegion(0, 0, 65535, 65535)])
+
+    def test_oversized_dimensions_eof_rejected_python_path(self, monkeypatch):
+        """The pure-Python fallback rejects the same input with EOFError.
+
+        The fallback exhausts the entropy stream and raises EOFError, which the
+        fuzz harness treats as expected input rejection.
+        """
+        data = self._load_corpus("crash-dims-eof-34f1a47b")
+        monkeypatch.setattr(jpeg_dct_scrubber, "_HAS_C_ACCEL", False)
+        with pytest.raises(EOFError, match="end of entropy-coded data"):
             scrub_jpeg_bytes(data, [ScrubRegion(0, 0, 65535, 65535)])
