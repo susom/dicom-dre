@@ -1,22 +1,14 @@
 name: Deploy
 
-# Automated versioning and distribution driven by python-semantic-release.
-#
-# Pushes to `main` create release versions (e.g. 1.2.0).
-# Pushes to `development` create pre versions (e.g. 1.2.0-dev.1).
-#
-# The version, tag format, and branch/prerelease rules are configured under
+# Versioning and PyPI distribution via python-semantic-release, configured under
 # [tool.semantic_release] in pyproject.toml.
 #
-# Release gating: nothing is tagged, committed, or released until the test
-# suite passes, the dependency vulnerability scan passes, and every
-# distribution builds successfully. The `version` job computes the next version
-# without side effects; the build jobs stamp that version into the artifacts via
-# hatch-vcs's pretend-version mechanism (no tag exists yet); and only after all
-# builds succeed does the `release` job actually bump the version, write the
-# changelog, push the tag, create the GitHub Release, and upload the built
-# wheels and sdist. If any build fails, the repository is left untouched (no
-# tag, no commit, no release).
+# Pushes to `main` release and publish; pushes to `development` run the test and
+# osv-scan gate only. No prerelease versions are produced.
+#
+# Release gating: the version, build, and release jobs run only after the tests
+# and vulnerability scan pass, and nothing is tagged or published until every
+# distribution builds. A failed build leaves the repository untouched.
 
 on:
   push:
@@ -54,6 +46,9 @@ jobs:
 
   version:
     needs: [test, osv-scan]
+    # Only `main` produces releases. Pushes to `development` stop after the test
+    # and osv-scan gate, so no version, build, or publish occurs.
+    if: github.ref_name == 'main'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -192,11 +187,7 @@ jobs:
           github_token: ${{ steps.get_workflow_token.outputs.token }}
           git_committer_name: "github-actions"
           git_committer_email: "actions@users.noreply.github.com"
-          # Prerelease builds on `development` must not write CHANGELOG.md;
-          # only stable releases on `main` update the changelog. Combined with
-          # squash-merging `development` into `main`, this keeps prerelease tags
-          # off `main`'s history so each stable release section is populated.
-          changelog: ${{ github.ref_name == 'development' && 'false' || 'true' }}
+          changelog: true
 
       - name: Publish to PyPI
         # Uses PyPI Trusted Publishing (OIDC); configure a trusted publisher for

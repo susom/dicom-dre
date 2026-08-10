@@ -117,11 +117,6 @@ exclude_commit_patterns = [
 match = "main"
 prerelease = false
 
-[tool.semantic_release.branches.development]
-match = "development"
-prerelease = true
-prerelease_token = "dev"
-
 [tool.semantic_release.commit_parser_options]
 allowed_tags = ["build", "chore", "ci", "docs", "feat", "fix", "perf", "refactor", "style", "test"]
 minor_tags = ["feat"]

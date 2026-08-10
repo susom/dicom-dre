@@ -161,6 +161,7 @@ typedef struct {
     int pos;
     uint32_t bit_buffer;
     int bits_available;
+    int eof;
 } BitReader;
 
 static inline void br_init(BitReader *br, const uint8_t *data, int len) {
@@ -169,10 +170,17 @@ static inline void br_init(BitReader *br, const uint8_t *data, int len) {
     br->pos = 0;
     br->bit_buffer = 0;
     br->bits_available = 0;
+    br->eof = 0;
 }
 
 static inline int br_next_byte(BitReader *br) {
-    if (br->pos >= br->len) return -1;
+    if (br->pos >= br->len) {
+        /* A read past the entropy stream means the declared image geometry
+           needs more coded data than exists. Record it so the MCU loop can
+           stop instead of decoding millions of empty MCUs (native timeout). */
+        br->eof = 1;
+        return -1;
+    }
     int b = br->data[br->pos++];
     if (b == 0xFF && br->pos < br->len) {
         uint8_t next = br->data[br->pos];
@@ -466,6 +474,10 @@ int process_entropy_segment(
     int mcu_count = 0;
 
     for (int mcu_idx = 0; mcu_idx < total_mcus; mcu_idx++) {
+        /* Reject when the coded data ran out before all declared MCUs were
+           decoded; matches the Python fallback raising EOFError. */
+        if (reader.eof) return 3;
+
         int mcu_row = mcu_idx / mcus_per_row;
         int mcu_col = mcu_idx % mcus_per_row;
 
@@ -590,6 +602,10 @@ int process_entropy_segment(
             }
         }
     }
+
+    /* Reject truncation that occurred inside the final MCU; the boundary
+       check above cannot see it because the loop has already exited. */
+    if (reader.eof) return 3;
 
     bw_flush(&writer);
     *output_len = writer.pos;
