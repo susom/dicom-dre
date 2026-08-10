@@ -603,6 +603,10 @@ int process_entropy_segment(
         }
     }
 
+    /* Reject truncation that occurred inside the final MCU; the boundary
+       check above cannot see it because the loop has already exited. */
+    if (reader.eof) return 3;
+
     bw_flush(&writer);
     *output_len = writer.pos;
     return 0;
