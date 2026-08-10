@@ -2,6 +2,15 @@
 
 <!-- version list -->
 
+## v1.1.2 (2026-08-10)
+
+### Bug Fixes
+
+- Reject truncated JPEG entropy streams in the DCT accelerator instead of hanging
+  ([#10](https://github.com/susom/dicom-dre/pull/10),
+  [`50bfd9b`](https://github.com/susom/dicom-dre/commit/50bfd9b0f26cad1cafe4579b8df04e8577cb9547))
+
+
 ## v1.1.1 (2026-08-07)
 
 ### Bug Fixes
