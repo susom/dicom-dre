@@ -97,22 +97,22 @@ values from the supplied parameters. The available actions:
 
 Profiles compose these actions rather than parsing a script.
 
-### Device-scoped private-tag preservation
+### Private-tag preservation
 
 By default the engine removes every private data element that has no explicit
-tag rule. A device rule may name a small, reviewer-approved set of private
-elements to retain verbatim through its `preserved_private_tags` field (a tuple
-of `PrivateTagSpec`). When the catalog decision contains specs, the pipeline
-attaches them to the `DeidProfile`. At apply time, `DeidProfile.apply(ds, params)`
-resolves each spec's private-creator block (the block is runtime-assigned, not
-fixed) and keeps both the resolved data elements and their creator element. The
-engine removes all other private elements as usual. The engine stamps the
+tag rule. A profile declares a reviewer-approved set of private elements to
+retain verbatim through its `preserved_private_specs` field (a frozenset of
+`PrivateTagSpec`), keyed on the private-creator string. At apply time,
+`DeidProfile.apply(ds, params)` resolves each spec's private-creator block (the
+block is runtime-assigned, not fixed) and keeps both the resolved data elements
+and their creator element. The engine removes all other private elements as
+usual. The `default` profile declares the specs; `lds` and `lds-no-dob` inherit
+them, and `strict` declares the same set. The engine stamps the
 De-identification Method Code Sequence `(0012,0064)` on every de-identified
-instance; when preservation is active it adds the Retain Safe Private Option
-item `113111`, which appears only on files that preserve private tags.
+instance; it adds the Retain Safe Private Option item `113111` only on files
+that retain at least one preserved private element.
 
-See [Device Catalog](device-catalog.md#preserved-private-tags) and
-[Profiles](profiles.md).
+See [Profiles](profiles.md).
 
 ## Profiles
 

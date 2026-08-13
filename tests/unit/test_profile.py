@@ -6,9 +6,9 @@ from pydicom.tag import Tag
 from dicom_dre.actions import empty
 from dicom_dre.actions import keep
 from dicom_dre.actions import set_value
-from dicom_dre.catalog import PrivateTagSpec
 from dicom_dre.parameters import DeidParameters
 from dicom_dre.profile import DeidProfile
+from dicom_dre.profile import PrivateTagSpec
 
 
 _PARAMS = DeidParameters()
@@ -489,6 +489,22 @@ class TestDeidMethodCodeSequence:
         codes = self._code_values(ds)
         assert "113100" in codes, f"113100 missing: {codes}"
         assert "113111" in codes, f"113111 missing: {codes}"
+
+    def test_113111_absent_when_private_not_removed(self):
+        """113111 is not emitted when remove_private is False.
+
+        With private removal disabled, every private element is kept, which is
+        not the selective safe private option, so 113111 must not be emitted
+        even though the approved creator block is present.
+        """
+        ds = _signa_premier_dataset(block=0x10)
+        profile = _minimal_profile(
+            remove_private=False,
+            preserved_private_specs=frozenset({_GEMS_ACQU_SPEC, _GEMS_PARM_SPEC}),
+        )
+        profile.apply(ds, _PARAMS)
+        codes = self._code_values(ds)
+        assert "113111" not in codes, f"113111 should be absent when remove_private is False: {codes}"
 
     def test_modified_dates_code_present_for_date_modifying_profile(self):
         """113107 is emitted when the profile modifies (jitters) dates."""
@@ -1328,6 +1344,7 @@ class TestMethodCodeSequenceContents:
         profile = _minimal_profile(
             emits_basic_profile=True,
             modifies_dates=True,
+            remove_private=True,
             preserved_private_specs=frozenset({_GEMS_ACQU_SPEC}),
         )
         ds = _signa_premier_dataset(block=0x10)

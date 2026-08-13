@@ -9,7 +9,6 @@ from __future__ import annotations
 from dicom_dre.catalog import DeviceCatalog
 from dicom_dre.catalog import DeviceRule
 from dicom_dre.catalog import ExclusionRule
-from dicom_dre.catalog import PrivateTagSpec
 from dicom_dre.catalog import deny_modalities
 from dicom_dre.catalog import deny_when
 from dicom_dre.catalog import device
@@ -622,38 +621,6 @@ _breast_mri_devices: list[DeviceRule] = [
         burned_in_annotation="/^(?!YES$)/",
         rows=512,
         cols=512,
-    ),
-    # 30b. GE SIGNA Premier MR - preserved private tags
-    device(
-        "GE SIGNA Premier MR - preserved private tags",
-        "allow",
-        manufacturer="=GE MEDICAL SYSTEMS",
-        modality="=MR",
-        manufacturer_model_name="/(?i)^SIGNA Premier$/",
-        # Guards reproducing the bypassed exclusions (a device match skips the
-        # entire exclusion pass, so every deny rule that could apply to this
-        # scanner must be mirrored inline):
-        #   - burned_in_annotation: reproduces "BurnedInAnnotation YES".
-        #   - image_type all-of [ORIGINAL, PRIMARY]: reproduces "Empty ImageType",
-        #     "Non-CR/DR/DX SECONDARY", and "MR DERIVED without PRIMARY".
-        #   - image_type_exclude MRSC: reproduces "MR MRSC".
-        #   - sop_class_uid starts-with the MR Image Storage family: reproduces
-        #     the SOP-class denials (Secondary Capture 1.2.840.10008.5.1.4.1.1.7,
-        #     Encapsulated PDF .104.1, presentation state .11., SR/KO .8) by
-        #     admitting only MR image SOP classes.
-        #   - ConversionType absent/blank: reproduces "Non-CR/DR/DX with
-        #     ConversionType" (an MR with ConversionType would otherwise be denied).
-        # Sample: ORIG Ax SWI, ORIGINAL\PRIMARY\OTHER, 256x256, SOP
-        # 1.2.840.10008.5.1.4.1.1.4.
-        burned_in_annotation="/^(?!YES$)/",
-        image_type=["ORIGINAL", "PRIMARY"],
-        image_type_exclude="MRSC",
-        sop_class_uid="^1.2.840.10008.5.1.4.1.1.4",
-        conversion_type="=",
-        preserved_private_tags=(
-            PrivateTagSpec(group=0x0019, creator="GEMS_ACQU_01", offsets=(0xBB, 0xBC, 0xBD)),
-            PrivateTagSpec(group=0x0043, creator="GEMS_PARM_01", offsets=(0x2F,)),
-        ),
     ),
 ]
 

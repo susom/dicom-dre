@@ -1,9 +1,9 @@
 """Shared fixtures for deidentifyr unit tests.
 
-Provides a synthetic GE SIGNA Premier MR instance that matches the device
-catalog rule carrying preserved private-tag specs. The dataset is built
-programmatically (no PHI, no committed binary) and written to a temporary
-path so tests can exercise the pipeline end to end.
+Provides a synthetic GE SIGNA Premier MR instance carrying the private creators
+that the profiles preserve. The dataset is built programmatically (no PHI, no
+committed binary) and written to a temporary path so tests can exercise the
+pipeline end to end.
 
 Pydicom is imported inside functions rather than at module level to avoid
 triggering a GDCM segfault during pytest collection on ARM64. See the root
@@ -56,11 +56,11 @@ PHI_ELEMENTS = [
 def _build_signa_premier_dataset() -> Dataset:
     """Build a synthetic GE SIGNA Premier MR dataset with no PHI.
 
-    The dataset carries the scanner identity that the catalog rule matches,
-    the four preserved private elements plus their creators, decoy private
-    elements that must be removed, and standard identifier tags that normal
-    de-identification must scrub. Private-creator values are space padded to
-    exercise creator-block resolution.
+    The dataset carries the scanner identity, the four preserved private
+    elements plus their creators, decoy private elements that must be removed,
+    and standard identifier tags that normal de-identification must scrub.
+    Private-creator values are space padded to exercise creator-block
+    resolution.
     """
     from pydicom.dataset import Dataset
     from pydicom.dataset import FileMetaDataset
@@ -71,7 +71,7 @@ def _build_signa_premier_dataset() -> Dataset:
 
     ds = Dataset()
 
-    # Scanner identity — matches "GE SIGNA Premier MR - preserved private tags".
+    # Scanner identity for a GE SIGNA Premier MR instance.
     ds.add_new(Tag(0x0008, 0x0060), "CS", "MR")  # Modality
     ds.add_new(Tag(0x0008, 0x0070), "LO", "GE MEDICAL SYSTEMS")  # Manufacturer
     ds.add_new(Tag(0x0008, 0x1090), "LO", "SIGNA Premier")  # ManufacturerModelName

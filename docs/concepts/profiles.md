@@ -255,7 +255,7 @@ profile emits follow from its configuration:
 | `113108` | Retain Patient Characteristics Option | Declared in `deid_options` (`default`, `lds`, `lds-no-dob`) |
 | `113103` | Clean Graphics Option | Declared in `deid_options` (`strict`) |
 | `113104` | Clean Structured Content Option | Declared in `deid_options` (`default`, `strict`) |
-| `113111` | Retain Safe Private Option | Only when the instance retains device-approved private tags (see [Device Catalog](device-catalog.md)) |
+| `113111` | Retain Safe Private Option | When the instance retains a preserved private element (all profiles declare the same approved private-creator specs) |
 
 The temporal code is derived from the profile's date policy: `113107` for
 modified dates, `113106` for full dates, and neither when dates are removed

@@ -21,7 +21,6 @@ if TYPE_CHECKING:
     from pydicom.dataset import Dataset
 
     from dicom_dre.actions import TagAction
-    from dicom_dre.catalog import PrivateTagSpec
     from dicom_dre.parameters import DeidParameters
 
 # File Meta Information group is always preserved.
@@ -59,6 +58,22 @@ _PROTECTED_TAGS: frozenset[BaseTag] = frozenset(
         Tag(0x0020, 0x000D),  # StudyInstanceUID
     }
 )
+
+
+@dataclass(frozen=True, slots=True)
+class PrivateTagSpec:
+    """An approved private element to preserve verbatim.
+
+    Attributes:
+        group: Private group number (odd), e.g. 0x0019.
+        creator: Private creator string, e.g. "GEMS_ACQU_01".
+        offsets: Element offsets (low byte) to preserve within the
+            creator's resolved block, e.g. (0xBB, 0xBC, 0xBD).
+    """
+
+    group: int
+    creator: str
+    offsets: tuple[int, ...]
 
 
 @dataclass(frozen=True)
@@ -412,9 +427,12 @@ class DeidProfile:
         modified dates, 113106 for full dates, none when dates are removed); one
         item per code in ``deid_options`` unioned with ``applied_options`` (the
         per-instance codes the caller applied outside the rules); and 113111
-        (Retain Safe Private Option) when private elements are preserved. Codes
-        are de-duplicated before writing. Runs after global rules, since the
-        strict profile removes any element without an explicit rule.
+        (Retain Safe Private Option) when this profile removes private groups
+        and retains an approved private element. When ``remove_private`` is
+        False, all private elements are kept, which is not the selective safe
+        private option, so 113111 is not emitted. Codes are de-duplicated
+        before writing. Runs after global rules, since the strict profile
+        removes any element without an explicit rule.
         """
         from pydicom.dataset import Dataset as PydicomDataset
 
@@ -427,7 +445,7 @@ class DeidProfile:
             codes.append(("113106", "Retain Longitudinal Temporal Information With Full Dates"))
         for code_value in sorted(self.deid_options | applied_options):
             codes.append((code_value, _DEID_OPTION_MEANINGS.get(code_value, code_value)))
-        if self.preserved_private_specs:
+        if self.remove_private and self.preserved_private_specs and self._resolve_preserved_tags(ds):
             codes.append(("113111", "Retain Safe Private Option"))
 
         seen: set[str] = set()

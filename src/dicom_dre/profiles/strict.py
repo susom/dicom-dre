@@ -35,6 +35,7 @@ from dicom_dre.profiles.config import ProfileSettings
 from dicom_dre.profiles.default import DATE_TAGS
 from dicom_dre.profiles.default import EMPTY_TAGS
 from dicom_dre.profiles.default import PHI_REMOVE_TAGS
+from dicom_dre.profiles.default import PRESERVED_PRIVATE_SPECS
 from dicom_dre.profiles.default import redact_description
 from dicom_dre.profiles.default import redact_free_text
 
@@ -493,6 +494,7 @@ def strict_profile(settings: ProfileSettings | None = None) -> DeidProfile:
         hash_salt=settings.hash_salt,
         uid_root=settings.uid_root,
         uid_use_study_salt=False,
+        preserved_private_specs=PRESERVED_PRIVATE_SPECS,
         emits_basic_profile=False,
         deid_options=frozenset({"113103", "113104"}),
         content_root_tags=STRICT_CONTENT_ROOT_TAGS,
