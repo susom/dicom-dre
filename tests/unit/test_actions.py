@@ -695,7 +695,7 @@ class TestDsToDecimal:
 
         assert _ds_to_decimal(2) == Decimal("2"), "An int should convert to Decimal"
 
-    def test_float_value_uses_repr(self) -> None:
+    def test_float_value_uses_str(self) -> None:
         """A bare float is converted via its string form."""
         from decimal import Decimal
 
@@ -870,7 +870,11 @@ class TestRoundDecimalString:
         assert ds[tag].value == "", f"A multi-valued DS should become empty, got {ds[tag].value!r}"
 
     def test_unparseable_value_becomes_empty(self) -> None:
-        """A DS value that cannot be parsed as a Decimal is replaced with an empty value."""
+        """A value that cannot be parsed as a Decimal is replaced with an empty value.
+
+        pydicom rejects an unparseable DS value at creation, so the element is
+        given VR "SH" to carry a non-numeric string into the action.
+        """
         from dicom_dre.actions import round_decimal_string
 
         ds = _dataset()
