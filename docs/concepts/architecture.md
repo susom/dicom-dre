@@ -109,8 +109,10 @@ and their creator element. The engine removes all other private elements as
 usual. The `default` profile declares the specs; `lds` and `lds-no-dob` inherit
 them, and `strict` declares the same set. The engine stamps the
 De-identification Method Code Sequence `(0012,0064)` on every de-identified
-instance; it adds the Retain Safe Private Option item `113111` only on files
-that retain at least one preserved private element.
+instance; it adds the Retain Safe Private Option item `113111` only when the
+profile removes private groups (`remove_private`) and the instance retains at
+least one preserved private element. A profile that keeps all private elements
+does not emit `113111`, since that is not the selective safe private option.
 
 See [Profiles](profiles.md).
 

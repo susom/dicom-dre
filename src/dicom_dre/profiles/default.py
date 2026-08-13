@@ -40,9 +40,21 @@ from dicom_dre.text_redactor import get_text_redactor
 # inherit the set; the strict profile imports it directly.
 PRESERVED_PRIVATE_SPECS: frozenset[PrivateTagSpec] = frozenset(
     {
-        PrivateTagSpec(group=0x0019, creator="GEMS_ACQU_01", offsets=(0x11, 0x5A, 0x90, 0x91, 0xBB, 0xBC, 0xBD)),
-        PrivateTagSpec(group=0x0043, creator="GEMS_PARM_01", offsets=(0x08, 0x09, 0x2F)),
-        PrivateTagSpec(group=0x0027, creator="GEMS_IMAG_01", offsets=(0x62,)),
+        PrivateTagSpec(
+            group=0x0019,
+            creator="GEMS_ACQU_01",
+            offsets=(0x11, 0x5A, 0x90, 0x91, 0xBB, 0xBC, 0xBD),
+        ),
+        PrivateTagSpec(
+            group=0x0043,
+            creator="GEMS_PARM_01",
+            offsets=(0x08, 0x09, 0x2F),
+        ),
+        PrivateTagSpec(
+            group=0x0027,
+            creator="GEMS_IMAG_01",
+            offsets=(0x62,),
+        ),
     }
 )
 

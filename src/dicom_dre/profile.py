@@ -396,7 +396,10 @@ class DeidProfile:
         Returns the set of data-element tags plus their private-creator tags
         that must survive global private-group removal. The creator block is
         resolved from the creator value, since a group may host multiple
-        creators.
+        creators. A creator tag is included only when at least one of the spec's
+        approved data elements is present in its block; a matched creator whose
+        block contains none of the approved elements contributes nothing, so it
+        is removed with the rest of the private group.
         """
         keep: set[BaseTag] = set()
         if not self.preserved_private_specs:
@@ -410,11 +413,14 @@ class DeidProfile:
                 # before comparing so a padded "GEMS_ACQU_01 " still matches.
                 if str(ds[creator_tag].value).strip() != spec.creator:
                     continue
-                keep.add(creator_tag)
-                for offset in spec.offsets:
-                    data_tag = Tag(spec.group, (block << 8) | offset)
-                    if data_tag in ds:
-                        keep.add(data_tag)
+                data_tags = {
+                    Tag(spec.group, (block << 8) | offset)
+                    for offset in spec.offsets
+                    if Tag(spec.group, (block << 8) | offset) in ds
+                }
+                if data_tags:
+                    keep.add(creator_tag)
+                    keep.update(data_tags)
                 break
         return keep
 

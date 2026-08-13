@@ -407,6 +407,22 @@ class TestPreservedPrivateBlockResolution:
         keep_tags = profile._resolve_preserved_tags(ds)
         assert Tag(0x0019, 0x10BB) in keep_tags, "space-padded creator value should still match"
 
+    def test_creator_without_approved_elements_yields_no_preservation(self):
+        """A matched creator with none of its approved data elements is not kept.
+
+        The creator block is present and its value matches the spec, but none of
+        the approved offsets resolve to an element. The creator tag must not be
+        preserved, so it is removed with the rest of the private group.
+        """
+        ds = Dataset()
+        ds.add_new(Tag(0x0019, 0x0010), "LO", "GEMS_ACQU_01")
+        ds.add_new(Tag(0x0019, 0x10EE), "LO", "vendor junk")
+        profile = _minimal_profile(
+            remove_private=True,
+            preserved_private_specs=frozenset({_GEMS_ACQU_SPEC}),
+        )
+        assert profile._resolve_preserved_tags(ds) == set(), "creator with no approved elements should not be preserved"
+
 
 class TestPreservedPrivateKeepVsRemove:
     """Preserved private elements survive while others are removed."""
@@ -505,6 +521,24 @@ class TestDeidMethodCodeSequence:
         profile.apply(ds, _PARAMS)
         codes = self._code_values(ds)
         assert "113111" not in codes, f"113111 should be absent when remove_private is False: {codes}"
+
+    def test_113111_absent_when_only_creator_present(self):
+        """113111 is not emitted when a matched creator has no approved element.
+
+        The creator value matches the spec but none of its approved data
+        elements are present, so no preserved private element is actually
+        retained and 113111 must not be emitted.
+        """
+        ds = Dataset()
+        ds.add_new(Tag(0x0019, 0x0010), "LO", "GEMS_ACQU_01")
+        ds.add_new(Tag(0x0019, 0x10EE), "LO", "vendor junk")
+        profile = _minimal_profile(
+            remove_private=True,
+            preserved_private_specs=frozenset({_GEMS_ACQU_SPEC}),
+        )
+        profile.apply(ds, _PARAMS)
+        codes = self._code_values(ds)
+        assert "113111" not in codes, f"113111 should be absent when only the creator is present: {codes}"
 
     def test_modified_dates_code_present_for_date_modifying_profile(self):
         """113107 is emitted when the profile modifies (jitters) dates."""
