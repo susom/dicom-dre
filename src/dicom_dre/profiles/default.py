@@ -23,6 +23,7 @@ from dicom_dre.actions import if_exists
 from dicom_dre.actions import jitter_date
 from dicom_dre.actions import keep
 from dicom_dre.actions import remove
+from dicom_dre.actions import round_decimal_string
 from dicom_dre.actions import set_param
 from dicom_dre.actions import set_value
 from dicom_dre.parameters import DEFAULT_STUDY_ID
@@ -44,7 +45,6 @@ PRESERVED_PRIVATE_SPECS: frozenset[PrivateTagSpec] = frozenset(
         PrivateTagSpec(group=0x0027, creator="GEMS_IMAG_01", offsets=(0x62,)),
     }
 )
-
 
 # Tags removed during de-identification because they may carry PHI.
 PHI_REMOVE_TAGS: frozenset[BaseTag] = frozenset(
@@ -87,8 +87,6 @@ PHI_REMOVE_TAGS: frozenset[BaseTag] = frozenset(
         Tag(0x0010, 0x1001),  # OtherPatientNames
         Tag(0x0010, 0x1002),  # OtherPatientIDsSeq
         Tag(0x0010, 0x1005),  # PatientBirthName
-        Tag(0x0010, 0x1020),  # PatientSize
-        Tag(0x0010, 0x1030),  # PatientWeight
         Tag(0x0010, 0x1040),  # PatientAddress
         Tag(0x0010, 0x1050),  # InsurancePlanIdentification
         Tag(0x0010, 0x1060),  # PatientMotherBirthName
@@ -124,8 +122,6 @@ PHI_REMOVE_TAGS: frozenset[BaseTag] = frozenset(
         Tag(0x0018, 0x4000),  # AcquisitionComments
         Tag(0x0018, 0x700A),  # DetectorID
         Tag(0x0018, 0x700C),  # DateOfLastDetectorCalibration
-        Tag(0x0018, 0x9074),  # FrameAcquisitionDatetime
-        Tag(0x0018, 0x9151),  # FrameReferenceDatetime
         Tag(0x0018, 0x9424),  # AcquisitionProtocolDescription
         Tag(0x0018, 0x9506),  # ContributingSourcesSequence
         Tag(0x0018, 0xA003),  # ContributionDescription
@@ -138,23 +134,17 @@ PHI_REMOVE_TAGS: frozenset[BaseTag] = frozenset(
         Tag(0x0032, 0x0012),  # StudyIDIssuer
         Tag(0x0032, 0x0032),  # StudyVerifiedDate
         Tag(0x0032, 0x0034),  # StudyReadDate
-        Tag(0x0032, 0x1000),  # ScheduledStudyStartDate
-        Tag(0x0032, 0x1010),  # ScheduledStudyStopDate
         Tag(0x0032, 0x1020),  # ScheduledStudyLocation
         Tag(0x0032, 0x1021),  # ScheduledStudyLocationAET
         Tag(0x0032, 0x1030),  # ReasonforStudy
         Tag(0x0032, 0x1032),  # RequestingPhysician
         Tag(0x0032, 0x1033),  # RequestingService
-        Tag(0x0032, 0x1040),  # StudyArrivalDate
-        Tag(0x0032, 0x1050),  # StudyCompletionDate
         Tag(0x0032, 0x1060),  # RequestedProcedureDescription
         Tag(0x0032, 0x1070),  # RequestedContrastAgent
         Tag(0x0032, 0x4000),  # StudyComments
         Tag(0x0038, 0x0004),  # RefPatientAliasSeq
         Tag(0x0038, 0x0010),  # AdmissionID
         Tag(0x0038, 0x0011),  # IssuerOfAdmissionID
-        Tag(0x0038, 0x001A),  # ScheduledAdmissionDate
-        Tag(0x0038, 0x001C),  # ScheduledDischargeDate
         Tag(0x0038, 0x001E),  # ScheduledPatientInstitutionResidence
         Tag(0x0038, 0x0040),  # DischargeDiagnosisDescription
         Tag(0x0038, 0x0050),  # SpecialNeeds
@@ -192,7 +182,6 @@ PHI_REMOVE_TAGS: frozenset[BaseTag] = frozenset(
         Tag(0x0040, 0x1104),  # PersonTelecomInformation
         Tag(0x0040, 0x1400),  # RequestedProcedureComments
         Tag(0x0040, 0x2001),  # ReasonForTheImagingServiceRequest
-        Tag(0x0040, 0x2004),  # IssueDateOfImagingServiceRequest
         Tag(0x0040, 0x2008),  # OrderEnteredBy
         Tag(0x0040, 0x2009),  # OrderEntererLocation
         Tag(0x0040, 0x2010),  # OrderCallbackPhoneNumber
@@ -210,6 +199,7 @@ PHI_REMOVE_TAGS: frozenset[BaseTag] = frozenset(
         Tag(0x0040, 0xA027),  # VerifyingOrganization
         Tag(0x0040, 0xA030),  # VerificationDateTime
         Tag(0x0040, 0xA032),  # ObservationDateTime
+        Tag(0x0040, 0xA075),  # VerifyingObserverName
         Tag(0x0040, 0xA078),  # AuthorObserverSequence
         Tag(0x0040, 0xA07A),  # ParticipantSequence
         Tag(0x0040, 0xA07C),  # CustodialOrganizationSeq
@@ -418,7 +408,7 @@ PHI_REMOVE_TAGS: frozenset[BaseTag] = frozenset(
     }
 )
 
-# 37 UID tags re-hashed to deterministic replacement UIDs.
+# UID tags always re-hashed to deterministic replacement UIDs (UID fall-through will catch others).
 UID_TAGS: frozenset[BaseTag] = frozenset(
     {
         Tag(0x0000, 0x1001),  # RequestedSOPInstanceUID
@@ -461,7 +451,7 @@ UID_TAGS: frozenset[BaseTag] = frozenset(
     }
 )
 
-# 89 date/datetime tags shifted by the jitter amount, each only when present.
+# Date/DateTime tags shifted by the jitter amount, each only when present.
 DATE_TAGS: frozenset[BaseTag] = frozenset(
     {
         Tag(0x0008, 0x0012),  # InstanceCreationDate
@@ -478,11 +468,20 @@ DATE_TAGS: frozenset[BaseTag] = frozenset(
         Tag(0x0018, 0x1012),  # DateOfSecondaryCapture
         Tag(0x0018, 0x9516),  # StartAcquisitionDateTime
         Tag(0x0018, 0x9517),  # EndAcquisitionDateTime
+        Tag(0x0018, 0x9074),  # FrameAcquisitionDatetime
+        Tag(0x0018, 0x9151),  # FrameReferenceDatetime
+        Tag(0x0032, 0x1000),  # ScheduledStudyStartDate
+        Tag(0x0032, 0x1010),  # ScheduledStudyStopDate
+        Tag(0x0032, 0x1040),  # StudyArrivalDate
+        Tag(0x0032, 0x1050),  # StudyCompletionDate
+        Tag(0x0038, 0x001A),  # ScheduledAdmissionDate
+        Tag(0x0038, 0x001C),  # ScheduledDischargeDate
         Tag(0x0038, 0x0020),  # AdmittingDate
         Tag(0x0040, 0x0002),  # SPSStartDate
         Tag(0x0040, 0x0004),  # SPSEndDate
         Tag(0x0040, 0x0244),  # PPSStartDate
         Tag(0x0040, 0x0250),  # PPSEndDate
+        Tag(0x0040, 0x2004),  # IssueDateOfImagingServiceRequest
         Tag(0x0040, 0x4005),  # ScheduledProcedureStepStartDateTime
         Tag(0x0040, 0x4008),  # ScheduledProcedureStepExpirationDateTime
         Tag(0x0040, 0x4010),  # ScheduledProcedureStepModificationDateTime
@@ -557,8 +556,7 @@ DATE_TAGS: frozenset[BaseTag] = frozenset(
     }
 )
 
-# 74 tags preserved unchanged during de-identification. Membership in a
-# profile's rules exempts these from global removal, which matters for
+# Membership in a profile's rules exempts these from global removal, which matters for
 # profiles that set remove_unspecified=True.
 KEEP_TAGS: frozenset[BaseTag] = frozenset(
     {
@@ -572,6 +570,7 @@ KEEP_TAGS: frozenset[BaseTag] = frozenset(
         Tag(0x0008, 0x0034),  # OverlayTime
         Tag(0x0008, 0x0035),  # CurveTime
         Tag(0x0008, 0x0060),  # Modality
+        Tag(0x0008, 0x0070),  # Manufacturer
         Tag(0x0008, 0x1150),  # RefSOPClassUID
         Tag(0x0008, 0x2130),  # EventElapsedTime
         Tag(0x0010, 0x0040),  # PatientSex
@@ -586,6 +585,7 @@ KEEP_TAGS: frozenset[BaseTag] = frozenset(
         Tag(0x0018, 0x1043),  # ContrastBolusStopTime
         Tag(0x0018, 0x1060),  # TriggerTime
         Tag(0x0018, 0x1063),  # FrameTime
+        Tag(0x0018, 0x1065),  # FrameTimeVector
         Tag(0x0018, 0x1072),  # RadiopharmaceuticalStartTime
         Tag(0x0018, 0x1073),  # RadiopharmaceuticalStopTime
         Tag(0x0018, 0x1150),  # ExposureTime
@@ -646,7 +646,6 @@ KEEP_TAGS: frozenset[BaseTag] = frozenset(
 EMPTY_TAGS: frozenset[BaseTag] = frozenset(
     {
         Tag(0x0008, 0x0090),  # ReferringPhysicianName
-        Tag(0x0018, 0x1065),  # FrameTimeVector
         Tag(0x0020, 0x0010),  # StudyID
         Tag(0x0040, 0x0550),  # SpecimenSeq
         Tag(0x0040, 0x0551),  # SpecimenIdentifier
@@ -805,11 +804,10 @@ def _build_constant_rules() -> dict[BaseTag, TagAction]:
 
     The action objects are stateless closures, so one instance is shared across
     all tags in each category: ``dict.fromkeys`` assigns a single value to every
-    key, and ``remove_action`` is reused for the lone VerifyingObserverName rule.
+    key.
     """
-    remove_action = remove()
     rules: dict[BaseTag, TagAction] = {}
-    rules.update(dict.fromkeys(PHI_REMOVE_TAGS, remove_action))
+    rules.update(dict.fromkeys(PHI_REMOVE_TAGS, remove()))
     rules.update(dict.fromkeys(KEEP_TAGS, keep()))
     rules.update(dict.fromkeys(EMPTY_TAGS, empty()))
 
@@ -819,7 +817,8 @@ def _build_constant_rules() -> dict[BaseTag, TagAction]:
         "MODIFIED", create_if_missing=True
     )
     rules[Tag(0x0010, 0x1010)] = cap_age(89, "090Y")  # PatientAge
-    rules[Tag(0x0040, 0xA075)] = remove_action  # VerifyingObserverName
+    rules[Tag(0x0010, 0x1020)] = round_decimal_string("0.05")  # PatientSize, nearest 5 cm
+    rules[Tag(0x0010, 0x1030)] = round_decimal_string("5")  # PatientWeight, nearest 5 kg
 
     # Dummy-value attributes (PS3.15 Table E.1-1 action code D): replaced with a
     # fixed, VR-valid non-empty value when present. create_if_missing is left at
