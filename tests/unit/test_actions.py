@@ -668,6 +668,218 @@ class TestCapAge:
         assert ds[tag].value == "abc", "A non-numeric age should be left unchanged"
 
 
+class TestDsToDecimal:
+    """The private _ds_to_decimal DS-to-Decimal conversion helper."""
+
+    def test_parses_plain_string(self) -> None:
+        """A plain DS string is parsed to an exact Decimal."""
+        from decimal import Decimal
+
+        from dicom_dre.actions import _ds_to_decimal
+
+        assert _ds_to_decimal("1.75") == Decimal("1.75"), "A plain string should parse exactly"
+
+    def test_strips_surrounding_whitespace(self) -> None:
+        """A DS string padded with whitespace is stripped before parsing."""
+        from decimal import Decimal
+
+        from dicom_dre.actions import _ds_to_decimal
+
+        assert _ds_to_decimal("  1.75 ") == Decimal("1.75"), "Whitespace should be stripped"
+
+    def test_integer_value(self) -> None:
+        """An int value is converted to a Decimal."""
+        from decimal import Decimal
+
+        from dicom_dre.actions import _ds_to_decimal
+
+        assert _ds_to_decimal(2) == Decimal("2"), "An int should convert to Decimal"
+
+    def test_float_value_uses_repr(self) -> None:
+        """A bare float is converted via its string form."""
+        from decimal import Decimal
+
+        from dicom_dre.actions import _ds_to_decimal
+
+        assert _ds_to_decimal(1.5) == Decimal("1.5"), "A float should convert via its string form"
+
+    def test_decimal_passthrough(self) -> None:
+        """A Decimal value is returned unchanged."""
+        from decimal import Decimal
+
+        from dicom_dre.actions import _ds_to_decimal
+
+        value = Decimal("1.75")
+        assert _ds_to_decimal(value) == value, "A Decimal should pass through unchanged"
+
+    def test_ds_float_uses_original_string(self) -> None:
+        """A pydicom DSfloat is parsed from its retained original string."""
+        from decimal import Decimal
+
+        from pydicom.valuerep import DSfloat
+
+        from dicom_dre.actions import _ds_to_decimal
+
+        value = DSfloat("1.75")
+        assert _ds_to_decimal(value) == Decimal("1.75"), "A DSfloat should parse from its original string"
+
+    def test_original_string_takes_precedence_over_numeric_value(self) -> None:
+        """When original_string is present it is used in preference to the numeric value."""
+        from decimal import Decimal
+
+        from dicom_dre.actions import _ds_to_decimal
+
+        class _WithOriginal(float):
+            original_string = "1.75"
+
+        assert _ds_to_decimal(_WithOriginal(9.99)) == Decimal("1.75"), (
+            "original_string should take precedence over the numeric value"
+        )
+
+    def test_unsupported_type_raises_type_error(self) -> None:
+        """A value of an unsupported type raises TypeError."""
+        import pytest
+
+        from dicom_dre.actions import _ds_to_decimal
+
+        with pytest.raises(TypeError, match="unsupported DS value type"):
+            _ds_to_decimal(b"1.75")
+
+    def test_malformed_string_raises_arithmetic_error(self) -> None:
+        """A non-numeric DS string raises an ArithmeticError from Decimal."""
+        from decimal import InvalidOperation
+
+        import pytest
+
+        from dicom_dre.actions import _ds_to_decimal
+
+        with pytest.raises(InvalidOperation):
+            _ds_to_decimal("N/A")
+
+
+class TestRoundDecimalString:
+    """The round_decimal_string action factory (PatientSize and PatientWeight)."""
+
+    def test_rounds_size_down_to_nearest_5cm(self) -> None:
+        """A PatientSize below the half step rounds down to the nearest 5 cm."""
+        from dicom_dre.actions import round_decimal_string
+
+        ds = _dataset()
+        tag = _tag(0x0010, 0x1020)
+        ds.add_new(tag, "DS", "1.77")
+        round_decimal_string("0.05")(ds, tag, DeidParameters())
+        assert ds[tag].value == "1.75", f"1.77 m should round down to 1.75, got {ds[tag].value}"
+
+    def test_rounds_size_up_to_nearest_5cm(self) -> None:
+        """A PatientSize above the half step rounds up to the nearest 5 cm."""
+        from dicom_dre.actions import round_decimal_string
+
+        ds = _dataset()
+        tag = _tag(0x0010, 0x1020)
+        ds.add_new(tag, "DS", "1.78")
+        round_decimal_string("0.05")(ds, tag, DeidParameters())
+        assert ds[tag].value == "1.80", f"1.78 m should round up to 1.80, got {ds[tag].value}"
+
+    def test_rounds_size_half_up(self) -> None:
+        """A PatientSize exactly on the half step rounds up (ROUND_HALF_UP)."""
+        from dicom_dre.actions import round_decimal_string
+
+        ds = _dataset()
+        tag = _tag(0x0010, 0x1020)
+        ds.add_new(tag, "DS", "1.725")
+        round_decimal_string("0.05")(ds, tag, DeidParameters())
+        assert ds[tag].value == "1.75", f"1.725 m should round half-up to 1.75, got {ds[tag].value}"
+
+    def test_exact_multiple_is_preserved(self) -> None:
+        """A PatientSize already on a 5 cm boundary is preserved."""
+        from dicom_dre.actions import round_decimal_string
+
+        ds = _dataset()
+        tag = _tag(0x0010, 0x1020)
+        ds.add_new(tag, "DS", "1.75")
+        round_decimal_string("0.05")(ds, tag, DeidParameters())
+        assert ds[tag].value == "1.75", f"1.75 m should be preserved, got {ds[tag].value}"
+
+    def test_integer_valued_string_gets_two_decimals(self) -> None:
+        """An integer-valued DS string is formatted with two decimal places."""
+        from dicom_dre.actions import round_decimal_string
+
+        ds = _dataset()
+        tag = _tag(0x0010, 0x1020)
+        ds.add_new(tag, "DS", "2")
+        round_decimal_string("0.05")(ds, tag, DeidParameters())
+        assert ds[tag].value == "2.00", f"2 m should format as 2.00, got {ds[tag].value}"
+
+    def test_high_precision_value_is_rounded(self) -> None:
+        """A PatientSize with more precision than the step is rounded."""
+        from dicom_dre.actions import round_decimal_string
+
+        ds = _dataset()
+        tag = _tag(0x0010, 0x1020)
+        ds.add_new(tag, "DS", "1.234567")
+        round_decimal_string("0.05")(ds, tag, DeidParameters())
+        assert ds[tag].value == "1.25", f"1.234567 m should round to 1.25, got {ds[tag].value}"
+
+    def test_rounds_weight_up_to_nearest_5kg(self) -> None:
+        """A PatientWeight on the half step rounds up to the nearest 5 kg."""
+        from dicom_dre.actions import round_decimal_string
+
+        ds = _dataset()
+        tag = _tag(0x0010, 0x1030)
+        ds.add_new(tag, "DS", "72.5")
+        round_decimal_string("5")(ds, tag, DeidParameters())
+        assert ds[tag].value == "75.00", f"72.5 kg should round up to 75.00, got {ds[tag].value}"
+
+    def test_rounds_weight_down_to_nearest_5kg(self) -> None:
+        """A PatientWeight below the half step rounds down to the nearest 5 kg."""
+        from dicom_dre.actions import round_decimal_string
+
+        ds = _dataset()
+        tag = _tag(0x0010, 0x1030)
+        ds.add_new(tag, "DS", "72")
+        round_decimal_string("5")(ds, tag, DeidParameters())
+        assert ds[tag].value == "70.00", f"72 kg should round down to 70.00, got {ds[tag].value}"
+
+    def test_absent_tag_is_noop(self) -> None:
+        """round_decimal_string on an absent element leaves it absent."""
+        from dicom_dre.actions import round_decimal_string
+
+        ds = _dataset()
+        tag = _tag(0x0010, 0x1020)
+        round_decimal_string("0.05")(ds, tag, DeidParameters())
+        assert tag not in ds, "An absent element should remain absent"
+
+    def test_empty_value_is_unchanged(self) -> None:
+        """An empty DS value is left unchanged."""
+        from dicom_dre.actions import round_decimal_string
+
+        ds = _dataset()
+        tag = _tag(0x0010, 0x1020)
+        ds.add_new(tag, "DS", "")
+        round_decimal_string("0.05")(ds, tag, DeidParameters())
+        assert not ds[tag].value, f"An empty value should stay empty, got {ds[tag].value!r}"
+
+    def test_multivalue_input_becomes_empty(self) -> None:
+        """A multi-valued DS (unsupported type) is replaced with an empty value."""
+        from dicom_dre.actions import round_decimal_string
+
+        ds = _dataset()
+        tag = _tag(0x0010, 0x1020)
+        ds.add_new(tag, "DS", ["1.75", "1.80"])
+        round_decimal_string("0.05")(ds, tag, DeidParameters())
+        assert ds[tag].value == "", f"A multi-valued DS should become empty, got {ds[tag].value!r}"
+
+    def test_unparseable_value_becomes_empty(self) -> None:
+        """A DS value that cannot be parsed as a Decimal is replaced with an empty value."""
+        from dicom_dre.actions import round_decimal_string
+
+        ds = _dataset()
+        tag = _tag(0x0010, 0x1020)
+        ds.add_new(tag, "SH", "N/A")
+        round_decimal_string("0.05")(ds, tag, DeidParameters())
+        assert ds[tag].value == "", f"An unparseable value should become empty, got {ds[tag].value!r}"
+
+
 class TestIfExists:
     """The if_exists action wrapper."""
 
