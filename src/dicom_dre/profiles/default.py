@@ -29,9 +29,34 @@ from dicom_dre.actions import set_value
 from dicom_dre.parameters import DEFAULT_STUDY_ID
 from dicom_dre.parameters import DeidParameters
 from dicom_dre.profile import DeidProfile
+from dicom_dre.profile import PrivateTagSpec
 from dicom_dre.profiles.config import ProfileSettings
 from dicom_dre.text_redactor import get_text_redactor
 
+
+# Approved private elements preserved verbatim, keyed on the private-creator
+# string. Global private-group removal exempts these; every other private
+# element is removed. Profiles derived from this one via dataclasses.replace
+# inherit the set; the strict profile imports it directly.
+PRESERVED_PRIVATE_SPECS: frozenset[PrivateTagSpec] = frozenset(
+    {
+        PrivateTagSpec(
+            group=0x0019,
+            creator="GEMS_ACQU_01",
+            offsets=(0x11, 0x5A, 0x90, 0x91, 0xBB, 0xBC, 0xBD),
+        ),
+        PrivateTagSpec(
+            group=0x0043,
+            creator="GEMS_PARM_01",
+            offsets=(0x08, 0x09, 0x2F),
+        ),
+        PrivateTagSpec(
+            group=0x0027,
+            creator="GEMS_IMAG_01",
+            offsets=(0x62,),
+        ),
+    }
+)
 
 # Tags removed during de-identification because they may carry PHI.
 PHI_REMOVE_TAGS: frozenset[BaseTag] = frozenset(
@@ -915,5 +940,6 @@ def default_profile(
         hash_salt=settings.hash_salt,
         uid_root=settings.uid_root,
         uid_use_study_salt=True,
+        preserved_private_specs=PRESERVED_PRIVATE_SPECS,
         deid_options=frozenset({"113104", "113105", "113108"}),
     )

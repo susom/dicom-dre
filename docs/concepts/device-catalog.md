@@ -122,7 +122,6 @@ fields match. When you give a field a list, the list uses OR semantics.
 | `body_part_examined` | `BodyPartExamined` (0018,0015) | Anatomic region |
 | `requires_ultrasound_regions` | `SequenceOfUltrasoundRegions` (0018,6011) | When `True`, a non-empty regions sequence must be present |
 | `variants` | n/a | List of resolution/version variants (see below) |
-| `preserved_private_tags` | private data elements | Tuple of `PrivateTagSpec` for device-approved private elements to preserve verbatim (see below) |
 | `rows` / `cols` / `scrub` | `Rows` / `Columns` / n/a | Shorthand for a single-variant device |
 
 Every match attribute has a dedicated field; there is no free-form keyword dict.
@@ -212,49 +211,6 @@ device(
     scrub=[(0, 0, 512, 30)],
 )
 ```
-
-### Preserved private tags
-
-Some devices contain private data elements that a reviewer has approved as safe to
-retain verbatim. The `preserved_private_tags` field on `device()` takes a tuple
-of `PrivateTagSpec` entries. Each spec names a private group, a private-creator
-string, and the element offsets (low byte) to keep within that creator's block:
-
-```python
-from dicom_dre.catalog import PrivateTagSpec
-
-device(
-    "GE SIGNA Premier MR - preserved private tags",
-    "allow",
-    manufacturer="=GE MEDICAL SYSTEMS",
-    modality="=MR",
-    manufacturer_model_name="/(?i)^SIGNA Premier$/",
-    burned_in_annotation="/^(?!YES$)/",
-    image_type=["ORIGINAL", "PRIMARY"],
-    image_type_exclude="MRSC",
-    sop_class_uid="^1.2.840.10008.5.1.4.1.1.4",
-    conversion_type="=",
-    preserved_private_tags=(
-        PrivateTagSpec(group=0x0019, creator="GEMS_ACQU_01", offsets=(0xBB, 0xBC, 0xBD)),
-        PrivateTagSpec(group=0x0043, creator="GEMS_PARM_01", offsets=(0x2F,)),
-    ),
-)
-```
-
-The private-creator block (`xx` in `(gggg,xxnn)`) is not fixed. At de-identify
-time, the engine resolves the block: it locates the creator element in the group
-whose value equals the spec's `creator`, then keeps both the resolved data
-elements and their creator element. It removes every other private element as
-usual.
-
-A device match short-circuits the entire exclusion pass. A rule that declares
-`preserved_private_tags` therefore admits the instance without any exclusion
-check. It must reproduce inline the guards that the bypassed exclusions would
-otherwise enforce
-(`burned_in_annotation`, `image_type`, `image_type_exclude`, `sop_class_uid`,
-and `ConversionType` above). When preservation is active, the engine also emits
-the De-identification Method Code Sequence `(0012,0064)` with the Retain Safe
-Private Option; see [Profiles](profiles.md).
 
 ## Exclusion rules
 
@@ -376,7 +332,6 @@ class CatalogDecision:
     reason: str                              # matched rule name or exclusion reason
     scrub_regions: list[ScrubRegion]         # (x, y, w, h) regions to blank
     matched_variant: Variant | None          # the variant that matched, if any
-    preserved_private_tags: tuple[PrivateTagSpec, ...]  # private specs to preserve
 ```
 
 The `reason` field receives the device `name` argument for device matches, or

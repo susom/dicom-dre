@@ -10,7 +10,6 @@ path returning a :class:`~dicom_dre.result.DeidentifyResult`:
 
 from __future__ import annotations
 
-import dataclasses
 import logging
 from typing import TYPE_CHECKING
 
@@ -159,16 +158,10 @@ def deidentify_file(
             ds.decompress(generate_instance_uid=False)
             was_decompressed = True
 
-        anon_profile = profile
-        if decision.preserved_private_tags:
-            anon_profile = dataclasses.replace(
-                anon_profile,
-                preserved_private_specs=frozenset(decision.preserved_private_tags),
-            )
         # Clean Pixel Data (113101) is a per-instance outcome, so it is passed to
         # apply() rather than mutated onto the profile's declared options.
         applied_options = frozenset({CLEAN_PIXEL_DATA_CODE}) if was_scrubbed else frozenset()
-        anon_profile.apply(ds, parameters, applied_options=applied_options)
+        profile.apply(ds, parameters, applied_options=applied_options)
         if was_scrubbed:
             # Burned-in identification was removed from the pixel data.
             ds.add_new(BURNED_IN_ANNOTATION_TAG, "CS", "NO")
