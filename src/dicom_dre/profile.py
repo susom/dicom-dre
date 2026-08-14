@@ -90,7 +90,7 @@ class DeidProfile:
     preserve_dates: bool = False
     modifies_dates: bool = False
     allowlist_csv: str = "default.csv"
-    hash_salt: str = ""
+    hash_salt: str | None = None
     uid_root: str | None = None
     uid_use_study_salt: bool = False
     date_override_tags: frozenset[BaseTag] = field(default_factory=frozenset)
