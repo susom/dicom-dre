@@ -2,6 +2,27 @@
 
 <!-- version list -->
 
+## v1.2.0 (2026-08-14)
+
+### Bug Fixes
+
+- Add DeviceId and DeviceSerialNumber to default profile (hashed)
+  ([`f801cb6`](https://github.com/susom/dicom-dre/commit/f801cb653726359a185027d5606fd95da8eb5477))
+
+- Hash_identifier always uses default salt and study_id when either is None
+  ([`54e780e`](https://github.com/susom/dicom-dre/commit/54e780e8bfac0f9d688e2103efda5e3f95120846))
+
+- Private attribute preservation no longer requires a device match (STAR-12198)
+  ([#13](https://github.com/susom/dicom-dre/pull/13),
+  [`5f35e79`](https://github.com/susom/dicom-dre/commit/5f35e7921a3fbc9a5815372f40012dcf9542465f))
+
+### Features
+
+- Add additional attributes to default rules, including PatientSize and PatientWeight (rounded)
+  ([#12](https://github.com/susom/dicom-dre/pull/12),
+  [`edeaa5a`](https://github.com/susom/dicom-dre/commit/edeaa5aa8c8300cd4001ce8186c0f08ef9e8948e))
+
+
 ## v1.1.2 (2026-08-10)
 
 ### Bug Fixes
