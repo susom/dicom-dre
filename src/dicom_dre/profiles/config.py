@@ -13,7 +13,7 @@ from dataclasses import dataclass
 
 DEFAULT_UID_ROOT = "1.2.840.4267.32."  # UID root prefix when absent
 DEFAULT_ALLOWLIST_CSV = "default.csv"  # free-text redaction allowlist when absent
-DEFAULT_HASH_SALT = ""  # identifier-hash salt when absent
+DEFAULT_HASH_SALT = "NOSALT"  # identifier-hash salt when absent
 
 
 @dataclass(frozen=True, slots=True)

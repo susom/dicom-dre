@@ -2,8 +2,11 @@
 
 import hashlib
 
+from dicom_dre.parameters import DEFAULT_STUDY_ID
+from dicom_dre.profiles.config import DEFAULT_HASH_SALT
 
-def hash_identifier(identifier: str, *, salt: str, study_id: str, maxlen: int = 16) -> str:
+
+def hash_identifier(identifier: str, *, salt: str | None, study_id: str | None, maxlen: int = 16) -> str:
     """Hash a patient identifier deterministically using SHA-256.
 
     The identifier is stripped of surrounding whitespace and uppercased, then
@@ -24,6 +27,10 @@ def hash_identifier(identifier: str, *, salt: str, study_id: str, maxlen: int = 
     Raises:
         ValueError: If identifier is empty.
     """
+    if salt is None:
+        salt = DEFAULT_HASH_SALT
+    if study_id is None:
+        study_id = DEFAULT_STUDY_ID
     if not identifier:
         raise ValueError("Identifier for hash cannot be empty")
 
