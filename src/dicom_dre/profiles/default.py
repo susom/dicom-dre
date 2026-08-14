@@ -122,7 +122,6 @@ PHI_REMOVE_TAGS: frozenset[BaseTag] = frozenset(
         Tag(0x0010, 0x2297),  # ResponsiblePerson
         Tag(0x0010, 0x2299),  # ResponsibleOrganization
         Tag(0x0010, 0x4000),  # PatientComments
-        Tag(0x0018, 0x1000),  # DeviceSerialNumber
         Tag(0x0018, 0x1004),  # PlateID
         Tag(0x0018, 0x1005),  # GeneratorID
         Tag(0x0018, 0x1007),  # CassetteID
@@ -755,6 +754,22 @@ DUMMY_TAGS: frozenset[BaseTag] = frozenset(
     }
 )
 
+# Non-per-patient identifiers hashed on their own element value (PS3.15
+# Table E.1-1 action code D) via hash_value_identifier(). Hashing rather than a
+# fixed dummy keeps distinct subjects and containers distinguishable while
+# removing the original value. These recur across a subject's or container's
+# instances, so a value-derived hash preserves those groupings.
+HASH_TAGS: frozenset[BaseTag] = frozenset(
+    {
+        Tag(0x0012, 0x0040),  # ClinicalTrialSubjectID (LO)
+        Tag(0x0012, 0x0042),  # ClinicalTrialSubjectReadingID (LO)
+        Tag(0x0040, 0x0512),  # ContainerIdentifier (LO)
+        Tag(0x0062, 0x0020),  # TrackingID (UT)
+        Tag(0x0018, 0x1000),  # DeviceSerialNumber (LO)
+        Tag(0x0018, 0x1003),  # DeviceID (LO)
+    }
+)
+
 
 def redact_description(field_name: str, allowlist_csv: str, preserve_dates: bool) -> TagAction:
     """Return the tag action for a free-text description element.
@@ -882,6 +897,7 @@ def default_profile(
     rules.update(dict.fromkeys(UID_TAGS, uid_action))
     rules.update(dict.fromkeys(DATE_TAGS, shift))
     rules.update(dict.fromkeys(DUMMY_TAGS, dummy_for_vr(settings.uid_root, use_study_salt=True)))
+    rules.update(dict.fromkeys(HASH_TAGS, hash_value_identifier(salt=settings.hash_salt)))
 
     # PatientName runs before the PatientID rule so it hashes the original
     # PatientID element, yielding the same hash the PatientID rule then writes.
@@ -905,16 +921,6 @@ def default_profile(
     rules[Tag(0x0070, 0x0006)] = redact  # UnformattedTextValue (ST)
     rules[Tag(0x0070, 0x0289)] = redact  # TickLabel (SH)
     rules[Tag(0x0040, 0xA160)] = redact  # TextValue (UT), KO/SR content free text
-    rules[Tag(0x0062, 0x0020)] = hash_value_identifier(salt=settings.hash_salt)  # TrackingID (UT)
-
-    # Dummy-value identifiers (PS3.15 Table E.1-1 action code D) that may recur
-    # across a subject's instances: hashed rather than set to a constant, so
-    # distinct subjects and containers stay distinguishable while the original
-    # value is removed. The closure is stateless and shared across these tags.
-    subject_hash = hash_value_identifier(salt=settings.hash_salt)
-    rules[Tag(0x0012, 0x0040)] = subject_hash  # ClinicalTrialSubjectID (LO)
-    rules[Tag(0x0012, 0x0042)] = subject_hash  # ClinicalTrialSubjectReadingID (LO)
-    rules[Tag(0x0040, 0x0512)] = subject_hash  # ContainerIdentifier (LO)
 
     # Presentation State content identification (may embed dates and operator identifiers).
     # The text redactor preserves numeric tokens (measurements), so it cannot strip an
