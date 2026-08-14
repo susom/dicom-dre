@@ -14,6 +14,8 @@ import pytest
 from hypothesis import given
 from hypothesis import strategies as st
 
+from dicom_dre.parameters import DEFAULT_STUDY_ID
+from dicom_dre.profiles.config import DEFAULT_HASH_SALT
 from dicom_dre.uid_utils import hash_identifier
 from dicom_dre.uid_utils import hashuid
 from dicom_dre.uid_utils import stable_jitter
@@ -132,6 +134,28 @@ class TestHashIdentifierEdges:
         assert noisy == canonical, f"Normalization changed the digest: {noisy!r} != {canonical!r}"
 
 
+class TestHashIdentifierDefaults:
+    """None salt and study_id fall back to the module defaults."""
+
+    def test_none_salt_uses_default_salt(self) -> None:
+        """Passing salt=None matches passing DEFAULT_HASH_SALT explicitly."""
+        with_none = hash_identifier("MRN123456", salt=None, study_id=GOLDEN_STUDY_ID)
+        with_default = hash_identifier("MRN123456", salt=DEFAULT_HASH_SALT, study_id=GOLDEN_STUDY_ID)
+        assert with_none == with_default, "salt=None should use DEFAULT_HASH_SALT"
+
+    def test_none_study_id_uses_default_study_id(self) -> None:
+        """Passing study_id=None matches passing DEFAULT_STUDY_ID explicitly."""
+        with_none = hash_identifier("MRN123456", salt=GOLDEN_SALT, study_id=None)
+        with_default = hash_identifier("MRN123456", salt=GOLDEN_SALT, study_id=DEFAULT_STUDY_ID)
+        assert with_none == with_default, "study_id=None should use DEFAULT_STUDY_ID"
+
+    def test_both_none_use_defaults(self) -> None:
+        """Passing salt=None and study_id=None matches both explicit defaults."""
+        with_none = hash_identifier("MRN123456", salt=None, study_id=None)
+        with_default = hash_identifier("MRN123456", salt=DEFAULT_HASH_SALT, study_id=DEFAULT_STUDY_ID)
+        assert with_none == with_default, "salt=None and study_id=None should use the defaults"
+
+
 class TestStableJitterRanges:
     """Range handling and validation of stable_jitter."""
 
@@ -151,6 +175,28 @@ class TestStableJitterRanges:
         """A range containing only zero has no valid non-zero value and is rejected."""
         with pytest.raises(ValueError, match="jitter range must contain at least one non-zero value"):
             stable_jitter(GOLDEN_SALT, GOLDEN_STUDY_ID, GOLDEN_PATIENT_ID, low=0, high=0)
+
+
+class TestStableJitterDefaults:
+    """None salt and study_id fall back to the module defaults."""
+
+    def test_none_salt_uses_default_salt(self) -> None:
+        """Passing salt=None matches passing DEFAULT_HASH_SALT explicitly."""
+        with_none = stable_jitter(None, GOLDEN_STUDY_ID, GOLDEN_PATIENT_ID)
+        with_default = stable_jitter(DEFAULT_HASH_SALT, GOLDEN_STUDY_ID, GOLDEN_PATIENT_ID)
+        assert with_none == with_default, "salt=None should use DEFAULT_HASH_SALT"
+
+    def test_none_study_id_uses_default_study_id(self) -> None:
+        """Passing study_id=None matches passing DEFAULT_STUDY_ID explicitly."""
+        with_none = stable_jitter(GOLDEN_SALT, None, GOLDEN_PATIENT_ID)
+        with_default = stable_jitter(GOLDEN_SALT, DEFAULT_STUDY_ID, GOLDEN_PATIENT_ID)
+        assert with_none == with_default, "study_id=None should use DEFAULT_STUDY_ID"
+
+    def test_both_none_use_defaults(self) -> None:
+        """Passing salt=None and study_id=None matches both explicit defaults."""
+        with_none = stable_jitter(None, None, GOLDEN_PATIENT_ID)
+        with_default = stable_jitter(DEFAULT_HASH_SALT, DEFAULT_STUDY_ID, GOLDEN_PATIENT_ID)
+        assert with_none == with_default, "salt=None and study_id=None should use the defaults"
 
 
 class TestHashuid:

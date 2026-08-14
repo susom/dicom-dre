@@ -96,22 +96,6 @@ def variant(
 
 
 @dataclass(frozen=True, slots=True)
-class PrivateTagSpec:
-    """A device-approved private element to preserve verbatim.
-
-    Attributes:
-        group: Private group number (odd), e.g. 0x0019.
-        creator: Private creator string, e.g. "GEMS_ACQU_01".
-        offsets: Element offsets (low byte) to preserve within the
-            creator's resolved block, e.g. (0xBB, 0xBC, 0xBD).
-    """
-
-    group: int
-    creator: str
-    offsets: tuple[int, ...]
-
-
-@dataclass(frozen=True, slots=True)
 class CatalogDecision:
     """Result of evaluating a DICOM instance against the device catalog.
 
@@ -120,14 +104,12 @@ class CatalogDecision:
         reason: Human-readable explanation for the decision.
         scrub_regions: Pixel regions to blank, as ScrubRegion instances.
         matched_variant: The Variant that matched, if any.
-        preserved_private_tags: Private-element specs to preserve verbatim.
     """
 
     action: str
     reason: str
     scrub_regions: list[ScrubRegion] = field(default_factory=list)
     matched_variant: Variant | None = None
-    preserved_private_tags: tuple[PrivateTagSpec, ...] = ()
 
 
 def match_string(pattern: str, value: str) -> bool:
@@ -348,7 +330,6 @@ class DeviceRule:
     body_part_examined: str | list[str] | None = None
     requires_ultrasound_regions: bool = False
     variants: list[Variant] | None = None
-    preserved_private_tags: tuple[PrivateTagSpec, ...] = ()
 
 
 def device(
@@ -374,7 +355,6 @@ def device(
     body_part_examined: str | list[str] | None = None,
     requires_ultrasound_regions: bool = False,
     variants: list[Variant] | None = None,
-    preserved_private_tags: tuple[PrivateTagSpec, ...] = (),
     rows: int | None = None,
     cols: int | None = None,
     scrub: list[tuple[int, int, int, int] | ScrubRegion] | None = None,
@@ -404,7 +384,6 @@ def device(
         requires_ultrasound_regions: When True, the image must contain a
             non-empty SequenceOfUltrasoundRegions to match this device.
         variants: Resolution/version variants with optional scrub regions.
-        preserved_private_tags: Private-element specs to preserve verbatim.
         rows: Shorthand for a single variant row count.
         cols: Shorthand for a single variant column count.
         scrub: Shorthand for a single variant's scrub regions.
@@ -440,7 +419,6 @@ def device(
         body_part_examined=body_part_examined,
         requires_ultrasound_regions=requires_ultrasound_regions,
         variants=variants,
-        preserved_private_tags=preserved_private_tags,
     )
 
 
@@ -883,7 +861,6 @@ class DeviceCatalog:
                     reason=rule.name,
                     scrub_regions=variant_scrub,
                     matched_variant=matched_variant,
-                    preserved_private_tags=rule.preserved_private_tags,
                 )
 
             if rule.action == "deny":
@@ -892,7 +869,6 @@ class DeviceCatalog:
                     reason=rule.name,
                     scrub_regions=[],
                     matched_variant=matched_variant,
-                    preserved_private_tags=rule.preserved_private_tags,
                 )
 
             if rule.action == "scrub":
@@ -904,7 +880,6 @@ class DeviceCatalog:
                     reason=rule.name,
                     scrub_regions=variant_scrub,
                     matched_variant=matched_variant,
-                    preserved_private_tags=rule.preserved_private_tags,
                 )
 
         for exclusion in self._exclusions:

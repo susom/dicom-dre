@@ -21,7 +21,6 @@ if TYPE_CHECKING:
     from pydicom.dataset import Dataset
 
     from dicom_dre.actions import TagAction
-    from dicom_dre.catalog import PrivateTagSpec
     from dicom_dre.parameters import DeidParameters
 
 # File Meta Information group is always preserved.
@@ -61,6 +60,22 @@ _PROTECTED_TAGS: frozenset[BaseTag] = frozenset(
 )
 
 
+@dataclass(frozen=True, slots=True)
+class PrivateTagSpec:
+    """An approved private element to preserve verbatim.
+
+    Attributes:
+        group: Private group number (odd), e.g. 0x0019.
+        creator: Private creator string, e.g. "GEMS_ACQU_01".
+        offsets: Element offsets (low byte) to preserve within the
+            creator's resolved block, e.g. (0xBB, 0xBC, 0xBD).
+    """
+
+    group: int
+    creator: str
+    offsets: tuple[int, ...]
+
+
 @dataclass(frozen=True)
 class DeidProfile:
     """Immutable de-identification profile binding tag rules and global flags."""
@@ -75,7 +90,7 @@ class DeidProfile:
     preserve_dates: bool = False
     modifies_dates: bool = False
     allowlist_csv: str = "default.csv"
-    hash_salt: str = ""
+    hash_salt: str | None = None
     uid_root: str | None = None
     uid_use_study_salt: bool = False
     date_override_tags: frozenset[BaseTag] = field(default_factory=frozenset)
@@ -381,7 +396,10 @@ class DeidProfile:
         Returns the set of data-element tags plus their private-creator tags
         that must survive global private-group removal. The creator block is
         resolved from the creator value, since a group may host multiple
-        creators.
+        creators. A creator tag is included only when at least one of the spec's
+        approved data elements is present in its block; a matched creator whose
+        block contains none of the approved elements contributes nothing, so it
+        is removed with the rest of the private group.
         """
         keep: set[BaseTag] = set()
         if not self.preserved_private_specs:
@@ -395,11 +413,14 @@ class DeidProfile:
                 # before comparing so a padded "GEMS_ACQU_01 " still matches.
                 if str(ds[creator_tag].value).strip() != spec.creator:
                     continue
-                keep.add(creator_tag)
-                for offset in spec.offsets:
-                    data_tag = Tag(spec.group, (block << 8) | offset)
-                    if data_tag in ds:
-                        keep.add(data_tag)
+                data_tags = {
+                    Tag(spec.group, (block << 8) | offset)
+                    for offset in spec.offsets
+                    if Tag(spec.group, (block << 8) | offset) in ds
+                }
+                if data_tags:
+                    keep.add(creator_tag)
+                    keep.update(data_tags)
                 break
         return keep
 
@@ -412,9 +433,12 @@ class DeidProfile:
         modified dates, 113106 for full dates, none when dates are removed); one
         item per code in ``deid_options`` unioned with ``applied_options`` (the
         per-instance codes the caller applied outside the rules); and 113111
-        (Retain Safe Private Option) when private elements are preserved. Codes
-        are de-duplicated before writing. Runs after global rules, since the
-        strict profile removes any element without an explicit rule.
+        (Retain Safe Private Option) when this profile removes private groups
+        and retains an approved private element. When ``remove_private`` is
+        False, all private elements are kept, which is not the selective safe
+        private option, so 113111 is not emitted. Codes are de-duplicated
+        before writing. Runs after global rules, since the strict profile
+        removes any element without an explicit rule.
         """
         from pydicom.dataset import Dataset as PydicomDataset
 
@@ -427,7 +451,7 @@ class DeidProfile:
             codes.append(("113106", "Retain Longitudinal Temporal Information With Full Dates"))
         for code_value in sorted(self.deid_options | applied_options):
             codes.append((code_value, _DEID_OPTION_MEANINGS.get(code_value, code_value)))
-        if self.preserved_private_specs:
+        if self.remove_private and self.preserved_private_specs and self._resolve_preserved_tags(ds):
             codes.append(("113111", "Retain Safe Private Option"))
 
         seen: set[str] = set()

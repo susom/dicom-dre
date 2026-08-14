@@ -12,6 +12,8 @@ import re
 from collections.abc import Callable
 from datetime import datetime
 from datetime import timedelta
+from decimal import ROUND_HALF_UP
+from decimal import Decimal
 from typing import TYPE_CHECKING
 
 from pydicom.datadict import dictionary_VR
@@ -419,6 +421,55 @@ def cap_age(threshold: int, replacement: str) -> TagAction:
             digits = re.sub(r"[^0-9]", "", val)
             if digits and int(digits) > threshold:
                 ds[tag].value = replacement
+
+    return action
+
+
+def _ds_to_decimal(value: object) -> Decimal:
+    """Return the exact Decimal for a single pydicom DS value.
+
+    A DS float or Decimal parsed by pydicom retains the source text in
+    ``original_string``; it is used when present so rounding is not affected by
+    the binary floating-point representation.
+    """
+    original = getattr(value, "original_string", None)
+    if original:
+        return Decimal(original)
+    if isinstance(value, Decimal):
+        return value
+    if isinstance(value, float):
+        return Decimal(str(value))
+    if isinstance(value, int):
+        return Decimal(value)
+    if isinstance(value, str):
+        return Decimal(value.strip())
+    raise TypeError(f"unsupported DS value type: {type(value).__name__}")
+
+
+def round_decimal_string(step: str) -> TagAction:
+    """Round a Decimal String (DS) element to the nearest *step* multiple.
+
+    Present-only: a missing or empty element is left unchanged. The value is
+    parsed from its original DS text when available and rounded half-up. The
+    result is written with two decimal places, which is exact for a 0.05 step.
+    A value that cannot be parsed as a Decimal is replaced with an empty value.
+    """
+    quantum = Decimal(step)
+
+    def action(ds: Dataset, tag: BaseTag, params: DeidParameters) -> None:
+        if tag not in ds:
+            return
+        elem = ds[tag]
+        value = elem.value
+        if value is None or value == "":
+            return
+        try:
+            decimal_value = _ds_to_decimal(value)
+        except (TypeError, ValueError, ArithmeticError):
+            elem.value = ""
+            return
+        steps = (decimal_value / quantum).quantize(Decimal("1"), rounding=ROUND_HALF_UP)
+        elem.value = f"{steps * quantum:.2f}"
 
     return action
 
