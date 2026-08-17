@@ -131,9 +131,11 @@ class DeidProfile:
         Phase 0: Validate the jitter and resolve a per-patient shift when unset.
         Phase 1: Insert a default SpecificCharacterSet when absent.
         Phase 2: Apply element-level rules.
-        Phase 3: Apply global removal rules (private, curves, overlays, unspecified).
-        Phase 4: Remove retired Group Length tags from all datasets.
-        Phase 5: Correct VRs for elements read as OB/UN inside sequences.
+        Phase 3: Shift preserved private dates flagged for jitter.
+        Phase 4: Apply global removal rules (private, curves, overlays, unspecified).
+        Phase 5: Emit the De-identification Method Code Sequence.
+        Phase 6: Remove retired Group Length tags from all datasets.
+        Phase 7: Correct VRs for elements read as OB/UN inside sequences.
         """
         self._validate_jitter(params)
         params = self._resolve_jitter(ds, params)
@@ -417,10 +419,16 @@ class DeidProfile:
         A flagged offset survives private-group removal and then has its date
         value shifted by the same per-study amount applied to standard date
         tags. Recurses into sequence items so a flagged element nested at any
-        depth is shifted. Inert for date-preserving profiles, where
-        ``params.jitter`` is unset and ``jitter_date`` leaves the value
-        unchanged.
+        depth is shifted. Runs before global removal, so a flagged offset is
+        shifted before its private group is stripped.
+
+        Inert for date-preserving profiles: a jitter of ``None`` or ``0``
+        requests no shift and is skipped, so an alternate-format date value is
+        left verbatim rather than normalized by ``jitter_date`` for a zero-day
+        shift.
         """
+        if not params.jitter:
+            return
         has_jitter = any(isinstance(offset, Jitter) for spec in self.preserved_private_specs for offset in spec.offsets)
         if not has_jitter:
             return

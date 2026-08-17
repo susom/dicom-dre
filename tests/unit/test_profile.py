@@ -517,6 +517,24 @@ class TestPreservedPrivateDateJitter:
         )
         assert profile._resolve_preserved_date_tags(ds) == set(), "no offset flagged, expected no date tags"
 
+    def test_no_specs_resolves_no_date_tags(self):
+        """With no preserved specs, no date tags resolve."""
+        ds = _gems_date_dataset(block=0x10)
+        profile = _minimal_profile(modifies_dates=True)
+        assert profile._resolve_preserved_date_tags(ds) == set(), "empty specs should yield no date tags"
+
+    def test_mismatched_creator_resolves_no_date_tags(self):
+        """A creator whose value differs from the spec yields no date tags."""
+        ds = Dataset()
+        ds.add_new(Tag(0x0019, 0x0010), "LO", "SOMETHING_ELSE")
+        ds.add_new(Tag(0x0019, 0x109D), "DT", "20200101120000")
+        profile = _minimal_profile(
+            remove_private=True,
+            modifies_dates=True,
+            preserved_private_specs=frozenset({_GEMS_JITTER_SPEC}),
+        )
+        assert profile._resolve_preserved_date_tags(ds) == set(), "mismatched creator should yield no date tags"
+
     def test_flagged_offset_is_in_preserved_keep_set(self):
         """A Jitter-flagged offset still survives private-group removal."""
         ds = _gems_date_dataset(block=0x10)
