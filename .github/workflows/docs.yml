@@ -20,6 +20,13 @@ on:
     tags:
       - "v*"
   workflow_dispatch:
+  workflow_call:
+    inputs:
+      ref:
+        description: "Release tag to build documentation from. Set when this workflow is invoked from the release pipeline."
+        required: false
+        type: string
+        default: ""
 
 permissions:
   contents: read
@@ -40,6 +47,7 @@ jobs:
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           fetch-depth: 0
+          ref: ${{ inputs.ref }}
 
       - name: Set up uv
         uses: astral-sh/setup-uv@d4b2f3b6ecc6e67c4457f6d3e41ec42d3d0fcb86 # v5
@@ -52,11 +60,18 @@ jobs:
       - name: Determine version slug
         id: slug
         run: |
-          # Tag pushes drive releases: release tags (vX.Y.Z) publish stable,
-          # prerelease tags (vX.Y.Z-dev.N, identified by the hyphen) publish
-          # development. A manual workflow_dispatch runs against a branch ref and
-          # falls back to the branch-name mapping.
-          if [ "${GITHUB_REF_TYPE}" = "tag" ]; then
+          # A release-pipeline invocation passes the release tag via inputs.ref.
+          # Tag pushes drive releases directly: release tags (vX.Y.Z) publish
+          # stable, prerelease tags (vX.Y.Z-dev.N, identified by the hyphen)
+          # publish development. A manual workflow_dispatch runs against a branch
+          # ref and falls back to the branch-name mapping.
+          ref_input="${{ inputs.ref }}"
+          if [ -n "${ref_input}" ]; then
+            case "${ref_input}" in
+              *-*) echo "slug=development" >> "$GITHUB_OUTPUT" ;;
+              *) echo "slug=stable" >> "$GITHUB_OUTPUT" ;;
+            esac
+          elif [ "${GITHUB_REF_TYPE}" = "tag" ]; then
             case "${GITHUB_REF_NAME}" in
               *-*) echo "slug=development" >> "$GITHUB_OUTPUT" ;;
               *) echo "slug=stable" >> "$GITHUB_OUTPUT" ;;
