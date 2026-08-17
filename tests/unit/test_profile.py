@@ -8,6 +8,7 @@ from dicom_dre.actions import keep
 from dicom_dre.actions import set_value
 from dicom_dre.parameters import DeidParameters
 from dicom_dre.profile import DeidProfile
+from dicom_dre.profile import Jitter
 from dicom_dre.profile import PrivateTagSpec
 
 
@@ -473,6 +474,131 @@ class TestPreservedPrivateKeepVsRemove:
         result_item = ds[seq_tag].value[0]
         assert Tag(0x0019, 0x10BB) in result_item, "preserved element in sequence item removed"
         assert Tag(0x0019, 0x10EE) not in result_item, "unrelated private element in sequence item should be removed"
+
+
+# Spec whose PulseSequenceDate offset is flagged for jitter, mirroring default.py.
+_GEMS_JITTER_SPEC = PrivateTagSpec(
+    group=0x0019,
+    creator="GEMS_ACQU_01",
+    offsets=(0x9C, Jitter(0x9D)),
+)
+
+
+def _gems_date_dataset(block: int = 0x10) -> Dataset:
+    """Build a dataset with a preserved private name and a flagged private date."""
+    ds = Dataset()
+    ds.add_new(Tag(0x0019, block), "LO", "GEMS_ACQU_01")
+    ds.add_new(Tag(0x0019, (block << 8) | 0x9C), "LO", "SEQNAME")
+    ds.add_new(Tag(0x0019, (block << 8) | 0x9D), "DT", "20200101120000")
+    return ds
+
+
+class TestPreservedPrivateDateJitter:
+    """Offsets wrapped in Jitter are preserved and then date-jittered."""
+
+    def test_resolve_preserved_date_tags_returns_flagged_offset(self):
+        """_resolve_preserved_date_tags resolves only the Jitter-flagged offset."""
+        ds = _gems_date_dataset(block=0x10)
+        profile = _minimal_profile(
+            remove_private=True,
+            modifies_dates=True,
+            preserved_private_specs=frozenset({_GEMS_JITTER_SPEC}),
+        )
+        date_tags = profile._resolve_preserved_date_tags(ds)
+        assert date_tags == {Tag(0x0019, 0x109D)}, f"expected only (0019,109D), got {date_tags}"
+
+    def test_spec_without_jitter_offset_resolves_no_date_tags(self):
+        """A spec with no Jitter offset yields no date tags."""
+        ds = _gems_date_dataset(block=0x10)
+        profile = _minimal_profile(
+            remove_private=True,
+            modifies_dates=True,
+            preserved_private_specs=frozenset({_GEMS_ACQU_SPEC}),
+        )
+        assert profile._resolve_preserved_date_tags(ds) == set(), "no offset flagged, expected no date tags"
+
+    def test_flagged_offset_is_in_preserved_keep_set(self):
+        """A Jitter-flagged offset still survives private-group removal."""
+        ds = _gems_date_dataset(block=0x10)
+        profile = _minimal_profile(
+            remove_private=True,
+            modifies_dates=True,
+            preserved_private_specs=frozenset({_GEMS_JITTER_SPEC}),
+        )
+        keep_tags = profile._resolve_preserved_tags(ds)
+        assert Tag(0x0019, 0x109D) in keep_tags, "flagged offset should be preserved from removal"
+        assert Tag(0x0019, 0x109C) in keep_tags, "verbatim offset should be preserved from removal"
+
+    def test_flagged_date_is_shifted(self):
+        """The flagged DT value is shifted by params.jitter."""
+        ds = _gems_date_dataset(block=0x10)
+        profile = _minimal_profile(
+            remove_private=True,
+            modifies_dates=True,
+            preserved_private_specs=frozenset({_GEMS_JITTER_SPEC}),
+        )
+        profile.apply(ds, DeidParameters(jitter=10))
+        assert str(ds[Tag(0x0019, 0x109D)].value) == "20200111120000", (
+            f"flagged date should be shifted by 10 days, got {ds[Tag(0x0019, 0x109D)].value!r}"
+        )
+
+    def test_verbatim_offset_unchanged_while_date_shifted(self):
+        """A non-flagged offset in the same spec is kept verbatim."""
+        ds = _gems_date_dataset(block=0x10)
+        profile = _minimal_profile(
+            remove_private=True,
+            modifies_dates=True,
+            preserved_private_specs=frozenset({_GEMS_JITTER_SPEC}),
+        )
+        profile.apply(ds, DeidParameters(jitter=10))
+        assert str(ds[Tag(0x0019, 0x109D)].value) == "20200111120000", "flagged date should be shifted in the same run"
+        assert str(ds[Tag(0x0019, 0x109C)].value) == "SEQNAME", "verbatim offset must not be modified"
+
+    def test_flagged_date_shifted_in_non_default_block(self):
+        """A flagged date in a non-default creator block is shifted."""
+        ds = _gems_date_dataset(block=0x11)
+        profile = _minimal_profile(
+            remove_private=True,
+            modifies_dates=True,
+            preserved_private_specs=frozenset({_GEMS_JITTER_SPEC}),
+        )
+        profile.apply(ds, DeidParameters(jitter=10))
+        assert str(ds[Tag(0x0019, 0x119D)].value) == "20200111120000", (
+            f"flagged date in block 0x11 should be shifted, got {ds[Tag(0x0019, 0x119D)].value!r}"
+        )
+
+    def test_flagged_date_in_sequence_item_is_shifted(self):
+        """A flagged private date nested in a sequence item is shifted."""
+        from pydicom.sequence import Sequence
+
+        item = _gems_date_dataset(block=0x10)
+        seq_tag = Tag(0x0040, 0x030E)
+        ds = Dataset()
+        ds.add_new(seq_tag, "SQ", Sequence([item]))
+        profile = _minimal_profile(
+            rules={seq_tag: keep()},
+            remove_private=True,
+            modifies_dates=True,
+            preserved_private_specs=frozenset({_GEMS_JITTER_SPEC}),
+        )
+        profile.apply(ds, DeidParameters(jitter=10))
+        result_item = ds[seq_tag].value[0]
+        assert str(result_item[Tag(0x0019, 0x109D)].value) == "20200111120000", (
+            "flagged date nested in a sequence item should be shifted"
+        )
+
+    def test_flagged_date_unchanged_for_date_preserving_profile(self):
+        """With preserve_dates, the flagged date is left unchanged (inert)."""
+        ds = _gems_date_dataset(block=0x10)
+        profile = _minimal_profile(
+            remove_private=True,
+            preserve_dates=True,
+            preserved_private_specs=frozenset({_GEMS_JITTER_SPEC}),
+        )
+        profile.apply(ds, _PARAMS)
+        assert str(ds[Tag(0x0019, 0x109D)].value) == "20200101120000", (
+            "date-preserving profile must not shift a flagged private date"
+        )
 
 
 class TestDeidMethodCodeSequence:
