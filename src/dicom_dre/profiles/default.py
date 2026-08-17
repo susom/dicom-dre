@@ -29,6 +29,7 @@ from dicom_dre.actions import set_value
 from dicom_dre.parameters import DEFAULT_STUDY_ID
 from dicom_dre.parameters import DeidParameters
 from dicom_dre.profile import DeidProfile
+from dicom_dre.profile import Jitter
 from dicom_dre.profile import PrivateTagSpec
 from dicom_dre.profiles.config import ProfileSettings
 from dicom_dre.text_redactor import get_text_redactor
@@ -44,151 +45,149 @@ PRESERVED_PRIVATE_SPECS: frozenset[PrivateTagSpec] = frozenset(
             group=0x0019,
             creator="GEMS_ACQU_01",
             offsets=(
-                0x0F,  # HorizontalFrameOfReference
-                0x11,  # SeriesContrast
-                0x12,  # LastPseq
-                0x17,  # SeriesPlane
-                0x18,  # FirstScanRAS
-                0x19,  # FirstScanLocation
-                0x1A,  # LastScanRAS
-                0x1B,  # LastScanLocation
-                0x1E,  # DisplayFieldOfView
-                0x5A,  # AcquisitionDuration
-                0x7D,  # SecondEcho
-                0x7E,  # NumberOfEchos
-                0x7F,  # TableDelta
-                0x81,  # Contiguous
-                0x84,  # PeakSAR
-                0x87,  # CardiacRepetitionTime
-                0x88,  # ImagesPerCardiacCycle
-                0x8A,  # ActualReceiveGainAnalog
-                0x8B,  # ActualReceiveGainDigital
-                0x8D,  # DelayAfterTrigger
-                0x8F,  # SwapPhaseFrequency
-                0x90,  # PauseInterval
-                0x91,  # PulseTime
-                0x93,  # CenterFrequency
-                0x94,  # TransmitGain
-                0x95,  # AnalogReceiverGain
-                0x96,  # DigitalReceiverGain
-                0x97,  # BitmapDefiningCVs
-                0x9B,  # PulseSequenceMode
-                0x9C,  # PulseSequenceName
-                0x9D,  # PulseSequenceDate
-                0x9E,  # InternalPulseSequenceName
-                0x9F,  # TransmittingCoil
-                0xA2,  # RawDataRunNumber
-                0xA3,  # CalibratedFieldStrength
-                0xA4,  # SATFatWaterBone
-                0xA7,  # UserData0
-                0xA8,  # UserData1
-                0xA9,  # UserData2
-                0xAA,  # UserData3
-                0xAB,  # UserData4
-                0xAC,  # UserData5
-                0xAD,  # UserData6
-                0xAE,  # UserData7
-                0xAF,  # UserData8
-                0xB0,  # UserData9
-                0xB1,  # UserData10
-                0xB2,  # UserData11
-                0xB3,  # UserData12
-                0xB4,  # UserData13
-                0xB5,  # UserData14
-                0xB6,  # UserData15
-                0xB7,  # UserData16
-                0xB8,  # UserData17
-                0xB9,  # UserData18
-                0xBA,  # UserData19
-                0xBB,  # DiffusionDirectionX
-                0xBC,  # DiffusionDirectionY
-                0xBD,  # DiffusionDirectionZ
-                0xBE,  # ProjectionAngle
-                0xC0,  # SaturationPlanes
-                0xC2,  # SATLocationR
-                0xC3,  # SATLocationL
-                0xC4,  # SATLocationA
-                0xC5,  # SATLocationP
-                0xC6,  # SATLocationH
-                0xC7,  # SATLocationF
-                0xC8,  # SATThicknessRL
-                0xC9,  # SATThicknessAP
-                0xCA,  # SATThicknessHF
-                0xCB,  # PrescribedFlowAxis
-                0xCC,  # VelocityEncoding
-                0xCD,  # ThicknessDisclaimer
-                0xCE,  # PrescanType
-                0xCF,  # PrescanStatus
-                0xD2,  # ProjectionAlgorithm
-                0xD3,  # ProjectionAlgorithm
-                0xD5,  # FractionalEcho
-                0xD8,  # VariableEchoFlag
-                0xD9,  # ConcatenatedSAT
-                0xDF,  # UserData23
-                0xE0,  # UserData24
-                0xE2,  # VelocityEncodeScale
-                0xF2,  # FastPhases
-                0xF9,  # TransmitGain
+                0x0F,  # DS HorizFrameOfRef
+                0x11,  # SS SeriesContrast
+                0x12,  # SS LastPseq
+                0x17,  # SS SeriesPlane
+                0x18,  # LO FirstScanRas
+                0x19,  # DS FirstScanLocation
+                0x1A,  # LO LastScanRas
+                0x1B,  # DS LastScanLoc
+                0x1E,  # DS DisplayFieldOfView
+                0x5A,  # FL AcquisitionDuration
+                0x7D,  # DS SecondEcho
+                0x7E,  # SS NumberOfEchoes
+                0x7F,  # DS TableDelta
+                0x81,  # SS Contiguous
+                0x84,  # DS PeakSAR
+                0x87,  # DS CardiacRepetitionTime
+                0x88,  # SS ImagesPerCardiacCycle
+                0x8A,  # SS ActualReceiveGainAnalog
+                0x8B,  # SS ActualReceiveGainDigital
+                0x8D,  # DS DelayAfterTrigger
+                0x8F,  # SS Swappf
+                0x90,  # SS PauseInterval
+                0x91,  # DS PauseTime
+                0x93,  # DS AutoPrescanCenterFrequency
+                0x94,  # SS AutoPrescanTransmitGain
+                0x95,  # SS AutoPrescanAnalogReceiverGain
+                0x96,  # SS AutoPrescanDigitalReceiverGain
+                0x97,  # SL BitmapdefiningCVs
+                0x9B,  # SS PulseSequenceMode
+                0x9C,  # LO PulseSequenceName
+                Jitter(0x9D),  # DT PulseSequenceDate
+                0x9E,  # LO SequenceName, InternalPulseSequenceName
+                0x9F,  # SS TransmittingCoilType
+                0xA2,  # SL RawDataRunNumber
+                0xA3,  # UL CalibratedFieldStrength
+                0xA4,  # SS SATFatWaterBone
+                0xA7,  # DS UserData0
+                0xA8,  # DS UserData1
+                0xA9,  # DS UserData2
+                0xAA,  # DS UserData3
+                0xAB,  # DS UserData4
+                0xAC,  # DS UserData5
+                0xAD,  # DS UserData6
+                0xAE,  # DS UserData7
+                0xAF,  # DS UserData8
+                0xB0,  # DS UserData9
+                0xB1,  # DS UserData10
+                0xB2,  # DS UserData11
+                0xB3,  # DS UserData12
+                0xB4,  # DS UserData13
+                0xB5,  # DS UserData14
+                0xB6,  # DS UserData15
+                0xB7,  # DS UserData16
+                0xB8,  # DS UserData17
+                0xB9,  # DS UserData18
+                0xBA,  # DS UserData19
+                0xBB,  # DS DiffusionDirectionX, UserData20
+                0xBC,  # DS DiffusionDirectionY, UserData21
+                0xBD,  # DS DiffusionDirectionZ, UserData22
+                0xBE,  # DS ProjectionAngle
+                0xC0,  # SS SaturationPlanes
+                0xC2,  # SS SATlocationR
+                0xC3,  # SS SATlocationL
+                0xC4,  # SS SATlocationA
+                0xC5,  # SS SATlocationP
+                0xC6,  # SS SATlocationH
+                0xC7,  # SS SATlocationF
+                0xC8,  # SS SATThicknessRL
+                0xC9,  # SS SATThicknessAP
+                0xCA,  # SS SATThicknessHF
+                0xCB,  # SS PhaseContrastFlowAxis
+                0xCC,  # SS VelocityEncoding
+                0xCD,  # SS ThicknessDisclaimer
+                0xCE,  # SS PrescanType
+                0xCF,  # SS PrescanStatus
+                0xD2,  # SS ProjectionAlgorithm
+                0xD5,  # SS FractionalEcho
+                0xD8,  # SS VariableEchoflag
+                0xD9,  # DS ConcatenatedSAT
+                0xDF,  # DS UserData23
+                0xE0,  # DS NumberOfDiffusionDirection, UserData24
+                0xE2,  # DS VelocityEncodeScale
+                0xF2,  # SS FastPhases
+                0xF9,  # DS TransmitGain
             ),
         ),
         PrivateTagSpec(
             group=0x0043,
             creator="GEMS_PARM_01",
             offsets=(
-                0x01,  # BitmapOfPrescanOptions
-                0x02,  # GradientOffsetInX
-                0x03,  # GradientOffsetInY
-                0x04,  # GradientOffsetInZ
-                0x06,  # NumberOfEPIShots
-                0x07,  # ViewsPerSegment
-                0x08,  # RespiratoryRateInBPM
-                0x09,  # RespiratoryTriggerPoint
-                0x0A,  # TypeOfReceiverUsed
-                0x0B,  # PeakRateOfChangeOfGradientField
-                0x0C,  # LimitsInUnitsOfPercent
-                0x0D,  # PSDEstimatedLimit
-                0x0E,  # PSDEstimatedLimitInTeslaPerSecond
-                0x29,  # HistogramTables
-                0x2C,  # EffectiveEchoSpacing
-                0x2D,  # StringSlopField1
-                0x2E,  # StringSlopField2
-                0x2F,  # RawDataType
-                0x30,  # RawDataType
-                0x32,  # RawDataType
-                0x33,  # NegScanSpacing
-                0x34,  # OffsetFrequency
-                0x35,  # UserUsageTag
-                0x36,  # UserFillMapMSW
-                0x37,  # UserFillMapLSW
-                0x38,  # User25ToUser48
-                0x39,  # SlopInteger6ToSlopInteger9
-                0x60,  # SlopInteger10ToSlopInteger17
-                0x7D,  # ReconModeFlagWord
-                0x80,  # CoilIDData
-                0x81,  # GECoilName
-                0x83,  # AssetRFactors
-                0x84,  # AdditionalAssetData
-                0x89,  # GoverningBodydBdtAndSARDefinition
-                0x8A,  # PrivateInPlanePhaseEncodingDirection
-                0x90,  # SARDefinition
-                0x91,  # SARValue
-                0x97,  # ImageFilteringParameters
-                0x9A,  # RxStackIdentification
+                0x01,  # SS BitmapOfPrescanOptions
+                0x02,  # SS GradientOffsetInX
+                0x03,  # SS GradientOffsetInY
+                0x04,  # SS GradientOffsetInZ
+                0x06,  # SS NumberOfEPIShots
+                0x07,  # SS ViewsPerSegment
+                0x08,  # SS RespiratoryRate
+                0x09,  # SS RespiratoryTriggerPoint
+                0x0A,  # SS TypeOfReceiverUsed
+                0x0B,  # DS DB_dtPeakRateOfChangeOfGradientField
+                0x0C,  # DS dB_dtLimitsInUnitsOfPercent
+                0x0D,  # DS PSDEstimatedLimit
+                0x0E,  # DS PSDEstimatedLimitInTeslaPerSecond
+                0x29,  # OB HistogramTables
+                0x2C,  # SS EffectiveEchoSpacing
+                0x2D,  # SH FilterMode
+                0x2F,  # SS PrivateImageType
+                0x30,  # SS VasCollapseFlag
+                0x32,  # SS VasFlags
+                0x33,  # FL Neg_scanspacing
+                0x34,  # IS OffsetFrequency
+                0x35,  # UL User_usage_tag
+                0x36,  # UL User_fill_map_MSW
+                0x37,  # UL User_fill_map_LSW
+                0x38,  # FL UserData_25_48
+                0x39,  # IS SlopInt_6_9
+                0x60,  # IS SlopInt_10_17
+                0x7D,  # US ReconModeFlagWord
+                0x80,  # LO CoilIDData
+                0x81,  # LO GECoilName
+                0x83,  # DS AssetRFactors
+                0x84,  # LO AdditionalAssetData
+                0x89,  # LO GoverningBodydB_dtAndSARDefinition
+                0x8A,  # CS InPlanePhaseEncodingDirection
+                0x90,  # LO SARDefinition
+                0x91,  # DS SARValue
+                0x97,  # LO ImageFilteringParameters
+                0x9A,  # IS RxStackIdentification
             ),
         ),
         PrivateTagSpec(
             group=0x0027,
             creator="GEMS_IMAG_01",
             offsets=(
-                0x31,  # ImagingMode
-                0x32,  # PulseSequence
-                0x33,  # ImagingOptions
-                0x35,  # PlaneType
-                0x40,  # RASLetterOfImageLocation
-                0x41,  # ImageLocation
-                0x60,  # ImageDimensionX
-                0x61,  # ImageDimensionY
-                0x62,  # NumberOfExcitations
+                0x31,  # SS ImagingMode
+                0x32,  # SS PulseSequence
+                0x33,  # UL ImagingOptions
+                0x35,  # SS PlaneType
+                0x40,  # SH RASletterOfImageLocation
+                0x41,  # FL ImageLocation
+                0x60,  # FL ImageDimensionX
+                0x61,  # FL ImageDimensionY
+                0x62,  # FL NumberOfExcitations
             ),
         ),
     }

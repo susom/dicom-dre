@@ -12,6 +12,7 @@ from pydicom.errors import BytesLengthException
 from pydicom.tag import BaseTag
 from pydicom.tag import Tag
 
+from dicom_dre.actions import jitter_date
 from dicom_dre.parameters import DEFAULT_STUDY_ID
 from dicom_dre.uid_utils import hashuid
 from dicom_dre.uid_utils import stable_jitter
@@ -61,19 +62,38 @@ _PROTECTED_TAGS: frozenset[BaseTag] = frozenset(
 
 
 @dataclass(frozen=True, slots=True)
+class Jitter:
+    """Marks a preserved private offset whose DA/DT value is date-jittered.
+
+    Wraps an offset inside :attr:`PrivateTagSpec.offsets`. The element survives
+    private-group removal like any preserved offset, and its date value is then
+    shifted by the same per-study jitter applied to standard date tags.
+    """
+
+    offset: int
+
+
+@dataclass(frozen=True, slots=True)
 class PrivateTagSpec:
     """An approved private element to preserve verbatim.
 
     Attributes:
         group: Private group number (odd), e.g. 0x0019.
         creator: Private creator string, e.g. "GEMS_ACQU_01".
-        offsets: Element offsets (low byte) to preserve within the
-            creator's resolved block, e.g. (0xBB, 0xBC, 0xBD).
+        offsets: Element offsets (low byte) to preserve within the creator's
+            resolved block, e.g. (0xBB, 0xBC, 0xBD). An offset wrapped in
+            :class:`Jitter` is preserved and then date-jittered instead of kept
+            verbatim.
     """
 
     group: int
     creator: str
-    offsets: tuple[int, ...]
+    offsets: tuple[int | Jitter, ...]
+
+
+def _offset_value(offset: int | Jitter) -> int:
+    """Return the integer offset, unwrapping a :class:`Jitter` marker."""
+    return offset.offset if isinstance(offset, Jitter) else offset
 
 
 @dataclass(frozen=True)
@@ -111,14 +131,17 @@ class DeidProfile:
         Phase 0: Validate the jitter and resolve a per-patient shift when unset.
         Phase 1: Insert a default SpecificCharacterSet when absent.
         Phase 2: Apply element-level rules.
-        Phase 3: Apply global removal rules (private, curves, overlays, unspecified).
-        Phase 4: Remove retired Group Length tags from all datasets.
-        Phase 5: Correct VRs for elements read as OB/UN inside sequences.
+        Phase 3: Shift preserved private dates flagged for jitter.
+        Phase 4: Apply global removal rules (private, curves, overlays, unspecified).
+        Phase 5: Emit the De-identification Method Code Sequence.
+        Phase 6: Remove retired Group Length tags from all datasets.
+        Phase 7: Correct VRs for elements read as OB/UN inside sequences.
         """
         self._validate_jitter(params)
         params = self._resolve_jitter(ds, params)
         self._ensure_specific_character_set(ds)
         self._apply_element_rules(ds, params)
+        self._apply_preserved_private_dates(ds, params)
         self._apply_global_rules(ds)
         self._emit_deid_method_code_sequence(ds, applied_options)
         _remove_group_length_tags(ds)
@@ -390,6 +413,41 @@ class DeidProfile:
             for item in elem.value:
                 self._apply_global_rules_to_dataset(item, child_remove_unspecified)
 
+    def _apply_preserved_private_dates(self, ds: Dataset, params: DeidParameters) -> None:
+        """Shift preserved private DA/DT elements flagged with :class:`Jitter`.
+
+        A flagged offset survives private-group removal and then has its date
+        value shifted by the same per-study amount applied to standard date
+        tags. Recurses into sequence items so a flagged element nested at any
+        depth is shifted. Runs before global removal, so a flagged offset is
+        shifted before its private group is stripped.
+
+        Inert for date-preserving profiles: a jitter of ``None`` or ``0``
+        requests no shift and is skipped, so an alternate-format date value is
+        left verbatim rather than normalized by ``jitter_date`` for a zero-day
+        shift.
+        """
+        if not params.jitter:
+            return
+        has_jitter = any(isinstance(offset, Jitter) for spec in self.preserved_private_specs for offset in spec.offsets)
+        if not has_jitter:
+            return
+        self._apply_preserved_private_dates_to_dataset(ds, params, jitter_date())
+
+    def _apply_preserved_private_dates_to_dataset(self, ds: Dataset, params: DeidParameters, shift: TagAction) -> None:
+        """Shift flagged preserved private dates in one dataset, then recurse."""
+        for tag in self._resolve_preserved_date_tags(ds):
+            shift(ds, tag, params)
+        for elem in ds:
+            try:
+                is_sq = elem.VR == "SQ" and bool(elem.value)
+            except (ValueError, NotImplementedError):
+                continue
+            if not is_sq:
+                continue
+            for item in elem.value:
+                self._apply_preserved_private_dates_to_dataset(item, params, shift)
+
     def _resolve_preserved_tags(self, ds: Dataset) -> set[BaseTag]:
         """Resolve preserved private specs to concrete tags in this dataset.
 
@@ -414,15 +472,43 @@ class DeidProfile:
                 if str(ds[creator_tag].value).strip() != spec.creator:
                     continue
                 data_tags = {
-                    Tag(spec.group, (block << 8) | offset)
+                    Tag(spec.group, (block << 8) | _offset_value(offset))
                     for offset in spec.offsets
-                    if Tag(spec.group, (block << 8) | offset) in ds
+                    if Tag(spec.group, (block << 8) | _offset_value(offset)) in ds
                 }
                 if data_tags:
                     keep.add(creator_tag)
                     keep.update(data_tags)
                 break
         return keep
+
+    def _resolve_preserved_date_tags(self, ds: Dataset) -> set[BaseTag]:
+        """Resolve Jitter-flagged preserved private offsets present in ``ds``.
+
+        Returns the concrete data-element tags for offsets wrapped in
+        :class:`Jitter`, using the same creator-block resolution as
+        :meth:`_resolve_preserved_tags`. These tags are date-jittered after the
+        element rules run.
+        """
+        result: set[BaseTag] = set()
+        if not self.preserved_private_specs:
+            return result
+        for spec in self.preserved_private_specs:
+            jitter_offsets = [offset.offset for offset in spec.offsets if isinstance(offset, Jitter)]
+            if not jitter_offsets:
+                continue
+            for block in range(0x10, 0x100):
+                creator_tag = Tag(spec.group, block)
+                if creator_tag not in ds:
+                    continue
+                if str(ds[creator_tag].value).strip() != spec.creator:
+                    continue
+                for offset in jitter_offsets:
+                    data_tag = Tag(spec.group, (block << 8) | offset)
+                    if data_tag in ds:
+                        result.add(data_tag)
+                break
+        return result
 
     def _emit_deid_method_code_sequence(self, ds: Dataset, applied_options: frozenset[str] = frozenset()) -> None:
         """Add De-identification Method Code Sequence (0012,0064).
