@@ -106,7 +106,17 @@ retain verbatim through its `preserved_private_specs` field (a frozenset of
 `DeidProfile.apply(ds, params)` resolves each spec's private-creator block (the
 block is runtime-assigned, not fixed) and keeps both the resolved data elements
 and their creator element. The engine removes all other private elements as
-usual. The `default` profile declares the specs; `lds` and `lds-no-dob` inherit
+usual.
+
+An offset in a spec may be wrapped in `Jitter`. A `Jitter`-flagged offset is
+resolved and kept like any preserved offset, and its `DA`/`DT` value is then
+shifted by the same per-study jitter applied to standard date tags. The shift
+runs after the element rules and recurses into sequence items. For a
+date-preserving profile the jitter is unset, so a flagged value is left
+unchanged. The `default` profile flags `PulseSequenceDate (0019,xx9D)` in the
+`GEMS_ACQU_01` block; `strict` inherits the same specs.
+
+The `default` profile declares the specs; `lds` and `lds-no-dob` inherit
 them, and `strict` declares the same set. The engine stamps the
 De-identification Method Code Sequence `(0012,0064)` on every de-identified
 instance; it adds the Retain Safe Private Option item `113111` only when the
