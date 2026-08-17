@@ -43,17 +43,153 @@ PRESERVED_PRIVATE_SPECS: frozenset[PrivateTagSpec] = frozenset(
         PrivateTagSpec(
             group=0x0019,
             creator="GEMS_ACQU_01",
-            offsets=(0x11, 0x5A, 0x90, 0x91, 0xBB, 0xBC, 0xBD),
+            offsets=(
+                0x0F,  # HorizontalFrameOfReference
+                0x11,  # SeriesContrast
+                0x12,  # LastPseq
+                0x17,  # SeriesPlane
+                0x18,  # FirstScanRAS
+                0x19,  # FirstScanLocation
+                0x1A,  # LastScanRAS
+                0x1B,  # LastScanLocation
+                0x1E,  # DisplayFieldOfView
+                0x5A,  # AcquisitionDuration
+                0x7D,  # SecondEcho
+                0x7E,  # NumberOfEchos
+                0x7F,  # TableDelta
+                0x81,  # Contiguous
+                0x84,  # PeakSAR
+                0x87,  # CardiacRepetitionTime
+                0x88,  # ImagesPerCardiacCycle
+                0x8A,  # ActualReceiveGainAnalog
+                0x8B,  # ActualReceiveGainDigital
+                0x8D,  # DelayAfterTrigger
+                0x8F,  # SwapPhaseFrequency
+                0x90,  # PauseInterval
+                0x91,  # PulseTime
+                0x93,  # CenterFrequency
+                0x94,  # TransmitGain
+                0x95,  # AnalogReceiverGain
+                0x96,  # DigitalReceiverGain
+                0x97,  # BitmapDefiningCVs
+                0x9B,  # PulseSequenceMode
+                0x9C,  # PulseSequenceName
+                0x9D,  # PulseSequenceDate
+                0x9E,  # InternalPulseSequenceName
+                0x9F,  # TransmittingCoil
+                0xA2,  # RawDataRunNumber
+                0xA3,  # CalibratedFieldStrength
+                0xA4,  # SATFatWaterBone
+                0xA7,  # UserData0
+                0xA8,  # UserData1
+                0xA9,  # UserData2
+                0xAA,  # UserData3
+                0xAB,  # UserData4
+                0xAC,  # UserData5
+                0xAD,  # UserData6
+                0xAE,  # UserData7
+                0xAF,  # UserData8
+                0xB0,  # UserData9
+                0xB1,  # UserData10
+                0xB2,  # UserData11
+                0xB3,  # UserData12
+                0xB4,  # UserData13
+                0xB5,  # UserData14
+                0xB6,  # UserData15
+                0xB7,  # UserData16
+                0xB8,  # UserData17
+                0xB9,  # UserData18
+                0xBA,  # UserData19
+                0xBB,  # DiffusionDirectionX
+                0xBC,  # DiffusionDirectionY
+                0xBD,  # DiffusionDirectionZ
+                0xBE,  # ProjectionAngle
+                0xC0,  # SaturationPlanes
+                0xC2,  # SATLocationR
+                0xC3,  # SATLocationL
+                0xC4,  # SATLocationA
+                0xC5,  # SATLocationP
+                0xC6,  # SATLocationH
+                0xC7,  # SATLocationF
+                0xC8,  # SATThicknessRL
+                0xC9,  # SATThicknessAP
+                0xCA,  # SATThicknessHF
+                0xCB,  # PrescribedFlowAxis
+                0xCC,  # VelocityEncoding
+                0xCD,  # ThicknessDisclaimer
+                0xCE,  # PrescanType
+                0xCF,  # PrescanStatus
+                0xD2,  # ProjectionAlgorithm
+                0xD3,  # ProjectionAlgorithm
+                0xD5,  # FractionalEcho
+                0xD8,  # VariableEchoFlag
+                0xD9,  # ConcatenatedSAT
+                0xDF,  # UserData23
+                0xE0,  # UserData24
+                0xE2,  # VelocityEncodeScale
+                0xF2,  # FastPhases
+                0xF9,  # TransmitGain
+            ),
         ),
         PrivateTagSpec(
             group=0x0043,
             creator="GEMS_PARM_01",
-            offsets=(0x08, 0x09, 0x2F),
+            offsets=(
+                0x01,  # BitmapOfPrescanOptions
+                0x02,  # GradientOffsetInX
+                0x03,  # GradientOffsetInY
+                0x04,  # GradientOffsetInZ
+                0x06,  # NumberOfEPIShots
+                0x07,  # ViewsPerSegment
+                0x08,  # RespiratoryRateInBPM
+                0x09,  # RespiratoryTriggerPoint
+                0x0A,  # TypeOfReceiverUsed
+                0x0B,  # PeakRateOfChangeOfGradientField
+                0x0C,  # LimitsInUnitsOfPercent
+                0x0D,  # PSDEstimatedLimit
+                0x0E,  # PSDEstimatedLimitInTeslaPerSecond
+                0x29,  # HistogramTables
+                0x2C,  # EffectiveEchoSpacing
+                0x2D,  # StringSlopField1
+                0x2E,  # StringSlopField2
+                0x2F,  # RawDataType
+                0x30,  # RawDataType
+                0x32,  # RawDataType
+                0x33,  # NegScanSpacing
+                0x34,  # OffsetFrequency
+                0x35,  # UserUsageTag
+                0x36,  # UserFillMapMSW
+                0x37,  # UserFillMapLSW
+                0x38,  # User25ToUser48
+                0x39,  # SlopInteger6ToSlopInteger9
+                0x60,  # SlopInteger10ToSlopInteger17
+                0x7D,  # ReconModeFlagWord
+                0x80,  # CoilIDData
+                0x81,  # GECoilName
+                0x83,  # AssetRFactors
+                0x84,  # AdditionalAssetData
+                0x89,  # GoverningBodydBdtAndSARDefinition
+                0x8A,  # PrivateInPlanePhaseEncodingDirection
+                0x90,  # SARDefinition
+                0x91,  # SARValue
+                0x97,  # ImageFilteringParameters
+                0x9A,  # RxStackIdentification
+            ),
         ),
         PrivateTagSpec(
             group=0x0027,
             creator="GEMS_IMAG_01",
-            offsets=(0x62,),
+            offsets=(
+                0x31,  # ImagingMode
+                0x32,  # PulseSequence
+                0x33,  # ImagingOptions
+                0x35,  # PlaneType
+                0x40,  # RASLetterOfImageLocation
+                0x41,  # ImageLocation
+                0x60,  # ImageDimensionX
+                0x61,  # ImageDimensionY
+                0x62,  # NumberOfExcitations
+            ),
         ),
     }
 )
@@ -87,7 +223,6 @@ PHI_REMOVE_TAGS: frozenset[BaseTag] = frozenset(
         Tag(0x0008, 0x1110),  # RefStudySeq
         Tag(0x0008, 0x1111),  # RefPPSSeq
         Tag(0x0008, 0x1120),  # RefPatientSeq
-        Tag(0x0008, 0x1250),  # RelatedSeriesSequence
         Tag(0x0008, 0x2111),  # DerivationDescription
         Tag(0x0008, 0x4000),  # IdentifyingComments
         Tag(0x0010, 0x0021),  # IssuerOfPatientID
