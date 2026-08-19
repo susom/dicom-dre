@@ -2,6 +2,24 @@
 
 <!-- version list -->
 
+## v1.3.1 (2026-08-17)
+
+### Bug Fixes
+
+- PulseSequenceDate (0019,xx9D) is now date-jittered instead of retained verbatim
+  ([#17](https://github.com/susom/dicom-dre/pull/17),
+  [`19dc2e9`](https://github.com/susom/dicom-dre/commit/19dc2e95225d5e37d9dc7eb6b31ad6657722f8c2))
+
+
+## v1.3.0 (2026-08-17)
+
+### Features
+
+- Additional GE private attributes, RelatedSeriesSequence
+  ([#15](https://github.com/susom/dicom-dre/pull/15),
+  [`cb442a4`](https://github.com/susom/dicom-dre/commit/cb442a4d010d4c51678518faa4ecbf61a48d6d64))
+
+
 ## v1.2.0 (2026-08-14)
 
 ### Bug Fixes
