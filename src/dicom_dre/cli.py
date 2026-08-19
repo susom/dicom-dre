@@ -487,6 +487,11 @@ def redactor() -> None:
 @redactor.command("redact")
 @click.option("--track-redacted", is_flag=True, help="Also write the distinct tokens that were redacted.")
 @click.option(
+    "--lowercase",
+    is_flag=True,
+    help="Lowercase tracked redacted tokens so entries differing only by case are not duplicated.",
+)
+@click.option(
     "--allowlist",
     default="default.csv",
     show_default=True,
@@ -501,7 +506,9 @@ def redactor() -> None:
     help="Path to the input CSV file. Every cell of every row is redacted; no header row required.",
 )
 @click.option("--output", default="output.csv", show_default=True, help="Path to the output CSV file.")
-def redact_command(track_redacted: bool, allowlist: str, preserve_dates: bool, input_: str, output: str) -> None:
+def redact_command(
+    track_redacted: bool, lowercase: bool, allowlist: str, preserve_dates: bool, input_: str, output: str
+) -> None:
     """Redact free text from an input CSV and write the result to OUTPUT.
 
     \b
@@ -518,6 +525,8 @@ def redact_command(track_redacted: bool, allowlist: str, preserve_dates: bool, i
     click.echo(f"Redacted text has been written to {output}")
 
     if track_redacted and all_redacted_tokens:
+        if lowercase:
+            all_redacted_tokens = {token.lower() for token in all_redacted_tokens}
         redacted_tokens_file = f"{output.rsplit('.', 1)[0]}_redacted_tokens.csv"
         with open(redacted_tokens_file, "w", newline="", encoding="utf-8") as token_file:
             writer = csv.writer(token_file)

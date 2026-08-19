@@ -167,6 +167,10 @@ structured-content and graphic-annotation sequences as content roots
 Current Requested Procedure Evidence Sequence `(0040,A375)`, Identical Documents
 Sequence `(0040,A525)`, Referenced Request Sequence `(0040,A370)`, Anatomic
 Region Sequence `(0008,2218)`, and Graphic Annotation Sequence `(0070,0001)`).
+The PR rendering sequences that bind annotations to their images and define
+their geometry are also content roots (Referenced Series Sequence `(0008,1115)`,
+Displayed Area Selection Sequence `(0070,005A)`, and Graphic Layer Sequence
+`(0070,0060)`), so a viewer can render the retained annotations.
 Unspecified-element removal is disabled below a content root, so the coded labels
 and cross-object references survive, while the shared PHI-removal, date-removal,
 and free-text redaction rules de-identify every element inside the subtree.

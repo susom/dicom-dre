@@ -13,7 +13,11 @@ Key Object Selection (KO) and Presentation State (PR) objects carry no pixel
 data but hold clinician-curated labels. Their structured-content and
 graphic-annotation subtrees are retained through ``content_root_tags`` so the
 labels survive, while the shared PHI-removal, date-removal, and free-text
-redaction rules de-identify every element inside those subtrees.
+redaction rules de-identify every element inside those subtrees. The PR
+rendering sequences that bind annotations to their images and define their
+geometry are also retained as content roots (Referenced Series Sequence
+``(0008,1115)``, Displayed Area Selection Sequence ``(0070,005A)``, and Graphic
+Layer Sequence ``(0070,0060)``), so a viewer can render the annotations.
 
 The resulting file is likely not conformant to the DICOM specification, since
 required elements may be removed; it is intended only for pixel-data use, not
@@ -396,13 +400,16 @@ STRICT_KEEP_TAGS: frozenset[BaseTag] = frozenset(
 
 
 # Content-root sequences whose subtree is retained verbatim under
-# remove_unspecified. These carry the KO/PR labels and cross-object references;
-# the shared element rules (PHI removal, date removal, free-text redaction, UID
-# hashing) still de-identify every element within them. Structural and coded
-# members (Value Type, Concept Name/Code sequences, Graphic Data/Type, reference
-# SOP sequences) carry no PHI and are preserved.
+# remove_unspecified. These carry the KO/PR labels, cross-object references, and
+# the PR rendering sequences (image binding, displayed area, graphic layers)
+# that let a viewer render retained annotations; the shared element rules (PHI
+# removal, date removal, free-text redaction, UID hashing) still de-identify
+# every element within them. Structural and coded members (Value Type, Concept
+# Name/Code sequences, Graphic Data/Type, reference SOP sequences) carry no PHI
+# and are preserved.
 STRICT_CONTENT_ROOT_TAGS: frozenset[BaseTag] = frozenset(
     {
+        Tag(0x0008, 0x1115),  # ReferencedSeriesSequence (PR-to-image binding)
         Tag(0x0008, 0x2218),  # AnatomicRegionSequence
         Tag(0x0040, 0xA043),  # ConceptNameCodeSequence (KO document title)
         Tag(0x0040, 0xA370),  # ReferencedRequestSequence
@@ -410,6 +417,8 @@ STRICT_CONTENT_ROOT_TAGS: frozenset[BaseTag] = frozenset(
         Tag(0x0040, 0xA525),  # IdenticalDocumentsSequence
         Tag(0x0040, 0xA730),  # ContentSequence
         Tag(0x0070, 0x0001),  # GraphicAnnotationSequence
+        Tag(0x0070, 0x005A),  # DisplayedAreaSelectionSequence (PR spatial reference)
+        Tag(0x0070, 0x0060),  # GraphicLayerSequence (PR layer definitions)
     }
 )
 
@@ -431,7 +440,9 @@ def strict_profile(settings: ProfileSettings | None = None) -> DeidProfile:
     is ``None`` they are redacted from the dataset using
     ``settings.allowlist_csv`` at apply time.
 
-    KO and PR label subtrees are retained through ``content_root_tags``. The
+    KO and PR label subtrees, along with the PR rendering sequences that bind
+    annotations to their images and define their geometry, are retained through
+    ``content_root_tags``. The
     shared PHI-removal, date-removal, and free-text redaction rules are applied
     so those retained subtrees are de-identified: dates are removed entirely
     (not date-shifted), and the free-text label
