@@ -4,6 +4,12 @@
 
 ## v1.4.0 (2026-08-19)
 
+### Features
+
+- Retain PR rendering sequences and extend text redaction coverage
+  ([#19](https://github.com/susom/dicom-dre/pull/19),
+  [`60c7ab4`](https://github.com/susom/dicom-dre/commit/60c7ab448b5c143cbae787f1e043f9adc4236e33))
+
 
 ## v1.3.1 (2026-08-17)
 
