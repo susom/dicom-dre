@@ -2054,3 +2054,58 @@ class TestStrictContentRetention:
         codes = {str(item[Tag(0x0008, 0x0100)].value) for item in ds[Tag(0x0012, 0x0064)].value}
         assert "113103" in codes, "Clean Graphics Option should be declared"
         assert "113104" in codes, "Clean Structured Content Option should be declared"
+
+    def _pr_render_dataset(self) -> Dataset:
+        from pydicom.sequence import Sequence
+
+        image_sop = Dataset()
+        image_sop.add_new(Tag(0x0008, 0x1150), "UI", "1.2.840.10008.5.1.4.1.1.2")  # RefSOPClassUID
+        image_sop.add_new(Tag(0x0008, 0x1155), "UI", self._ORIG_SOP)  # RefSOPInstanceUID
+        series_item = Dataset()
+        series_item.add_new(Tag(0x0020, 0x000E), "UI", self._ORIG_SERIES)  # SeriesInstanceUID
+        series_item.add_new(Tag(0x0008, 0x1140), "SQ", Sequence([image_sop]))  # ReferencedImageSequence
+
+        area_item = Dataset()
+        area_item.add_new(Tag(0x0070, 0x0052), "SL", [1, 1])  # DisplayedAreaTopLeftHandCorner
+        area_item.add_new(Tag(0x0070, 0x0053), "SL", [256, 256])  # DisplayedAreaBottomRightHandCorner
+        area_item.add_new(Tag(0x0070, 0x0100), "CS", "SCALE TO FIT")  # PresentationSizeMode
+
+        layer_item = Dataset()
+        layer_item.add_new(Tag(0x0070, 0x0002), "CS", "LAYER1")  # GraphicLayer
+        layer_item.add_new(Tag(0x0070, 0x0062), "IS", "1")  # GraphicLayerOrder
+
+        ds = Dataset()
+        ds.add_new(Tag(0x0008, 0x0016), "UI", "1.2.840.10008.5.1.4.1.1.11.1")  # SOPClassUID
+        ds.add_new(Tag(0x0008, 0x0018), "UI", "1.2.826.0.1.3680043.PR.2")  # SOPInstanceUID
+        ds.add_new(Tag(0x0008, 0x0060), "CS", "PR")  # Modality
+        ds.add_new(Tag(0x0010, 0x0020), "LO", "MRN-PR-1")  # PatientID
+        ds.add_new(Tag(0x0008, 0x1115), "SQ", Sequence([series_item]))  # ReferencedSeriesSequence
+        ds.add_new(Tag(0x0070, 0x005A), "SQ", Sequence([area_item]))  # DisplayedAreaSelectionSequence
+        ds.add_new(Tag(0x0070, 0x0060), "SQ", Sequence([layer_item]))  # GraphicLayerSequence
+        return ds
+
+    def test_pr_rendering_sequences_retained_and_uids_hashed(self):
+        """PR image binding, displayed area, and layer sequences survive; nested UIDs are hashed."""
+        ds = self._pr_render_dataset()
+        self._apply(ds)
+        assert Tag(0x0008, 0x1115) in ds, "ReferencedSeriesSequence should be retained"
+        assert Tag(0x0070, 0x005A) in ds, "DisplayedAreaSelectionSequence should be retained"
+        assert Tag(0x0070, 0x0060) in ds, "GraphicLayerSequence should be retained"
+
+        values = _all_string_values(ds)
+        for leaked in (self._ORIG_SERIES, self._ORIG_SOP):
+            assert leaked not in values, f"{leaked} should not survive"
+
+        series_item = ds[Tag(0x0008, 0x1115)].value[0]
+        assert str(series_item[Tag(0x0020, 0x000E)].value) == self._no_salt_uid(self._ORIG_SERIES), (
+            "SeriesInstanceUID should equal the no-salt hash"
+        )
+        image_sop = series_item[Tag(0x0008, 0x1140)].value[0]
+        assert str(image_sop[Tag(0x0008, 0x1155)].value) == self._no_salt_uid(self._ORIG_SOP), (
+            "referenced image SOP UID should equal the no-salt hash"
+        )
+
+        area_item = ds[Tag(0x0070, 0x005A)].value[0]
+        assert list(area_item[Tag(0x0070, 0x0053)].value) == [256, 256], "displayed area extent should be retained"
+        layer_item = ds[Tag(0x0070, 0x0060)].value[0]
+        assert str(layer_item[Tag(0x0070, 0x0002)].value) == "LAYER1", "graphic layer name should be retained"

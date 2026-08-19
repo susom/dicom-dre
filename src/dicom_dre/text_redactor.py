@@ -305,6 +305,8 @@ class TextRedactor:
 
     DEFAULT_ALLOW_REGEX_PATTERNS = [
         r"^(?:[0]*\d{1,5})$",  # 1-5 digit numbers, any # leading zero. Note the hex version above.
+        r"^0*(?:360|3[0-5][0-9]|[12][0-9]{2}|[1-9]?[0-9])[\u00b0\u00ba]$",  # angle 0-360 followed by a degree sign
+        r"^[xX]+$",  # a run of x or X, matching already-redacted tokens
     ]
 
     # Default delimiters for tokenization

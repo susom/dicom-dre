@@ -43,6 +43,8 @@ dicom-dre redactor redact [OPTIONS]
 **Options:**
 
 - `--track-redacted`: Also write the distinct tokens that were redacted.
+- `--lowercase`: Lowercase tracked redacted tokens so entries differing only by
+  case are not duplicated. Applies to the `_redacted_tokens.csv` output.
 - `--allowlist TEXT`: Allowlist filename (for example `default.csv`) or absolute
   path to an allowlist CSV. Default: `default.csv`.
 - `--preserve-dates`: Keep dates and times in text, for HIPAA limited datasets.
@@ -61,6 +63,12 @@ Also record which tokens were redacted:
 
 ```bash
 dicom-dre redactor redact --input samples.csv --output redacted.csv --track-redacted
+```
+
+Record redacted tokens without case-only duplicates:
+
+```bash
+dicom-dre redactor redact --input samples.csv --output redacted.csv --track-redacted --lowercase
 ```
 
 Use a custom allowlist:
