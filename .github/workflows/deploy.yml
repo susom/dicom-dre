@@ -217,3 +217,14 @@ jobs:
         env:
           GH_TOKEN: ${{ steps.get_workflow_token.outputs.token }}
         run: gh release upload "${{ steps.release.outputs.tag }}" dist/* --clobber
+
+  deploy_docs:
+    # Publish the documentation after a release completes, building from the
+    # release tag so hatch-vcs derives the exact released version.
+    needs: [version, release]
+    if: needs.version.outputs.released == 'true'
+    permissions:
+      contents: write   # push the assembled site to the gh-pages branch
+    uses: ./.github/workflows/docs.yml
+    with:
+      ref: ${{ needs.version.outputs.tag }}

@@ -330,6 +330,24 @@ class TestTextRedactor:
         # These should be allowed by DEFAULT_ALLOW_REGEX_PATTERNS
         assert result == "XXXXX 12345 XXX 6 XXXX", f"Expected short numbers allowed, got {result!r}"
 
+    @pytest.mark.parametrize("token", ["0\u00b0", "90\u00b0", "131\u00b0", "360\u00b0", "007\u00b0", "45\u00ba"])
+    def test_allow_regex_pattern_degrees(self, basic_redactor, token):
+        """Angles 0-360 followed by a degree sign are allowed."""
+        result = basic_redactor.redact_text(token)
+        assert result == token, f"degree token {token!r} should pass unmasked, got {result!r}"
+
+    @pytest.mark.parametrize("token", ["361\u00b0", "400\u00b0", "1000\u00b0"])
+    def test_allow_regex_pattern_degrees_out_of_range_masked(self, basic_redactor, token):
+        """Angles above 360 followed by a degree sign are masked."""
+        result = basic_redactor.redact_text(token)
+        assert result != token, f"out-of-range degree token {token!r} should be masked, got {result!r}"
+
+    @pytest.mark.parametrize("token", ["x", "xxxxxx", "X", "XXXX", "xXxXxX", "x" * 50])
+    def test_allow_regex_pattern_x_runs(self, basic_redactor, token):
+        """Runs of x or X pass through unmasked."""
+        result = basic_redactor.redact_text(token)
+        assert result == token, f"x-run token {token!r} should pass unmasked, got {result!r}"
+
     @pytest.mark.parametrize("token", ["Autosaved", "pathologic", "Stereotaxy"])
     def test_ko_allowlist_tokens_pass(self, full_allowlist_redactor, token):
         """The KO Text Value allowlist additions pass through unmasked."""
