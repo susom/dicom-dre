@@ -1063,6 +1063,39 @@ def test_redactor_redact_track_redacted_writes_tokens_csv(tmp_path: Path) -> Non
     )
 
 
+def test_redactor_redact_track_redacted_lowercase_dedups_case_variants(tmp_path: Path) -> None:
+    """The redact --lowercase flag records only the lowercased form of redacted tokens."""
+    allowlist = tmp_path / "allow.csv"
+    _write_allowlist(allowlist, ["chest"])
+    input_csv = tmp_path / "in.csv"
+    input_csv.write_text("Chest Zzytkiewicz\nChest zzytkiewicz\n", encoding="utf-8")
+    output_csv = tmp_path / "out.csv"
+
+    runner = CliRunner()
+    result = runner.invoke(
+        cli,
+        [
+            "redactor",
+            "redact",
+            "--allowlist",
+            str(allowlist),
+            "--input",
+            str(input_csv),
+            "--output",
+            str(output_csv),
+            "--track-redacted",
+            "--lowercase",
+        ],
+    )
+
+    assert result.exit_code == 0, result.output
+    tokens_file = tmp_path / "out_redacted_tokens.csv"
+    assert tokens_file.exists(), "The redacted-tokens CSV should be written alongside the output"
+    contents = tokens_file.read_text(encoding="utf-8")
+    assert "zzytkiewicz" in contents, f"The lowercased redacted token should be recorded, got {contents!r}"
+    assert "Zzytkiewicz" not in contents, f"The mixed-case variant should be normalized away, got {contents!r}"
+
+
 def test_redactor_redact_resolves_packaged_allowlist(tmp_path: Path) -> None:
     """The redact command resolves a bare allowlist filename against packaged allow_lists data."""
     input_csv = tmp_path / "in.csv"
