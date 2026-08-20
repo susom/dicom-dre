@@ -21,6 +21,29 @@ jobs:
     permissions:
       contents: read
 
+  dead-code:
+    name: Scan for dead code
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    env:
+      # Exclude the docs group (a default group locally) from CI installs.
+      UV_NO_GROUP: docs
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@d4b2f3b6ecc6e67c4457f6d3e41ec42d3d0fcb86 # v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: uv sync
+
+      - name: Run vulture
+        run: uv run vulture
+
   osv-scan:
     name: Scan dependencies for vulnerabilities
     runs-on: ubuntu-latest

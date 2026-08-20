@@ -56,6 +56,17 @@ repos:
       - id: pyupgrade
         types: [python]
         args: [--py312-plus]
+  - repo: https://github.com/jendrikseipp/vulture
+    rev: v2.16
+    hooks:
+      - id: vulture
+        name: vulture dead-code scan
+        description: reports unused code (paths and confidence from [tool.vulture]).
+        # Scan the paths configured in [tool.vulture] (which include the
+        # whitelist) rather than only the changed files pre-commit would pass;
+        # a partial file set drops the whitelist and yields false positives.
+        pass_filenames: false
+        always_run: true
   - repo: https://github.com/compilerla/conventional-pre-commit
     rev: v4.3.0
     hooks:

@@ -43,6 +43,10 @@ fmt:
 typecheck:
     uv run pyrefly check
 
+# Scan for dead code with vulture
+deadcode:
+    uv run vulture
+
 # Build the HTML documentation (Sphinx + Furo)
 docs:
     uv run --group docs sphinx-build -b html docs docs/_build/html
@@ -94,8 +98,8 @@ fuzz HARNESS DURATION="60":
 build: build-ext
     uv run python -m build --no-isolation --wheel
 
-# Full local CI: lint + typecheck + tests
-ci: lint fmt-check typecheck test
+# Full local CI: lint + typecheck + dead-code scan + tests
+ci: lint fmt-check typecheck deadcode test
 
 # Bootstrap a fresh dev environment: sync deps then compile the C extension
 bootstrap: sync build-ext
