@@ -2,6 +2,23 @@
 
 <!-- version list -->
 
+## v1.4.1 (2026-08-20)
+
+### Bug Fixes
+
+- Attach SLSA provenance to releases and fix redundant release upload
+  ([#22](https://github.com/susom/dicom-dre/pull/22),
+  [`de71b03`](https://github.com/susom/dicom-dre/commit/de71b032e64071bfc8c9d08830ca3c39a0e99b7b))
+
+### Documentation
+
+- Add bdf.yaml [skip ci]
+  ([`17723dc`](https://github.com/susom/dicom-dre/commit/17723dc50929b0edfe382dee7ab62fb23a3af596))
+
+- Backfill v1.4.0 changelog entry
+  ([`2e5fd1c`](https://github.com/susom/dicom-dre/commit/2e5fd1c50b667d71fcbd528ad77261f973cdf3da))
+
+
 ## v1.4.0 (2026-08-19)
 
 ### Features
