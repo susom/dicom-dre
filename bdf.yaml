@@ -1,0 +1,70 @@
+version: v0.0.1
+
+tool:
+  name: DICOM De-identification & Redaction Engine
+  repo_url: https://github.com/susom/dicom-dre
+  package_url: https://pypi.org/project/dicom-dre/
+  tool_homepage: https://susom.github.io/dicom-dre/
+  documentation_url: https://susom.github.io/dicom-dre/
+  tool_type: Library
+  tool_notes: Python library with a CLI (dicom-dre). De-identifies DICOM metadata and blanks burned-in pixel text using a rule-based device catalog.
+
+llm:
+  usesLlm: false
+  bringOwnKey: false
+
+input:
+  - name: DICOM instances
+    dataCategory: imaging
+    dataClass: structured
+    dataType: radiology
+    format:
+      - dcm
+    dataStandard:
+      - dicom
+    proprietary: false
+    source:
+
+output:
+  - name: De-identified DICOM instances
+    dataCategory: imaging
+    dataClass: structured
+    dataType: radiology
+    format:
+      - dcm
+    dataStandard:
+      - dicom
+    proprietary: false
+    source:
+
+collaborations: []
+
+domains:
+  - healthcare
+  - privacy
+  - de-identification
+  - imaging
+
+credit:
+  - name: DICOM-DRE Team
+    role: Developer
+    org: Stanford University
+    url: https://github.com/susom/dicom-dre
+
+maturity:
+  beginning_maturity: 1
+  current_maturity: 8
+
+license:
+  license_type: Apache-2.0
+  link: https://github.com/susom/dicom-dre/blob/main/LICENSE
+
+target_users:
+  primary_user:
+    user_type: researcher
+    technical_literacy_level:
+      - intermediate
+    biomedical_literacy_level:
+      - intermediate
+
+media: []
