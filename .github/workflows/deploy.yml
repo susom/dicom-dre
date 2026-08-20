@@ -160,6 +160,14 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       id-token: write   # PyPI trusted publishing (OIDC)
+    outputs:
+      # Whether python-semantic-release actually cut a release. Downstream jobs
+      # gate on this rather than the version job's prediction so they never run
+      # against an empty artifact set.
+      released: ${{ steps.release.outputs.released }}
+      # base64-encoded sha256 subjects of the published distributions, consumed
+      # by the provenance job to generate SLSA build provenance.
+      hashes: ${{ steps.hash.outputs.hashes }}
     steps:
       - name: Checkout
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
@@ -218,11 +226,45 @@ jobs:
           GH_TOKEN: ${{ steps.get_workflow_token.outputs.token }}
         run: gh release upload "${{ steps.release.outputs.tag }}" dist/* --clobber
 
+      - name: Compute distribution hashes for provenance
+        # base64-encoded sha256 subjects covering the published wheels and
+        # sdist. Consumed by the provenance job to attest the exact artifacts.
+        # Written outside dist/ so the checksum file is not uploaded as an asset.
+        id: hash
+        if: steps.release.outputs.released == 'true'
+        run: |
+          set -euo pipefail
+          cd dist
+          sha256sum *.whl *.tar.gz | base64 -w0 > "${RUNNER_TEMP}/subjects.b64"
+          echo "hashes=$(cat "${RUNNER_TEMP}/subjects.b64")" >> "$GITHUB_OUTPUT"
+
+  provenance:
+    # Generate SLSA build provenance and attach it to the GitHub Release as a
+    # <name>.intoto.jsonl asset. This is a separate attestation from the
+    # Sigstore signature bundles and is required for the OpenSSF Scorecard
+    # Signed-Releases provenance criterion.
+    #
+    # The generic generator reusable workflow must be referenced by an
+    # immutable release tag, not a commit SHA; the trusted builder identity is
+    # derived from the tag, so SHA pinning would break provenance verification.
+    needs: [version, release]
+    if: needs.release.outputs.released == 'true'
+    permissions:
+      actions: read     # read the workflow run context recorded in provenance
+      id-token: write   # keyless signing of the provenance bundle
+      contents: write   # attach the provenance to the GitHub Release
+    uses: slsa-framework/slsa-github-generator/.github/workflows/generator_generic_slsa3.yml@v2.1.0
+    with:
+      base64-subjects: ${{ needs.release.outputs.hashes }}
+      upload-assets: true
+      upload-tag-name: ${{ needs.version.outputs.tag }}
+      provenance-name: dicom_dre-${{ needs.version.outputs.version }}.intoto.jsonl
+
   deploy_docs:
     # Publish the documentation after a release completes, building from the
     # release tag so hatch-vcs derives the exact released version.
     needs: [version, release]
-    if: needs.version.outputs.released == 'true'
+    if: needs.release.outputs.released == 'true'
     permissions:
       contents: write   # push the assembled site to the gh-pages branch
     uses: ./.github/workflows/docs.yml

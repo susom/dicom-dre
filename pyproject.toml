@@ -119,6 +119,12 @@ exclude_commit_patterns = [
 match = "main"
 prerelease = false
 
+[tool.semantic_release.publish]
+# The deploy workflow uploads distributions (and their Sigstore bundles) to the
+# GitHub Release in a later step; disabling this avoids a redundant upload of
+# the wheels and sdist during the version command.
+upload_to_vcs_release = false
+
 [tool.semantic_release.commit_parser_options]
 allowed_tags = ["build", "chore", "ci", "docs", "feat", "fix", "perf", "refactor", "style", "test"]
 minor_tags = ["feat"]
