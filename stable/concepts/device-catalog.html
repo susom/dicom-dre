@@ -1,0 +1,801 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="JPEG DCT Scrubbing" href="jpeg-dct.html"><link rel="prev" title="Architecture" href="architecture.html">
+
+    <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
+        <title>Device Catalog - dicom-dre 1.4.1</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d111a655" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">dicom-dre 1.4.1</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
+  
+  <span class="sidebar-brand-text">dicom-dre 1.4.1</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting-started/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting-started/quickstart.html">Quickstart</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Concepts</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="architecture.html">Architecture</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Device Catalog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="jpeg-dct.html">JPEG DCT Scrubbing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="profiles.html">De-identification Profiles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="text-redaction.html">Text Redaction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reproducibility.html">Reproducibility</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../guides/cli.html">Command-line Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/redactor.html">Redactor Commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/extending-the-catalog.html">Extending the Catalog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/local-validation.html">Local Validation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/api.html">API Reference</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">About</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../about/limitations.html">Limitations and Portability</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about/history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about/testing.html">Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about/changelog.html">Changelog</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="../_sources/concepts/device-catalog.md.txt" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div>
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="device-catalog">
+<h1>Device Catalog<a class="headerlink" href="#device-catalog" title="Link to this heading">¶</a></h1>
+<p>The device catalog is a Python module that unifies image filtering and pixel
+scrubbing into a single, structured representation of known imaging devices.
+Each entry identifies a specific hardware device by a set of DICOM attribute
+patterns (manufacturer, model, modality, software version, image dimensions)
+that match the images that device produces. The engine uses these patterns to
+recognize those images and blank the pixel regions where the device burns in
+text.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The bundled catalog comes from studies on a single PACS at one medical research
+center. Its device rules and pixel scrub regions reflect the scanner fleet seen
+there. They are unlikely to be complete or correct for another site. Treat the
+included catalog as a starting point that requires local validation. See
+<a class="reference internal" href="../about/limitations.html"><span class="std std-doc">Limitations and portability</span></a>.</p>
+</div>
+<section id="goals">
+<h2>Goals<a class="headerlink" href="#goals" title="Link to this heading">¶</a></h2>
+<p>The device catalog is built on the following design choices:</p>
+<ol class="arabic simple">
+<li><p><strong>Model known devices, not arbitrary expressions.</strong> Each entry matches a
+specific imaging device by manufacturer, model, modality, software version,
+and image dimensions. The rules read as data, not code.</p></li>
+<li><p><strong>Couple resolution to scrub regions.</strong> Each device entry contains
+resolution-specific variants that bind image dimensions directly to the
+pixel regions to blank. Each device defines its filter decision and its
+scrub regions together.</p></li>
+<li><p><strong>Return a structured decision with a reason.</strong> Every evaluation returns a
+<code class="docutils literal notranslate"><span class="pre">CatalogDecision</span></code> containing the action (<code class="docutils literal notranslate"><span class="pre">allow</span></code>, <code class="docutils literal notranslate"><span class="pre">deny</span></code>, <code class="docutils literal notranslate"><span class="pre">scrub</span></code>), a
+human-readable reason string, and the list of scrub regions. The reason
+propagates through the pipeline into the <code class="docutils literal notranslate"><span class="pre">FILTERED</span></code> result so callers can
+distinguish why a file was rejected.</p></li>
+<li><p><strong>Validate at import time.</strong> The catalog is a Python module. The interpreter
+catches syntax errors when it loads the module. It runs no runtime script
+parsing.</p></li>
+</ol>
+</section>
+<section id="modules">
+<h2>Modules<a class="headerlink" href="#modules" title="Link to this heading">¶</a></h2>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Module</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="xref py py-mod docutils literal notranslate"><span class="pre">dicom_dre.catalog</span></code></p></td>
+<td><p>Core matching engine, dataclasses, <code class="docutils literal notranslate"><span class="pre">DeviceCatalog</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-mod docutils literal notranslate"><span class="pre">dicom_dre.default_catalog</span></code></p></td>
+<td><p>Device and exclusion rule data</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-mod docutils literal notranslate"><span class="pre">dicom_dre.pixel_blanker</span></code></p></td>
+<td><p>Python pixel blanking (JPEG DCT + pydicom/numpy)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="string-matching">
+<h2>String matching<a class="headerlink" href="#string-matching" title="Link to this heading">¶</a></h2>
+<p>Pattern strings on device fields use a prefix to select the match operator.
+All comparisons are case-insensitive except <code class="docutils literal notranslate"><span class="pre">/regex/</span></code> patterns, which are
+case-sensitive unless the pattern includes an inline flag such as <code class="docutils literal notranslate"><span class="pre">(?i)</span></code>.</p>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Prefix</p></th>
+<th class="head"><p>Operator</p></th>
+<th class="head"><p>Example</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><em>(none)</em></p></td>
+<td><p>case-insensitive substring</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;KONICA&quot;</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">=</span></code></p></td>
+<td><p>case-insensitive exact</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;=GE</span> <span class="pre">MEDICAL</span> <span class="pre">SYSTEMS&quot;</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">^</span></code></p></td>
+<td><p>case-insensitive starts-with</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;^GE</span> <span class="pre">MEDICAL&quot;</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">/regex/</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">re.search</span></code> (case-sensitive by default)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;/[1-9]\\d{3,}/&quot;</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">=</span></code> (alone)</p></td>
+<td><p>tag absent or blank</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;=&quot;</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>A list of values on any field uses OR semantics: at least one must match.
+All fields on a single device rule are AND’d together.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">=</span></code> exact match compares the full value case-insensitively. A <code class="docutils literal notranslate"><span class="pre">/regex/</span></code>
+pattern is evaluated with <code class="docutils literal notranslate"><span class="pre">re.search</span></code> and is case-sensitive unless the pattern
+includes an inline flag such as <code class="docutils literal notranslate"><span class="pre">(?i)</span></code>. To match an exact value case-insensitively
+with a regex (for example when you also need anchoring, alternation, or a
+negative lookahead), anchor the pattern and add <code class="docutils literal notranslate"><span class="pre">(?i)</span></code>, as in
+<code class="docutils literal notranslate"><span class="pre">&quot;/(?i)^SIGNA</span> <span class="pre">PET\\/MR$/&quot;</span></code>. This is why many regex rules in the default catalog
+use the <code class="docutils literal notranslate"><span class="pre">/(?i)^...$/</span></code> form.</p>
+</section>
+<section id="device-rules">
+<h2>Device rules<a class="headerlink" href="#device-rules" title="Link to this heading">¶</a></h2>
+<p>Each device entry is created with the <code class="docutils literal notranslate"><span class="pre">device()</span></code> factory function:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">device</span><span class="p">(</span>
+    <span class="s2">&quot;KONICA 0402 CR&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;allow&quot;</span><span class="p">,</span>
+    <span class="n">manufacturer</span><span class="o">=</span><span class="s2">&quot;KONICA&quot;</span><span class="p">,</span>
+    <span class="n">modality</span><span class="o">=</span><span class="s2">&quot;^CR&quot;</span><span class="p">,</span>
+    <span class="n">manufacturer_model_name</span><span class="o">=</span><span class="s2">&quot;0402&quot;</span><span class="p">,</span>
+    <span class="n">variants</span><span class="o">=</span><span class="p">[</span>
+        <span class="n">variant</span><span class="p">(</span><span class="n">software_versions</span><span class="o">=</span><span class="s2">&quot;^6.&quot;</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="mi">2446</span><span class="p">,</span> <span class="n">cols</span><span class="o">=</span><span class="mi">2446</span><span class="p">,</span> <span class="n">scrub</span><span class="o">=</span><span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2308</span><span class="p">,</span> <span class="mi">2446</span><span class="p">,</span> <span class="mi">137</span><span class="p">)]),</span>
+        <span class="n">variant</span><span class="p">(</span><span class="n">software_versions</span><span class="o">=</span><span class="s2">&quot;^2.&quot;</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="mi">2010</span><span class="p">,</span> <span class="n">cols</span><span class="o">=</span><span class="mi">2446</span><span class="p">,</span> <span class="n">scrub</span><span class="o">=</span><span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2446</span><span class="p">,</span> <span class="mi">115</span><span class="p">)]),</span>
+    <span class="p">],</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>The first positional argument is the device name, which becomes the <code class="docutils literal notranslate"><span class="pre">reason</span></code>
+field of the returned <code class="docutils literal notranslate"><span class="pre">CatalogDecision</span></code>. The second positional argument is the
+action: <code class="docutils literal notranslate"><span class="pre">&quot;allow&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;deny&quot;</span></code>, or <code class="docutils literal notranslate"><span class="pre">&quot;scrub&quot;</span></code>.</p>
+<section id="device-rule-fields">
+<h3>Device rule fields<a class="headerlink" href="#device-rule-fields" title="Link to this heading">¶</a></h3>
+<p>All keyword fields on <code class="docutils literal notranslate"><span class="pre">device()</span></code> are optional and default to <code class="docutils literal notranslate"><span class="pre">None</span></code>
+(unconstrained). A field constrains the match only when you specify it. Every
+specified field is AND’d together: a device matches only when all of its
+fields match. When you give a field a list, the list uses OR semantics.</p>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Field</p></th>
+<th class="head"><p>DICOM tag</p></th>
+<th class="head"><p>Purpose</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">manufacturer</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Manufacturer</span></code> (0008,0070)</p></td>
+<td><p>Vendor name</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">modality</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Modality</span></code> (0008,0060)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">CT</span></code>, <code class="docutils literal notranslate"><span class="pre">CR</span></code>, <code class="docutils literal notranslate"><span class="pre">DX</span></code>, <code class="docutils literal notranslate"><span class="pre">MR</span></code>, <code class="docutils literal notranslate"><span class="pre">US</span></code>, etc.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">manufacturer_model_name</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ManufacturerModelName</span></code> (0008,1090)</p></td>
+<td><p>Device model</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">software_versions</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">SoftwareVersions</span></code> (0018,1020)</p></td>
+<td><p>Firmware/software revision</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">image_type</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ImageType</span></code> (0008,0008)</p></td>
+<td><p>All listed components must appear</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">image_type_any</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ImageType</span></code> (0008,0008)</p></td>
+<td><p>At least one component must appear</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">image_type_exclude</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ImageType</span></code> (0008,0008)</p></td>
+<td><p>None of the components may appear</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">burned_in_annotation</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">BurnedInAnnotation</span></code> (0028,0301)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">YES</span></code>/<code class="docutils literal notranslate"><span class="pre">NO</span></code> flag</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">sop_class_uid</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">SOPClassUID</span></code> (0008,0016)</p></td>
+<td><p>SOP class UID pattern</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">secondary_capture_device_manufacturer_model_name</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">SecondaryCaptureDeviceManufacturerModelName</span></code> (0018,1018)</p></td>
+<td><p>SC device model (used by GE workstations)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">series_description</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">SeriesDescription</span></code> (0008,103E)</p></td>
+<td><p>Free-text series label</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">code_meaning</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">CodeMeaning</span></code> (0008,0104)</p></td>
+<td><p>Coded concept meaning</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">comments_on_radiation_dose</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">CommentsOnRadiationDose</span></code> (0040,0310)</p></td>
+<td><p>Dose report text</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">study_description</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">StudyDescription</span></code> (0008,1030)</p></td>
+<td><p>Free-text study label</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">conversion_type</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ConversionType</span></code> (0008,0064)</p></td>
+<td><p>Secondary-capture conversion type</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">pixel_spacing</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">PixelSpacing</span></code> (0028,0030)</p></td>
+<td><p>Physical pixel spacing</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">body_part_examined</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">BodyPartExamined</span></code> (0018,0015)</p></td>
+<td><p>Anatomic region</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">requires_ultrasound_regions</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">SequenceOfUltrasoundRegions</span></code> (0018,6011)</p></td>
+<td><p>When <code class="docutils literal notranslate"><span class="pre">True</span></code>, a non-empty regions sequence must be present</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">variants</span></code></p></td>
+<td><p>n/a</p></td>
+<td><p>List of resolution/version variants (see below)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">rows</span></code> / <code class="docutils literal notranslate"><span class="pre">cols</span></code> / <code class="docutils literal notranslate"><span class="pre">scrub</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Rows</span></code> / <code class="docutils literal notranslate"><span class="pre">Columns</span></code> / n/a</p></td>
+<td><p>Shorthand for a single-variant device</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Every match attribute has a dedicated field; there is no free-form keyword dict.
+The catalog evaluates each field with the same <a class="reference internal" href="#string-matching">string matching</a>
+rules. It matches only the attributes that <code class="docutils literal notranslate"><span class="pre">DicomTags.from_dataset()</span></code> reads.</p>
+<p>The three <code class="docutils literal notranslate"><span class="pre">image_type*</span></code> fields match differently depending on whether the
+pattern is a single string or a list. <code class="docutils literal notranslate"><span class="pre">ImageType</span></code> is a multi-valued tag stored
+as backslash-joined components (for example <code class="docutils literal notranslate"><span class="pre">ORIGINAL\PRIMARY\AXIAL</span></code>). A list
+value such as <code class="docutils literal notranslate"><span class="pre">image_type=[&quot;DERIVED&quot;,</span> <span class="pre">&quot;PRIMARY&quot;]</span></code> matches each element against
+the individual components. The catalog matches a single string containing
+backslashes such as <code class="docutils literal notranslate"><span class="pre">image_type=&quot;DERIVED\\PRIMARY\\DIXON\\WATER&quot;</span></code> against the
+full joined string, which lets you require a specific component order.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">rows</span></code>, <code class="docutils literal notranslate"><span class="pre">cols</span></code>, and <code class="docutils literal notranslate"><span class="pre">scrub</span></code> shorthand parameters are mutually exclusive with
+<code class="docutils literal notranslate"><span class="pre">variants</span></code>. Supplying both raises <code class="docutils literal notranslate"><span class="pre">ValueError</span></code> at import time. Use the shorthand
+for a device with a single resolution; use <code class="docutils literal notranslate"><span class="pre">variants</span></code> for a device with multiple
+resolutions or software versions.</p>
+</section>
+<section id="variants">
+<h3>Variants<a class="headerlink" href="#variants" title="Link to this heading">¶</a></h3>
+<p>A variant binds a resolution (rows, cols) or software version to a set of scrub
+regions. All fields in a variant are optional. A device with no variants has no
+dimension constraint.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">variant</span><span class="p">(</span>
+    <span class="n">rows</span><span class="o">=</span><span class="mi">2446</span><span class="p">,</span>           <span class="c1"># exact Rows match</span>
+    <span class="n">cols</span><span class="o">=</span><span class="mi">2446</span><span class="p">,</span>           <span class="c1"># exact Columns match</span>
+    <span class="n">software_versions</span><span class="o">=</span><span class="s2">&quot;^6.&quot;</span><span class="p">,</span>  <span class="c1"># further narrows the device-level version</span>
+    <span class="n">image_type</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;DERIVED&quot;</span><span class="p">],</span>   <span class="c1"># ImageType components, all must appear</span>
+    <span class="n">scrub</span><span class="o">=</span><span class="p">[(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">)],</span>     <span class="c1"># pixel regions to blank</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>A variant with only <code class="docutils literal notranslate"><span class="pre">scrub</span></code> (no rows/cols) applies those regions to all
+resolutions. A variant with only rows/cols (no scrub) allows files at that
+resolution without blanking.</p>
+<p>When a device has variants, the evaluation finds the first variant whose
+constraints match the DICOM file. If no variant matches, the engine skips the
+device.</p>
+<p>Skipping abandons the whole device rule, including its filter decision.
+Evaluation continues to later device rules and then the exclusion list, which
+commonly denies the file. As a result, every resolution you want allowed needs
+its own variant, even one with no <code class="docutils literal notranslate"><span class="pre">scrub</span></code> regions (<code class="docutils literal notranslate"><span class="pre">variant(rows=780,</span> <span class="pre">cols=800)</span></code>). The engine does not implicitly allow a resolution with no matching
+variant.</p>
+</section>
+<section id="scrub-region-coordinates">
+<h3>Scrub region coordinates<a class="headerlink" href="#scrub-region-coordinates" title="Link to this heading">¶</a></h3>
+<p>Scrub regions are <code class="docutils literal notranslate"><span class="pre">(x,</span> <span class="pre">y,</span> <span class="pre">width,</span> <span class="pre">height)</span></code> tuples in pixel units. The origin
+<code class="docutils literal notranslate"><span class="pre">(0,</span> <span class="pre">0)</span></code> is the top-left corner of the image. <code class="docutils literal notranslate"><span class="pre">x</span></code> increases to the right, <code class="docutils literal notranslate"><span class="pre">y</span></code>
+increases downward. A region is the rectangle spanning columns <code class="docutils literal notranslate"><span class="pre">x</span></code> to
+<code class="docutils literal notranslate"><span class="pre">x</span> <span class="pre">+</span> <span class="pre">width</span></code> and rows <code class="docutils literal notranslate"><span class="pre">y</span></code> to <code class="docutils literal notranslate"><span class="pre">y</span> <span class="pre">+</span> <span class="pre">height</span></code>.</p>
+<p>Regions may extend past the image bounds; the pixel blanker clips to the actual
+dimensions. The default catalog uses a wide sentinel width such as <code class="docutils literal notranslate"><span class="pre">10000</span></code> to
+blank a full-width banner regardless of the exact column count (for example,
+<code class="docutils literal notranslate"><span class="pre">scrub=[(0,</span> <span class="pre">0,</span> <span class="pre">10000,</span> <span class="pre">70)]</span></code> blanks the top 70 rows). The blanker blanks multiple
+regions on one variant independently:
+<code class="docutils literal notranslate"><span class="pre">scrub=[(0,</span> <span class="pre">0,</span> <span class="pre">500,</span> <span class="pre">80),</span> <span class="pre">(256,</span> <span class="pre">0,</span> <span class="pre">256,</span> <span class="pre">22)]</span></code>.</p>
+</section>
+<section id="scrub-only-devices">
+<h3>Scrub-only devices<a class="headerlink" href="#scrub-only-devices" title="Link to this heading">¶</a></h3>
+<p>A device with <code class="docutils literal notranslate"><span class="pre">action=&quot;scrub&quot;</span></code> accumulates scrub regions but does not make a
+filter decision. Evaluation continues to subsequent devices and exclusion rules
+to determine whether the file is ultimately allowed or denied.</p>
+<p>Scrub accumulation is forward-only. An earlier <code class="docutils literal notranslate"><span class="pre">scrub</span></code> device attaches its
+regions to a later <code class="docutils literal notranslate"><span class="pre">allow</span></code> (or exclusion <code class="docutils literal notranslate"><span class="pre">deny</span></code>) decision, but not the reverse.
+An <code class="docutils literal notranslate"><span class="pre">allow</span></code> or <code class="docutils literal notranslate"><span class="pre">deny</span></code> match returns immediately, so evaluation never reaches a
+<code class="docutils literal notranslate"><span class="pre">scrub</span></code> device declared after it. Because <code class="docutils literal notranslate"><span class="pre">default_devices</span></code> appends
+<code class="docutils literal notranslate"><span class="pre">_scrub_only_devices</span></code> last, its rules contribute only when no earlier device
+returned <code class="docutils literal notranslate"><span class="pre">allow</span></code>. To apply a scrub-only overlay to a file that a specific device
+already allows, add the scrub region to that device’s variant instead of relying
+on a later scrub-only rule.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">device</span><span class="p">(</span>
+    <span class="s2">&quot;Siemens CT Dose overlay&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;scrub&quot;</span><span class="p">,</span>
+    <span class="n">manufacturer</span><span class="o">=</span><span class="s2">&quot;SIEMENS&quot;</span><span class="p">,</span>
+    <span class="n">modality</span><span class="o">=</span><span class="s2">&quot;CT&quot;</span><span class="p">,</span>
+    <span class="n">image_type_any</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;DOSE&quot;</span><span class="p">],</span>
+    <span class="n">scrub</span><span class="o">=</span><span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">512</span><span class="p">,</span> <span class="mi">30</span><span class="p">)],</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="exclusion-rules">
+<h2>Exclusion rules<a class="headerlink" href="#exclusion-rules" title="Link to this heading">¶</a></h2>
+<p>Exclusion rules form the deny-list. The engine checks them after all device
+rules.</p>
+<section id="deny-modalities">
+<h3><code class="docutils literal notranslate"><span class="pre">deny_modalities</span></code><a class="headerlink" href="#deny-modalities" title="Link to this heading">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">deny_modalities</span><span class="p">(</span>
+    <span class="n">exact</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;SR&quot;</span><span class="p">,</span> <span class="s2">&quot;RTPLAN&quot;</span><span class="p">,</span> <span class="s2">&quot;RTDOSE&quot;</span><span class="p">],</span>  <span class="c1"># exact modality match</span>
+    <span class="n">substring</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;XA&quot;</span><span class="p">,</span> <span class="s2">&quot;MG&quot;</span><span class="p">,</span> <span class="s2">&quot;US&quot;</span><span class="p">],</span>      <span class="c1"># substring modality match</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="deny-when">
+<h3><code class="docutils literal notranslate"><span class="pre">deny_when</span></code><a class="headerlink" href="#deny-when" title="Link to this heading">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">deny_when</span><span class="p">(</span><span class="s2">&quot;Burned-in annotation&quot;</span><span class="p">,</span> <span class="n">burned_in_annotation</span><span class="o">=</span><span class="s2">&quot;=YES&quot;</span><span class="p">)</span>
+<span class="n">deny_when</span><span class="p">(</span><span class="s2">&quot;Encapsulated PDF&quot;</span><span class="p">,</span> <span class="n">sop_class</span><span class="o">=</span><span class="s2">&quot;=1.2.840.10008.5.1.4.1.1.104.1&quot;</span><span class="p">)</span>
+<span class="n">deny_when</span><span class="p">(</span><span class="s2">&quot;INFINITT PACS&quot;</span><span class="p">,</span> <span class="n">manufacturer</span><span class="o">=</span><span class="s2">&quot;INFINITT&quot;</span><span class="p">,</span> <span class="n">series_number</span><span class="o">=</span><span class="s2">&quot;/[1-9]</span><span class="se">\\</span><span class="s2">d{3,}/&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>All keyword arguments to <code class="docutils literal notranslate"><span class="pre">deny_when</span></code> are AND’d together. Available parameters
+are: <code class="docutils literal notranslate"><span class="pre">sop_class</span></code>, <code class="docutils literal notranslate"><span class="pre">sop_class_not</span></code>, <code class="docutils literal notranslate"><span class="pre">burned_in_annotation</span></code>, <code class="docutils literal notranslate"><span class="pre">image_type_empty</span></code>,
+<code class="docutils literal notranslate"><span class="pre">image_type_any</span></code>, <code class="docutils literal notranslate"><span class="pre">image_type_exclude</span></code>, <code class="docutils literal notranslate"><span class="pre">manufacturer</span></code>, <code class="docutils literal notranslate"><span class="pre">manufacturer_model_name</span></code>,
+<code class="docutils literal notranslate"><span class="pre">manufacturer_model_name_fallback</span></code>, <code class="docutils literal notranslate"><span class="pre">modality</span></code>, <code class="docutils literal notranslate"><span class="pre">modality_not</span></code>,
+<code class="docutils literal notranslate"><span class="pre">series_number</span></code>, <code class="docutils literal notranslate"><span class="pre">conversion_type_present</span></code>, <code class="docutils literal notranslate"><span class="pre">graphic_annotation_absent</span></code>,
+<code class="docutils literal notranslate"><span class="pre">referenced_instance_absent</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">sop_class_not</span></code> matches when the SOP Class UID matches none of its patterns
+(an allowlist condition). <code class="docutils literal notranslate"><span class="pre">graphic_annotation_absent=True</span></code> matches when the
+Graphic Annotation Sequence <code class="docutils literal notranslate"><span class="pre">(0070,0001)</span></code> is absent or empty.
+<code class="docutils literal notranslate"><span class="pre">referenced_instance_absent=True</span></code> matches when the Current Requested Procedure
+Evidence Sequence <code class="docutils literal notranslate"><span class="pre">(0040,A375)</span></code> nests no Referenced SOP Instance UID
+<code class="docutils literal notranslate"><span class="pre">(0008,1155)</span></code>.</p>
+</section>
+<section id="presentation-state-admission">
+<h3>Presentation state admission<a class="headerlink" href="#presentation-state-admission" title="Link to this heading">¶</a></h3>
+<p>Modality <code class="docutils literal notranslate"><span class="pre">PR</span></code> instances are admitted on the presence of a graphic annotation.
+Two ordered <code class="docutils literal notranslate"><span class="pre">deny_when</span></code> rules implement this:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">deny_when</span><span class="p">(</span>
+    <span class="s2">&quot;unsupported presentation state&quot;</span><span class="p">,</span>
+    <span class="n">modality</span><span class="o">=</span><span class="s2">&quot;=PR&quot;</span><span class="p">,</span>
+    <span class="n">sop_class_not</span><span class="o">=</span><span class="p">[</span>
+        <span class="s2">&quot;=1.2.840.10008.5.1.4.1.1.11.1&quot;</span><span class="p">,</span>   <span class="c1"># Grayscale (GSPS)</span>
+        <span class="s2">&quot;=1.2.840.10008.5.1.4.1.1.11.2&quot;</span><span class="p">,</span>   <span class="c1"># Color</span>
+        <span class="s2">&quot;=1.2.840.10008.5.1.4.1.1.11.3&quot;</span><span class="p">,</span>   <span class="c1"># Pseudo-Color</span>
+        <span class="s2">&quot;=1.2.840.10008.5.1.4.1.1.11.4&quot;</span><span class="p">,</span>   <span class="c1"># Blending</span>
+        <span class="s2">&quot;=1.2.840.10008.5.1.4.1.1.11.5&quot;</span><span class="p">,</span>   <span class="c1"># XA/XRF Grayscale</span>
+        <span class="s2">&quot;=1.2.840.10008.5.1.4.1.1.11.12&quot;</span><span class="p">,</span>  <span class="c1"># Variable Modality LUT</span>
+    <span class="p">],</span>
+<span class="p">),</span>
+<span class="n">deny_when</span><span class="p">(</span>
+    <span class="s2">&quot;no annotation data&quot;</span><span class="p">,</span>
+    <span class="n">modality</span><span class="o">=</span><span class="s2">&quot;=PR&quot;</span><span class="p">,</span>
+    <span class="n">graphic_annotation_absent</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">),</span>
+</pre></div>
+</div>
+<p>A <code class="docutils literal notranslate"><span class="pre">PR</span></code> instance whose SOP Class UID is outside the six admitted 2D softcopy
+presentation state classes is denied with reason <code class="docutils literal notranslate"><span class="pre">unsupported</span> <span class="pre">presentation</span> <span class="pre">state</span></code>. An admitted-class <code class="docutils literal notranslate"><span class="pre">PR</span></code> instance carrying no Graphic Annotation Sequence
+is denied with reason <code class="docutils literal notranslate"><span class="pre">no</span> <span class="pre">annotation</span> <span class="pre">data</span></code>. An admitted-class <code class="docutils literal notranslate"><span class="pre">PR</span></code> instance
+with a non-empty Graphic Annotation Sequence reaches the default <code class="docutils literal notranslate"><span class="pre">allow</span></code>
+action. The <code class="docutils literal notranslate"><span class="pre">Empty</span> <span class="pre">ImageType</span></code> exclusion is scoped with <code class="docutils literal notranslate"><span class="pre">modality_not=[&quot;=PR&quot;]</span></code>
+so it does not reject presentation states, which carry no Image Type.</p>
+</section>
+<section id="key-object-selection-admission">
+<h3>Key Object Selection admission<a class="headerlink" href="#key-object-selection-admission" title="Link to this heading">¶</a></h3>
+<p>Key Object Selection (KO) documents, SOP Class
+<code class="docutils literal notranslate"><span class="pre">1.2.840.10008.5.1.4.1.1.88.59</span></code>, are admitted on the presence of a referenced
+instance. Two ordered <code class="docutils literal notranslate"><span class="pre">deny_when</span></code> rules replace the former single SR/KO deny:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">deny_when</span><span class="p">(</span>
+    <span class="s2">&quot;unsupported structured report&quot;</span><span class="p">,</span>
+    <span class="n">sop_class</span><span class="o">=</span><span class="s2">&quot;^1.2.840.10008.5.1.4.1.1.8&quot;</span><span class="p">,</span>
+    <span class="n">sop_class_not</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;=1.2.840.10008.5.1.4.1.1.88.59&quot;</span><span class="p">],</span>
+<span class="p">),</span>
+<span class="n">deny_when</span><span class="p">(</span>
+    <span class="s2">&quot;no referenced instances&quot;</span><span class="p">,</span>
+    <span class="n">sop_class</span><span class="o">=</span><span class="s2">&quot;=1.2.840.10008.5.1.4.1.1.88.59&quot;</span><span class="p">,</span>
+    <span class="n">referenced_instance_absent</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">),</span>
+</pre></div>
+</div>
+<p>The first rule denies the SR family and the three non-SR classes caught by the
+<code class="docutils literal notranslate"><span class="pre">^1.2.840.10008.5.1.4.1.1.8</span></code> prefix (Ophthalmic Visual Field, Ophthalmic
+Thickness Map, Corneal Topography Map), while exempting KO. The second denies a
+KO that references no instance with reason <code class="docutils literal notranslate"><span class="pre">no</span> <span class="pre">referenced</span> <span class="pre">instances</span></code>. A KO that
+references at least one instance reaches the default <code class="docutils literal notranslate"><span class="pre">allow</span></code> action. The
+<code class="docutils literal notranslate"><span class="pre">Empty</span> <span class="pre">ImageType</span></code> exclusion is scoped with <code class="docutils literal notranslate"><span class="pre">modality_not=[&quot;=PR&quot;,</span> <span class="pre">&quot;=KO&quot;]</span></code> so it
+does not reject KO, which carries no Image Type.</p>
+</section>
+</section>
+<section id="evaluation-order">
+<h2>Evaluation order<a class="headerlink" href="#evaluation-order" title="Link to this heading">¶</a></h2>
+<ol class="arabic simple">
+<li><p>Iterate device rules top-to-bottom. For each rule, check device-level fields,
+then check variants.</p></li>
+<li><p>On first match:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;allow&quot;</span></code>: return allow decision with accumulated scrub regions, stop.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;deny&quot;</span></code>: return deny decision, stop.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;scrub&quot;</span></code>: accumulate scrub regions, continue.</p></li>
+</ul>
+</li>
+<li><p>After all devices, iterate exclusion rules top-to-bottom.</p></li>
+<li><p>On first exclusion match, return deny decision.</p></li>
+<li><p>If nothing matched, return the default action (<code class="docutils literal notranslate"><span class="pre">&quot;allow&quot;</span></code> for the default catalog).</p></li>
+</ol>
+</section>
+<section id="catalogdecision">
+<h2>CatalogDecision<a class="headerlink" href="#catalogdecision" title="Link to this heading">¶</a></h2>
+<p>Every call to <code class="docutils literal notranslate"><span class="pre">DeviceCatalog.evaluate()</span></code> returns a frozen <code class="docutils literal notranslate"><span class="pre">CatalogDecision</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">slots</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">CatalogDecision</span><span class="p">:</span>
+    <span class="n">action</span><span class="p">:</span> <span class="nb">str</span>                              <span class="c1"># &quot;allow&quot;, &quot;deny&quot;, or &quot;scrub&quot;</span>
+    <span class="n">reason</span><span class="p">:</span> <span class="nb">str</span>                              <span class="c1"># matched rule name or exclusion reason</span>
+    <span class="n">scrub_regions</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ScrubRegion</span><span class="p">]</span>         <span class="c1"># (x, y, w, h) regions to blank</span>
+    <span class="n">matched_variant</span><span class="p">:</span> <span class="n">Variant</span> <span class="o">|</span> <span class="kc">None</span>          <span class="c1"># the variant that matched, if any</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">reason</span></code> field receives the device <code class="docutils literal notranslate"><span class="pre">name</span></code> argument for device matches, or
+a constructed string for exclusion matches (for example, <code class="docutils literal notranslate"><span class="pre">&quot;Denied</span> <span class="pre">modality:</span> <span class="pre">XA&quot;</span></code>).</p>
+</section>
+<section id="default-catalog">
+<h2>Default catalog<a class="headerlink" href="#default-catalog" title="Link to this heading">¶</a></h2>
+<p><code class="xref py py-mod docutils literal notranslate"><span class="pre">dicom_dre.default_catalog</span></code> contains the device and exclusion rules. It
+groups device rules by modality:</p>
+<ul class="simple">
+<li><p>CR/DX (computed radiography and digital radiography)</p></li>
+<li><p>CT, CT/PET, PET/MR</p></li>
+<li><p>NM (nuclear medicine)</p></li>
+<li><p>Mammography</p></li>
+<li><p>Breast MRI</p></li>
+<li><p>Ultrasound</p></li>
+<li><p>Scrub-only devices (dose overlays and workstation-generated images)</p></li>
+</ul>
+<p>The exclusion list covers denied modalities, SOP classes, burned-in annotations,
+empty ImageType, specific vendors (INFINITT, Vidar, iCAD, biopsy equipment),
+and image type combinations (<code class="docutils literal notranslate"><span class="pre">DERIVED</span></code>, <code class="docutils literal notranslate"><span class="pre">SECONDARY</span></code>, <code class="docutils literal notranslate"><span class="pre">MRSC</span></code>).</p>
+<p><code class="docutils literal notranslate"><span class="pre">get_default_catalog()</span></code> assembles all device lists and the exclusion list into a
+<code class="docutils literal notranslate"><span class="pre">DeviceCatalog</span></code> with <code class="docutils literal notranslate"><span class="pre">default_action=&quot;allow&quot;</span></code>.</p>
+<p>For a step-by-step walkthrough of adding support for a new device, see
+<a class="reference internal" href="../guides/extending-the-catalog.html"><span class="std std-doc">Extending the catalog</span></a>.</p>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="jpeg-dct.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">JPEG DCT Scrubbing</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="architecture.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Architecture</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2026 The Board of Trustees of The Leland Stanford Junior University
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Device Catalog</a><ul>
+<li><a class="reference internal" href="#goals">Goals</a></li>
+<li><a class="reference internal" href="#modules">Modules</a></li>
+<li><a class="reference internal" href="#string-matching">String matching</a></li>
+<li><a class="reference internal" href="#device-rules">Device rules</a><ul>
+<li><a class="reference internal" href="#device-rule-fields">Device rule fields</a></li>
+<li><a class="reference internal" href="#variants">Variants</a></li>
+<li><a class="reference internal" href="#scrub-region-coordinates">Scrub region coordinates</a></li>
+<li><a class="reference internal" href="#scrub-only-devices">Scrub-only devices</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#exclusion-rules">Exclusion rules</a><ul>
+<li><a class="reference internal" href="#deny-modalities"><code class="docutils literal notranslate"><span class="pre">deny_modalities</span></code></a></li>
+<li><a class="reference internal" href="#deny-when"><code class="docutils literal notranslate"><span class="pre">deny_when</span></code></a></li>
+<li><a class="reference internal" href="#presentation-state-admission">Presentation state admission</a></li>
+<li><a class="reference internal" href="#key-object-selection-admission">Key Object Selection admission</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#evaluation-order">Evaluation order</a></li>
+<li><a class="reference internal" href="#catalogdecision">CatalogDecision</a></li>
+<li><a class="reference internal" href="#default-catalog">Default catalog</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../_static/documentation_options.js?v=350a9c04"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/scripts/furo.js?v=46bd48cc"></script>
+    </body>
+</html>

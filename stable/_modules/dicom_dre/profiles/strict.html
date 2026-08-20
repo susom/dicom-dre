@@ -1,0 +1,1164 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../../../">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html"><link rel="search" title="Search" href="../../../search.html">
+
+    <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
+        <title>dicom_dre.profiles.strict - dicom-dre 1.4.1</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d111a655" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../../index.html"><div class="brand">dicom-dre 1.4.1</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
+  
+  <span class="sidebar-brand-text">dicom-dre 1.4.1</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting-started/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting-started/quickstart.html">Quickstart</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Concepts</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../concepts/architecture.html">Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../concepts/device-catalog.html">Device Catalog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../concepts/jpeg-dct.html">JPEG DCT Scrubbing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../concepts/profiles.html">De-identification Profiles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../concepts/text-redaction.html">Text Redaction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../concepts/reproducibility.html">Reproducibility</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../guides/cli.html">Command-line Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../guides/redactor.html">Redactor Commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../guides/extending-the-catalog.html">Extending the Catalog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../guides/local-validation.html">Local Validation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../reference/api.html">API Reference</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">About</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/limitations.html">Limitations and Portability</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/testing.html">Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/changelog.html">Changelog</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <h1>Source code for dicom_dre.profiles.strict</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Strict de-identification profile.</span>
+
+<span class="sd">The most aggressive redaction that still yields a DICOM file that opens in most</span>
+<span class="sd">DICOM viewers and libraries. It is an allow-list profile: it retains a fixed set</span>
+<span class="sd">of technical elements and removes every element without an explicit rule. Use</span>
+<span class="sd">only when the pixel data is the sole item of interest and study demographics or</span>
+<span class="sd">other metadata can be discarded. No UID salt and minimal retained elements; all</span>
+<span class="sd">unspecified elements are removed. Date and datetime elements are removed entirely</span>
+<span class="sd">rather than date-shifted, so no jitter is applied; allow-listed time elements</span>
+<span class="sd">(for example StudyTime, SeriesTime, AcquisitionTime, ContentTime) are retained.</span>
+
+<span class="sd">Key Object Selection (KO) and Presentation State (PR) objects carry no pixel</span>
+<span class="sd">data but hold clinician-curated labels. Their structured-content and</span>
+<span class="sd">graphic-annotation subtrees are retained through ``content_root_tags`` so the</span>
+<span class="sd">labels survive, while the shared PHI-removal, date-removal, and free-text</span>
+<span class="sd">redaction rules de-identify every element inside those subtrees. The PR</span>
+<span class="sd">rendering sequences that bind annotations to their images and define their</span>
+<span class="sd">geometry are also retained as content roots (Referenced Series Sequence</span>
+<span class="sd">``(0008,1115)``, Displayed Area Selection Sequence ``(0070,005A)``, and Graphic</span>
+<span class="sd">Layer Sequence ``(0070,0060)``), so a viewer can render the annotations.</span>
+
+<span class="sd">The resulting file is likely not conformant to the DICOM specification, since</span>
+<span class="sd">required elements may be removed; it is intended only for pixel-data use, not</span>
+<span class="sd">for interchange with systems that enforce conformance.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">pydicom.tag</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseTag</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pydicom.tag</span><span class="w"> </span><span class="kn">import</span> <span class="n">Tag</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">dicom_dre.actions</span><span class="w"> </span><span class="kn">import</span> <span class="n">TagAction</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dicom_dre.actions</span><span class="w"> </span><span class="kn">import</span> <span class="n">hash_identifier_param</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dicom_dre.actions</span><span class="w"> </span><span class="kn">import</span> <span class="n">hash_uid</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dicom_dre.actions</span><span class="w"> </span><span class="kn">import</span> <span class="n">hash_value_identifier</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dicom_dre.actions</span><span class="w"> </span><span class="kn">import</span> <span class="n">keep</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dicom_dre.actions</span><span class="w"> </span><span class="kn">import</span> <span class="n">remove</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dicom_dre.actions</span><span class="w"> </span><span class="kn">import</span> <span class="n">set_value</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dicom_dre.profile</span><span class="w"> </span><span class="kn">import</span> <span class="n">DeidProfile</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dicom_dre.profiles.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">ProfileSettings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dicom_dre.profiles.default</span><span class="w"> </span><span class="kn">import</span> <span class="n">DATE_TAGS</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dicom_dre.profiles.default</span><span class="w"> </span><span class="kn">import</span> <span class="n">EMPTY_TAGS</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dicom_dre.profiles.default</span><span class="w"> </span><span class="kn">import</span> <span class="n">PHI_REMOVE_TAGS</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dicom_dre.profiles.default</span><span class="w"> </span><span class="kn">import</span> <span class="n">PRESERVED_PRIVATE_SPECS</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dicom_dre.profiles.default</span><span class="w"> </span><span class="kn">import</span> <span class="n">redact_description</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dicom_dre.profiles.default</span><span class="w"> </span><span class="kn">import</span> <span class="n">redact_free_text</span>
+
+
+<span class="c1"># 16 UID tags re-hashed in the strict profile, without a salt.</span>
+<span class="n">STRICT_UID_TAGS</span><span class="p">:</span> <span class="nb">frozenset</span><span class="p">[</span><span class="n">BaseTag</span><span class="p">]</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">(</span>
+    <span class="p">{</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0002</span><span class="p">,</span> <span class="mh">0x0003</span><span class="p">),</span>  <span class="c1"># MediaStorageSOPInstanceUID</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0008</span><span class="p">,</span> <span class="mh">0x0018</span><span class="p">),</span>  <span class="c1"># SOPInstanceUID</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0008</span><span class="p">,</span> <span class="mh">0x1155</span><span class="p">),</span>  <span class="c1"># ReferencedSOPInstanceUID</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0020</span><span class="p">,</span> <span class="mh">0x000D</span><span class="p">),</span>  <span class="c1"># StudyInstanceUID</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0020</span><span class="p">,</span> <span class="mh">0x000E</span><span class="p">),</span>  <span class="c1"># SeriesInstanceUID</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0020</span><span class="p">,</span> <span class="mh">0x0052</span><span class="p">),</span>  <span class="c1"># FrameOfReferenceUID</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0020</span><span class="p">,</span> <span class="mh">0x0200</span><span class="p">),</span>  <span class="c1"># SynchronizationFrameOfReferenceUID</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0020</span><span class="p">,</span> <span class="mh">0x9164</span><span class="p">),</span>  <span class="c1"># DimensionOrganizationUID</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0028</span><span class="p">,</span> <span class="mh">0x1199</span><span class="p">),</span>  <span class="c1"># PaletteColorLookupTableUID</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0028</span><span class="p">,</span> <span class="mh">0x1214</span><span class="p">),</span>  <span class="c1"># LargePaletteColorLookupTableUID</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0040</span><span class="p">,</span> <span class="mh">0xA124</span><span class="p">),</span>  <span class="c1"># UID</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0070</span><span class="p">,</span> <span class="mh">0x1101</span><span class="p">),</span>  <span class="c1"># PresentationDisplayCollectionUID</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0070</span><span class="p">,</span> <span class="mh">0x1102</span><span class="p">),</span>  <span class="c1"># PresentationSequenceCollectionUID</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0088</span><span class="p">,</span> <span class="mh">0x0140</span><span class="p">),</span>  <span class="c1"># StorageMediaFileSetUID</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x3006</span><span class="p">,</span> <span class="mh">0x0024</span><span class="p">),</span>  <span class="c1"># ReferencedFrameOfReferenceUID</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x3006</span><span class="p">,</span> <span class="mh">0x00C2</span><span class="p">),</span>  <span class="c1"># RelatedFrameOfReferenceUID</span>
+    <span class="p">}</span>
+<span class="p">)</span>
+
+<span class="c1"># 326 tags preserved unchanged in the strict profile.</span>
+<span class="n">STRICT_KEEP_TAGS</span><span class="p">:</span> <span class="nb">frozenset</span><span class="p">[</span><span class="n">BaseTag</span><span class="p">]</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">(</span>
+    <span class="p">{</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0008</span><span class="p">,</span> <span class="mh">0x0005</span><span class="p">),</span>  <span class="c1"># SpecificCharacterSet</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0008</span><span class="p">,</span> <span class="mh">0x0008</span><span class="p">),</span>  <span class="c1"># ImageType</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0008</span><span class="p">,</span> <span class="mh">0x0013</span><span class="p">),</span>  <span class="c1"># InstanceCreationTime</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0008</span><span class="p">,</span> <span class="mh">0x0016</span><span class="p">),</span>  <span class="c1"># SOPClassUID</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0008</span><span class="p">,</span> <span class="mh">0x0030</span><span class="p">),</span>  <span class="c1"># StudyTime</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0008</span><span class="p">,</span> <span class="mh">0x0031</span><span class="p">),</span>  <span class="c1"># SeriesTime</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0008</span><span class="p">,</span> <span class="mh">0x0032</span><span class="p">),</span>  <span class="c1"># AcquisitionTime</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0008</span><span class="p">,</span> <span class="mh">0x0033</span><span class="p">),</span>  <span class="c1"># ContentTime</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0008</span><span class="p">,</span> <span class="mh">0x0034</span><span class="p">),</span>  <span class="c1"># OverlayTime</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0008</span><span class="p">,</span> <span class="mh">0x0035</span><span class="p">),</span>  <span class="c1"># CurveTime</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0008</span><span class="p">,</span> <span class="mh">0x0060</span><span class="p">),</span>  <span class="c1"># Modality</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0008</span><span class="p">,</span> <span class="mh">0x0070</span><span class="p">),</span>  <span class="c1"># Manufacturer</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0008</span><span class="p">,</span> <span class="mh">0x1090</span><span class="p">),</span>  <span class="c1"># ManufacturerModelName</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0008</span><span class="p">,</span> <span class="mh">0x2111</span><span class="p">),</span>  <span class="c1"># DerivationDescription</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0008</span><span class="p">,</span> <span class="mh">0x2130</span><span class="p">),</span>  <span class="c1"># EventElapsedTime</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0008</span><span class="p">,</span> <span class="mh">0x3010</span><span class="p">),</span>  <span class="c1"># IrradiationEventUID</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0008</span><span class="p">,</span> <span class="mh">0x9092</span><span class="p">),</span>  <span class="c1"># ReferencedImageEvidenceSequence</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0010</span><span class="p">,</span> <span class="mh">0x0040</span><span class="p">),</span>  <span class="c1"># PatientSex</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x0010</span><span class="p">),</span>  <span class="c1"># ContrastBolusAgent</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x0015</span><span class="p">),</span>  <span class="c1"># BodyPartExamined</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x0020</span><span class="p">),</span>  <span class="c1"># ScanningSequence</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x0021</span><span class="p">),</span>  <span class="c1"># SequenceVariant</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x0022</span><span class="p">),</span>  <span class="c1"># ScanOptions</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x0023</span><span class="p">),</span>  <span class="c1"># MRAcquisitionType</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x0026</span><span class="p">),</span>  <span class="c1"># InterventionDrugInformationSequence</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x0027</span><span class="p">),</span>  <span class="c1"># InterventionDrugStopTime</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x0031</span><span class="p">),</span>  <span class="c1"># Radiopharmaceutical</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x0032</span><span class="p">),</span>  <span class="c1"># EnergyWindowCenterline</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x0035</span><span class="p">),</span>  <span class="c1"># InterventionDrugStartTime</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x0040</span><span class="p">),</span>  <span class="c1"># CineRate</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x0050</span><span class="p">),</span>  <span class="c1"># SliceThickness</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x0060</span><span class="p">),</span>  <span class="c1"># KVP</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x0070</span><span class="p">),</span>  <span class="c1"># CountsAccumulated</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x0071</span><span class="p">),</span>  <span class="c1"># AcquisitionTerminationCondition</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x0073</span><span class="p">),</span>  <span class="c1"># AcquisitionStartCondition</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x0075</span><span class="p">),</span>  <span class="c1"># AcquisitionTerminationConditionData</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x0080</span><span class="p">),</span>  <span class="c1"># RepetitionTime</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x0081</span><span class="p">),</span>  <span class="c1"># EchoTime</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x0082</span><span class="p">),</span>  <span class="c1"># InversionTime</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x0083</span><span class="p">),</span>  <span class="c1"># NumberOfAverages</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x0084</span><span class="p">),</span>  <span class="c1"># ImagingFrequency</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x0085</span><span class="p">),</span>  <span class="c1"># ImagedNucleus</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x0086</span><span class="p">),</span>  <span class="c1"># EchoNumbers</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x0087</span><span class="p">),</span>  <span class="c1"># MagneticFieldStrength</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x0088</span><span class="p">),</span>  <span class="c1"># SpacingBetweenSlices</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x0090</span><span class="p">),</span>  <span class="c1"># DataCollectionDiameter</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x0091</span><span class="p">),</span>  <span class="c1"># EchoTrainLength</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x0095</span><span class="p">),</span>  <span class="c1"># PixelBandwidth</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x1000</span><span class="p">),</span>  <span class="c1"># DeviceSerialNumber</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x1020</span><span class="p">),</span>  <span class="c1"># SoftwareVersions</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x1040</span><span class="p">),</span>  <span class="c1"># ContrastBolusRoute</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x1041</span><span class="p">),</span>  <span class="c1"># ContrastBolusVolume</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x1042</span><span class="p">),</span>  <span class="c1"># ContrastBolusStartTime</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x1043</span><span class="p">),</span>  <span class="c1"># ContrastBolusStopTime</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x1050</span><span class="p">),</span>  <span class="c1"># SpatialResolution</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x1060</span><span class="p">),</span>  <span class="c1"># TriggerTime</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x1063</span><span class="p">),</span>  <span class="c1"># FrameTime</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x1065</span><span class="p">),</span>  <span class="c1"># FrameTimeVector</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x1066</span><span class="p">),</span>  <span class="c1"># FrameDelay</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x106E</span><span class="p">),</span>  <span class="c1"># TriggerSamplePosition</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x1072</span><span class="p">),</span>  <span class="c1"># RadiopharmaceuticalStartTime</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x1073</span><span class="p">),</span>  <span class="c1"># RadiopharmaceuticalStopTime</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x1074</span><span class="p">),</span>  <span class="c1"># RadionuclideTotalDose</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x1075</span><span class="p">),</span>  <span class="c1"># RadionuclideHalfLife</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x1088</span><span class="p">),</span>  <span class="c1"># HeartRate</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x1090</span><span class="p">),</span>  <span class="c1"># CardiacNumberOfImages</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x1100</span><span class="p">),</span>  <span class="c1"># ReconstructionDiameter</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x1110</span><span class="p">),</span>  <span class="c1"># DistanceSourceToDetector</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x1111</span><span class="p">),</span>  <span class="c1"># DistanceSourceToPatient</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x1114</span><span class="p">),</span>  <span class="c1"># EstimatedRadiographicMagnificationFactor</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x1120</span><span class="p">),</span>  <span class="c1"># GantryDetectorTilt</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x1130</span><span class="p">),</span>  <span class="c1"># TableHeight</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x1140</span><span class="p">),</span>  <span class="c1"># RotationDirection</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x1147</span><span class="p">),</span>  <span class="c1"># FieldOfViewShape</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x1149</span><span class="p">),</span>  <span class="c1"># FieldOfViewDimensions</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x1150</span><span class="p">),</span>  <span class="c1"># ExposureTime</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x1151</span><span class="p">),</span>  <span class="c1"># XRayTubeCurrent</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x1152</span><span class="p">),</span>  <span class="c1"># Exposure</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x1153</span><span class="p">),</span>  <span class="c1"># ExposureInuAs</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x1155</span><span class="p">),</span>  <span class="c1"># RadiationSetting</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x1160</span><span class="p">),</span>  <span class="c1"># FilterType</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x1164</span><span class="p">),</span>  <span class="c1"># ImagerPixelSpacing</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x1166</span><span class="p">),</span>  <span class="c1"># Grid</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x1170</span><span class="p">),</span>  <span class="c1"># GeneratorPower</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x1180</span><span class="p">),</span>  <span class="c1"># CollimatorGridName</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x1190</span><span class="p">),</span>  <span class="c1"># FocalSpots</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x1191</span><span class="p">),</span>  <span class="c1"># AnodeTargetMaterial</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x1201</span><span class="p">),</span>  <span class="c1"># TimeOfLastCalibration</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x1210</span><span class="p">),</span>  <span class="c1"># ConvolutionKernel</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x1242</span><span class="p">),</span>  <span class="c1"># ActualFrameDuration</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x1243</span><span class="p">),</span>  <span class="c1"># CountRate</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x1250</span><span class="p">),</span>  <span class="c1"># ReceiveCoilName</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x1300</span><span class="p">),</span>  <span class="c1"># ScanVelocity</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x1301</span><span class="p">),</span>  <span class="c1"># WholeBodyTechnique</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x1302</span><span class="p">),</span>  <span class="c1"># ScanLength</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x1310</span><span class="p">),</span>  <span class="c1"># AcquisitionMatrix</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x1312</span><span class="p">),</span>  <span class="c1"># InPlanePhaseEncodingDirection</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x1314</span><span class="p">),</span>  <span class="c1"># FlipAngle</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x1320</span><span class="p">),</span>  <span class="c1"># B1rms</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x1400</span><span class="p">),</span>  <span class="c1"># AcquisitionDeviceProcessingDescription</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x1401</span><span class="p">),</span>  <span class="c1"># AcquisitionDeviceProcessingCode</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x1405</span><span class="p">),</span>  <span class="c1"># RelativeXRayExposure</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x1450</span><span class="p">),</span>  <span class="c1"># ColumnAngulation</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x1470</span><span class="p">),</span>  <span class="c1"># TomoAngle</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x1480</span><span class="p">),</span>  <span class="c1"># TomoTime</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x1500</span><span class="p">),</span>  <span class="c1"># PositionerMotion</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x1508</span><span class="p">),</span>  <span class="c1"># PositionerType</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x1510</span><span class="p">),</span>  <span class="c1"># PositionerPrimaryAngle</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x1511</span><span class="p">),</span>  <span class="c1"># PositionerSecondaryAngle</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x1530</span><span class="p">),</span>  <span class="c1"># DetectorPrimaryAngle</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x1531</span><span class="p">),</span>  <span class="c1"># DetectorSecondaryAngle</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x1600</span><span class="p">),</span>  <span class="c1"># ShutterShape</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x1620</span><span class="p">),</span>  <span class="c1"># VerticesOfThePolygonalShutter</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x1622</span><span class="p">),</span>  <span class="c1"># ShutterPresentationValue</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x1624</span><span class="p">),</span>  <span class="c1"># ShutterPresentationColorCIELabValue</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x1700</span><span class="p">),</span>  <span class="c1"># CollimatorShape</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x1702</span><span class="p">),</span>  <span class="c1"># CollimatorLeftVerticalEdge</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x1704</span><span class="p">),</span>  <span class="c1"># CollimatorRightVerticalEdge</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x1710</span><span class="p">),</span>  <span class="c1"># CenterOfCircularCollimator</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x1720</span><span class="p">),</span>  <span class="c1"># VerticesOfThePolygonalCollimator</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x2001</span><span class="p">),</span>  <span class="c1"># PageNumberVector</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x5010</span><span class="p">),</span>  <span class="c1"># TransducerData</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x5012</span><span class="p">),</span>  <span class="c1"># FocusDepth</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x5020</span><span class="p">),</span>  <span class="c1"># ProcessingFunction</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x5021</span><span class="p">),</span>  <span class="c1"># PostprocessingFunction</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x5022</span><span class="p">),</span>  <span class="c1"># MechanicalIndex</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x5024</span><span class="p">),</span>  <span class="c1"># BoneThermalIndex</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x5026</span><span class="p">),</span>  <span class="c1"># CranialThermalIndex</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x5027</span><span class="p">),</span>  <span class="c1"># SoftTissueThermalIndex</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x5028</span><span class="p">),</span>  <span class="c1"># SoftTissueFocusThermalIndex</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x5029</span><span class="p">),</span>  <span class="c1"># SoftTissueSurfaceThermalIndex</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x5030</span><span class="p">),</span>  <span class="c1"># DynamicRange</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x5040</span><span class="p">),</span>  <span class="c1"># TotalGain</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x5050</span><span class="p">),</span>  <span class="c1"># DepthOfScanField</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x5100</span><span class="p">),</span>  <span class="c1"># PatientPosition</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x6000</span><span class="p">),</span>  <span class="c1"># Sensitivity</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x6011</span><span class="p">),</span>  <span class="c1"># SequenceOfUltrasoundRegions</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x6020</span><span class="p">),</span>  <span class="c1"># ReferencePixelX0</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x6031</span><span class="p">),</span>  <span class="c1"># TransducerType</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x6032</span><span class="p">),</span>  <span class="c1"># PulseRepetitionFrequency</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x6040</span><span class="p">),</span>  <span class="c1"># TMLinePositionX1Retired</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x7000</span><span class="p">),</span>  <span class="c1"># DetectorConditionsNominalFlag</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x7001</span><span class="p">),</span>  <span class="c1"># DetectorTemperature</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x7004</span><span class="p">),</span>  <span class="c1"># DetectorType</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x7014</span><span class="p">),</span>  <span class="c1"># DetectorActiveTime</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x7020</span><span class="p">),</span>  <span class="c1"># DetectorElementPhysicalSize</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x7022</span><span class="p">),</span>  <span class="c1"># DetectorElementSpacing</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x7030</span><span class="p">),</span>  <span class="c1"># FieldOfViewOrigin</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x7032</span><span class="p">),</span>  <span class="c1"># FieldOfViewRotation</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x7034</span><span class="p">),</span>  <span class="c1"># FieldOfViewHorizontalFlip</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x7040</span><span class="p">),</span>  <span class="c1"># GridAbsorbingMaterial</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x7041</span><span class="p">),</span>  <span class="c1"># GridSpacingMaterial</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x7042</span><span class="p">),</span>  <span class="c1"># GridThickness</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x7044</span><span class="p">),</span>  <span class="c1"># GridPitch</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x7046</span><span class="p">),</span>  <span class="c1"># GridAspectRatio</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x7050</span><span class="p">),</span>  <span class="c1"># FilterMaterial</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x7052</span><span class="p">),</span>  <span class="c1"># FilterThicknessMinimum</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x7054</span><span class="p">),</span>  <span class="c1"># FilterThicknessMaximum</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x7060</span><span class="p">),</span>  <span class="c1"># ExposureControlMode</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x7062</span><span class="p">),</span>  <span class="c1"># ExposureControlModeDescription</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x9005</span><span class="p">),</span>  <span class="c1"># PulseSequenceName</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x9070</span><span class="p">),</span>  <span class="c1"># CardiacRRIntervalSpecified</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x9073</span><span class="p">),</span>  <span class="c1"># AcquisitionDuration</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x9075</span><span class="p">),</span>  <span class="c1"># DiffusionDirectionality</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x9076</span><span class="p">),</span>  <span class="c1"># DiffusionGradientDirectionSequence</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x9077</span><span class="p">),</span>  <span class="c1"># ParallelAcquisition</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x9082</span><span class="p">),</span>  <span class="c1"># EffectiveEchoTime</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x9087</span><span class="p">),</span>  <span class="c1"># DiffusionBValue</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x9371</span><span class="p">),</span>  <span class="c1"># XRayDetectorID</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x9417</span><span class="p">),</span>  <span class="c1"># FrameAcquisitionSequence</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x9434</span><span class="p">),</span>  <span class="c1"># ExposureControlSensingRegionsSequence</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x9435</span><span class="p">),</span>  <span class="c1"># ExposureControlSensingRegionShape</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x9436</span><span class="p">),</span>  <span class="c1"># ExposureControlSensingRegionLeftVerticalEdge</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x9438</span><span class="p">),</span>  <span class="c1"># ExposureControlSensingRegionUpperHorizontalEdge</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x9461</span><span class="p">),</span>  <span class="c1"># FieldOfViewDimensionsInFloat</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x9462</span><span class="p">),</span>  <span class="c1"># IsocenterReferenceSystemSequence</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x9476</span><span class="p">),</span>  <span class="c1"># XRayGeometrySequence</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x9477</span><span class="p">),</span>  <span class="c1"># IrradiationEventIdentificationSequence</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x9504</span><span class="p">),</span>  <span class="c1"># XRay3DFrameTypeSequence</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x9506</span><span class="p">),</span>  <span class="c1"># ContributingSourcesSequence</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x9507</span><span class="p">),</span>  <span class="c1"># XRay3DAcquisitionSequence</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x9508</span><span class="p">),</span>  <span class="c1"># PrimaryPositionerScanArc</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x9528</span><span class="p">),</span>  <span class="c1"># AlgorithmDescription</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x9530</span><span class="p">),</span>  <span class="c1"># XRay3DReconstructionSequence</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x9531</span><span class="p">),</span>  <span class="c1"># ReconstructionDescription</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x9538</span><span class="p">),</span>  <span class="c1"># PerProjectionAcquisitionSequence</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x9732</span><span class="p">),</span>  <span class="c1"># PETFrameAcquisitionSequence</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x9733</span><span class="p">),</span>  <span class="c1"># PETDetectorMotionDetailsSequence</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x9736</span><span class="p">),</span>  <span class="c1"># PETFrameCorrectionFactorsSequence</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x9737</span><span class="p">),</span>  <span class="c1"># RadiopharmaceuticalUsageSequence</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x9738</span><span class="p">),</span>  <span class="c1"># AttenuationCorrectionSource</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x9749</span><span class="p">),</span>  <span class="c1"># PETReconstructionSequence</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x9751</span><span class="p">),</span>  <span class="c1"># PETFrameTypeSequence</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x9810</span><span class="p">),</span>  <span class="c1"># ZeroVelocityPixelValue</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0020</span><span class="p">,</span> <span class="mh">0x0011</span><span class="p">),</span>  <span class="c1"># SeriesNumber</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0020</span><span class="p">,</span> <span class="mh">0x0012</span><span class="p">),</span>  <span class="c1"># AcquisitionNumber</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0020</span><span class="p">,</span> <span class="mh">0x0013</span><span class="p">),</span>  <span class="c1"># InstanceNumber</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0020</span><span class="p">,</span> <span class="mh">0x0020</span><span class="p">),</span>  <span class="c1"># PatientOrientation</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0020</span><span class="p">,</span> <span class="mh">0x0032</span><span class="p">),</span>  <span class="c1"># ImagePositionPatient</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0020</span><span class="p">,</span> <span class="mh">0x0037</span><span class="p">),</span>  <span class="c1"># ImageOrientationPatient</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0020</span><span class="p">,</span> <span class="mh">0x0060</span><span class="p">),</span>  <span class="c1"># Laterality</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0020</span><span class="p">,</span> <span class="mh">0x0062</span><span class="p">),</span>  <span class="c1"># ImageLaterality</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0020</span><span class="p">,</span> <span class="mh">0x1002</span><span class="p">),</span>  <span class="c1"># ImagesInAcquisition</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0020</span><span class="p">,</span> <span class="mh">0x1040</span><span class="p">),</span>  <span class="c1"># PositionReferenceIndicator</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0020</span><span class="p">,</span> <span class="mh">0x1041</span><span class="p">),</span>  <span class="c1"># SliceLocation</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0020</span><span class="p">,</span> <span class="mh">0x9056</span><span class="p">),</span>  <span class="c1"># StackID</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0020</span><span class="p">,</span> <span class="mh">0x9057</span><span class="p">),</span>  <span class="c1"># InStackPositionNumber</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0020</span><span class="p">,</span> <span class="mh">0x9111</span><span class="p">),</span>  <span class="c1"># FrameContentSequence</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0020</span><span class="p">,</span> <span class="mh">0x9113</span><span class="p">),</span>  <span class="c1"># PlanePositionSequence</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0020</span><span class="p">,</span> <span class="mh">0x9116</span><span class="p">),</span>  <span class="c1"># PlaneOrientationSequence</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0020</span><span class="p">,</span> <span class="mh">0x9128</span><span class="p">),</span>  <span class="c1"># TemporalPositionIndex</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0020</span><span class="p">,</span> <span class="mh">0x9153</span><span class="p">),</span>  <span class="c1"># TriggerDelayTime</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0020</span><span class="p">,</span> <span class="mh">0x9157</span><span class="p">),</span>  <span class="c1"># DimensionIndexValues</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0020</span><span class="p">,</span> <span class="mh">0x9165</span><span class="p">),</span>  <span class="c1"># DimensionIndexPointer</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0020</span><span class="p">,</span> <span class="mh">0x9167</span><span class="p">),</span>  <span class="c1"># FunctionalGroupPointer</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0020</span><span class="p">,</span> <span class="mh">0x9221</span><span class="p">),</span>  <span class="c1"># DimensionOrganizationSequence</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0020</span><span class="p">,</span> <span class="mh">0x9222</span><span class="p">),</span>  <span class="c1"># DimensionIndexSequence</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0020</span><span class="p">,</span> <span class="mh">0x9311</span><span class="p">),</span>  <span class="c1"># DimensionOrganizationType</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0022</span><span class="p">,</span> <span class="mh">0x0001</span><span class="p">),</span>  <span class="c1"># LightPathFilterPassThroughWavelength</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0022</span><span class="p">,</span> <span class="mh">0x0002</span><span class="p">),</span>  <span class="c1"># LightPathFilterPassBand</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0022</span><span class="p">,</span> <span class="mh">0x0003</span><span class="p">),</span>  <span class="c1"># ImagePathFilterPassThroughWavelength</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0022</span><span class="p">,</span> <span class="mh">0x0005</span><span class="p">),</span>  <span class="c1"># PatientEyeMovementCommanded</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0022</span><span class="p">,</span> <span class="mh">0x0006</span><span class="p">),</span>  <span class="c1"># PatientEyeMovementCommandCodeSequence</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0022</span><span class="p">,</span> <span class="mh">0x0007</span><span class="p">),</span>  <span class="c1"># SphericalLensPower</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0022</span><span class="p">,</span> <span class="mh">0x0008</span><span class="p">),</span>  <span class="c1"># CylinderLensPower</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0022</span><span class="p">,</span> <span class="mh">0x0009</span><span class="p">),</span>  <span class="c1"># CylinderAxis</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0022</span><span class="p">,</span> <span class="mh">0x1007</span><span class="p">),</span>  <span class="c1"># OphthalmicAxialMeasurementsRightEyeSequence</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0022</span><span class="p">,</span> <span class="mh">0x1019</span><span class="p">),</span>  <span class="c1"># OphthalmicAxialLength</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0022</span><span class="p">,</span> <span class="mh">0x1050</span><span class="p">),</span>  <span class="c1"># OphthalmicAxialLengthMeasurementsSequence</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0028</span><span class="p">,</span> <span class="mh">0x0002</span><span class="p">),</span>  <span class="c1"># SamplesPerPixel</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0028</span><span class="p">,</span> <span class="mh">0x0004</span><span class="p">),</span>  <span class="c1"># PhotometricInterpretation</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0028</span><span class="p">,</span> <span class="mh">0x0006</span><span class="p">),</span>  <span class="c1"># PlanarConfiguration</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0028</span><span class="p">,</span> <span class="mh">0x0008</span><span class="p">),</span>  <span class="c1"># NumberOfFrames</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0028</span><span class="p">,</span> <span class="mh">0x0009</span><span class="p">),</span>  <span class="c1"># FrameIncrementPointer</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0028</span><span class="p">,</span> <span class="mh">0x000A</span><span class="p">),</span>  <span class="c1"># FrameDimensionPointer</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0028</span><span class="p">,</span> <span class="mh">0x0010</span><span class="p">),</span>  <span class="c1"># Rows</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0028</span><span class="p">,</span> <span class="mh">0x0011</span><span class="p">),</span>  <span class="c1"># Columns</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0028</span><span class="p">,</span> <span class="mh">0x0012</span><span class="p">),</span>  <span class="c1"># Planes</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0028</span><span class="p">,</span> <span class="mh">0x0030</span><span class="p">),</span>  <span class="c1"># PixelSpacing</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0028</span><span class="p">,</span> <span class="mh">0x0034</span><span class="p">),</span>  <span class="c1"># PixelAspectRatio</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0028</span><span class="p">,</span> <span class="mh">0x0100</span><span class="p">),</span>  <span class="c1"># BitsAllocated</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0028</span><span class="p">,</span> <span class="mh">0x0101</span><span class="p">),</span>  <span class="c1"># BitsStored</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0028</span><span class="p">,</span> <span class="mh">0x0102</span><span class="p">),</span>  <span class="c1"># HighBit</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0028</span><span class="p">,</span> <span class="mh">0x0103</span><span class="p">),</span>  <span class="c1"># PixelRepresentation</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0028</span><span class="p">,</span> <span class="mh">0x0106</span><span class="p">),</span>  <span class="c1"># SmallestImagePixelValue</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0028</span><span class="p">,</span> <span class="mh">0x0107</span><span class="p">),</span>  <span class="c1"># LargestImagePixelValue</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0028</span><span class="p">,</span> <span class="mh">0x0120</span><span class="p">),</span>  <span class="c1"># PixelPaddingValue</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0028</span><span class="p">,</span> <span class="mh">0x0121</span><span class="p">),</span>  <span class="c1"># PixelPaddingRangeLimit</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0028</span><span class="p">,</span> <span class="mh">0x0200</span><span class="p">),</span>  <span class="c1"># ImageLocation</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0028</span><span class="p">,</span> <span class="mh">0x0300</span><span class="p">),</span>  <span class="c1"># QualityControlImage</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0028</span><span class="p">,</span> <span class="mh">0x0A02</span><span class="p">),</span>  <span class="c1"># PixelSpacingCalibrationType</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0028</span><span class="p">,</span> <span class="mh">0x0A04</span><span class="p">),</span>  <span class="c1"># PixelSpacingCalibrationDescription</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0028</span><span class="p">,</span> <span class="mh">0x1050</span><span class="p">),</span>  <span class="c1"># WindowCenter</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0028</span><span class="p">,</span> <span class="mh">0x1051</span><span class="p">),</span>  <span class="c1"># WindowWidth</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0028</span><span class="p">,</span> <span class="mh">0x1052</span><span class="p">),</span>  <span class="c1"># RescaleIntercept</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0028</span><span class="p">,</span> <span class="mh">0x1053</span><span class="p">),</span>  <span class="c1"># RescaleSlope</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0028</span><span class="p">,</span> <span class="mh">0x1054</span><span class="p">),</span>  <span class="c1"># RescaleType</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0028</span><span class="p">,</span> <span class="mh">0x1055</span><span class="p">),</span>  <span class="c1"># WindowCenterWidthExplanation</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0028</span><span class="p">,</span> <span class="mh">0x1056</span><span class="p">),</span>  <span class="c1"># VOILUTFunction</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0028</span><span class="p">,</span> <span class="mh">0x1090</span><span class="p">),</span>  <span class="c1"># RecommendedViewingMode</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0028</span><span class="p">,</span> <span class="mh">0x1101</span><span class="p">),</span>  <span class="c1"># RedPaletteColorLookupTableDescriptor</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0028</span><span class="p">,</span> <span class="mh">0x1102</span><span class="p">),</span>  <span class="c1"># GreenPaletteColorLookupTableDescriptor</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0028</span><span class="p">,</span> <span class="mh">0x1103</span><span class="p">),</span>  <span class="c1"># BluePaletteColorLookupTableDescriptor</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0028</span><span class="p">,</span> <span class="mh">0x1201</span><span class="p">),</span>  <span class="c1"># RedPaletteColorLookupTableData</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0028</span><span class="p">,</span> <span class="mh">0x1202</span><span class="p">),</span>  <span class="c1"># GreenPaletteColorLookupTableData</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0028</span><span class="p">,</span> <span class="mh">0x1203</span><span class="p">),</span>  <span class="c1"># BluePaletteColorLookupTableData</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0028</span><span class="p">,</span> <span class="mh">0x2000</span><span class="p">),</span>  <span class="c1"># ICCProfile</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0028</span><span class="p">,</span> <span class="mh">0x2110</span><span class="p">),</span>  <span class="c1"># LossyImageCompression</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0028</span><span class="p">,</span> <span class="mh">0x2112</span><span class="p">),</span>  <span class="c1"># LossyImageCompressionRatio</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0028</span><span class="p">,</span> <span class="mh">0x2114</span><span class="p">),</span>  <span class="c1"># LossyImageCompressionMethod</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0028</span><span class="p">,</span> <span class="mh">0x6010</span><span class="p">),</span>  <span class="c1"># RepresentativeFrameNumber</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0028</span><span class="p">,</span> <span class="mh">0x9001</span><span class="p">),</span>  <span class="c1"># DataPointRows</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0028</span><span class="p">,</span> <span class="mh">0x9002</span><span class="p">),</span>  <span class="c1"># DataPointColumns</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0028</span><span class="p">,</span> <span class="mh">0x9108</span><span class="p">),</span>  <span class="c1"># DataRepresentation</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0032</span><span class="p">,</span> <span class="mh">0x0033</span><span class="p">),</span>  <span class="c1"># StudyVerifiedTime</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0032</span><span class="p">,</span> <span class="mh">0x0035</span><span class="p">),</span>  <span class="c1"># StudyReadTime</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0032</span><span class="p">,</span> <span class="mh">0x1001</span><span class="p">),</span>  <span class="c1"># ScheduledStudyStartTime</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0032</span><span class="p">,</span> <span class="mh">0x1011</span><span class="p">),</span>  <span class="c1"># ScheduledStudyStopTime</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0032</span><span class="p">,</span> <span class="mh">0x1041</span><span class="p">),</span>  <span class="c1"># StudyArrivalTime</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0032</span><span class="p">,</span> <span class="mh">0x1051</span><span class="p">),</span>  <span class="c1"># StudyCompletionTime</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0038</span><span class="p">,</span> <span class="mh">0x001B</span><span class="p">),</span>  <span class="c1"># ScheduledAdmissionTime</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0038</span><span class="p">,</span> <span class="mh">0x001D</span><span class="p">),</span>  <span class="c1"># ScheduledDischargeTime</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0038</span><span class="p">,</span> <span class="mh">0x0021</span><span class="p">),</span>  <span class="c1"># AdmittingTime</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0038</span><span class="p">,</span> <span class="mh">0x0032</span><span class="p">),</span>  <span class="c1"># DischargeTime</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0040</span><span class="p">,</span> <span class="mh">0x0003</span><span class="p">),</span>  <span class="c1"># SPSStartTime</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0040</span><span class="p">,</span> <span class="mh">0x0005</span><span class="p">),</span>  <span class="c1"># SPSEndTime</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0040</span><span class="p">,</span> <span class="mh">0x0245</span><span class="p">),</span>  <span class="c1"># PPSStartTime</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0040</span><span class="p">,</span> <span class="mh">0x0251</span><span class="p">),</span>  <span class="c1"># PPSEndTime</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0040</span><span class="p">,</span> <span class="mh">0x0318</span><span class="p">),</span>  <span class="c1"># OrganExposed</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0040</span><span class="p">,</span> <span class="mh">0x8302</span><span class="p">),</span>  <span class="c1"># EntranceDoseInmGy</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0040</span><span class="p">,</span> <span class="mh">0xA122</span><span class="p">),</span>  <span class="c1"># Time</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0040</span><span class="p">,</span> <span class="mh">0xA193</span><span class="p">),</span>  <span class="c1"># TrialObservationTime</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0054</span><span class="p">,</span> <span class="mh">0x0010</span><span class="p">),</span>  <span class="c1"># EnergyWindowVector</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0054</span><span class="p">,</span> <span class="mh">0x0011</span><span class="p">),</span>  <span class="c1"># NumberOfEnergyWindows</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0054</span><span class="p">,</span> <span class="mh">0x0016</span><span class="p">),</span>  <span class="c1"># RadiopharmaceuticalInformationSequence</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0054</span><span class="p">,</span> <span class="mh">0x0020</span><span class="p">),</span>  <span class="c1"># DetectorVector</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0054</span><span class="p">,</span> <span class="mh">0x0021</span><span class="p">),</span>  <span class="c1"># NumberOfDetectors</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0054</span><span class="p">,</span> <span class="mh">0x0022</span><span class="p">),</span>  <span class="c1"># DetectorInformationSequence</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0054</span><span class="p">,</span> <span class="mh">0x0030</span><span class="p">),</span>  <span class="c1"># PhaseVector</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0054</span><span class="p">,</span> <span class="mh">0x0031</span><span class="p">),</span>  <span class="c1"># NumberOfPhases</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0054</span><span class="p">,</span> <span class="mh">0x0050</span><span class="p">),</span>  <span class="c1"># RotationVector</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0054</span><span class="p">,</span> <span class="mh">0x0051</span><span class="p">),</span>  <span class="c1"># NumberOfRotations</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0054</span><span class="p">,</span> <span class="mh">0x0060</span><span class="p">),</span>  <span class="c1"># RRIntervalVector</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0054</span><span class="p">,</span> <span class="mh">0x0061</span><span class="p">),</span>  <span class="c1"># NumberOfRRIntervals</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0054</span><span class="p">,</span> <span class="mh">0x0070</span><span class="p">),</span>  <span class="c1"># TimeSlotVector</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0054</span><span class="p">,</span> <span class="mh">0x0071</span><span class="p">),</span>  <span class="c1"># NumberOfTimeSlots</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0054</span><span class="p">,</span> <span class="mh">0x0080</span><span class="p">),</span>  <span class="c1"># SliceVector</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0054</span><span class="p">,</span> <span class="mh">0x0081</span><span class="p">),</span>  <span class="c1"># NumberOfSlices</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0054</span><span class="p">,</span> <span class="mh">0x0090</span><span class="p">),</span>  <span class="c1"># AngularViewVector</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0054</span><span class="p">,</span> <span class="mh">0x0100</span><span class="p">),</span>  <span class="c1"># TimeSliceVector</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0054</span><span class="p">,</span> <span class="mh">0x0202</span><span class="p">),</span>  <span class="c1"># TypeOfDetectorMotion</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0054</span><span class="p">,</span> <span class="mh">0x0300</span><span class="p">),</span>  <span class="c1"># RadionuclideCodeSequence</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0054</span><span class="p">,</span> <span class="mh">0x1000</span><span class="p">),</span>  <span class="c1"># SeriesType</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0054</span><span class="p">,</span> <span class="mh">0x1001</span><span class="p">),</span>  <span class="c1"># Units</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0054</span><span class="p">,</span> <span class="mh">0x1006</span><span class="p">),</span>  <span class="c1"># SUVType</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0054</span><span class="p">,</span> <span class="mh">0x1102</span><span class="p">),</span>  <span class="c1"># DecayCorrection</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0054</span><span class="p">,</span> <span class="mh">0x1300</span><span class="p">),</span>  <span class="c1"># FrameReferenceTime</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0054</span><span class="p">,</span> <span class="mh">0x1323</span><span class="p">),</span>  <span class="c1"># ScatterFractionFactor</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0054</span><span class="p">,</span> <span class="mh">0x1330</span><span class="p">),</span>  <span class="c1"># ImageIndex</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0054</span><span class="p">,</span> <span class="mh">0x1400</span><span class="p">),</span>  <span class="c1"># CountsIncluded</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0054</span><span class="p">,</span> <span class="mh">0x1401</span><span class="p">),</span>  <span class="c1"># DeadTimeCorrectionFlag</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0062</span><span class="p">,</span> <span class="mh">0x0002</span><span class="p">),</span>  <span class="c1"># SegmentSequence</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x2050</span><span class="p">,</span> <span class="mh">0x0020</span><span class="p">),</span>  <span class="c1"># PresentationLUTShape</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x5200</span><span class="p">,</span> <span class="mh">0x9229</span><span class="p">),</span>  <span class="c1"># SharedFunctionalGroupsSequence</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x5200</span><span class="p">,</span> <span class="mh">0x9230</span><span class="p">),</span>  <span class="c1"># PerFrameFunctionalGroupsSequence</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x7FE0</span><span class="p">,</span> <span class="mh">0x0010</span><span class="p">),</span>  <span class="c1"># PixelData</span>
+    <span class="p">}</span>
+<span class="p">)</span>
+
+
+<span class="c1"># Content-root sequences whose subtree is retained verbatim under</span>
+<span class="c1"># remove_unspecified. These carry the KO/PR labels, cross-object references, and</span>
+<span class="c1"># the PR rendering sequences (image binding, displayed area, graphic layers)</span>
+<span class="c1"># that let a viewer render retained annotations; the shared element rules (PHI</span>
+<span class="c1"># removal, date removal, free-text redaction, UID hashing) still de-identify</span>
+<span class="c1"># every element within them. Structural and coded members (Value Type, Concept</span>
+<span class="c1"># Name/Code sequences, Graphic Data/Type, reference SOP sequences) carry no PHI</span>
+<span class="c1"># and are preserved.</span>
+<span class="n">STRICT_CONTENT_ROOT_TAGS</span><span class="p">:</span> <span class="nb">frozenset</span><span class="p">[</span><span class="n">BaseTag</span><span class="p">]</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">(</span>
+    <span class="p">{</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0008</span><span class="p">,</span> <span class="mh">0x1115</span><span class="p">),</span>  <span class="c1"># ReferencedSeriesSequence (PR-to-image binding)</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0008</span><span class="p">,</span> <span class="mh">0x2218</span><span class="p">),</span>  <span class="c1"># AnatomicRegionSequence</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0040</span><span class="p">,</span> <span class="mh">0xA043</span><span class="p">),</span>  <span class="c1"># ConceptNameCodeSequence (KO document title)</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0040</span><span class="p">,</span> <span class="mh">0xA370</span><span class="p">),</span>  <span class="c1"># ReferencedRequestSequence</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0040</span><span class="p">,</span> <span class="mh">0xA375</span><span class="p">),</span>  <span class="c1"># CurrentRequestedProcedureEvidenceSequence</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0040</span><span class="p">,</span> <span class="mh">0xA525</span><span class="p">),</span>  <span class="c1"># IdenticalDocumentsSequence</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0040</span><span class="p">,</span> <span class="mh">0xA730</span><span class="p">),</span>  <span class="c1"># ContentSequence</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0070</span><span class="p">,</span> <span class="mh">0x0001</span><span class="p">),</span>  <span class="c1"># GraphicAnnotationSequence</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0070</span><span class="p">,</span> <span class="mh">0x005A</span><span class="p">),</span>  <span class="c1"># DisplayedAreaSelectionSequence (PR spatial reference)</span>
+        <span class="n">Tag</span><span class="p">(</span><span class="mh">0x0070</span><span class="p">,</span> <span class="mh">0x0060</span><span class="p">),</span>  <span class="c1"># GraphicLayerSequence (PR layer definitions)</span>
+    <span class="p">}</span>
+<span class="p">)</span>
+
+
+<div class="viewcode-block" id="strict_profile">
+<a class="viewcode-back" href="../../../reference/api.html#dicom_dre.strict_profile">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">strict_profile</span><span class="p">(</span><span class="n">settings</span><span class="p">:</span> <span class="n">ProfileSettings</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DeidProfile</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Construct a strict profile.</span>
+
+<span class="sd">    Minimal metadata. Removes all unspecified elements. Date and datetime</span>
+<span class="sd">    elements are removed entirely rather than date-shifted, so no jitter is</span>
+<span class="sd">    applied; allow-listed time elements are retained. UIDs are re-derived</span>
+<span class="sd">    without the study-ID salt.</span>
+<span class="sd">    Per-patient identity values are</span>
+<span class="sd">    supplied at apply time via :class:`DeidParameters`. When PatientID,</span>
+<span class="sd">    PatientName, or AccessionNumber are not supplied, the original element value</span>
+<span class="sd">    is hashed with ``settings.hash_salt`` and the study identifier;</span>
+<span class="sd">    PatientName reuses the PatientID hash.</span>
+
+<span class="sd">    The free-text description fields take a per-patient value verbatim; when it</span>
+<span class="sd">    is ``None`` they are redacted from the dataset using</span>
+<span class="sd">    ``settings.allowlist_csv`` at apply time.</span>
+
+<span class="sd">    KO and PR label subtrees, along with the PR rendering sequences that bind</span>
+<span class="sd">    annotations to their images and define their geometry, are retained through</span>
+<span class="sd">    ``content_root_tags``. The</span>
+<span class="sd">    shared PHI-removal, date-removal, and free-text redaction rules are applied</span>
+<span class="sd">    so those retained subtrees are de-identified: dates are removed entirely</span>
+<span class="sd">    (not date-shifted), and the free-text label</span>
+<span class="sd">    fields are redacted against the allowlist. Because the profile hashes UIDs</span>
+<span class="sd">    without the study salt, references resolve within a single strict</span>
+<span class="sd">    export but not against objects de-identified by another profile.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">settings</span> <span class="o">=</span> <span class="n">settings</span> <span class="ow">or</span> <span class="n">ProfileSettings</span><span class="p">()</span>
+    <span class="n">uid_action</span> <span class="o">=</span> <span class="n">hash_uid</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">uid_root</span><span class="p">)</span>  <span class="c1"># no study-ID salt</span>
+
+    <span class="n">rules</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">BaseTag</span><span class="p">,</span> <span class="n">TagAction</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="c1"># PHI removal shared with the default profile, applied first so the</span>
+    <span class="c1"># image-technical keep rules below win on the few overlapping tags. These</span>
+    <span class="c1"># remove PHI wherever it appears, including inside the retained KO/PR</span>
+    <span class="c1"># content subtrees. Dates are removed rather than jittered.</span>
+    <span class="n">remove_action</span> <span class="o">=</span> <span class="n">remove</span><span class="p">()</span>
+    <span class="n">rules</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="nb">dict</span><span class="o">.</span><span class="n">fromkeys</span><span class="p">(</span><span class="n">PHI_REMOVE_TAGS</span><span class="p">,</span> <span class="n">remove_action</span><span class="p">))</span>
+    <span class="n">rules</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="nb">dict</span><span class="o">.</span><span class="n">fromkeys</span><span class="p">(</span><span class="n">EMPTY_TAGS</span><span class="p">,</span> <span class="n">remove_action</span><span class="p">))</span>
+    <span class="n">rules</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="nb">dict</span><span class="o">.</span><span class="n">fromkeys</span><span class="p">(</span><span class="n">DATE_TAGS</span><span class="p">,</span> <span class="n">remove_action</span><span class="p">))</span>
+
+    <span class="c1"># Preserve tags unchanged</span>
+    <span class="n">rules</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">t</span><span class="p">:</span> <span class="n">keep</span><span class="p">()</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">STRICT_KEEP_TAGS</span><span class="p">})</span>
+
+    <span class="c1"># Hash UID tags -- no salt</span>
+    <span class="n">rules</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="nb">dict</span><span class="o">.</span><span class="n">fromkeys</span><span class="p">(</span><span class="n">STRICT_UID_TAGS</span><span class="p">,</span> <span class="n">uid_action</span><span class="p">))</span>
+
+    <span class="c1"># Identifier substitution -- caller value wins, else hash the original.</span>
+    <span class="c1"># PatientName runs before the PatientID rule so it hashes the original</span>
+    <span class="c1"># PatientID element and matches the value the PatientID rule then writes.</span>
+    <span class="n">rules</span><span class="p">[</span><span class="n">Tag</span><span class="p">(</span><span class="mh">0x0010</span><span class="p">,</span> <span class="mh">0x0010</span><span class="p">)]</span> <span class="o">=</span> <span class="n">hash_identifier_param</span><span class="p">(</span>
+        <span class="s2">&quot;patient_name&quot;</span><span class="p">,</span> <span class="n">salt</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">hash_salt</span><span class="p">,</span> <span class="n">fallback_field</span><span class="o">=</span><span class="s2">&quot;patient_id&quot;</span><span class="p">,</span> <span class="n">source_tag</span><span class="o">=</span><span class="n">Tag</span><span class="p">(</span><span class="mh">0x0010</span><span class="p">,</span> <span class="mh">0x0020</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">rules</span><span class="p">[</span><span class="n">Tag</span><span class="p">(</span><span class="mh">0x0010</span><span class="p">,</span> <span class="mh">0x0020</span><span class="p">)]</span> <span class="o">=</span> <span class="n">hash_identifier_param</span><span class="p">(</span><span class="s2">&quot;patient_id&quot;</span><span class="p">,</span> <span class="n">salt</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">hash_salt</span><span class="p">)</span>  <span class="c1"># PatientID</span>
+    <span class="n">rules</span><span class="p">[</span><span class="n">Tag</span><span class="p">(</span><span class="mh">0x0008</span><span class="p">,</span> <span class="mh">0x0050</span><span class="p">)]</span> <span class="o">=</span> <span class="n">hash_identifier_param</span><span class="p">(</span><span class="s2">&quot;accession_number&quot;</span><span class="p">,</span> <span class="n">salt</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">hash_salt</span><span class="p">)</span>  <span class="c1"># AccessionNumber</span>
+    <span class="n">rules</span><span class="p">[</span><span class="n">Tag</span><span class="p">(</span><span class="mh">0x0008</span><span class="p">,</span> <span class="mh">0x103E</span><span class="p">)]</span> <span class="o">=</span> <span class="n">redact_description</span><span class="p">(</span><span class="s2">&quot;series_description&quot;</span><span class="p">,</span> <span class="n">settings</span><span class="o">.</span><span class="n">allowlist_csv</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+    <span class="n">rules</span><span class="p">[</span><span class="n">Tag</span><span class="p">(</span><span class="mh">0x0008</span><span class="p">,</span> <span class="mh">0x1030</span><span class="p">)]</span> <span class="o">=</span> <span class="n">redact_description</span><span class="p">(</span><span class="s2">&quot;study_description&quot;</span><span class="p">,</span> <span class="n">settings</span><span class="o">.</span><span class="n">allowlist_csv</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+    <span class="n">rules</span><span class="p">[</span><span class="n">Tag</span><span class="p">(</span><span class="mh">0x0018</span><span class="p">,</span> <span class="mh">0x1030</span><span class="p">)]</span> <span class="o">=</span> <span class="n">redact_description</span><span class="p">(</span><span class="s2">&quot;protocol_name&quot;</span><span class="p">,</span> <span class="n">settings</span><span class="o">.</span><span class="n">allowlist_csv</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+
+    <span class="c1"># KO/PR free-text label redaction and identifier hashing inside retained</span>
+    <span class="c1"># content subtrees.</span>
+    <span class="n">redact</span> <span class="o">=</span> <span class="n">redact_free_text</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">allowlist_csv</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+    <span class="n">rules</span><span class="p">[</span><span class="n">Tag</span><span class="p">(</span><span class="mh">0x0070</span><span class="p">,</span> <span class="mh">0x0006</span><span class="p">)]</span> <span class="o">=</span> <span class="n">redact</span>  <span class="c1"># UnformattedTextValue (ST)</span>
+    <span class="n">rules</span><span class="p">[</span><span class="n">Tag</span><span class="p">(</span><span class="mh">0x0070</span><span class="p">,</span> <span class="mh">0x0289</span><span class="p">)]</span> <span class="o">=</span> <span class="n">redact</span>  <span class="c1"># TickLabel (SH)</span>
+    <span class="n">rules</span><span class="p">[</span><span class="n">Tag</span><span class="p">(</span><span class="mh">0x0040</span><span class="p">,</span> <span class="mh">0xA160</span><span class="p">)]</span> <span class="o">=</span> <span class="n">redact</span>  <span class="c1"># TextValue (UT), KO/SR content free text</span>
+    <span class="n">rules</span><span class="p">[</span><span class="n">Tag</span><span class="p">(</span><span class="mh">0x0062</span><span class="p">,</span> <span class="mh">0x0020</span><span class="p">)]</span> <span class="o">=</span> <span class="n">hash_value_identifier</span><span class="p">(</span><span class="n">salt</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">hash_salt</span><span class="p">)</span>  <span class="c1"># TrackingID (UT)</span>
+
+    <span class="c1"># PatientIdentityRemoved -- created if missing and set to YES</span>
+    <span class="n">rules</span><span class="p">[</span><span class="n">Tag</span><span class="p">(</span><span class="mh">0x0012</span><span class="p">,</span> <span class="mh">0x0062</span><span class="p">)]</span> <span class="o">=</span> <span class="n">set_value</span><span class="p">(</span><span class="s2">&quot;YES&quot;</span><span class="p">,</span> <span class="n">create_if_missing</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">DeidProfile</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Strict&quot;</span><span class="p">,</span>
+        <span class="n">rules</span><span class="o">=</span><span class="n">rules</span><span class="p">,</span>
+        <span class="n">keep_groups</span><span class="o">=</span><span class="nb">frozenset</span><span class="p">(),</span>
+        <span class="n">remove_private</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">remove_curves</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">remove_overlays</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">remove_unspecified</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">allowlist_csv</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">allowlist_csv</span><span class="p">,</span>
+        <span class="n">hash_salt</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">hash_salt</span><span class="p">,</span>
+        <span class="n">uid_root</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">uid_root</span><span class="p">,</span>
+        <span class="n">uid_use_study_salt</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">preserved_private_specs</span><span class="o">=</span><span class="n">PRESERVED_PRIVATE_SPECS</span><span class="p">,</span>
+        <span class="n">emits_basic_profile</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">deid_options</span><span class="o">=</span><span class="nb">frozenset</span><span class="p">({</span><span class="s2">&quot;113103&quot;</span><span class="p">,</span> <span class="s2">&quot;113104&quot;</span><span class="p">}),</span>
+        <span class="n">content_root_tags</span><span class="o">=</span><span class="n">STRICT_CONTENT_ROOT_TAGS</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+</pre></div>
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          
+          
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2026 The Board of Trustees of The Leland Stanford Junior University
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer no-toc">
+      
+      
+      
+    </aside>
+  </div>
+</div><script src="../../../_static/documentation_options.js?v=350a9c04"></script>
+    <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../_static/scripts/furo.js?v=46bd48cc"></script>
+    <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";
+
+
+
+const initStyles = () => {
+    const defaultStyle = document.createElement('style');
+    defaultStyle.textContent = "pre.mermaid {\n    /* Same as .mermaid-container > pre */\n    display: block;\n    width: 100%;\n}\n\npre.mermaid > svg {\n    /* Same as .mermaid-container > pre > svg */\n    height: 500px;\n    width: 100%;\n    max-width: 100% !important;\n}";
+    document.head.appendChild(defaultStyle);
+
+    const fullscreenStyle = document.createElement('style');
+    fullscreenStyle.textContent = ".mermaid-container {\n    position: relative;\n    display: flex;\n    flex-direction: row;\n    width: 100%;\n}\n\n.mermaid-container > pre {\n    display: block;\n    width: 100%;\n}\n\n.mermaid-container > pre > svg {\n    height: 500px;\n    width: 100%;\n    max-width: 100% !important;\n}\n\n.mermaid-fullscreen-btn {\n    position: absolute;\n    width: 28px;\n    height: 28px;\n    background: rgba(255, 255, 255, 0.95);\n    border: 1px solid rgba(0, 0, 0, 0.3);\n    border-radius: 4px;\n    cursor: pointer;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    transition: all 0.2s;\n    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);\n    font-size: 14px;\n    line-height: 1;\n    padding: 0;\n    color: #333;\n}\n\n.mermaid-fullscreen-btn:hover {\n    opacity: 100% !important;\n    background: rgba(255, 255, 255, 1);\n    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);\n    transform: scale(1.1);\n}\n\n.mermaid-fullscreen-btn.dark-theme {\n    background: rgba(50, 50, 50, 0.95);\n    border: 1px solid rgba(255, 255, 255, 0.3);\n    color: #e0e0e0;\n}\n\n.mermaid-fullscreen-btn.dark-theme:hover {\n    background: rgba(60, 60, 60, 1);\n    box-shadow: 0 3px 10px rgba(255, 255, 255, 0.2);\n}\n\n.mermaid-fullscreen-modal {\n    display: none;\n    position: fixed !important;\n    top: 0 !important;\n    left: 0 !important;\n    width: 95vw;\n    height: 100vh;\n    background: rgba(255, 255, 255, 0.98);\n    z-index: 9999;\n    padding: 20px;\n    overflow: auto;\n}\n\n.mermaid-fullscreen-modal.dark-theme {\n    background: rgba(0, 0, 0, 0.98);\n}\n\n.mermaid-fullscreen-modal.active {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n}\n\n.mermaid-container-fullscreen {\n    position: relative;\n    width: 95vw;\n    height: 90vh;\n    max-width: 95vw;\n    max-height: 90vh;\n    background: white;\n    border-radius: 8px;\n    padding: 20px;\n    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);\n    overflow: auto;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n}\n\n.mermaid-container-fullscreen.dark-theme {\n    background: #1a1a1a;\n    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);\n}\n\n.mermaid-container-fullscreen pre.mermaid {\n    width: 100%;\n    height: 100%;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n}\n\n.mermaid-container-fullscreen .mermaid svg {\n    height: 100% !important;\n    width: 100% !important;\n    cursor: grab;\n}\n\n.mermaid-fullscreen-close {\n    position: fixed !important;\n    top: 20px !important;\n    right: 20px !important;\n    width: 40px;\n    height: 40px;\n    background: rgba(255, 255, 255, 0.95);\n    border: 1px solid rgba(0, 0, 0, 0.2);\n    border-radius: 50%;\n    cursor: pointer;\n    z-index: 10000;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);\n    transition: all 0.2s;\n    font-size: 24px;\n    line-height: 1;\n    color: #333;\n}\n\n.mermaid-fullscreen-close:hover {\n    background: white;\n    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);\n    transform: scale(1.1);\n}\n\n.mermaid-fullscreen-close.dark-theme {\n    background: rgba(50, 50, 50, 0.95);\n    border: 1px solid rgba(255, 255, 255, 0.2);\n    color: #e0e0e0;\n}\n\n.mermaid-fullscreen-close.dark-theme:hover {\n    background: rgba(60, 60, 60, 1);\n    box-shadow: 0 6px 16px rgba(255, 255, 255, 0.2);\n}\n\n.mermaid-fullscreen-modal .mermaid-fullscreen-btn {\n    display: none !important;\n}";
+    document.head.appendChild(fullscreenStyle);
+}
+
+// Detect if page has dark background
+const isDarkTheme = () => {
+    // We use a set of heuristics:
+    // 1. Check for common dark mode classes or attributes
+    // 2. Check computed background color brightness
+    if (document.documentElement.classList.contains('dark') ||
+        document.documentElement.getAttribute('data-theme') === 'dark' ||
+        document.body.classList.contains('dark') ||
+        document.body.getAttribute('data-theme') === 'dark') {
+        // console.log("Dark theme detected via class/attribute");
+        return true;
+    }
+    if (document.documentElement.classList.contains('light') ||
+        document.documentElement.getAttribute('data-theme') === 'light' ||
+        document.body.classList.contains('light') ||
+        document.body.getAttribute('data-theme') === 'light') {
+        // console.log("Light theme detected via class/attribute");
+        return false;
+    }
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        // console.log("Dark theme detected via prefers-color-scheme");
+        return true;
+    }
+    const bgColor = window.getComputedStyle(document.body).backgroundColor;
+    const match = bgColor.match(/rgb\((\d+),\s*(\d+),\s*(\d+)/);
+    if (match) {
+        const r = parseInt(match[1]);
+        const g = parseInt(match[2]);
+        const b = parseInt(match[3]);
+        const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+        // console.log("Background color brightness:", brightness);
+        return brightness < 128;
+    }
+    // console.log("No dark or light theme detected, defaulting to light theme");
+    return false;
+};
+
+let darkTheme = isDarkTheme();
+let modal = null;
+let modalContent = null;
+let previousScrollOffset = [window.scrollX, window.scrollY];
+let _lazyObserver = null;
+let _renderQueue = Promise.resolve();
+let closeModal = () => {};
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal?.classList.contains('active')) {
+        closeModal();
+    }
+});
+
+// Apply d3 zoom to each SVG. Idempotent: an SVG already wrapped is skipped,
+// so this is safe to call both for the initial batch and for diagrams that
+// render lazily once they become visible.
+const addZoomToSvgs = (svgs) => {
+    svgs.each(function() {
+        if (this.getAttribute('data-zoom-applied') === 'true') return;
+        var svg = d3.select(this);
+        svg.html("<g class='wrapper'>" + svg.html() + "</g>");
+        var inner = svg.select("g");
+        var zoom = d3.zoom().on("zoom", function(event) {
+            inner.attr("transform", event.transform);
+        });
+        svg.call(zoom);
+        this.setAttribute('data-zoom-applied', 'true');
+    });
+};
+
+const runMermaid = async (rerun) => {
+    console.log("Running mermaid diagrams, rerun =", rerun);
+    // clear all existing mermaid charts
+    let all_mermaids = document.querySelectorAll(".mermaid");
+
+    if (rerun) {
+        // Disconnect any previous lazy rendering observer
+        if (_lazyObserver) {
+            _lazyObserver.disconnect();
+            _lazyObserver = null;
+        }
+
+        all_mermaids.forEach((el) => {
+            el.removeAttribute('data-mermaid-deferred');
+            el.removeAttribute('data-mermaid-render-failed');
+            if(!el.hasAttribute("data-original-code")) {
+                // store original code
+                // console.log(`Storing original code for first run: `, el.innerHTML);
+                el.setAttribute('data-original-code', el.innerHTML);
+            }
+            if(el.getAttribute("data-processed") === "true") {
+                // remove and restore original
+                el.removeAttribute("data-processed");
+                // console.log(`Restoring original code for re-run: `, el.getAttribute('data-original-code'));
+                el.innerHTML = el.getAttribute('data-original-code');
+            } else {
+                // store original code
+                // console.log(`Storing original code for re-run: `, el.innerHTML);
+                el.setAttribute('data-original-code', el.innerHTML);
+            }
+        });
+
+        // Separate visible and hidden elements. Mermaid's layout engine measures
+        // text dimensions via the DOM, which fails for elements hidden by a parent
+        // (e.g., Reveal.js non-active slides, sphinx-design unopened tabs),
+        // producing broken SVGs. Render visible elements now, defer hidden ones.
+        const visible = [];
+        const hidden = [];
+        all_mermaids.forEach((el) => {
+            // offsetParent is null for display:none ancestors.
+            // getClientRects().length > 0 catches position:fixed elements
+            // (which also have null offsetParent but are still visible).
+            if (el.offsetParent !== null || el.getClientRects().length > 0) {
+                visible.push(el);
+            } else {
+                hidden.push(el);
+                el.setAttribute('data-mermaid-deferred', 'true');
+            }
+        });
+
+        if (visible.length > 0) {
+            try {
+                await mermaid.run({ nodes: visible });
+            } catch (e) {
+                console.error("Mermaid rendering failed:", e);
+            }
+        }
+
+        // Lazily render hidden elements when they become visible.
+        // Uses a promise chain (_renderQueue) to serialize rendering,
+        // since IntersectionObserver may report multiple entries at once
+        // and mermaid.run() is not safe to call concurrently.
+        if (hidden.length > 0) {
+            if (typeof IntersectionObserver === 'undefined') {
+                console.warn("IntersectionObserver not available; hidden mermaid diagrams will not render.");
+            } else {
+                _renderQueue = Promise.resolve();
+                _lazyObserver = new IntersectionObserver((entries) => {
+                    for (const entry of entries) {
+                        if (entry.isIntersecting && entry.target.getAttribute("data-processed") !== "true") {
+                            _lazyObserver.unobserve(entry.target);
+                            const el = entry.target;
+                            _renderQueue = _renderQueue.then(async () => {
+                                try {
+                                    await mermaid.run({ nodes: [el] });
+                                    el.removeAttribute('data-mermaid-deferred');
+                                    // Apply zoom to the now-rendered diagram, matching
+                                    // the decoration visible diagrams receive.
+                                    if (false) {
+                                        addZoomToSvgs(d3.selectAll("").select(function() {
+                                            return this.querySelector("svg");
+                                        }));
+                                    }
+                                } catch (e) {
+                                    console.error("Mermaid deferred rendering failed:", e);
+                                    el.removeAttribute('data-mermaid-deferred');
+                                    el.setAttribute('data-mermaid-render-failed', 'true');
+                                }
+                            });
+                        }
+                    }
+                });
+                hidden.forEach((el) => _lazyObserver.observe(el));
+            }
+        }
+    }
+
+    all_mermaids = document.querySelectorAll(".mermaid");
+    // Exclude deferred (hidden) and render-failed elements from completion checks
+    const mermaids_active = document.querySelectorAll(".mermaid:not([data-mermaid-deferred]):not([data-mermaid-render-failed])");
+    const mermaids_processed = document.querySelectorAll(".mermaid:not([data-mermaid-deferred]):not([data-mermaid-render-failed])[data-processed='true']");
+
+    if (false) {
+        const mermaids_to_add_zoom = 0 === -1 ? mermaids_active.length : 0;
+        if(mermaids_to_add_zoom > 0) {
+            var svgs = d3.selectAll("").select(function() {
+                return this.querySelector("svg");
+            });
+            // Wait until every active (visible) diagram has rendered. Deferred
+            // diagrams are excluded, so a fixed d3_node_count that counts a
+            // hidden diagram no longer loops forever waiting for its SVG.
+            if(mermaids_active.length !== mermaids_processed.length) {
+                setTimeout(() => runMermaid(false), 200);
+                return;
+            }
+            addZoomToSvgs(svgs);
+        }
+    } else if(mermaids_active.length !== mermaids_processed.length) {
+        // Wait for mermaid to process all diagrams
+        setTimeout(() => runMermaid(false), 200);
+        return;
+    }
+
+    // Stop here if not adding fullscreen capability
+    if (!true) return;
+
+    if (modal !== null ) {
+        // Destroy existing modal
+        modal.remove();
+        modal = null;
+        modalContent = null;
+    }
+
+    modal = document.createElement('div');
+    modal.className = 'mermaid-fullscreen-modal' + (darkTheme ? ' dark-theme' : '');
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-modal', 'true');
+    modal.setAttribute('aria-label', 'Fullscreen diagram viewer');
+    modal.innerHTML = `
+        <button class="mermaid-fullscreen-close${darkTheme ? ' dark-theme' : ''}" aria-label="Close fullscreen">✕</button>
+        <div class="mermaid-container-fullscreen${darkTheme ? ' dark-theme' : ''}"></div>
+    `;
+    document.body.appendChild(modal);
+
+    modalContent = modal.querySelector('.mermaid-container-fullscreen');
+    const closeBtn = modal.querySelector('.mermaid-fullscreen-close');
+
+    closeModal = () => {
+        modal.classList.remove('active');
+        modalContent.innerHTML = '';
+        document.body.style.overflow = ''
+        window.scrollTo({left: previousScrollOffset[0], top: previousScrollOffset[1], behavior: 'instant'});
+    };
+
+    closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+    });
+    document.querySelectorAll('.mermaid').forEach((mermaidDiv) => {
+        if (mermaidDiv.parentNode.classList.contains('mermaid-container') ||
+            mermaidDiv.closest('.mermaid-fullscreen-modal')) {
+            // Already processed, adjust button class if needed
+            const existingBtn = mermaidDiv.parentNode.querySelector('.mermaid-fullscreen-btn');
+            if (existingBtn) {
+                existingBtn.className = 'mermaid-fullscreen-btn' + (darkTheme ? ' dark-theme' : '');
+            }
+            return;
+        }
+
+        const container = document.createElement('div');
+        container.className = 'mermaid-container';
+        mermaidDiv.parentNode.insertBefore(container, mermaidDiv);
+        container.appendChild(mermaidDiv);
+
+        const fullscreenBtn = document.createElement('button');
+        fullscreenBtn.className = 'mermaid-fullscreen-btn' + (darkTheme ? ' dark-theme' : '');
+        fullscreenBtn.setAttribute('aria-label', 'View diagram in fullscreen');
+        fullscreenBtn.textContent = "\u26f6";
+        fullscreenBtn.style.opacity = "50%";
+
+        // Calculate dynamic position based on diagram's margin and padding
+        const diagramStyle = window.getComputedStyle(mermaidDiv);
+        const marginTop = parseFloat(diagramStyle.marginTop) || 0;
+        const marginRight = parseFloat(diagramStyle.marginRight) || 0;
+        const paddingTop = parseFloat(diagramStyle.paddingTop) || 0;
+        const paddingRight = parseFloat(diagramStyle.paddingRight) || 0;
+        fullscreenBtn.style.top = `${marginTop + paddingTop + 4}px`;
+        fullscreenBtn.style.right = `${marginRight + paddingRight + 4}px`;
+
+        fullscreenBtn.addEventListener('click', () => {
+            previousScrollOffset = [window.scrollX, window.scrollY];
+            const clone = mermaidDiv.cloneNode(true);
+            modalContent.innerHTML = '';
+            modalContent.appendChild(clone);
+
+            const svg = clone.querySelector('svg');
+            if (svg) {
+                svg.removeAttribute('width');
+                svg.removeAttribute('height');
+                svg.style.width = '100%';
+                svg.style.height = 'auto';
+                svg.style.maxWidth = '100%';
+                svg.style.display = 'block';
+
+                if (false) {
+                    setTimeout(() => {
+                        const g = svg.querySelector('g');
+                        if (g) {
+                            var svgD3 = d3.select(svg);
+                            svgD3.html("<g class='wrapper'>" + svgD3.html() + "</g>");
+                            var inner = svgD3.select("g");
+                            var zoom = d3.zoom().on("zoom", function(event) {
+                                inner.attr("transform", event.transform);
+                            });
+                            svgD3.call(zoom);
+                        }
+                    }, 100);
+                }
+            }
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+        container.appendChild(fullscreenBtn);
+    });
+};
+
+
+
+const load = async () => {
+    initStyles();
+
+
+    await runMermaid(true);
+
+    const reRunIfThemeChanges = async () => {
+        const newDarkTheme = isDarkTheme();
+        if (newDarkTheme !== darkTheme) {
+            darkTheme = newDarkTheme;
+            console.log("Theme change detected, re-running mermaid with", darkTheme ? "dark" : "default", "theme");
+            await mermaid.initialize(
+                {...{"startOnLoad": false},
+                ...{ darkMode: darkTheme, theme: darkTheme ? "dark" : "default" },
+                }
+            );
+            await runMermaid(true);
+        }
+    };
+
+    // Update theme classes when theme changes
+    const themeObserver = new MutationObserver(reRunIfThemeChanges);
+    themeObserver.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['class', 'style', 'data-theme']
+    });
+    themeObserver.observe(document.body, {
+        attributes: true,
+        attributeFilter: ['class', 'style', 'data-theme']
+    });
+};
+
+
+
+
+
+console.log("Initializing mermaid with", darkTheme ? "dark" : "default", "theme");
+mermaid.initialize(
+    {...{"startOnLoad": false},
+    ...{ darkMode: darkTheme, theme: darkTheme ? "dark" : "default" },
+    }
+);
+
+window.addEventListener("load", load);
+window.runMermaid = runMermaid;</script>
+    </body>
+</html>
