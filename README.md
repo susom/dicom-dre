@@ -54,6 +54,36 @@ trust to process DICOM at your site.
 > residual PHI risk. See
 > [Limitations and portability](https://susom.github.io/dicom-dre/stable/about/limitations.html).
 
+## Motivation
+
+`dicom-dre` is a ground-up Python implementation that replaces the Java-based
+MIRC-CTP anonymizer used at our site. De-identification is increasingly the work
+of data scientists, and their tooling is Python, so the pipeline needed to fit
+naturally into that ecosystem rather than sit behind a separate Java service.
+MIRC-CTP also configured de-identification profiles through XML, which limited
+the operations we could express over DICOM attributes. `dicom-dre` is informed
+by the de-identification approaches proven in CTP and builds them around
+code-defined profiles:
+
+- **Profiles as code.** De-identification profiles are Python, not XML, so a
+  profile can apply arbitrary logic to an attribute (conditional edits,
+  cross-attribute derivation, deterministic hashing) and is versioned, tested,
+  and reviewed with the rest of the codebase.
+
+- **Native Python integration.** The engine is an importable library with an
+  embeddable API, so it runs inside an existing Python pipeline without a
+  separate Java service.
+
+- **Lossless burned-in text removal.** The JPEG Baseline scrubber is a port of
+  the PixelMed JPEG Selective Block Redaction Codec (also used by CTP). It edits
+  the compressed data directly, so pixels outside the masked blocks stay
+  bit-for-bit identical rather than being degraded by a decompress and recompress
+  cycle.
+
+- **Deterministic and offline.** UIDs and replacement identifiers are re-derived
+  by hashing, with no lookup tables and no network calls, so the same input and
+  parameters always produce the same output.
+
 ## Install
 
 Requires Python 3.12.
@@ -88,6 +118,30 @@ for item in deidentify_paths(
     parameters=DeidParameters(patient_id="TEST"),
 ):
     print(item.input_file, item.result.outcome)
+```
+
+## Architecture
+
+The CLI and the Python API share one pipeline orchestrator (`pipeline.py`). For
+each instance it runs three stages in order (catalog filter, pixel scrub,
+metadata scrub) and resolves the instance to exactly one outcome. The metadata
+scrub draws on three inputs: the derived identifiers and UIDs, the
+site-tailored redaction allowlist, and the selected de-identification profile.
+
+```mermaid
+flowchart TD
+    IN[CLI or Python API] --> CAT{Device catalog match?}
+    CAT -- deny rule --> FILTERED[FILTERED]
+    CAT -- matched --> PIX{Scrub regions?}
+    PIX -- yes --> BLANK[Blank pixel regions]
+    PIX -- no --> META[Metadata scrub]
+    BLANK --> META
+    META --> OUT[DEIDENTIFIED]
+
+    PARAMS[Derived or supplied IDs] --> META
+    ALLOW[(Redaction allowlist)] --> REDACT[Unstructured text redactor]
+    REDACT --> META
+    PROFILE[De-identification profile] --> META
 ```
 
 ## Outcomes

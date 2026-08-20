@@ -51,6 +51,7 @@ dependencies = [
     "python-gdcm==3.2.6",
     "click",
     "readchar",
+    "vulture>=2.16",
 ]
 
 [project.scripts]
@@ -78,6 +79,7 @@ dev = [
     "setuptools",
     "types-cffi>=2.0.0.20260518",
     "pytest-timeout>=2.4.0",
+    "vulture>=2.14",
 ]
 docs = [
     "sphinx>=9.1",
@@ -145,6 +147,21 @@ build-frontend = "build[uv]"
 # import the pure-Python fallback silently; importing the extension module by
 # name fails loudly instead, so a broken native build cannot ship.
 test-command = 'python -c "import dicom_dre._jpeg_dct_accel"'
+
+[tool.vulture]
+# Dead-code detection shared by the justfile recipe, the pre-commit hook, and
+# the CI job so all three report identically.
+#
+# min_confidence = 80 excludes the 60%-confidence reports that are structurally
+# unavoidable false positives in this codebase: dataclass fields set for their
+# attribute side effect, click command callbacks resolved by decorator, public
+# API methods and properties, and DICOM attributes assigned on pydicom datasets
+# and consumed downstream. vulture_whitelist.py records the remaining high-
+# confidence false positives (pytest fixtures injected by parameter name).
+paths = ["src", "tests", "vulture_whitelist.py"]
+min_confidence = 80
+exclude = ["src/dicom_dre/_version.py"]
+sort_by_size = true
 
 [tool.ruff]
 target-version = "py312"
