@@ -2,6 +2,15 @@
 
 <!-- version list -->
 
+## v1.4.2 (2026-08-28)
+
+### Performance Improvements
+
+- Reduce private-creator block scanning in preserved-tag resolution
+  ([#24](https://github.com/susom/dicom-dre/pull/24),
+  [`2637182`](https://github.com/susom/dicom-dre/commit/2637182b78d810e592c01f89110e86f5366f7466))
+
+
 ## v1.4.1 (2026-08-20)
 
 ### Bug Fixes
