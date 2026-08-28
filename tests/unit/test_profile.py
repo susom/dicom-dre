@@ -425,6 +425,85 @@ class TestPreservedPrivateBlockResolution:
         assert profile._resolve_preserved_tags(ds) == set(), "creator with no approved elements should not be preserved"
 
 
+class TestCollectPrivateCreators:
+    """_collect_private_creators scans present private-creator elements once."""
+
+    def test_collects_creators_for_requested_groups(self):
+        """Creator elements in requested groups map to (block, value)."""
+        ds = _signa_premier_dataset(block=0x10)
+        profile = _minimal_profile()
+        creators = profile._collect_private_creators(ds, {0x0019, 0x0043})
+        assert creators[0x0019] == [(0x10, "GEMS_ACQU_01")], (
+            f"unexpected group 0x0019 creators: {creators.get(0x0019)!r}"
+        )
+        assert creators[0x0043] == [(0x10, "GEMS_PARM_01")], (
+            f"unexpected group 0x0043 creators: {creators.get(0x0043)!r}"
+        )
+
+    def test_excludes_unrequested_groups(self):
+        """A creator whose group is not requested is not collected."""
+        ds = _signa_premier_dataset(block=0x10)
+        profile = _minimal_profile()
+        creators = profile._collect_private_creators(ds, {0x0019})
+        assert 0x0043 not in creators, "unrequested group should be excluded"
+        assert 0x0019 in creators, "requested group should be collected"
+
+    def test_excludes_non_creator_elements(self):
+        """Data elements (element > 0x00FF) are not treated as creators."""
+        ds = Dataset()
+        ds.add_new(Tag(0x0019, 0x0010), "LO", "GEMS_ACQU_01")
+        ds.add_new(Tag(0x0019, 0x10BB), "DS", "0")
+        profile = _minimal_profile()
+        creators = profile._collect_private_creators(ds, {0x0019})
+        assert creators[0x0019] == [(0x10, "GEMS_ACQU_01")], "only the creator block should be collected"
+
+    def test_blocks_sorted_ascending(self):
+        """Multiple creator blocks in one group are returned in ascending order."""
+        ds = Dataset()
+        ds.add_new(Tag(0x0019, 0x0012), "LO", "GEMS_ACQU_03")
+        ds.add_new(Tag(0x0019, 0x0010), "LO", "GEMS_ACQU_01")
+        ds.add_new(Tag(0x0019, 0x0011), "LO", "GEMS_ACQU_02")
+        profile = _minimal_profile()
+        creators = profile._collect_private_creators(ds, {0x0019})
+        assert creators[0x0019] == [
+            (0x10, "GEMS_ACQU_01"),
+            (0x11, "GEMS_ACQU_02"),
+            (0x12, "GEMS_ACQU_03"),
+        ], "creator blocks should be sorted ascending"
+
+    def test_creator_value_stripped(self):
+        """A space-padded creator value is normalized when collected."""
+        ds = Dataset()
+        ds.add_new(Tag(0x0019, 0x0010), "LO", "GEMS_ACQU_01 ")
+        profile = _minimal_profile()
+        creators = profile._collect_private_creators(ds, {0x0019})
+        assert creators[0x0019] == [(0x10, "GEMS_ACQU_01")], "creator value should be stripped"
+
+    def test_no_matching_creators_returns_empty(self):
+        """A dataset with no creators in requested groups yields an empty map."""
+        ds = Dataset()
+        ds.add_new(Tag(0x0008, 0x0018), "UI", "1.2.3")
+        profile = _minimal_profile()
+        assert profile._collect_private_creators(ds, {0x0019}) == {}, "no creators should yield an empty map"
+
+    def test_does_not_descend_into_sequences(self):
+        """A creator nested in a sequence item is not collected at the parent.
+
+        The scan is single-level by contract; recursion into sequence items is
+        the caller's responsibility. A creator inside a nested item must not be
+        attributed to the parent dataset.
+        """
+        from pydicom.sequence import Sequence
+
+        item = Dataset()
+        item.add_new(Tag(0x0019, 0x0010), "LO", "GEMS_ACQU_01")
+        item.add_new(Tag(0x0019, 0x10BB), "DS", "0")
+        ds = Dataset()
+        ds.add_new(Tag(0x0040, 0x030E), "SQ", Sequence([item]))
+        profile = _minimal_profile()
+        assert profile._collect_private_creators(ds, {0x0019}) == {}, "nested creator must not be collected at parent"
+
+
 class TestPreservedPrivateKeepVsRemove:
     """Preserved private elements survive while others are removed."""
 
@@ -474,6 +553,37 @@ class TestPreservedPrivateKeepVsRemove:
         result_item = ds[seq_tag].value[0]
         assert Tag(0x0019, 0x10BB) in result_item, "preserved element in sequence item removed"
         assert Tag(0x0019, 0x10EE) not in result_item, "unrelated private element in sequence item should be removed"
+
+    def test_preserved_elements_deeply_nested_survive(self):
+        """Preserved private elements two sequence levels deep survive.
+
+        Global removal recurses into every sequence item, resolving preserved
+        tags at each level, so a private element nested below an outer and an
+        inner sequence is retained while unrelated private elements at the same
+        depth are removed.
+        """
+        from pydicom.sequence import Sequence
+
+        inner = Dataset()
+        inner.add_new(Tag(0x0019, 0x0010), "LO", "GEMS_ACQU_01")
+        inner.add_new(Tag(0x0019, 0x10BB), "DS", "0")
+        inner.add_new(Tag(0x0019, 0x10EE), "LO", "vendor junk")
+        inner_seq_tag = Tag(0x0040, 0x030E)
+        outer = Dataset()
+        outer.add_new(inner_seq_tag, "SQ", Sequence([inner]))
+        outer_seq_tag = Tag(0x0040, 0xA730)
+        ds = Dataset()
+        ds.add_new(outer_seq_tag, "SQ", Sequence([outer]))
+        profile = _minimal_profile(
+            rules={outer_seq_tag: keep(), inner_seq_tag: keep()},
+            remove_private=True,
+            preserved_private_specs=frozenset({_GEMS_ACQU_SPEC}),
+        )
+        profile.apply(ds, _PARAMS)
+        result_inner = ds[outer_seq_tag].value[0][inner_seq_tag].value[0]
+        assert Tag(0x0019, 0x0010) in result_inner, "creator two levels deep removed"
+        assert Tag(0x0019, 0x10BB) in result_inner, "preserved element two levels deep removed"
+        assert Tag(0x0019, 0x10EE) not in result_inner, "unrelated private element two levels deep should be removed"
 
 
 # Spec whose PulseSequenceDate offset is flagged for jitter, mirroring default.py.

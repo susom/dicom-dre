@@ -448,6 +448,28 @@ class DeidProfile:
             for item in elem.value:
                 self._apply_preserved_private_dates_to_dataset(item, params, shift)
 
+    def _collect_private_creators(self, ds: Dataset, groups: set[int]) -> dict[int, list[tuple[int, str]]]:
+        """Map each requested private group to its present creator blocks.
+
+        Scans the dataset's tags once and, for every private-creator element
+        (element 0x0010-0x00FF) in a requested group, records its block number
+        and space/null-stripped creator value. Blocks are returned in ascending
+        order so callers reproduce the lowest-block-first creator match without
+        probing all 240 possible blocks per group.
+        """
+        creators: dict[int, list[tuple[int, str]]] = {}
+        for tag in ds.keys():
+            group = tag.group
+            if group not in groups:
+                continue
+            element = tag.element
+            if element < 0x0010 or element > 0x00FF:
+                continue
+            creators.setdefault(group, []).append((element, str(ds[tag].value).strip()))
+        for blocks in creators.values():
+            blocks.sort()
+        return creators
+
     def _resolve_preserved_tags(self, ds: Dataset) -> set[BaseTag]:
         """Resolve preserved private specs to concrete tags in this dataset.
 
@@ -462,22 +484,21 @@ class DeidProfile:
         keep: set[BaseTag] = set()
         if not self.preserved_private_specs:
             return keep
+        groups = {spec.group for spec in self.preserved_private_specs}
+        creators = self._collect_private_creators(ds, groups)
         for spec in self.preserved_private_specs:
-            for block in range(0x10, 0x100):
-                creator_tag = Tag(spec.group, block)
-                if creator_tag not in ds:
+            for block, creator_value in creators.get(spec.group, ()):
+                # Private-creator LO values may be space/null padded; the stored
+                # value is already normalized so a padded "GEMS_ACQU_01 " matches.
+                if creator_value != spec.creator:
                     continue
-                # Private-creator LO values may be space/null padded; normalize
-                # before comparing so a padded "GEMS_ACQU_01 " still matches.
-                if str(ds[creator_tag].value).strip() != spec.creator:
-                    continue
-                data_tags = {
-                    Tag(spec.group, (block << 8) | _offset_value(offset))
-                    for offset in spec.offsets
-                    if Tag(spec.group, (block << 8) | _offset_value(offset)) in ds
-                }
+                data_tags: set[BaseTag] = set()
+                for offset in spec.offsets:
+                    data_tag = Tag(spec.group, (block << 8) | _offset_value(offset))
+                    if data_tag in ds:
+                        data_tags.add(data_tag)
                 if data_tags:
-                    keep.add(creator_tag)
+                    keep.add(Tag(spec.group, block))
                     keep.update(data_tags)
                 break
         return keep
@@ -491,17 +512,17 @@ class DeidProfile:
         element rules run.
         """
         result: set[BaseTag] = set()
-        if not self.preserved_private_specs:
+        jitter_specs = [
+            spec for spec in self.preserved_private_specs if any(isinstance(offset, Jitter) for offset in spec.offsets)
+        ]
+        if not jitter_specs:
             return result
-        for spec in self.preserved_private_specs:
+        groups = {spec.group for spec in jitter_specs}
+        creators = self._collect_private_creators(ds, groups)
+        for spec in jitter_specs:
             jitter_offsets = [offset.offset for offset in spec.offsets if isinstance(offset, Jitter)]
-            if not jitter_offsets:
-                continue
-            for block in range(0x10, 0x100):
-                creator_tag = Tag(spec.group, block)
-                if creator_tag not in ds:
-                    continue
-                if str(ds[creator_tag].value).strip() != spec.creator:
+            for block, creator_value in creators.get(spec.group, ()):
+                if creator_value != spec.creator:
                     continue
                 for offset in jitter_offsets:
                     data_tag = Tag(spec.group, (block << 8) | offset)
