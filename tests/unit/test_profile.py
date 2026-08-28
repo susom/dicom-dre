@@ -479,6 +479,30 @@ class TestCollectPrivateCreators:
         creators = profile._collect_private_creators(ds, {0x0019})
         assert creators[0x0019] == [(0x10, "GEMS_ACQU_01")], "creator value should be stripped"
 
+    def test_null_padded_creator_value_normalized(self):
+        """A null-padded creator value is normalized so it matches the spec.
+
+        str.strip() alone leaves a trailing NUL, which would fail the equality
+        check against the unpadded spec creator; normalization must remove it.
+        """
+        ds = Dataset()
+        ds.add_new(Tag(0x0019, 0x0010), "LO", "GEMS_ACQU_01\x00")
+        profile = _minimal_profile()
+        creators = profile._collect_private_creators(ds, {0x0019})
+        assert creators[0x0019] == [(0x10, "GEMS_ACQU_01")], "null padding should be stripped"
+
+    def test_raw_bytes_creator_value_decoded(self):
+        """A raw bytes creator value (UN before VR correction) is decoded.
+
+        str() on a bytes value yields a "b'...'" literal that would never match
+        the spec creator; the value must be decoded and stripped instead.
+        """
+        ds = Dataset()
+        ds.add_new(Tag(0x0019, 0x0010), "UN", b"GEMS_ACQU_01\x00")
+        profile = _minimal_profile()
+        creators = profile._collect_private_creators(ds, {0x0019})
+        assert creators[0x0019] == [(0x10, "GEMS_ACQU_01")], "raw bytes value should be decoded and stripped"
+
     def test_no_matching_creators_returns_empty(self):
         """A dataset with no creators in requested groups yields an empty map."""
         ds = Dataset()

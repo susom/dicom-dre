@@ -96,6 +96,19 @@ def _offset_value(offset: int | Jitter) -> int:
     return offset.offset if isinstance(offset, Jitter) else offset
 
 
+def _normalize_creator_value(value: object) -> str:
+    """Return a private-creator value stripped of byte encoding and padding.
+
+    A private-creator LO may be space- or null-padded, and an element read as
+    UN/OB before VR correction holds raw bytes. Decoding and stripping both ends
+    makes the comparison against a spec's creator string independent of padding
+    and encoding.
+    """
+    if isinstance(value, bytes):
+        value = value.decode("ascii", errors="replace")
+    return str(value).strip(" \t\r\n\x00")
+
+
 @dataclass(frozen=True)
 class DeidProfile:
     """Immutable de-identification profile binding tag rules and global flags."""
@@ -465,7 +478,7 @@ class DeidProfile:
             element = tag.element
             if element < 0x0010 or element > 0x00FF:
                 continue
-            creators.setdefault(group, []).append((element, str(ds[tag].value).strip()))
+            creators.setdefault(group, []).append((element, _normalize_creator_value(ds[tag].value)))
         for blocks in creators.values():
             blocks.sort()
         return creators
