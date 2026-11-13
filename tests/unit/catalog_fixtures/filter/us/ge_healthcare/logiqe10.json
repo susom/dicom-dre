@@ -1,0 +1,646 @@
+{
+  "entries": [
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "BREAST",
+        "Columns": "1092",
+        "ImageType": "ORIGINAL\\PRIMARY\\SMALL PARTS\\0001\\GEMSSINGLEFRAME\\GEMSMGCOUNT1",
+        "Manufacturer": "GE Healthcare",
+        "ManufacturerModelName": "LOGIQE10",
+        "Modality": "US",
+        "Rows": "819",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+        "SequenceOfUltrasoundRegions": "present",
+        "SeriesNumber": "3",
+        "SoftwareVersions": "LOGIQE10:R3.1.6"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "BREAST",
+        "Columns": "1092",
+        "ConversionType": "WSD",
+        "ImageType": "ORIGINAL\\PRIMARY\\SMALL PARTS\\0001",
+        "Manufacturer": "GE Healthcare",
+        "ManufacturerModelName": "LOGIQE10",
+        "Modality": "US",
+        "Rows": "819",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "LOGIQE10",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "LOGIQE10:R3.1.6"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "CHEST",
+        "Columns": "1456",
+        "ImageType": "DERIVED\\PRIMARY\\ABDOMINAL\\0001\\GEMSSINGLEFRAME\\GEMSMGCOUNT1",
+        "Manufacturer": "GE Healthcare",
+        "ManufacturerModelName": "LOGIQE10",
+        "Modality": "US",
+        "Rows": "819",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+        "SequenceOfUltrasoundRegions": "present",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "LOGIQE10:R1.5.1"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "CHEST",
+        "Columns": "1456",
+        "ImageType": "ORIGINAL\\PRIMARY\\ABDOMINAL\\0011\\GEMSSINGLEFRAME\\GEMSMGCOUNT1",
+        "Manufacturer": "GE Healthcare",
+        "ManufacturerModelName": "LOGIQE10",
+        "Modality": "US",
+        "Rows": "819",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+        "SequenceOfUltrasoundRegions": "present",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "LOGIQE10:R1.5.1"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "CHEST",
+        "Columns": "1456",
+        "ConversionType": "WSD",
+        "ImageType": "ORIGINAL\\PRIMARY\\ABDOMINAL\\0001",
+        "Manufacturer": "GE Healthcare",
+        "ManufacturerModelName": "LOGIQE10",
+        "Modality": "US",
+        "Rows": "819",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "LOGIQE10",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "LOGIQE10:R1.5.1"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "HEAD",
+        "Columns": "1456",
+        "ConversionType": "WSD",
+        "ImageType": "ORIGINAL\\PRIMARY\\VASCULAR\\0001",
+        "Manufacturer": "GE Healthcare",
+        "ManufacturerModelName": "LOGIQE10",
+        "Modality": "US",
+        "Rows": "819",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "LOGIQE10",
+        "SeriesNumber": "2",
+        "SoftwareVersions": "LOGIQE10:R1.5.1"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "BREAST",
+        "Columns": "1092",
+        "ImageType": "ORIGINAL\\PRIMARY\\SMALL PARTS\\0001\\GEMSSINGLEFRAME\\GEMSMGCOUNT1",
+        "Manufacturer": "GE Healthcare",
+        "ManufacturerModelName": "LOGIQE10",
+        "Modality": "US",
+        "Rows": "820",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+        "SequenceOfUltrasoundRegions": "present",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "LOGIQE10:R4.6.1"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "BREAST",
+        "Columns": "1092",
+        "ImageType": "ORIGINAL\\PRIMARY\\SMALL PARTS\\0011\\GEMSSINGLEFRAME\\GEMSMGCOUNT1",
+        "Manufacturer": "GE Healthcare",
+        "ManufacturerModelName": "LOGIQE10",
+        "Modality": "US",
+        "Rows": "820",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+        "SequenceOfUltrasoundRegions": "present",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "LOGIQE10:R4.6.1"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "BREAST",
+        "Columns": "1092",
+        "ConversionType": "WSD",
+        "ImageType": "ORIGINAL\\PRIMARY\\SMALL PARTS\\0001",
+        "Manufacturer": "GE Healthcare",
+        "ManufacturerModelName": "LOGIQE10",
+        "Modality": "US",
+        "Rows": "820",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "LOGIQE10",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "LOGIQE10:R4.6.1"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "PELVIS",
+        "Columns": "1092",
+        "ConversionType": "WSD",
+        "ImageType": "ORIGINAL\\PRIMARY\\GYNECOLOGY\\0001",
+        "Manufacturer": "GE Healthcare",
+        "ManufacturerModelName": "LOGIQE10",
+        "Modality": "US",
+        "Rows": "820",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "LOGIQE10",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "LOGIQE10:R5.0.4"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "BREAST",
+        "Columns": "1456",
+        "ImageType": "ORIGINAL\\PRIMARY\\SMALL PARTS\\0001\\GEMSSINGLEFRAME\\GEMSMGCOUNT2",
+        "Manufacturer": "GE Healthcare",
+        "ManufacturerModelName": "LOGIQE10",
+        "Modality": "US",
+        "Rows": "820",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+        "SequenceOfUltrasoundRegions": "present",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "LOGIQE10:R5.0.4"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "BREAST",
+        "Columns": "1456",
+        "ImageType": "ORIGINAL\\PRIMARY\\SMALL PARTS\\0011\\GEMSSINGLEFRAME\\GEMSMGCOUNT2",
+        "Manufacturer": "GE Healthcare",
+        "ManufacturerModelName": "LOGIQE10",
+        "Modality": "US",
+        "Rows": "820",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+        "SequenceOfUltrasoundRegions": "present",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "LOGIQE10:R5.0.4"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "BREAST",
+        "Columns": "1456",
+        "ConversionType": "WSD",
+        "ImageType": "ORIGINAL\\PRIMARY\\SMALL PARTS\\0001",
+        "Manufacturer": "GE Healthcare",
+        "ManufacturerModelName": "LOGIQE10",
+        "Modality": "US",
+        "Rows": "820",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "LOGIQE10",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "LOGIQE10:R5.0.4"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "ABDOMEN",
+        "Columns": "1456",
+        "ConversionType": "WSD",
+        "ImageType": "ORIGINAL\\PRIMARY\\ABDOMINAL\\0001",
+        "Manufacturer": "GE Healthcare",
+        "ManufacturerModelName": "LOGIQE10",
+        "Modality": "US",
+        "Rows": "820",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "LOGIQE10",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "LOGIQE10:R5.0.4"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "CHEST",
+        "Columns": "1164",
+        "ImageType": "ORIGINAL\\PRIMARY\\SMALL PARTS\\0001\\GEMSSINGLEFRAME\\GEMSMGCOUNT1",
+        "Manufacturer": "GE Healthcare",
+        "ManufacturerModelName": "LOGIQE10",
+        "Modality": "US",
+        "Rows": "873",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+        "SequenceOfUltrasoundRegions": "present",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "LOGIQE10:R2.5.2"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "CHEST",
+        "Columns": "1164",
+        "ImageType": "DERIVED\\PRIMARY\\SMALL PARTS\\0001\\GEMSSINGLEFRAME\\GEMSMGCOUNT1",
+        "Manufacturer": "GE Healthcare",
+        "ManufacturerModelName": "LOGIQE10",
+        "Modality": "US",
+        "Rows": "873",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+        "SequenceOfUltrasoundRegions": "present",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "LOGIQE10:R2.5.2"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "CHEST",
+        "Columns": "1164",
+        "ConversionType": "WSD",
+        "ImageType": "ORIGINAL\\PRIMARY\\SMALL PARTS\\0011",
+        "Manufacturer": "GE Healthcare",
+        "ManufacturerModelName": "LOGIQE10",
+        "Modality": "US",
+        "Rows": "873",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "LOGIQE10",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "LOGIQE10:R2.5.2"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "HEAD",
+        "Columns": "1164",
+        "ConversionType": "WSD",
+        "ImageType": "ORIGINAL\\PRIMARY\\SMALL PARTS\\0001",
+        "Manufacturer": "GE Healthcare",
+        "ManufacturerModelName": "LOGIQE10",
+        "Modality": "US",
+        "Rows": "873",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "LOGIQE10",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "LOGIQE10:R2.5.5"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "CHEST",
+        "Columns": "1552",
+        "ImageType": "ORIGINAL\\PRIMARY\\ABDOMINAL\\0001\\GEMSSINGLEFRAME\\GEMSMGCOUNT1",
+        "Manufacturer": "GE Healthcare",
+        "ManufacturerModelName": "LOGIQE10",
+        "Modality": "US",
+        "Rows": "873",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+        "SequenceOfUltrasoundRegions": "present",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "LOGIQE10:R1.5.1"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "CHEST",
+        "Columns": "1552",
+        "ImageType": "ORIGINAL\\PRIMARY\\ABDOMINAL\\0001\\GEMSSINGLEFRAME\\GEMSMGCOUNT1",
+        "Manufacturer": "GE Healthcare",
+        "ManufacturerModelName": "LOGIQE10",
+        "Modality": "US",
+        "Rows": "873",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+        "SequenceOfUltrasoundRegions": "present",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "LOGIQE10:R2.5.2"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "CHEST",
+        "Columns": "1552",
+        "ConversionType": "WSD",
+        "ImageType": "ORIGINAL\\PRIMARY\\ABDOMINAL\\0001",
+        "Manufacturer": "GE Healthcare",
+        "ManufacturerModelName": "LOGIQE10",
+        "Modality": "US",
+        "Rows": "873",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "LOGIQE10",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "LOGIQE10:R1.5.1"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "CHEST",
+        "Columns": "1552",
+        "ConversionType": "WSD",
+        "ImageType": "ORIGINAL\\PRIMARY\\ABDOMINAL\\0001",
+        "Manufacturer": "GE Healthcare",
+        "ManufacturerModelName": "LOGIQE10",
+        "Modality": "US",
+        "Rows": "873",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "LOGIQE10",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "LOGIQE10:R2.5.2"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "CHEST",
+        "Columns": "1552",
+        "ImageType": "ORIGINAL\\PRIMARY\\ABDOMINAL\\0001\\GEMSSINGLEFRAME\\GEMSMGCOUNT1",
+        "Manufacturer": "GE Healthcare",
+        "ManufacturerModelName": "LOGIQE10",
+        "Modality": "US",
+        "Rows": "874",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+        "SequenceOfUltrasoundRegions": "present",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "LOGIQE10:R4.6.0"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "CHEST",
+        "Columns": "1552",
+        "ImageType": "ORIGINAL\\PRIMARY\\ABDOMINAL\\0011\\GEMSSINGLEFRAME\\GEMSMGCOUNT1",
+        "Manufacturer": "GE Healthcare",
+        "ManufacturerModelName": "LOGIQE10",
+        "Modality": "US",
+        "Rows": "874",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+        "SequenceOfUltrasoundRegions": "present",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "LOGIQE10:R4.6.0"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "CHEST",
+        "Columns": "1552",
+        "ConversionType": "WSD",
+        "ImageType": "ORIGINAL\\PRIMARY\\ABDOMINAL\\0001",
+        "Manufacturer": "GE Healthcare",
+        "ManufacturerModelName": "LOGIQE10",
+        "Modality": "US",
+        "Rows": "874",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "LOGIQE10",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "LOGIQE10:R4.6.0"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "UPPER EXT",
+        "Columns": "1552",
+        "ConversionType": "WSD",
+        "ImageType": "ORIGINAL\\PRIMARY\\SMALL PARTS\\0001",
+        "Manufacturer": "GE Healthcare",
+        "ManufacturerModelName": "LOGIQE10",
+        "Modality": "US",
+        "Rows": "874",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "LOGIQE10",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "LOGIQE10:R4.6.0"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "ABDOMEN_PELVIS",
+        "Columns": "1292",
+        "ImageType": "ORIGINAL\\PRIMARY\\SMALL PARTS\\0001\\GEMSSINGLEFRAME\\GEMSMGCOUNT1",
+        "Manufacturer": "GE Healthcare",
+        "ManufacturerModelName": "LOGIQE10",
+        "Modality": "US",
+        "Rows": "970",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+        "SequenceOfUltrasoundRegions": "present",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "LOGIQE10:R4.6.0"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "HEAD",
+        "Columns": "1292",
+        "ImageType": "ORIGINAL\\PRIMARY\\SMALL PARTS\\0001\\GEMSSINGLEFRAME\\GEMSMGCOUNT1",
+        "Manufacturer": "GE Healthcare",
+        "ManufacturerModelName": "LOGIQE10",
+        "Modality": "US",
+        "Rows": "970",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+        "SequenceOfUltrasoundRegions": "present",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "LOGIQE10:R3.1.6"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "HEAD",
+        "Columns": "1292",
+        "ConversionType": "WSD",
+        "ImageType": "ORIGINAL\\PRIMARY\\SMALL PARTS\\0001",
+        "Manufacturer": "GE Healthcare",
+        "ManufacturerModelName": "LOGIQE10",
+        "Modality": "US",
+        "Rows": "970",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "LOGIQE10",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "LOGIQE10:R3.1.6"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "Columns": "1292",
+        "ConversionType": "WSD",
+        "ImageType": "ORIGINAL\\PRIMARY\\ABDOMINAL\\0001",
+        "Manufacturer": "GE Healthcare",
+        "ManufacturerModelName": "LOGIQE10",
+        "Modality": "US",
+        "Rows": "970",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "LOGIQE10",
+        "SeriesNumber": "3",
+        "SoftwareVersions": "LOGIQE10:R2.5.2"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "HEAD",
+        "Columns": "1552",
+        "ImageType": "ORIGINAL\\PRIMARY\\SMALL PARTS\\0001\\GEMSSINGLEFRAME\\GEMSMGCOUNT2",
+        "Manufacturer": "GE Healthcare",
+        "ManufacturerModelName": "LOGIQE10",
+        "Modality": "US",
+        "Rows": "970",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+        "SequenceOfUltrasoundRegions": "present",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "LOGIQE10:R3.1.6"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "HEAD",
+        "Columns": "1552",
+        "ImageType": "ORIGINAL\\PRIMARY\\SMALL PARTS\\0011\\GEMSSINGLEFRAME\\GEMSMGCOUNT2",
+        "Manufacturer": "GE Healthcare",
+        "ManufacturerModelName": "LOGIQE10",
+        "Modality": "US",
+        "Rows": "970",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+        "SequenceOfUltrasoundRegions": "present",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "LOGIQE10:R3.1.6"
+      }
+    },
+    {
+      "description": null,
+      "expected_filtered": true,
+      "expected_scrub_regions": [],
+      "expected_scrubbed": false,
+      "tags": {
+        "BodyPartExamined": "HEAD",
+        "Columns": "1552",
+        "ConversionType": "WSD",
+        "ImageType": "ORIGINAL\\PRIMARY\\SMALL PARTS\\0001",
+        "Manufacturer": "GE Healthcare",
+        "ManufacturerModelName": "LOGIQE10",
+        "Modality": "US",
+        "Rows": "970",
+        "SOPClassUID": "1.2.840.10008.5.1.4.1.1.7",
+        "SecondaryCaptureDeviceManufacturerModelName": "LOGIQE10",
+        "SeriesNumber": "1",
+        "SoftwareVersions": "LOGIQE10:R1.5.1"
+      }
+    }
+  ]
+}
