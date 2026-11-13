@@ -335,13 +335,13 @@ class TestUltrasoundDevices:
         )
 
     @staticmethod
-    def _logiqe10_tags(rows: int, cols: int, sop_class_uid: str) -> DicomTags:
-        """Build LOGIQE10 tags for the given size and SOP Class."""
+    def _logiqe10_tags(rows: int, cols: int, sop_class_uid: str, model: str = "LOGIQE10") -> DicomTags:
+        """Build LOGIQE10-family tags for the given size, SOP Class, and model name."""
         return DicomTags(
             {
                 "Manufacturer": "GE Healthcare",
                 "Modality": "US",
-                "ManufacturerModelName": "LOGIQE10",
+                "ManufacturerModelName": model,
                 "SOPClassUID": sop_class_uid,
                 "ImageType": "ORIGINAL\\PRIMARY\\SMALL PARTS\\0001\\GEMSMULTIFRAME\\GEMSMGCOUNT1",
                 "Rows": str(rows),
@@ -379,6 +379,20 @@ class TestUltrasoundDevices:
         """GE LOGIQE10 US Image and Secondary Capture images deny, including at allowed cine sizes."""
         decision = catalog.evaluate(self._logiqe10_tags(rows, cols, sop_class_uid))
         assert decision.action == "deny", f"{rows}x{cols} {sop_class_uid}: expected deny, got {decision.action}"
+
+    def test_ge_logiqe10s_multiframe_allows_with_header_scrub(self, catalog):
+        """GE LOGIQE10s multi-frame images match the LOGIQE10 rule and blank the top 40 rows."""
+        decision = catalog.evaluate(self._logiqe10_tags(898, 1182, "1.2.840.10008.5.1.4.1.1.3.1", "LOGIQE10s"))
+        assert decision.action == "allow", f"expected allow, got {decision.action}"
+        assert ScrubRegion(0, 0, 10000, 40) in decision.scrub_regions, (
+            f"expected header scrub region not present in {decision.scrub_regions}"
+        )
+
+    @pytest.mark.parametrize("sop_class_uid", ["1.2.840.10008.5.1.4.1.1.6.1", "1.2.840.10008.5.1.4.1.1.7"])
+    def test_ge_logiqe10s_single_frame_denies(self, catalog, sop_class_uid):
+        """GE LOGIQE10s US Image and Secondary Capture images deny at an allowed cine size."""
+        decision = catalog.evaluate(self._logiqe10_tags(898, 1182, sop_class_uid, "LOGIQE10s"))
+        assert decision.action == "deny", f"{sop_class_uid}: expected deny, got {decision.action}"
 
     def test_ge_logiqe10_unlisted_multiframe_resolution_denies(self, catalog):
         """GE LOGIQE10 multi-frame images at an unlisted resolution deny."""
