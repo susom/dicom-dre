@@ -369,10 +369,14 @@ class TestUltrasoundDevices:
             (970, 1292, "1.2.840.10008.5.1.4.1.1.6.1"),
             (970, 1292, "1.2.840.10008.5.1.4.1.1.7"),
             (873, 1552, "1.2.840.10008.5.1.4.1.1.7"),
+            (748, 1346, "1.2.840.10008.5.1.4.1.1.6.1"),
+            (802, 1442, "1.2.840.10008.5.1.4.1.1.6.1"),
+            (802, 1054, "1.2.840.10008.5.1.4.1.1.7"),
+            (899, 1182, "1.2.840.10008.5.1.4.1.1.7"),
         ],
     )
     def test_ge_logiqe10_single_frame_denies(self, catalog, rows, cols, sop_class_uid):
-        """GE LOGIQE10 single-frame and secondary-capture images deny."""
+        """GE LOGIQE10 US Image and Secondary Capture images deny, including at allowed cine sizes."""
         decision = catalog.evaluate(self._logiqe10_tags(rows, cols, sop_class_uid))
         assert decision.action == "deny", f"{rows}x{cols} {sop_class_uid}: expected deny, got {decision.action}"
 
