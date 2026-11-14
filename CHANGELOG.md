@@ -2,6 +2,20 @@
 
 <!-- version list -->
 
+## v1.5.0 (2026-11-14)
+
+### Bug Fixes
+
+- **ci**: Build macOS wheels on macos-15 ([#29](https://github.com/susom/dicom-dre/pull/29),
+  [`fa7582b`](https://github.com/susom/dicom-dre/commit/fa7582b75f522d1b6c63585c93fcd0241bfb2536))
+
+### Features
+
+- Add GE LOGIQE10 ultrasound to default catalog (STAR-13271)
+  ([#26](https://github.com/susom/dicom-dre/pull/26),
+  [`28668f4`](https://github.com/susom/dicom-dre/commit/28668f4c20fbc624bb342147c5a1dc0bc09250f4))
+
+
 ## v1.4.2 (2026-08-28)
 
 ### Performance Improvements
