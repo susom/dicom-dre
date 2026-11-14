@@ -1650,7 +1650,7 @@ _us_devices: list[DeviceRule] = [
             variant(rows=850, cols=1081),
         ],
     ),
-    # 53af. LOGIQE10 (includes LOGIQE10s)
+    # 53af. LOGIQE10
     # Only multi-frame (cine) images are allowed. Single-frame still and
     # secondary-capture images are screen captures that carry patient text outside
     # the header band, so the SOP Class restriction filters them.
@@ -1660,7 +1660,7 @@ _us_devices: list[DeviceRule] = [
         manufacturer=["^GE", "^G.E.", "^GEMS"],
         modality="US",
         sop_class_uid=f"^{_US_SOP_MULTI}",
-        manufacturer_model_name="LOGIQE10",
+        manufacturer_model_name="=LOGIQE10",
         variants=[
             variant(rows=748, cols=982, scrub=[(0, 0, 10000, 40)]),
             variant(rows=748, cols=1346, scrub=[(0, 0, 10000, 40)]),
@@ -1670,6 +1670,20 @@ _us_devices: list[DeviceRule] = [
             variant(rows=898, cols=1442, scrub=[(0, 0, 10000, 40)]),
             variant(rows=899, cols=1182, scrub=[(0, 0, 10000, 40)]),
             variant(rows=899, cols=1442, scrub=[(0, 0, 10000, 40)]),
+        ],
+    ),
+    # 53ag. LOGIQE10s
+    # Multi-frame (cine) images only, as for LOGIQE10.
+    device(
+        "GE LOGIQE10s US",
+        "allow",
+        manufacturer=["^GE", "^G.E.", "^GEMS"],
+        modality="US",
+        sop_class_uid=f"^{_US_SOP_MULTI}",
+        manufacturer_model_name="=LOGIQE10s",
+        variants=[
+            variant(rows=898, cols=1182, scrub=[(0, 0, 10000, 40)]),
+            variant(rows=970, cols=1552, scrub=[(0, 0, 10000, 90)]),
         ],
     ),
 ]
