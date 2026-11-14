@@ -334,6 +334,76 @@ class TestUltrasoundDevices:
             f"expected scrub region not present in {decision.scrub_regions}"
         )
 
+    @staticmethod
+    def _logiqe10_tags(rows: int, cols: int, sop_class_uid: str, model: str = "LOGIQE10") -> DicomTags:
+        """Build LOGIQE10-family tags for the given size, SOP Class, and model name."""
+        return DicomTags(
+            {
+                "Manufacturer": "GE Healthcare",
+                "Modality": "US",
+                "ManufacturerModelName": model,
+                "SOPClassUID": sop_class_uid,
+                "ImageType": "ORIGINAL\\PRIMARY\\SMALL PARTS\\0001\\GEMSMULTIFRAME\\GEMSMGCOUNT1",
+                "Rows": str(rows),
+                "Columns": str(cols),
+                "SequenceOfUltrasoundRegions": "present",
+            }
+        )
+
+    @pytest.mark.parametrize(
+        ("rows", "cols"),
+        [(748, 982), (748, 1346), (802, 1054), (802, 1442), (898, 1182), (898, 1442), (899, 1182), (899, 1442)],
+    )
+    def test_ge_logiqe10_multiframe_allows_with_header_scrub(self, catalog, rows, cols):
+        """GE LOGIQE10 multi-frame images allow and blank the top 40 rows."""
+        decision = catalog.evaluate(self._logiqe10_tags(rows, cols, "1.2.840.10008.5.1.4.1.1.3.1"))
+        assert decision.action == "allow", f"{rows}x{cols}: expected allow, got {decision.action}"
+        assert ScrubRegion(0, 0, 10000, 40) in decision.scrub_regions, (
+            f"{rows}x{cols}: expected header scrub region not present in {decision.scrub_regions}"
+        )
+
+    @pytest.mark.parametrize(
+        ("rows", "cols", "sop_class_uid"),
+        [
+            (819, 1092, "1.2.840.10008.5.1.4.1.1.6.1"),
+            (970, 1292, "1.2.840.10008.5.1.4.1.1.6.1"),
+            (970, 1292, "1.2.840.10008.5.1.4.1.1.7"),
+            (873, 1552, "1.2.840.10008.5.1.4.1.1.7"),
+            (748, 1346, "1.2.840.10008.5.1.4.1.1.6.1"),
+            (802, 1442, "1.2.840.10008.5.1.4.1.1.6.1"),
+            (802, 1054, "1.2.840.10008.5.1.4.1.1.7"),
+            (899, 1182, "1.2.840.10008.5.1.4.1.1.7"),
+        ],
+    )
+    def test_ge_logiqe10_single_frame_denies(self, catalog, rows, cols, sop_class_uid):
+        """GE LOGIQE10 US Image and Secondary Capture images deny, including at allowed cine sizes."""
+        decision = catalog.evaluate(self._logiqe10_tags(rows, cols, sop_class_uid))
+        assert decision.action == "deny", f"{rows}x{cols} {sop_class_uid}: expected deny, got {decision.action}"
+
+    @pytest.mark.parametrize(("rows", "cols", "header_rows"), [(898, 1182, 40), (970, 1552, 90)])
+    def test_ge_logiqe10s_multiframe_allows_with_header_scrub(self, catalog, rows, cols, header_rows):
+        """GE LOGIQE10s multi-frame images allow and blank the header rows for their resolution."""
+        decision = catalog.evaluate(self._logiqe10_tags(rows, cols, "1.2.840.10008.5.1.4.1.1.3.1", "LOGIQE10s"))
+        assert decision.action == "allow", f"{rows}x{cols}: expected allow, got {decision.action}"
+        assert ScrubRegion(0, 0, 10000, header_rows) in decision.scrub_regions, (
+            f"{rows}x{cols}: expected {header_rows}-row scrub region not present in {decision.scrub_regions}"
+        )
+
+    @pytest.mark.parametrize("sop_class_uid", ["1.2.840.10008.5.1.4.1.1.6.1", "1.2.840.10008.5.1.4.1.1.7"])
+    def test_ge_logiqe10s_single_frame_denies(self, catalog, sop_class_uid):
+        """GE LOGIQE10s US Image and Secondary Capture images deny at an allowed cine size."""
+        decision = catalog.evaluate(self._logiqe10_tags(898, 1182, sop_class_uid, "LOGIQE10s"))
+        assert decision.action == "deny", f"{sop_class_uid}: expected deny, got {decision.action}"
+
+    @pytest.mark.parametrize(
+        ("rows", "cols", "model"),
+        [(700, 900, "LOGIQE10"), (970, 1552, "LOGIQE10"), (748, 982, "LOGIQE10s"), (700, 900, "LOGIQE10s")],
+    )
+    def test_ge_logiqe10_unlisted_multiframe_resolution_denies(self, catalog, rows, cols, model):
+        """Multi-frame images deny at resolutions listed only for the other LOGIQE10-family model or for neither."""
+        decision = catalog.evaluate(self._logiqe10_tags(rows, cols, "1.2.840.10008.5.1.4.1.1.3.1", model))
+        assert decision.action == "deny", f"{model} {rows}x{cols}: expected deny, got {decision.action}"
+
 
 class TestMammography:
     """Mammography device rules."""
