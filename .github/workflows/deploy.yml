@@ -98,7 +98,7 @@ jobs:
         include:
           - os: ubuntu-latest      # Linux x86_64
           - os: ubuntu-24.04-arm   # Linux aarch64 (ARM64)
-          - os: macos-14           # macOS arm64 (Apple Silicon)
+          - os: macos-15           # macOS arm64 (Apple Silicon)
           - os: windows-latest     # Windows x86_64
     env:
       # No git tag exists yet, so hatch-vcs (setuptools-scm) cannot derive the
